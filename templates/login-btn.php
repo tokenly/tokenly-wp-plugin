@@ -25,7 +25,7 @@ $calc_html = '
             </form>
             <a href="#!" class="forgot-password-link">Forgot password?</a>
             <p class="login-card-footer-text">Dont have an account? <a href="#!" class="text-reset">Register here</a></p>
-            <a href="https://swag21.com/tokenly/wp-content/account/authorize/auth.php" id="tk-login-btn"> Login with Tokenly </a>
+            <a href="'.get_site_url().'/wp-content/plugins/tokenpass/account/authorize/auth.php" id="tk-login-btn"> Login with Tokenly </a>
             <nav class="login-card-footer-nav">
               <a href="#!">Terms of use.</a>
               <a href="#!">Privacy policy</a>

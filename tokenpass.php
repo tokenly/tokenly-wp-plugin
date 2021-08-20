@@ -7,6 +7,8 @@
  * Author: Nick
  * Author URI: http://tokenly.com/
  **/
+$path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
+include($path.'wp-load.php');
 
 include( plugin_dir_path( __FILE__ ) . '/main-functions.php');
 // include( plugin_dir_path( __FILE__ ) . '/account/authorize/auth.php');

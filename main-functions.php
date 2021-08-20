@@ -108,7 +108,7 @@ function my_plugin_remove_database() {
 function tokenpass_shortcode(){
 
     // Things that you want to do. 
-    load_template_part('templates','calculator');
+    load_template_part('templates','login-btn');
 
     // Output needs to be return
     // return $calc_html;
@@ -191,3 +191,52 @@ function my_admin_style() {
     wp_enqueue_style( 'admin-style', plugins_url('/assets/css/admin-style.css', __FILE__) );
   }
 add_action( 'admin_enqueue_scripts', 'my_admin_style');
+
+add_action('init','tokenly_login_check');
+function tokenly_login_check() { 
+
+    if(isset($_GET['error'])){
+        if($_GET['error'] == 'yes' ){
+            $message = $_GET['message'];
+            echo "<script>alert('".$message."');</script>";
+
+        }else{
+            if($_GET['logged_in'] == 'yes' ){
+                $user_email = $_GET['useremail'];
+                $message = $user_email.' you are successfully logged in.';
+                echo "<script>alert('".$message."');</script>";            
+            }
+            if($_GET['user_register'] == 'yes' ){
+                $user_email = $_GET['useremail'];
+                $message = $user_email.' you are registered successfully. please check your email for credentials';
+                echo "<script>alert('".$message."');</script>"; 
+                
+                
+            }
+        }
+    }
+}
+
+add_filter( 'wp_new_user_notification_email', 'custom_wp_new_user_notification_email', 10, 3 );
+function custom_wp_new_user_notification_email( $wp_new_user_notification_email, $user, $blogname ) {
+ 
+    $user_login = stripslashes( $user->user_login );
+    $user_email = stripslashes( $user->user_email );
+    $user_pass = get_user_meta( $user->data->ID, 'usr_pass', true );
+
+    $login_url  = wp_login_url();
+    $message  = __( 'Hi there,' ) . "<br>";
+    $message .= sprintf( __( "Welcome to %s! Here's how to log in:" ), get_option('blogname') ) . "<br>";
+    $message .= wp_login_url() . "<br>";
+    $message .= sprintf( __('Username: %s'), $user_login ) . "<br>";
+    $message .= sprintf( __('Email: %s'), $user_email ) . "<br>";
+    $message .= sprintf(__('Password: %s'), $user_pass) . "<br>";
+    $message .= sprintf( __('If you have any problems, please contact me at %s.'), get_option('admin_email') ) . "<br>";
+    $message .= __( 'bye!' );
+ 
+    $wp_new_user_notification_email['subject'] = sprintf( '[%s] Your credentials.', $blogname );
+    $wp_new_user_notification_email['headers'] = array('Content-Type: text/html; charset=UTF-8');
+    $wp_new_user_notification_email['message'] = $message;
+ 
+    return $wp_new_user_notification_email;
+}
