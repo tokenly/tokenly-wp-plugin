@@ -134,8 +134,7 @@ function fetch_template(){
 add_action('wp_ajax_nopriv_fetch_template', 'fetch_template');
 add_action('wp_ajax_fetch_template', 'fetch_template');
 
-add_action('admin_menu', 'add_newsletter_extra_page');
-
+    
 /**
  * Register a custom menu page.
  */
@@ -168,19 +167,21 @@ add_action( 'admin_menu', 'register_tokenpass_menu_page' );
  */
 function tokenpass_menu_page(){
     // esc_html_e( 'Admin Page Test', 'textdomain' );  
-    echo '<div class="container">
-    <h2>Tokenpass Settings </h2>
-    <form>
-    <div class="form-group">
-      <label for="tk-client-id">Client ID : </label>
-      <input type="text" class="form-control" id="tk-client-id" aria-describedby="emailHelp" placeholder="Enter email">
-    </div>
-    <div class="form-group">
-      <label for="tk-client-secret">Client Secret : </label>
-      <input type="text" class="form-control" id="tk-client-secret" placeholder="Password">
-    </div>
-    <button type="button" class="btn btn-primary tk-settings-btn">Submit</button>
-  </form> </div>';
+//     echo '<div class="container">
+//     <h2>Tokenpass Settings </h2>
+//     <form>
+//     <div class="form-group">
+//       <label for="tk-client-id">Client ID : </label>
+//       <input type="text" class="form-control" id="tk-client-id" aria-describedby="emailHelp" placeholder="Enter email">
+//     </div>
+//     <div class="form-group">
+//       <label for="tk-client-secret">Client Secret : </label>
+//       <input type="text" class="form-control" id="tk-client-secret" placeholder="Password">
+//     </div>
+//     <button type="button" class="btn btn-primary tk-settings-btn">Submit</button>
+//   </form> </div>';
+echo '<h2> Coming Soon with settings!! </h2>';
+
 }
 
 function tk_documentation_html(){
@@ -199,19 +200,19 @@ function tokenly_login_check() {
         if($_GET['error'] == 'yes' ){
             $message = $_GET['message'];
             echo "<script>alert('".$message."');</script>";
-
+            echo "<script>window.location.href = '/';</script>";            
         }else{
             if($_GET['logged_in'] == 'yes' ){
                 $user_email = $_GET['useremail'];
                 $message = $user_email.' you are successfully logged in.';
                 echo "<script>alert('".$message."');</script>";            
+                echo "<script>window.location.href = '/';</script>";            
             }
             if($_GET['user_register'] == 'yes' ){
                 $user_email = $_GET['useremail'];
                 $message = $user_email.' you are registered successfully. please check your email for credentials';
                 echo "<script>alert('".$message."');</script>"; 
-                
-                
+                echo "<script>window.location.href = '/';</script>";            
             }
         }
     }
