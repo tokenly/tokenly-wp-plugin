@@ -3,6 +3,15 @@
 // GET ROOT DIRECTORY OF WEBSITE
 $path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
 include($path.'wp-load.php');
+// echo"<pre>"; print_r($_SERVER['REQUEST_URI']); echo "</pre>";
+// echo"<pre>"; print_r($_SERVER['HTTP_HOST']); echo "</pre>";
+// echo"<pre>"; print_r($_SERVER['SERVER_NAME']); echo "</pre>";
+// echo"<pre>"; print_r($_SERVER['PHP_SELF']); echo "</pre>";
+
+$current_web_url =  "https://";;
+$current_web_url .=  $_SERVER['HTTP_HOST'].'/';
+echo"<pre>"; print_r($current_web_url); echo "</pre>";
+
 
 $current_web_url =  "https://";;
 $current_web_url .=  $_SERVER['HTTP_HOST'].'/tokenly';
@@ -108,7 +117,11 @@ $curl_1 = curl_init();
 
       // echo"<pre>"; prTint_r($user); echo "</pre>";
 
+<<<<<<< HEAD
       $redirect_url = $current_web_url.'/?error=no&user_register=yes&useremail='.$username.'';
+=======
+      $redirect_url = $current_web_url.'/test/?error=no&user_register=yes&useremail='.$username.'';
+>>>>>>> 6d10d43fb7e04617efd1868c4da81a8985565b96
       echo "<script>window.location.href='".$redirect_url."';</script>";
 
     } else {
@@ -122,13 +135,21 @@ $curl_1 = curl_init();
       );
       $user =   wp_signon( $creds, true );
 
+<<<<<<< HEAD
       $redirect_url = $current_web_url.'/?error=no&logged_in=yes&useremail='.$username.'';
+=======
+      $redirect_url = $current_web_url.'/test/?error=no&logged_in=yes&useremail='.$username.'';
+>>>>>>> 6d10d43fb7e04617efd1868c4da81a8985565b96
       echo "<script>window.location.href='".$redirect_url."';</script>";
     }
   }else{
     $url = "https://";
     $url .= $_SERVER['HTTP_HOST'];
+<<<<<<< HEAD
     $redirect_url = $current_web_url.'/?error=yes&message=No, user found with this username '.$username.'';
+=======
+    $redirect_url = $current_web_url.'/test/?error=yes&message=No, user found with this username '.$username.'';
+>>>>>>> 6d10d43fb7e04617efd1868c4da81a8985565b96
     echo "<script>window.location.href='".$redirect_url."';</script>";
   }  
 }
