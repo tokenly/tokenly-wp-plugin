@@ -637,3 +637,13 @@ Stack trace:
 [08-Sep-2021 17:36:33 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/swag2mxr/public_html/tokenly/wp-content/plugins/tokenpass/account/authorize/callback.php:13) in /home/swag2mxr/public_html/tokenly/wp-includes/pluggable.php on line 1003
 [08-Sep-2021 17:36:33 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/swag2mxr/public_html/tokenly/wp-content/plugins/tokenpass/account/authorize/callback.php:13) in /home/swag2mxr/public_html/tokenly/wp-includes/pluggable.php on line 1004
 >>>>>>> 6d10d43fb7e04617efd1868c4da81a8985565b96
+[09-Sep-2021 13:07:26 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
+[09-Sep-2021 13:07:26 UTC] PHP Parse error:  syntax error, unexpected '<<' (T_SL), expecting end of file in /home/swag2mxr/public_html/tokenly/wp-content/plugins/tokenpass/account/authorize/auth.php on line 8
+[09-Sep-2021 13:07:31 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
+[09-Sep-2021 13:07:31 UTC] PHP Parse error:  syntax error, unexpected '<<' (T_SL), expecting end of file in /home/swag2mxr/public_html/tokenly/wp-content/plugins/tokenpass/account/authorize/auth.php on line 8
+[09-Sep-2021 13:07:41 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
+[09-Sep-2021 13:07:41 UTC] PHP Parse error:  syntax error, unexpected '<<' (T_SL), expecting end of file in /home/swag2mxr/public_html/tokenly/wp-content/plugins/tokenpass/account/authorize/auth.php on line 8
+[09-Sep-2021 13:08:24 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
+[09-Sep-2021 13:08:52 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
+[09-Sep-2021 13:09:43 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
+[09-Sep-2021 13:09:44 UTC] PHP Warning:  Version warning: Imagick was compiled against Image Magick version 1650 but version 1654 is loaded. Imagick will run but may behave surprisingly in Unknown on line 0
