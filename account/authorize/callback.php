@@ -4,9 +4,12 @@
 $path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
 include($path.'wp-load.php');
 
+$current_web_url =  "https://";;
+$current_web_url .=  $_SERVER['HTTP_HOST'].'/tokenly';
+
 $client_id = '447856164';
 $client_secret = 'KQ8NNFGIm3t8HteuHktkSRcXX8RP9Ot6IUb8Fu8U';
-$redirect_uri= "https://swag21.com/tokenly/wp-content/plugins/tokenpass/account/authorize/callback.php";
+$redirect_uri= "".$current_web_url."/wp-content/plugins/tokenpass/account/authorize/callback.php";
 $authorization_code = $_GET['code'];
 $user_auth = $_SESSION['state'];
 
@@ -36,7 +39,7 @@ CURLOPT_URL => 'https://tokenpass.tokenly.com/oauth/access-token',
     "code": "'.$authorization_code.'",
     "client_id": "447856164",
     "client_secret": "KQ8NNFGIm3t8HteuHktkSRcXX8RP9Ot6IUb8Fu8U",
-    "redirect_uri": "https://swag21.com/tokenly/wp-content/plugins/tokenpass/account/authorize/callback.php"
+    "redirect_uri": "'.$current_web_url.'/wp-content/plugins/tokenpass/account/authorize/callback.php"
 }',
   CURLOPT_HTTPHEADER => array(
       'Content-Type: application/json'
@@ -103,9 +106,9 @@ $curl_1 = curl_init();
       }
       wp_new_user_notification($user->data->ID, $random_password);
 
-      // echo"<pre>"; print_r($user); echo "</pre>";
+      // echo"<pre>"; prTint_r($user); echo "</pre>";
 
-      $redirect_url = $url.'/tokenly/test/?error=no&user_register=yes&useremail='.$username.'';
+      $redirect_url = $current_web_url.'/?error=no&user_register=yes&useremail='.$username.'';
       echo "<script>window.location.href='".$redirect_url."';</script>";
 
     } else {
@@ -119,13 +122,13 @@ $curl_1 = curl_init();
       );
       $user =   wp_signon( $creds, true );
 
-      $redirect_url = $url.'/tokenly/test/?error=no&logged_in=yes&useremail='.$username.'';
+      $redirect_url = $current_web_url.'/?error=no&logged_in=yes&useremail='.$username.'';
       echo "<script>window.location.href='".$redirect_url."';</script>";
     }
   }else{
     $url = "https://";
     $url .= $_SERVER['HTTP_HOST'];
-    $redirect_url = $url.'/tokenly/test/?error=yes&message=No, user found with this username '.$username.'';
+    $redirect_url = $current_web_url.'/?error=yes&message=No, user found with this username '.$username.'';
     echo "<script>window.location.href='".$redirect_url."';</script>";
   }  
 }
