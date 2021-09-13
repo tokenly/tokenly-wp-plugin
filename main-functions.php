@@ -38,33 +38,7 @@ function tk_get_template_path($template_names, $load = false, $require_once = tr
    return $located;
 }
 
-/* Create Tables for API & Report Generation */
-function create_tokenpass_tables(){
-    global $wpdb;
-    $db_table_name = $wpdb->prefix . 'tk_data';  // table name
-    $charset_collate = $wpdb->get_charset_collate();
 
-    //Check to see if the table exists already, if not, then create it
-    /* 
-    if ($wpdb->get_var("show tables like '$db_table_name'") != $db_table_name) {
-        $sql = "CREATE TABLE $db_table_name (
-                id int(20) NOT NULL auto_increment,
-                name varchar(30) NOT NULL,
-                balance BIGINT(9) NOT NULL,
-                interest_rate float(10) NOT NULL,
-                monthly_charges BIGINT(9) NULL,
-                monthly_payment BIGINT(9) NOT NULL,
-                term INT(9) NOT NULL,
-                report_date DATETIME,
-                UNIQUE KEY id (id)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-    }*/
-}
-
-register_activation_hook(__FILE__, 'create_tokenpass_tables');
 
 /* Embedded Required Scripts */
 function tokenpass_scripts(){
