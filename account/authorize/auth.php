@@ -1,7 +1,7 @@
 <?php 
 session_start();
 define( 'WP_USE_THEMES', false );
-require_once( $_SERVER[ 'DOCUMENT_ROOT' ] . '/tokenly/wp-load.php' ); 
+require_once( $_SERVER[ 'DOCUMENT_ROOT' ] . '/wp-load.php' ); 
 // require($_SERVER[ 'DOCUMENT_ROOT' ] . '/tokenly/wp-config.php');
 
 $tk_settings_options = get_option( 'tk_settings_option_name' ); // Array of All Options
@@ -16,7 +16,7 @@ $state = hash('sha256', $random_num);
 $_SESSION['user_state'] = $state; 
 
 $current_web_url =  "https://";;
-$current_web_url .=  $_SERVER['HTTP_HOST'].'/tokenly';
+$current_web_url .=  $_SERVER['HTTP_HOST'];
 $callback_url = $current_web_url.'/wp-content/plugins/tokenpass/account/authorize/callback.php';
 
 wp_redirect('https://tokenpass.tokenly.com/oauth/authorize?client_id='.$client_id_0.'&redirect_uri='.$callback_url.'&scope=user,tca&response_type=code&state='.$state.'');
