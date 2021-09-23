@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 define( 'WP_USE_THEMES', false );
 require_once( $_SERVER[ 'DOCUMENT_ROOT' ] . '/wp-load.php' ); 
 $tk_settings_options = get_option( 'tk_settings_option_name' ); // Array of All Options
@@ -46,8 +46,8 @@ curl_setopt_array($curl, array(
   CURLOPT_POSTFIELDS =>'{
     "grant_type": "authorization_code",
     "code": "'.$authorization_code.'",
-    "client_id": "1865085475",
-    "client_secret": "Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI",
+    "client_id": "'.$client_id.'",
+    "client_secret": "'.$client_secret.'",
     "redirect_uri": "'.$current_web_url.'/wp-content/plugins/tokenly-wp-plugin-main/account/authorize/callback.php"
 }',
   CURLOPT_HTTPHEADER => array(
