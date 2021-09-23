@@ -293,14 +293,14 @@ class tokenpassSettings {
 	public function client_id_0_callback() {
 		printf(
 			'<input class="regular-text" type="text" name="tk_settings_option_name[client_id_0]" id="client_id_0" value="%s">',
-			isset( $this->tk_settings_options['client_id_0'] ) ? esc_attr( $this->tk_settings_options['client_id_0']) : '1865085475'
+			isset( $this->tk_settings_options['client_id_0'] ) ? esc_attr( $this->tk_settings_options['client_id_0']) : ''
 		);
 	}
 
 	public function client_secret_1_callback() {
 		printf(
 			'<input class="regular-text" type="text" name="tk_settings_option_name[client_secret_1]" id="client_secret_1" value="%s">',
-			isset( $this->tk_settings_options['client_secret_1'] ) ? esc_attr( $this->tk_settings_options['client_secret_1']) : 'Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI'
+			isset( $this->tk_settings_options['client_secret_1'] ) ? esc_attr( $this->tk_settings_options['client_secret_1']) : ''
 		);
 	}
 
@@ -312,9 +312,9 @@ if ( is_admin() )
 
 /*set default values start*/
 if(get_option( 'client_id_0' ) === false){
-	update_option( 'client_id_0', '1865085475' );
+	update_option( 'client_id_0', '' );
 }if(get_option( 'client_secret_1' ) === false){
-	update_option( 'client_secret_1', 'Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI' );
+	update_option( 'client_secret_1', '' );
 }
 /*set default values end*/
 
