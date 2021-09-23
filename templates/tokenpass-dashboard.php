@@ -31,10 +31,17 @@ if(is_user_logged_in()){
     $result = json_decode($response);
     // echo"<pre>"; print_r($result); echo "</pre>";
     // echo"<pre> response => "; print_r($response); echo "</pre>";
-    $tokens_asset = $result->asset;
-    $tokens_name = $result->name;
-    $tokens_balance = $result->balance;
-    $tokens_balanceSat = $result->balanceSat;
+	$tokens_asset = null;
+	$tokens_name = null;
+	$tokens_balance = null;
+	$tokens_balanceSat = null;
+	
+	if($result){
+		$tokens_asset = $result->asset;
+		$tokens_name = $result->name;
+		$tokens_balance = $result->balance;
+		$tokens_balanceSat = $result->balanceSat;
+	}
 
     // echo"<pre> api response - "; print_r($response); echo "</pre>";
     // echo"<pre> api results - "; print_r($result); echo "</pre>";
@@ -56,7 +63,7 @@ if(is_user_logged_in()){
         CURLOPT_CUSTOMREQUEST => 'GET',
       ));
 
-    $response = curl_exec($curl_1);
+    $response_1 = curl_exec($curl_1);
     $result_1 = json_decode($response_1);
     
     // echo"private api response - <br>";
@@ -83,14 +90,10 @@ if(is_user_logged_in()){
 }
 ?>
 
-<h2> Welcome to Dashboard </h2>
-<div>
-    Hi,<span> <?php echo $user_data->user_login; ?>
 
-</div>
 
 <div>
-
+<h1>Token Inventory</h1>
 <table class="table">
   <thead>
     <tr>
