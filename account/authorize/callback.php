@@ -3,8 +3,8 @@
 define( 'WP_USE_THEMES', false );
 require_once( $_SERVER[ 'DOCUMENT_ROOT' ] . '/wp-load.php' ); 
 $tk_settings_options = get_option( 'tk_settings_option_name' ); // Array of All Options
-$client_id_0 = ($tk_settings_options['client_id_0']) ? $tk_settings_options['client_id_0'] : '1865085475'; // Client ID
-$client_secret_1 = ($tk_settings_options['client_secret_1']) ? $tk_settings_options['client_secret_1'] : 'Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI'; // Client Secret
+$client_id_0 = ($tk_settings_options['client_id_0']) ? $tk_settings_options['client_id_0'] : ''; // Client ID
+$client_secret_1 = ($tk_settings_options['client_secret_1']) ? $tk_settings_options['client_secret_1'] : ''; // Client Secret
 
 
 
@@ -18,7 +18,7 @@ $current_web_url .=  $_SERVER['HTTP_HOST'];
 
 $client_id = $client_id_0;
 $client_secret = $client_secret_1;
-$redirect_uri= $current_web_url."/wp-content/plugins/tokenpass/account/authorize/callback.php";
+$redirect_uri= $current_web_url."/wp-content/plugins/tokenly-wp-plugin-main/account/authorize/callback.php";
 $authorization_code = $_GET['code'];
 $user_auth = $_SESSION['state'];
 
@@ -48,7 +48,7 @@ curl_setopt_array($curl, array(
     "code": "'.$authorization_code.'",
     "client_id": "1865085475",
     "client_secret": "Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI",
-    "redirect_uri": "'.$current_web_url.'/wp-content/plugins/tokenpass/account/authorize/callback.php"
+    "redirect_uri": "'.$current_web_url.'/wp-content/plugins/tokenly-wp-plugin-main/account/authorize/callback.php"
 }',
   CURLOPT_HTTPHEADER => array(
       'Content-Type: application/json'
