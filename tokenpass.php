@@ -31,31 +31,10 @@ function create_tokenpass_tables(){
         'post_author'   => 1,
         'post_type'     => 'page',
         );
-    
-        // Insert the post into the database
-        $my_post_id = wp_insert_post( $my_post , true);
 
-    $db_table_name = $wpdb->prefix . 'tk_data';  // table name
-    $charset_collate = $wpdb->get_charset_collate();
+	// Insert the post into the database
+	$my_post_id = wp_insert_post( $my_post , true);
 
-    //Check to see if the table exists already, if not, then create it
-    /* 
-    if ($wpdb->get_var("show tables like '$db_table_name'") != $db_table_name) {
-        $sql = "CREATE TABLE $db_table_name (
-                id int(20) NOT NULL auto_increment,
-                name varchar(30) NOT NULL,
-                balance BIGINT(9) NOT NULL,
-                interest_rate float(10) NOT NULL,
-                monthly_charges BIGINT(9) NULL,
-                monthly_payment BIGINT(9) NOT NULL,
-                term INT(9) NOT NULL,
-                report_date DATETIME,
-                UNIQUE KEY id (id)
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-    }*/
 }
 
 register_activation_hook(__FILE__, 'create_tokenpass_tables');
