@@ -7,8 +7,7 @@
  * Version: 0.2
  * Author: Nick Arora
  * Author URI: https://tokenly.com/
- **/
-
+**/
 
 $path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
 include($path.'wp-load.php');
@@ -60,3 +59,12 @@ function create_tokenpass_tables(){
 }
 
 register_activation_hook(__FILE__, 'create_tokenpass_tables');
+
+add_filter( 'page_template', 'wpa3396_page_template_tokenly' );
+function wpa3396_page_template_tokenly( $page_template )
+{
+    if ( is_page( 'tokenpass-dashboard' ) ) {
+        $page_template = dirname( __FILE__ ) . '/templates/tokenpass-dashboard.php';
+    }
+    return $page_template;
+}

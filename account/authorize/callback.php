@@ -1,32 +1,41 @@
-<?php 
+<?php
+
+define( 'WP_USE_THEMES', false );
+require_once( $_SERVER[ 'DOCUMENT_ROOT' ] . '/wp-load.php' ); 
+$tk_settings_options = get_option( 'tk_settings_option_name' ); // Array of All Options
+$client_id_0 = ($tk_settings_options['client_id_0']) ? $tk_settings_options['client_id_0'] : '1865085475'; // Client ID
+$client_secret_1 = ($tk_settings_options['client_secret_1']) ? $tk_settings_options['client_secret_1'] : 'Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI'; // Client Secret
+
+
 
 // GET ROOT DIRECTORY OF WEBSITE
+
 $path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
 include($path.'wp-load.php');
 
 $current_web_url =  "https://";;
-$current_web_url .=  $_SERVER['HTTP_HOST'].'/';
+$current_web_url .=  $_SERVER['HTTP_HOST'].'/tokenly';
 
-$client_id = '447856164';
-$client_secret = 'KQ8NNFGIm3t8HteuHktkSRcXX8RP9Ot6IUb8Fu8U';
-$redirect_uri= "".$current_web_url."/wp-content/plugins/tokenpass/account/authorize/callback.php";
+$client_id = $client_id_0;
+$client_secret = $client_secret_1;
+$redirect_uri= $current_web_url."/wp-content/plugins/tokenpass/account/authorize/callback.php";
 $authorization_code = $_GET['code'];
 $user_auth = $_SESSION['state'];
 
-$data = array(
-    'client_id' => $client_id,
-    'client_secret' => $client_secret,
-    'redirect_uri' => $redirect_uri,
-    'code' => $authorization_code,
-    'state'=> $user_auth
- );
+// $data = array(
+//     'client_id' => $client_id,
+//     'client_secret' => $client_secret,
+//     'redirect_uri' => $redirect_uri,
+//     'code' => $authorization_code,
+//     'state'=> $user_auth
+//  );
 
 if(isset($authorization_code)){
 
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-CURLOPT_URL => 'https://tokenpass.tokenly.com/oauth/access-token',
+  CURLOPT_URL => 'https://tokenpass.tokenly.com/oauth/access-token',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -37,8 +46,8 @@ CURLOPT_URL => 'https://tokenpass.tokenly.com/oauth/access-token',
   CURLOPT_POSTFIELDS =>'{
     "grant_type": "authorization_code",
     "code": "'.$authorization_code.'",
-    "client_id": "447856164",
-    "client_secret": "KQ8NNFGIm3t8HteuHktkSRcXX8RP9Ot6IUb8Fu8U",
+    "client_id": "1865085475",
+    "client_secret": "Ke3LJaXn24mdRScl5AsHP9CxmZoxykf3nm5GgZsI",
     "redirect_uri": "'.$current_web_url.'/wp-content/plugins/tokenpass/account/authorize/callback.php"
 }',
   CURLOPT_HTTPHEADER => array(
@@ -50,6 +59,8 @@ $response = curl_exec($curl);
 
 
 $result = json_decode($response);
+$access_token = $result->access_token;
+
 
 curl_close($curl);
 $curl_1 = curl_init();
@@ -111,17 +122,25 @@ $curl_1 = curl_init();
       echo "<script>window.location.href='".$redirect_url."';</script>";
 
     } else {
-      global $wp;
+      global $wpdb;
       $user_pass = get_user_meta( $user_id, 'usr_pass', true );
-  
       $creds = array(
         'user_login'    => $user_email,
         'user_password' => $user_pass,
         'remember'      => true
       );
-      $user =   wp_signon( $creds, true );
+      $user = wp_signon( $creds, true );
 
-      $redirect_url = $current_web_url.'/?error=no&logged_in=yes&useremail='.$username.'';
+      if ( is_wp_error( $user ) ) {
+        $signin_message =  $user->get_error_message();
+        $redirect_url = $current_web_url.'/?error=yes&logged_in=no&useremail='.$username.'&message='.$signin_message.'';
+      }else{
+        add_user_meta( $user->data->ID, 'access-token', $access_token);
+
+        $signin_message =  'logged in';
+        $redirect_url = $current_web_url.'/?error=no&logged_in=yes&useremail='.$username.'&message='.$signin_message.'';
+      }
+
       echo "<script>window.location.href='".$redirect_url."';</script>";
     }
   }else{
@@ -132,4 +151,5 @@ $curl_1 = curl_init();
   }  
 }
 
+get_footer();
 ?>

@@ -66,7 +66,7 @@ jQuery(document).ready(function(){
     //         return false;
     //     }else{
     //         jQuery.ajax({
-    //             url: '/tokenly/wp-admin/admin-ajax.php',
+    //             url: '/wp-admin/admin-ajax.php',
     //             type: 'POST',
     //             data: { 
     //                 action:'get_calc_form',
@@ -95,7 +95,7 @@ jQuery(document).ready(function(){
         }, 2500);
 
         jQuery.ajax({
-            url: '/centsai/wp-admin/admin-ajax.php',
+            url: '/wp-admin/admin-ajax.php',
             type: 'POST',
             data: { 
                 action:'fetch_template',
