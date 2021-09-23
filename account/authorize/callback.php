@@ -20,7 +20,11 @@ $client_id = $client_id_0;
 $client_secret = $client_secret_1;
 $redirect_uri= $current_web_url."/wp-content/plugins/tokenly-wp-plugin-main/account/authorize/callback.php";
 $authorization_code = $_GET['code'];
-$user_auth = $_SESSION['state'];
+
+$user_auth = null;
+if(isset($_SESSION['state'])){
+	$user_auth = $_SESSION['state'];
+}
 
 // $data = array(
 //     'client_id' => $client_id,
