@@ -59,6 +59,7 @@ function tokenpass_scripts(){
 }
 add_action('wp_head', 'tokenpass_scripts');
 
+
 /* Delete tables on plugin delete */
 register_uninstall_hook( __FILE__, 'my_plugin_remove_database_tk' );
 function my_plugin_remove_database_tk() {
@@ -71,10 +72,7 @@ function my_plugin_remove_database_tk() {
 
 /* Create shortcode for calculator */
 function tokenpass_shortcode(){
-    // Things that you want to do. 
     load_template_part_tk('templates','login-btn');
-    // Output needs to be return
-    // return $calc_html;
 }
 add_shortcode('tokenpass_login', 'tokenpass_shortcode');
 
@@ -94,53 +92,7 @@ function fetch_template_tk(){
 add_action('wp_ajax_nopriv_fetch_template', 'fetch_template_tk');
 add_action('wp_ajax_fetch_template', 'fetch_template_tk');
 
-/**
- * Register a custom menu page.
- */
-// function register_tokenpass_menu_page(){
-    // add_menu_page(
-    //     __('Tokenpass','menu-test'), 
-    //     __('Tokenpass','menu-test'), 
-    //     'manage_options', 
-    //     'manage_tokenpass', 
-    //     'tokenpass_menu_page',
-    //     plugins_url( 'tokenpass/assets/images/tokenly-icon.png' ),
-    //     6
-    // );
-    // add_submenu_page( 
-    //     'manage_tokenpass', 
-    //     'settings', 
-    //     'settings', 
-    //     1, //$capability, 
-    //     'tokenpass-settings',
-    //     'manage_tokenpass' );
-    // add_menu_page('Tokenpass', 'Tokenpass', 'manage_options', 'manage_tokenpass','tokenpass_menu_page',plugins_url( 'tokenpass/assets/images/tokenly-icon.png' ),6);
-    // add_submenu_page( 'manage_tokenpass', 'Tokenpass settings', 'Settings', 'manage_options', 'manage_tokenpass');
-    // add_submenu_page( 'manage_tokenpass', 'Tokenpass Documentation', 'Documentation', 'manage_options', 'tk_documentation','tk_documentation_html');
-
-// }
-// add_action( 'admin_menu', 'register_tokenpass_menu_page' );
  
-/**
- * Display a custom menu page
- */
-function tokenpass_menu_page(){
-    // esc_html_e( 'Admin Page Test', 'textdomain' );  
-    // echo '<div class="container">
-    // <h2>Tokenpass Settings </h2>
-    // <form>
-    // <div class="form-group">
-    //   <label for="tk-client-id">Client ID : </label>
-    //   <input type="text" class="form-control" id="tk-client-id" placeholder="Enter your Client ID">
-    // </div>
-    // <div class="form-group">
-    //   <label for="tk-client-secret">Client Secret : </label>
-    //   <input type="text" class="form-control" id="tk-client-secret" placeholder="Enter your Client Secret">
-    // </div>
-    // <button type="button" class="btn btn-primary tk-settings-btn">Submit</button>
-    //   </form> </div>';
-}
-
 function tk_documentation_html(){
     echo '<h2> Coming Soon !! </h2>';
 }
@@ -151,24 +103,21 @@ function my_admin_style_tk() {
 add_action( 'admin_enqueue_scripts', 'my_admin_style_tk');
 
 add_action('init','tokenly_login_check');
-function tokenly_login_check() { 
+function tokenly_login_check() {
 
     if(isset($_GET['error'])){
         if($_GET['error'] == 'yes' ){
             $message = $_GET['message'];
-            echo "<script>alert('".$message."');</script>";
             echo "<script>window.location.href = '/tokenly';</script>";            
         }else{
             if($_GET['logged_in'] == 'yes' ){
                 $user_email = $_GET['useremail'];
                 $message = $user_email.' you are successfully logged in.';
-                echo "<script>alert('".$message."');</script>";            
-                echo "<script>window.location.href = '/tokenly/tokenpass-dashboard';</script>";            
+                echo "<script>window.location.href = '/tokenly/wp-admin';</script>";            
             }
             if($_GET['user_register'] == 'yes' ){
                 $user_email = $_GET['useremail'];
                 $message = $user_email.' you are registered successfully. please check your email for credentials';
-                echo "<script>alert('".$message."');</script>"; 
                 echo "<script>window.location.href = '/';</script>";            
             }
         }
@@ -191,7 +140,7 @@ function custom_wp_new_user_notification_email_tk( $wp_new_user_notification_ema
     $message .= sprintf(__('Password: %s'), $user_pass) . "<br>";
     $message .= sprintf( __('If you have any problems, please contact me at %s.'), get_option('admin_email') ) . "<br>";
     $message .= __( 'bye!' );
- 
+
     $wp_new_user_notification_email['subject'] = sprintf( '[%s] Your credentials.', $blogname );
     $wp_new_user_notification_email['headers'] = array('Content-Type: text/html; charset=UTF-8');
     $wp_new_user_notification_email['message'] = $message;
@@ -207,6 +156,7 @@ class tokenpassSettings {
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'tk_settings_add_plugin_page' ) );
+		add_action( 'admin_menu', array( $this, 'tk_settings_add_plugin_page_user' ) );
 		add_action( 'admin_init', array( $this, 'tk_settings_page_init' ) );
 	}
 
@@ -220,17 +170,50 @@ class tokenpassSettings {
 			'dashicons-admin-generic', // icon_url
 			2 // position
 		);
-		// add_submenu_page( 'tk-settings', 'Tokenpass performance', 'Performance', 'manage_options', 'manage_options','oppu_performance_dash_html');
+		// add_submenu_page( 'tk-settings', 'Tokenpass Inventory', 'Inventory', 'tk_manage_options', 'tk_manage_options', array( $this, 'tk_inventory_dash_html' ));
 	}
+
+    public function tk_settings_add_plugin_page_user(){
+        add_menu_page(
+			'Tokenpass Inventory', // page_title
+			'Tokenpass ', // menu_title
+			'tk_manage_options_user', // capability
+			'tk-settings-user', // menu_slug
+			array( $this, 'tk_inventory_dash_html' ), // function
+			'dashicons-admin-generic', // icon_url
+			2 // position
+		);
+		// add_submenu_page( 'tk-settings', 'Tokenpass Inventory', 'Inventory', 'tk_manage_options', 'tk_manage_options', array( $this, 'tk_inventory_dash_html' ));
+    }
 
 	public function tk_settings_create_admin_page() {
 		$this->tk_settings_options = get_option( 'tk_settings_option_name' ); ?>
-
 		<div class="wrap">
-			<h2>Tokenpass Settings</h2>
+			<h2>Tokenpass</h2>
 			<p></p>
 			<?php settings_errors(); ?>
+            <hr>
+            <div class="tk_documentation">
+                <h3>How to Setup</h3>
+                <ul class="tk_steps">
+                    <li>1. Create App on <a href="https://tokenpass.tokenly.com/auth/apps">Tokenpass Developers</a></li>
+                    <li>2. Use below details to create App </a></li>
+                </ul>
+                <?php 
+                    $app_homepage_url =  "https://";;
+                    $app_homepage_url .=  $_SERVER['HTTP_HOST'].'/tokenly';
+                    $client_auth_url = $app_homepage_url.'/wp-content/plugins/tokenpass/account/authorize/callback.php';
+                ?>
+                <div class="tk_app_details">
+                    <h3>Register Client Application</h3>
 
+                    <span> <b>CLIENT NAME: </b> Random Input </span><br>
+                    <span> <b>APP HOMEPAGE URL: </b> <?php echo $app_homepage_url ?> </span><br>
+                    <span> <b>CLIENT AUTHORIZATION REDIRECT URL: </b> <?php echo $client_auth_url ?> </span>
+                </div>
+            </div>
+            <br>
+            <hr>
 			<form method="post" action="options.php">
 				<?php
 					settings_fields( 'tk_settings_option_group' );
@@ -240,6 +223,11 @@ class tokenpassSettings {
 			</form>
 		</div>
 	<?php }
+
+    public function tk_inventory_dash_html() { 
+        // echo "heko";
+        load_template_part_tk('templates','tokenpass-dashboard');
+    }
 
 	public function tk_settings_page_init() {
 		register_setting(
@@ -303,12 +291,9 @@ class tokenpassSettings {
 			isset( $this->tk_settings_options['client_secret_1'] ) ? esc_attr( $this->tk_settings_options['client_secret_1']) : ''
 		);
 	}
-
-
-
 }
 if ( is_admin() )
-	$oppu_settings = new tokenpassSettings();
+	$tk_settings_options = new tokenpassSettings();
 
 /*set default values start*/
 if(get_option( 'client_id_0' ) === false){

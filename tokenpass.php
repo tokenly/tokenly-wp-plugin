@@ -4,7 +4,7 @@
  * Plugin Name: Tokenpass OAuth 2.0
  * Plugin URI: https://www.tokenly.com/
  * Description: Tokenpass OAuth 2.0 integration plugin.
- * Version: 0.2
+ * Version: 0.3
  * Author: Nick Arora
  * Author URI: https://tokenly.com/
 **/
@@ -13,15 +13,13 @@ $path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
 include($path.'wp-load.php');
 
 include( plugin_dir_path( __FILE__ ) . '/main-functions.php');
-// include( plugin_dir_path( __FILE__ ) . '/account/authorize/auth.php');
-// include( plugin_dir_path( __FILE__ ) . '/account/authorize/callback.php');
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
 /* Create Tables for API & Report Generation */
-function create_tokenpass_tables(){
+function tk_activation_function(){
     global $wpdb;
     // Create page object
     $my_post = array(
@@ -35,9 +33,17 @@ function create_tokenpass_tables(){
 	// Insert the post into the database
 	$my_post_id = wp_insert_post( $my_post , true);
 
+    add_role( 
+        'tk_member', // System name of the role.
+        'Tokenly Member', // Display name of the role.
+        array( 
+            'read' => true, 
+            'tk_manage_options_user' => true
+        ) 
+        );
 }
 
-register_activation_hook(__FILE__, 'create_tokenpass_tables');
+register_activation_hook(__FILE__, 'tk_activation_function');
 
 add_filter( 'page_template', 'wpa3396_page_template_tokenly' );
 function wpa3396_page_template_tokenly( $page_template )
