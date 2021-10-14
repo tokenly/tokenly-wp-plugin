@@ -1,12 +1,12 @@
 <?php
 
-namespace Tokenly\Wp;
+namespace Tokenly\Wp\Services;
 
 /**
  * Handles main admin logic
  */
 
-use Tokenly\Wp\Admin\SettingsService;
+use Tokenly\Wp\Services\Admin\SettingsService;
 
 class AdminService {
 	public $settings_service;

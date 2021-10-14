@@ -20,20 +20,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
-use Tokenly\Wp\AdminService;
+use Tokenly\Wp\Services\AdminService;
+use Tokenly\Wp\Services\FrontendService;
 use Tokenly\Wp\Helper;
+use Tokenly\Wp\Router;
+use Tokenly\Wp\ShortcodeManager;
 use Tokenly\TokenpassClient\TokenpassAPI;
 
 class Main {
-	public $adminService;
+	public $admin_service;
+	public $frontend_service;
+	public $router;
+	public $shortcode_manager;
 
 	public function __construct() {
+		$this->route_manager = new Router();
+		$this->shortcode_manager = new ShortcodeManager();
 		if ( is_admin() ) {
-			$this->adminService = new AdminService();
+			$this->admin_service = new AdminService();
+		} else {
+			$this->frontend_service = new FrontendService();
 		}
 		register_activation_hook( __FILE__, array( self::class, 'on_activation' ) );
 		register_uninstall_hook( __FILE__, array( self::class, 'on_uninstall' ) );
-		add_filter( 'page_template', array( $this, 'wpa3396_page_template_tokenly' ) );
 
 		$client_id = '1984026217';
 		$client_secret = 'KuvCYMsiBhZ9oGBP46yFrGuYQesuQK60BvcGroFQ';
@@ -47,24 +56,10 @@ class Main {
 		//error_log(print_r($api, true));
 	}
 
-	/* Create Tables for API & Report Generation */
 	public static function on_activation() {
-		global $wpdb;
-		// Create page object
-		$my_post = array(
-			'post_title'   => wp_strip_all_tags( 'Tokenpass Dashboard' ),
-			'post_content' => '',
-			'post_status'  => 'publish',
-			'post_author'  => 1,
-			'post_type'    => 'page',
-		);
-
-		// Insert the post into the database
-		$my_post_id = wp_insert_post( $my_post, true );
-
 		add_role(
-			'tk_member', // System name of the role.
-			'Tokenly Member', // Display name of the role.
+			'tk_member',
+			'Tokenly Member',
 			array(
 				'read'                   => true,
 				'tk_manage_options_user' => true,
@@ -72,22 +67,9 @@ class Main {
 		);
 	}
 
-	/* Delete tables on plugin delete */
 	public static function on_uninstall() {
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'tk_data';
-		$sql        = "DROP TABLE IF EXISTS $table_name";
-		$wpdb->query( $sql );
-		delete_option( 'my_plugin_db_version' );
+		//
 	}
-
-	public function wpa3396_page_template_tokenly( $page_template ) {
-		if ( is_page( 'tokenpass-dashboard' ) ) {
-			$page_template = dirname( __FILE__ ) . '/templates/tokenpass-dashboard.php';
-		}
-		return $page_template;
-	}
-
 
 }
 
