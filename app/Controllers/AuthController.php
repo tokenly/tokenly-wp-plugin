@@ -30,6 +30,7 @@ class AuthController {
 			if ( !$url ) {
 				return;
 			}
+			$this->auth_service->delete_state();
 			$this->auth_service->set_state( $state );
 			wp_redirect( $url );
 			exit;
@@ -43,5 +44,6 @@ class AuthController {
 			return;
 		}
 		$result = $this->auth_service->authorize_callback( $state, $code );
+		$this->auth_service->delete_state();
 	}
 }
