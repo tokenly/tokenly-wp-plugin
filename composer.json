@@ -1,11 +1,5 @@
 {
-	"name": "encore-dev/tokenly-wp-plugin",
-	"authors": [
-		{
-			"name": "encore-by-dev",
-			"email": "dev@encore.by"
-		}
-	],
+	"name": "tokenly/tokenly-wp-plugin",
 	"require": {
 		"phpunit/phpunit": "^7.0",
 		"tokenly/hmac-auth": "1.0-dev",
