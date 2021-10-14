@@ -24,5 +24,7 @@ Use the shortcode [tokenpass_login] on a page to display the Login button
 * ```test-fix.sh``` is used to fix styling issues automatically
 * ```test-local-install.sh``` is used to prepare the database for testing, is expecting a running WordPress instance via [Local by Flywheel](https://localwp.com/)
 
+[Tokenpass Client](https://github.com/tokenly/tokenpass-client) library was merged with the codebase. It and its dependencies can be found in the ```libs``` directory.
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
