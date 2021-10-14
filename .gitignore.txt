@@ -1,3 +1,0 @@
-.git
-.gitignore
-account/authorize/error_log

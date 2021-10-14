@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 define( 'WP_USE_THEMES', false );
 require_once( $_SERVER[ 'DOCUMENT_ROOT' ] . '/wp-load.php' ); 

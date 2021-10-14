@@ -1,0 +1,40 @@
+{
+	"name": "encore-dev/tokenly-wp-plugin",
+	"authors": [
+		{
+			"name": "encore-by-dev",
+			"email": "dev@encore.by"
+		}
+	],
+	"require": {
+		"phpunit/phpunit": "^7.0",
+		"tokenly/hmac-auth": "1.0-dev",
+		"tokenly/api-client": "1.0-dev",
+		"tokenly/tokenpass-client": "1.0-dev"
+	},
+	"autoload": {
+		"psr-4": {
+			"Tokenly\\Wp\\": "app/"
+		}
+	},
+	"repositories": [
+		{
+			"type": "path",
+			"url": "libs/tokenly/hmac-auth"
+		},
+		{
+			"type": "path",
+			"url": "libs/tokenly/api-client"
+		},
+		{
+			"type": "path",
+			"url": "libs/tokenly/tokenpass-client"
+		}
+	],
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.6",
+		"wp-coding-standards/wpcs": "^2.3",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7"
+	}
+}
