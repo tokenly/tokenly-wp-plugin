@@ -12,14 +12,18 @@ class AdminService {
 	public $settings_service;
 
 	public function __construct() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		$this->settings_service = new SettingsService();
+		$this->settings_service->init();
 		if ( get_option( 'client_id_0' ) === false ) {
 			update_option( 'client_id_0', '' );
 		}
 		if ( get_option( 'client_secret_1' ) === false ) {
 			update_option( 'client_secret_1', '' );
 		}
+	}
+
+	public function init() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	public function enqueue_scripts() {

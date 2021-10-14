@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Implements settings pages for admin
+ * Implements settings page for admin
  */
 
 namespace Tokenly\Wp\Services\Admin;
@@ -10,10 +10,15 @@ use Tokenly\Wp\Router;
 
 class SettingsService {
 	public $settings;
-	public static $page_slug = 'tokenpass-settings';
-	public static $settings_group = 'tokenpass_settings_group';
+	public $page_slug = 'tokenpass-settings';
+	public $settings_group = 'tokenpass_settings_group';
+	public $router;
 
 	public function __construct() {
+		$this->router = new Router();
+	}
+
+	public function init() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
@@ -23,14 +28,14 @@ class SettingsService {
 			__( 'Tokenpass Settings', 'tokenpass' ),
 			__( 'Tokenpass', 'tokenpass' ),
 			'manage_options',
-			self::$page_slug,
+			$this->page_slug,
 			array( $this, 'render_settings_page' ),
 		);
 	}
 
 	public function register_settings() {
 		register_setting(
-			self::$settings_group,
+			$this->settings_group,
 			'tokenpass_settings',
 			array( $this, 'sanitize_settings' )
 		);
@@ -38,20 +43,20 @@ class SettingsService {
 			'tokenpass_settings_section',
 			'Settings',
 			array( $this, 'render_section_info' ),
-			self::$page_slug
+			$this->page_slug
 		);
 		add_settings_field(
 			'client_id',
 			'Client Id',
 			array( $this, 'render_client_id_field' ),
-			self::$page_slug,
+			$this->page_slug,
 			'tokenpass_settings_section'
 		);
 		add_settings_field(
 			'client_secret',
 			'Client Secret',
 			array( $this, 'render_client_secret_field' ),
-			self::$page_slug,
+			$this->page_slug,
 			'tokenpass_settings_section'
 		);
 	}
@@ -78,7 +83,7 @@ class SettingsService {
 	public function render_section_info() {
 		$app_homepage_url = 'https://';
 		$app_homepage_url .= $_SERVER['HTTP_HOST'] . '/tokenly';
-		$client_auth_url = Router::get_route_url( 'authorize-callback' );
+		$client_auth_url = $this->router->get_route_url( 'authorize-callback' );
 		echo "
 			<div class='tk_documentation'>
 				<h3>How to Setup</h3>
@@ -113,8 +118,8 @@ class SettingsService {
 
 	public function render_fields() {
 		ob_start();
-			settings_fields( self::$settings_group );
-			do_settings_sections( self::$page_slug );
+			settings_fields( $this->settings_group );
+			do_settings_sections( $this->page_slug );
 			submit_button();
 		return ob_get_clean();
 	}

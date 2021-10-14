@@ -25,7 +25,6 @@ use Tokenly\Wp\Services\FrontendService;
 use Tokenly\Wp\Helper;
 use Tokenly\Wp\Router;
 use Tokenly\Wp\ShortcodeManager;
-use Tokenly\TokenpassClient\TokenpassAPI;
 
 class Main {
 	public $admin_service;
@@ -34,26 +33,19 @@ class Main {
 	public $shortcode_manager;
 
 	public function __construct() {
-		$this->route_manager = new Router();
+		$this->router = new Router();
+		$this->router->init();
 		$this->shortcode_manager = new ShortcodeManager();
+		$this->shortcode_manager->init();
 		if ( is_admin() ) {
 			$this->admin_service = new AdminService();
+			$this->admin_service->init();
 		} else {
 			$this->frontend_service = new FrontendService();
+			$this->frontend_service->init();
 		}
 		register_activation_hook( __FILE__, array( self::class, 'on_activation' ) );
 		register_uninstall_hook( __FILE__, array( self::class, 'on_uninstall' ) );
-
-		$client_id = '1984026217';
-		$client_secret = 'KuvCYMsiBhZ9oGBP46yFrGuYQesuQK60BvcGroFQ';
-		$privileged_client_id = '1984026217';
-		$privileged_client_secret = 'KuvCYMsiBhZ9oGBP46yFrGuYQesuQK60BvcGroFQ';
-		$tokenpass_url = 'https://tokenpass.tokenly.com';
-		$redirect_uri = 'https://tokenly.local/tokenly/wp-content/plugins/tokenpass/account/authorize/callback.php';
-		$oauth_client_id = null;
-		$oauth_client_secret = null;
-		$api = new TokenpassAPI( $client_id, $client_secret, $privileged_client_id, $privileged_client_secret, $tokenpass_url, $redirect_uri, $oauth_client_id, $oauth_client_secret );
-		//error_log(print_r($api, true));
 	}
 
 	public static function on_activation() {

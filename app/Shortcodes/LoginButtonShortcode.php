@@ -2,18 +2,19 @@
 
 namespace Tokenly\Wp\Shortcodes;
 
-use Tokenly\Wp\Services\TokenlyService;
+use Tokenly\Wp\Router;
 
 class LoginButtonShortcode {
 
-	public static $name = 'tokenpass_login';
+	public $name = 'tokenpass_login';
+	public $router;
 
 	public function __construct() {
-		//
+		$this->router = new Router;
 	}
 
 	public function render() {
-		$url = TokenlyService::get_tokenpass_login_url();
+		$url = $this->router->get_route_url( 'authorize' );
 		return "
 			<div class='tokenpass-login-container'>
 				<a href='{$url}' class='button tokenpass-login'>Login with Tokenpass</a>

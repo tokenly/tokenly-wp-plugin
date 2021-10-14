@@ -6,6 +6,10 @@ use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 
 class ShortcodeManager {
 	public function __construct() {
+		//
+	}
+
+	public function init() {
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 	}
 	
@@ -18,8 +22,8 @@ class ShortcodeManager {
 	public function register_shortcodes() {
 		$shortcodes = $this->get_shortcodes();
 		foreach ( $shortcodes as $shortcode ) {
-			$name = $shortcode::$name;
-			add_shortcode( $name, [$shortcode, 'shortcode_callback'] );
+			$shortcode = new $shortcode();
+			add_shortcode( $shortcode->name, array( $shortcode, 'shortcode_callback' ) );
 		}
 	}
 }

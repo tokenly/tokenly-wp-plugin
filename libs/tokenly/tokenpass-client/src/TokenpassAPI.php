@@ -40,11 +40,11 @@ class TokenpassAPI
 
     public function checkTokenAccess($username, $rules, $oauth_token)
     {
-        try{
+        try {
             $params = $this->normalizeGetParameters($rules);
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/check/'.$username, $params, $oauth_token);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -63,11 +63,11 @@ class TokenpassAPI
      */
     public function checkTokenAccessByEmail($email, $rules)
     {
-        try{
+        try {
             $params = $this->normalizeGetParameters($rules);
             $call = $this->fetchFromTokenpassAPIWithPrivilegedAuth('GET', 'tca/checkemail/'.$email, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -79,12 +79,12 @@ class TokenpassAPI
 
     public function getPublicAddresses($username, $refresh=false)
     {
-        try{
+        try {
             $get_parameters = [];
             if ($refresh) { $get_parameters['refresh'] = '1'; }
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/addresses/'.$username, $get_parameters);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -96,12 +96,12 @@ class TokenpassAPI
 
     public function getAddressesForAuthenticatedUser($oauth_token, $refresh = false)
     {
-        try{
+        try {
             $params = [];
             if ($refresh) { $params['refresh'] = '1'; }
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/addresses', $params, $oauth_token);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -123,10 +123,10 @@ class TokenpassAPI
     public function checkAddressTokenAccess($address, $rules = array())
     {
         $body = $rules;
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/check-address/'.$address, $body);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -143,10 +143,10 @@ class TokenpassAPI
         $params['user_id'] = $user_id;
         $params['token'] = $token;
         $params['current_password'] = $password;
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('PATCH', 'update', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
         if(!isset($call['result'])){
@@ -166,10 +166,10 @@ class TokenpassAPI
         $params['username'] = $username;
         $params['password'] = $password;
         $params['email'] = $email;
-        try{
+        try {
             $result = $this->fetchFromTokenpassAPI('POST', 'register', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
         if(isset($result['error']) AND trim($result['error']) != ''){
@@ -185,10 +185,10 @@ class TokenpassAPI
         $params['username']  = $username;
         $params['password']  = $password;
 
-        try{
+        try {
             $result = $this->fetchFromTokenpassAPI('POST', 'login', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
         if (isset($result['error']) AND trim($result['error']) != ''){
@@ -215,7 +215,7 @@ class TokenpassAPI
         try {
             $result = $this->fetchFromOAuth('POST', '/oauth/token', $form_data);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
         if (isset($result['error']) AND trim($result['error']) != ''){
@@ -239,10 +239,10 @@ class TokenpassAPI
             'redirect_uri'  => $this->redirect_uri,
         ];
 
-        try{
+        try {
             $result = $this->fetchFromOAuth('POST', 'oauth/access-token', $form_data);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
         if (isset($result['error']) AND trim($result['error']) != ''){
@@ -255,11 +255,11 @@ class TokenpassAPI
     }
     public function getOAuthUserFromAccessToken($access_token)
     {
-        $params = ['client_id' => $this->client_id, 'access_token' => $access_token];
-        try{
+        $form_data = ['client_id' => $this->client_id, 'access_token' => $access_token];
+        try {
             $result = $this->fetchFromOAuth('GET', 'oauth/user', $form_data);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
         if (isset($result['error']) AND trim($result['error']) != ''){
@@ -274,11 +274,11 @@ class TokenpassAPI
 
     public function getPublicAddressDetails($username, $address)
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/addresses/'.$username.'/'.$address, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -290,11 +290,11 @@ class TokenpassAPI
 
     public function getAddressDetailsForAuthenticatedUser($address, $oauth_token)
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/address/'.$address, $params, $oauth_token);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -313,7 +313,7 @@ class TokenpassAPI
 
     public function registerAddress($address, $oauth_token, $label = '', $public = false, $active = true, $type = 'bitcoin')
     {
-        try{
+        try {
             $params = [];
             $params['address'] = $address;
             $params['label'] = $label;
@@ -322,7 +322,7 @@ class TokenpassAPI
             $params['type'] = $type;
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/address', $params, $oauth_token);
         }
-        catch(Exception $e){
+        catch (Exception $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -339,12 +339,12 @@ class TokenpassAPI
             $old_args = func_get_args();
             list($username, $address, $oauth_token, $signature) = $old_args;
         }
-        try{
+        try {
             $params = [];
             $params['signature'] = $signature;
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/address/'.$address, $params, $oauth_token);
         }
-        catch(Exception $e){
+        catch (Exception $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -361,7 +361,7 @@ class TokenpassAPI
         if (substr($old_args[1], 0, 1) == '1' OR substr($old_args[1], 0, 1) == '3') {
             list($username, $address, $oauth_token, $label, $public, $active) = $old_args;
         }
-        try{
+        try {
             $params = [];
             if($label !== null){
                 $params['label'] = $label;
@@ -374,7 +374,7 @@ class TokenpassAPI
             }
             $call = $this->fetchFromTokenpassAPI('PATCH', 'tca/address/'.$address, $params, $oauth_token);
         }
-        catch(Exception $e){
+        catch (Exception $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -391,11 +391,11 @@ class TokenpassAPI
             $old_args = func_get_args();
             list($username, $address, $oauth_token) = $old_args;
         }
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('DELETE', 'tca/address/'.$address, $params, $oauth_token);
         }
-        catch(Exception $e){
+        catch (Exception $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -414,10 +414,10 @@ class TokenpassAPI
             $method = 'POST';
             $address = 'null';
         }
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI($method, 'lookup/address/'.$address, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -429,11 +429,11 @@ class TokenpassAPI
 
     public function lookupAddressByUser($username)
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'lookup/user/'.$username, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -451,7 +451,7 @@ class TokenpassAPI
 		if($chain == 'counterpartyTestnet'){
 			$chain = 'counterparty';
 		}
-        try{
+        try {
             $params = [];
             $params['address'] = $address;
             $params['type'] = $chain;
@@ -465,7 +465,7 @@ class TokenpassAPI
             }
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/register', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             throw new Exception($e->getMessage());
         }
@@ -479,29 +479,14 @@ class TokenpassAPI
         }
         return $call['result'];
     }
-    public function registerProvisionalSourceWithProof($address, $assets = null, $extra_opts = array())
-    {
-		throw new Exception('Address signing with substation not yet implemented');
 
-		/*
-        $proof_message = $this->getProvisionalSourceProofMessage($address);
-        $xchain = app('Tokenly\XChainClient\Client');
-        $proof = false;
-        $proof = $xchain->signMessage($address, $proof_message);
-        if(!$proof OR !isset($proof['result'])){
-            throw new Exception('Failed signing message');
-        }
-        $proof = $proof['result'];
-        return $this->registerProvisionalSource($address, $proof, $assets, $extra_opts);
-        * */
-    }
     public function getProvisionalSourceList()
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/provisional', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -510,13 +495,14 @@ class TokenpassAPI
         }
         return $call['whitelist'];
     }
+
     public function getProvisionalSourceProofSuffix()
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/provisional', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -525,6 +511,7 @@ class TokenpassAPI
         }
         return $call['proof_suffix'];
     }
+
     public function getProvisionalSourceProofMessage($address)
     {
         $suffix = $this->getProvisionalSourceProofSuffix();
@@ -533,12 +520,13 @@ class TokenpassAPI
         }
         return $address.$suffix;
     }
+
     public function deleteProvisionalSource($address)
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('DELETE', 'tca/provisional/'.$address);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -547,9 +535,10 @@ class TokenpassAPI
         }
         return $call['result'];
     }
+	
     public function promiseTransaction($source, $destination, $asset, $quantity, $expiration, $txid = null, $fingerprint = null, $ref = null, $chain = 'bitcoin', $protocol = 'counterparty')
     {
-        try{
+        try {
             $params = [];
             $params['source'] = $source;
             $params['destination'] = $destination;
@@ -567,7 +556,7 @@ class TokenpassAPI
             $params['ref'] = $ref;
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/tx', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -576,13 +565,14 @@ class TokenpassAPI
         }
         return $call['tx'];
     }
+
     public function getPromisedTransaction($id)
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/provisional/tx/'.$id, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -591,16 +581,17 @@ class TokenpassAPI
         }
         return $call['tx'];
     }
+
     public function getPromisedTransactionList($destination = null)
     {
-        try{
+        try {
             $params = [];
             if ($destination !== null) {
                 $params['destination'] = $destination;
             }
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/provisional/tx', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -609,13 +600,14 @@ class TokenpassAPI
         }
         return $call['list'];
     }
+
     public function getPromisedTransactionListByEmailAddress($email)
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('GET', 'tca/provisional/byemail/'.$email, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -624,13 +616,14 @@ class TokenpassAPI
         }
         return $call['list'];
     }
+
     public function deletePromisedTransaction($id)
     {
-        try{
+        try {
             $params = [];
             $call = $this->fetchFromTokenpassAPI('DELETE', 'tca/provisional/tx/'.$id, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -639,9 +632,10 @@ class TokenpassAPI
         }
         return $call['result'];
     }
+
     public function updatePromisedTransaction($id, $data)
     {
-        try{
+        try {
             $params = [];
             if(isset($data['quantity'])){
                 $params['quantity'] = $data['quantity'];
@@ -666,7 +660,7 @@ class TokenpassAPI
             }
             $call = $this->fetchFromTokenpassAPI('PATCH', 'tca/provisional/tx/'.$id, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -675,6 +669,7 @@ class TokenpassAPI
         }
         return $call['tx'];
     }
+
     public function getCombinedPublicBalances($oauth_token, $refresh = false)
     {
         try {
@@ -687,6 +682,7 @@ class TokenpassAPI
         }
         return $response;
     }
+
     public function getCombinedProtectedBalances($oauth_token, $refresh = false)
     {
         try {
@@ -699,6 +695,7 @@ class TokenpassAPI
         }
         return $response;
     }
+
     public function getChats($oauth_token)
     {
         try {
@@ -722,6 +719,7 @@ class TokenpassAPI
         }
         return true;
     }
+
     // ------------------------------------------------------------------------
     // managed chats
     public function getChat($oauth_token, $chat_uuid)
@@ -735,6 +733,7 @@ class TokenpassAPI
         }
         return $response;
     }
+
     /**
      * create a new chat
      * @param  string $oauth_token [description]
@@ -752,6 +751,7 @@ class TokenpassAPI
         }
         return $response;
     }
+
     /**
      * updates an existing chat
      * @param  string $oauth_token [description]
@@ -770,6 +770,7 @@ class TokenpassAPI
         }
         return $response;
     }
+
     public function getChatPrivileges($oauth_token, $chat_id)
     {
         try {
@@ -781,6 +782,7 @@ class TokenpassAPI
         }
         return $response;
     }
+
     public function checkUserExists($username, $assign_user_hash=null, $strict=false)
     {
         try {
@@ -806,7 +808,6 @@ class TokenpassAPI
 
     /** App Credits API methods **/
     /******************************/
-
     public function newAppCreditGroup($name, $app_whitelist = array())
     {
         try {
@@ -857,10 +858,10 @@ class TokenpassAPI
 
     public function listAppCreditGroups()
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'credits');
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -872,10 +873,10 @@ class TokenpassAPI
 
     public function getAppCreditGroup($groupId)
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'credits/'.$groupId);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -903,10 +904,10 @@ class TokenpassAPI
 
     public function listAppCreditAccounts($groupId)
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'credits/'.$groupId.'/accounts');
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -918,10 +919,10 @@ class TokenpassAPI
 
     public function getAppCreditAccount($groupId, $accountId)
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'credits/'.$groupId.'/accounts/'.$accountId);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -965,12 +966,12 @@ class TokenpassAPI
     public function giveMultipleAppCredit($groupId, $accounts_amounts)
     {
         //$accounts_amounts = array(array('account' => <account_uuid>, 'amount' => 5000, 'source' => <source_account_uuid>|null))
-        try{
+        try {
             $params = array();
             $params['accounts'] = $accounts_amounts;
             $call = $this->fetchFromTokenpassAPI('POST', 'credits/'.$groupId.'/accounts/credit', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -983,12 +984,12 @@ class TokenpassAPI
     public function takeMultipleAppCredit($groupId, $accounts_amounts)
     {
         //$accounts_amounts = array(array('account' => <account_uuid>, 'amount' => 5000, 'destination' => <destination_account_uuid>|null))
-        try{
+        try {
             $params = array();
             $params['accounts'] = $accounts_amounts;
             $call = $this->fetchFromTokenpassAPI('POST', 'credits/'.$groupId.'/accounts/debit', $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -1012,10 +1013,10 @@ class TokenpassAPI
 
     public function getAppCreditGroupHistory($groupId)
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'credits/'.$groupId.'/history');
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -1024,17 +1025,37 @@ class TokenpassAPI
 
     public function getAppCreditAccountHistory($groupId, $account)
     {
-        try{
+        try {
             $call = $this->fetchFromTokenpassAPI('GET', 'credits/'.$groupId.'/accounts/'.$account.'/history');
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
+            self::$errors[] = $e->getMessage();
+            return false;
+        }
+        return $call;
+    }
+    /** END App Credit API Methods **/
+
+    public function getUserByToken($token)
+    {
+		try {
+            $call = $this->fetchFromOAuth('GET', 'oauth/user?access_token=' . $token);
+        }
+		catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
         return $call;
     }
 
-    /** END App Credit API Methods **/
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserByExistingToken($token) {
+        $user = $this->mapUserToObject($this->getUserByToken($token));
+        return $user->setToken($token);
+    }
+
     public function getTokenPerks($token) {
         try {
             $result = $this->fetchFromPublicTokenpassAPI('GET', 'perks/'.$token);
@@ -1045,13 +1066,14 @@ class TokenpassAPI
         }
         return $result;
     }
+
     public function lookupUserByEmail($email)
     {
-        try{
+        try {
             $params = ['client_id' => $this->client_id];
             $call = $this->fetchFromTokenpassAPI('GET', 'lookup/email/'.$email, $params);
         }
-        catch(TokenpassAPIException $e){
+        catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
             return false;
         }
@@ -1116,7 +1138,6 @@ class TokenpassAPI
         return $result;
     }
 
-
     public function call($method, $endpoint, $params = [], $options = [])
     {
       //start client
@@ -1135,7 +1156,7 @@ class TokenpassAPI
       ];
 
       //send the request
-      try{
+      try {
         $response = $client->request($method, $this->tokenpass_url.'/'.ltrim($endpoint, '/'), $data);
         if($response->getStatusCode() != 200){
           throw new Exception('Invalid API endpoint status code');
@@ -1147,7 +1168,7 @@ class TokenpassAPI
           throw new Exception('Invalid JSON response');
         }
       }
-      catch(Exception $e){
+      catch (Exception $e){
         throw new Exception('Invalid response: '.$e->getMessage());
       }
 

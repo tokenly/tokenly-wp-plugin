@@ -6,9 +6,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\InvalidStateException;
-use Tokenly\LaravelEventLog\Facade\EventLog;
 use Tokenly\TokenpassClient\Contracts\TokenpassUserRespositoryContract;
 use Tokenly\TokenpassClient\Events\TokenpassUserCreatedEvent;
 use Tokenly\TokenpassClient\Exception\TokenpassAuthorizationException;
@@ -19,11 +16,11 @@ use Tokenly\TokenpassClient\TokenpassAPI;
  */
 class TokenpassAuthorizer
 {
+	public $tokenpass_api;
 
-    public function __construct(TokenpassAPI $tokenpass_api, TokenpassUserRespositoryContract $user_repository)
+    public function __construct(TokenpassAPI $tokenpass_api)
     {
         $this->tokenpass_api = $tokenpass_api;
-        $this->user_repository = $user_repository;
     }
 
     /**

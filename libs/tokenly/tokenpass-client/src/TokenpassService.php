@@ -1,19 +1,11 @@
 <?php
 
-namespace Tokenly\TokenpassClient\Socialite\Two;
+namespace Tokenly\TokenpassClient;
 
 use Exception;
-use Laravel\Socialite\Two\AbstractProvider;
-use Laravel\Socialite\Two\ProviderInterface;
-use Laravel\Socialite\Two\User;
 use GuzzleHttp\Client;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Laravel\Socialite\Contracts\Provider as ProviderContract;
 
-class TokenpassProvider extends AbstractProvider implements ProviderInterface
+class TokenpassHelper
 {
     /**
      * The scopes being requested.
@@ -27,7 +19,6 @@ class TokenpassProvider extends AbstractProvider implements ProviderInterface
     public function setBaseURL($base_url) {
         $this->base_url = $base_url;
     }
-
 
     /**
      * {@inheritdoc}
@@ -69,8 +60,6 @@ class TokenpassProvider extends AbstractProvider implements ProviderInterface
         return $user->setToken($token);
     }
 
-
-
     /**
      * {@inheritdoc}
      */
@@ -84,7 +73,6 @@ class TokenpassProvider extends AbstractProvider implements ProviderInterface
         ]);
     }
 
-
     /**
      * Get the POST fields for the token request.
      *
@@ -97,7 +85,6 @@ class TokenpassProvider extends AbstractProvider implements ProviderInterface
             parent::getTokenFields($code), 'grant_type', 'authorization_code'
         );
     }
-
 
     /**
      * Get the default options for an HTTP request.

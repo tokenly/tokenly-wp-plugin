@@ -8,6 +8,10 @@ namespace Tokenly\Wp\Services;
 
 class FrontendService {
 	public function __construct() {
+		//
+	}
+
+	public function init() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
