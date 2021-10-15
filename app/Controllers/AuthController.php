@@ -2,7 +2,7 @@
 
 namespace Tokenly\Wp\Controllers;
 
-use Tokenly\Wp\Services\TokenlyService;
+use Tokenly\Wp\Services\TokenpassService;
 use Tokenly\Wp\Services\AuthService;
 
 class AuthController {
@@ -11,10 +11,11 @@ class AuthController {
 
 	public function __construct() {
 		$this->auth_service = new AuthService();
-		$this->tokenly_service = new TokenlyService();
+		$this->tokenly_service = new TokenpassService();
 	}
 
 	public function authorize( $request ) {
+		$this->auth_service->delete_state();
 		$result = $this->tokenly_service->get_tokenpass_login_url();
 		if ( $result ) {
 			$args = $result['args'] ?? null;
@@ -30,7 +31,6 @@ class AuthController {
 			if ( !$url ) {
 				return;
 			}
-			$this->auth_service->delete_state();
 			$this->auth_service->set_state( $state );
 			wp_redirect( $url );
 			exit;
@@ -44,6 +44,7 @@ class AuthController {
 			return;
 		}
 		$result = $this->auth_service->authorize_callback( $state, $code );
-		$this->auth_service->delete_state();
+		wp_redirect( get_site_url() );
+		exit();
 	}
 }

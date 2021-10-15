@@ -6,20 +6,11 @@ namespace Tokenly\Wp\Services;
  * Handles main admin logic
  */
 
-use Tokenly\Wp\Services\Admin\SettingsService;
-
 class AdminService {
 	public $settings_service;
 
 	public function __construct() {
-		$this->settings_service = new SettingsService();
-		$this->settings_service->init();
-		if ( get_option( 'client_id_0' ) === false ) {
-			update_option( 'client_id_0', '' );
-		}
-		if ( get_option( 'client_secret_1' ) === false ) {
-			update_option( 'client_secret_1', '' );
-		}
+		//
 	}
 
 	public function init() {

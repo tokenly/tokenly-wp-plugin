@@ -2,16 +2,15 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\Wp\Services\TokenlyService;
+use Tokenly\Wp\Services\TokenpassService;
 use Tokenly\Wp\Services\UserService;
-use Tokenly\TokenpassClient\TokenpassService;
 
 class AuthService {
 	public $tokenly_service;
 	public $user_service;
 
 	public function __construct() {
-		$this->tokenly_service = new TokenlyService();
+		$this->tokenly_service = new TokenpassService();
 		$this->user_service = new UserService();
 	}
 
@@ -30,44 +29,66 @@ class AuthService {
 		}
 	}
 
+	public function can_social_login( $tokenpass_user ) {
+		$email = $tokenpass_user['email'] ?? null;
+		$email_is_confirmed = $tokenpass_user['email_is_confirmed'] ?? null;
+		if ( !$email || $email_is_confirmed === false ) {
+			return false;	
+		}
+		return true;
+	}
+
+	public function find_existing_user( $tokenpass_user ) {
+		$email = $tokenpass_user['email'] ?? null;
+		if ( $email ) {
+			return false;
+		}
+		$user = get_user_by( 'email', $email );
+		return $user;
+	}
+
+	public function create_user_from_tokenpass_user( $tokenpass_user ) {
+		$username = $tokenpass_user['username'] ?? null;
+		$password = wp_generate_password();
+		$email = $tokenpass_user['email'] ?? null;
+		$user_id = wp_create_user( $username, $password, $email );
+		if ( is_numeric( $user_id ) === false ) {
+			return false;
+		}
+		$user = get_user_by( 'id', $user_id );
+		return $user;
+	}
+
+	public function update_user_uuid( $tokenpass_user, $user ) {
+		$uuid = $tokenpass_user['id'] ?? null;
+		if ( !$uuid ) {
+			return false;
+		}
+		$user_id = $local_user->ID;
+	}
+
 	public function authorize_callback( $state, $code ) {
 		$is_valid = $this->validate_state( $state );
-		error_log($is_valid);
 		if ( $is_valid === false ) {
 			return;
 		}
 		$client = $this->tokenly_service->make_client();
 		$access_token = $client->getOAuthAccessToken( $code );
-		error_log($access_token);
 		$tokenpass_user = $client->getUserByToken( $access_token );
 		if ( $tokenpass_user ) {
-			error_log(print_r($tokenpass_user, true));
-			$username = $tokenpass_user['username'] ?? null;
-			$email = $tokenpass_user['email'] ?? null;
-			$email_is_confirmed = $tokenpass_user['email_is_confirmed'] ?? null;
-			$local_user;
-			if ( !$email || $email_is_confirmed === false ) {
-				return;	
-			}
-			$local_user = get_user_by( 'email', $email );
-			error_log(print_r($local_user, true));
-			if ( !$local_user ) {
-				$password = wp_generate_password();
-				$local_user = wp_create_user( $username, $password, $email );
-				error_log(print_r($local_user, true));
-			}
-			$uuid = $tokenpass_user['id'] ?? null;
-			if ( !$uuid ) {
+			$can_login = $this->can_social_login();
+			if ( $can_login === false ) {
 				return;
 			}
-			$user_id = $local_user->ID;
-			update_user_meta( $user_id, 'tokenly_uuid', $uuid );
-			wp_set_auth_cookie( $user_id );
-		}
-		if ( is_user_logged_in() === true ) {
-			
-		} else {
-			
+			$user = $this->find_existing_user( $tokenpass_user );
+			if ( !$user ) {
+				$user = $this->create_user_from_tokenpass_user( $tokenpass_user );
+			}
+			if ( !$user ) {
+				return;
+			}
+			$this->update_user_uuid( $tokenpass_user, $user );
+			wp_set_auth_cookie( $user->ID );
 		}
 	}
 }

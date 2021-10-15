@@ -1,38 +1,38 @@
 <?php
 
-namespace Tokenly\Wp;
+namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Controllers\AuthController;
 
-class Router {
+class ApiRouter {
 	public $namespace = 'tokenly/v1';
 
 	public function __construct() {
 		//
 	}
 
-	public function init() {
+	public function register() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
 	public function get_routes() {
 		return [
-			'authorize' => [
+			'authorize' => array(
 				'path' => '/authorize',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( new AuthController(), 'authorize' ),
 					'permission_callback' => '__return_true',
 				),
-			],
-			'authorize-callback' => [
+			),
+			'authorize-callback' => array(
 				'path' => '/authorize/callback',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( new AuthController(), 'authorize_callback' ),
 					'permission_callback' => '__return_true',
 				),
-			],
+			),
 		];
 	}
 

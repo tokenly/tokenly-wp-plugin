@@ -1,36 +1,17 @@
 <?php
 
-/**
- * Implements settings page for admin
- */
+namespace Tokenly\Wp\Admin\Tokenpass;
 
-namespace Tokenly\Wp\Services\Admin;
+use Tokenly\Wp\Admin\AdminPage;
+use Tokenly\Wp\Routes\ApiRouter;
 
-use Tokenly\Wp\Router;
-
-class SettingsService {
-	public $settings;
-	public $page_slug = 'tokenpass-settings';
+class TokenpassSettingsPage extends AdminPage {
 	public $settings_group = 'tokenpass_settings_group';
-	public $router;
+	public $api_router;
 
-	public function __construct() {
-		$this->router = new Router();
-	}
-
-	public function init() {
-		add_action( 'admin_menu', array( $this, 'register_page' ) );
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
-	}
-
-	public function register_page() {
-		add_options_page(
-			__( 'Tokenpass Settings', 'tokenpass' ),
-			__( 'Tokenpass', 'tokenpass' ),
-			'manage_options',
-			$this->page_slug,
-			array( $this, 'render_settings_page' ),
-		);
+	public function __construct( $route_args ) {
+		parent::__construct( $route_args );
+		$this->api_router = new ApiRouter();
 	}
 
 	public function register_settings() {
@@ -76,14 +57,14 @@ class SettingsService {
 
 	public function render_settings_errors() {
 		ob_start();
-		settings_errors();
+			settings_errors();
 		return ob_get_clean();
 	}
 
 	public function render_section_info() {
 		$app_homepage_url = 'https://';
 		$app_homepage_url .= $_SERVER['HTTP_HOST'] . '/tokenly';
-		$client_auth_url = $this->router->get_route_url( 'authorize-callback' );
+		$client_auth_url = $this->api_router->get_route_url( 'authorize-callback' );
 		echo "
 			<div class='tk_documentation'>
 				<h3>How to Setup</h3>
@@ -124,7 +105,7 @@ class SettingsService {
 		return ob_get_clean();
 	}
 
-	public function render_settings_page() {
+	public function page_callback() {
 		$this->settings = get_option( 'tokenpass_settings' );
 		$html_errors = $this->render_settings_errors();
 		$html_fields = $this->render_fields();

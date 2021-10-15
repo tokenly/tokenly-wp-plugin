@@ -2,14 +2,14 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\Wp\Router;
+use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\TokenpassClient\TokenpassAPI;
 
-class TokenlyService {
-	public $router;
+class TokenpassService {
+	public $api_router;
 	
 	public function __construct() {
-		$this->router = new Router();
+		$this->api_router = new ApiRouter();
 	}
 
 	public function get_tokenpass_login_url() {
@@ -18,8 +18,8 @@ class TokenlyService {
 		if ( $settings ) {
 			$client_id = $settings['client_id'] ?? null;
 		}
-		$redirect_uri = $this->router->get_route_url( 'authorize-callback' );
-		$state = wp_generate_password();
+		$redirect_uri = $this->api_router->get_route_url( 'authorize-callback' );
+		$state = wp_generate_password( 12, false );
 		$args = array(
 			'client_id'     => $client_id,
 			'redirect_uri'  => $redirect_uri,
@@ -47,7 +47,7 @@ class TokenlyService {
 			$client_secret = $settings['client_secret'] ?? null;
 		}
 		$tokenpass_url = 'https://tokenpass.tokenly.com';
-		$redirect_uri = $this->router->get_route_url( 'authorize-callback' ) ?? null;
+		$redirect_uri = $this->api_router->get_route_url( 'authorize-callback' ) ?? null;
 		return new TokenpassAPI( 
 			$client_id,
 			$client_secret,
