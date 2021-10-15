@@ -22,7 +22,6 @@ require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 use Tokenly\Wp\Services\AdminService;
 use Tokenly\Wp\Services\FrontendService;
-use Tokenly\Wp\Helper;
 use Tokenly\Wp\Routes\AdminRouter;
 use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\Wp\ShortcodeManager;
@@ -53,14 +52,7 @@ class Main {
 	}
 
 	public static function on_activation() {
-		add_role(
-			'tk_member',
-			'Tokenly Member',
-			array(
-				'read'                   => true,
-				'tk_manage_options_user' => true,
-			)
-		);
+		//
 	}
 
 	public static function on_uninstall() {

@@ -14,11 +14,10 @@ class AdminRouter {
 	public function register() {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ) );
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
 	public function get_routes() {
-		return [
+		$routes = array(
 			'tokenpass' => array(
 				'args'    => array(
 					'page_title' => 'Tokenpass',
@@ -32,7 +31,7 @@ class AdminRouter {
 				'subroutes'   => array(
 					'vendor' => array(
 						'args'      => array(
-							'page_title' => 'Vendor',
+							'page_title' => 'Tokenly Vendor',
 							'menu_title' => 'Vendor',
 							'menu_slug'  => 'vendor',
 							'callable'   => TokenpassVendorPage::class,
@@ -41,7 +40,7 @@ class AdminRouter {
 					),
 					'whitelist' => array(
 						'args'      => array(
-							'page_title' => 'Whitelist',
+							'page_title' => 'Gallery Token Whitelist',
 							'menu_title' => 'Whitelist',
 							'menu_slug'  => 'whitelist',
 							'callable'   => TokenpassWhitelistPage::class,
@@ -50,7 +49,7 @@ class AdminRouter {
 					),
 					'connection' => array(
 						'args'      => array(
-							'page_title' => 'Connection',
+							'page_title' => 'Connection Status',
 							'menu_title' => 'Connection',
 							'menu_slug'  => 'connection',
 							'callable'   => TokenpassConnectionPage::class,
@@ -68,34 +67,72 @@ class AdminRouter {
 					),
 				),
 			),
-		];
+		);
+		$routes = $this->prepare_routes( $routes );
+		return $routes;
 	}
 
-	public function get_route_callback( $route_args ) {
-		$callable = $route_args['callable'] ?? null;
+	public function prepare_routes( $routes ) {
+		$routes = array_map( function( $route ) {
+			$args = $route['args'] ?? null;
+			if ( $args ) {
+				$callable = $this->make_route_callback( $route );
+				$args['callable'] = $callable;
+			}
+			$route['args'] = $args;
+			$subroutes = $route['subroutes'] ?? null;
+			if ( $subroutes ) {
+				$subroutes = array_map( function( $subroute ) use ( $route ) {
+					$subroute_args = $subroute['args'] ?? null;
+					if ( $subroute_args ) {
+						$menu_slug = $this->get_subroute_slug( $route, $subroute );
+						$subroute_args['menu_slug']= $menu_slug;
+						$subroute['args'] = $subroute_args;
+						$callable = $this->make_route_callback( $subroute );
+						$subroute_args['callable'] = $callable;
+					}
+					$subroute['args'] = $subroute_args;
+					return $subroute;
+				}, $subroutes );
+				$route['subroutes'] = $subroutes;
+			}
+			return $route;
+		}, $routes );
+		return $routes;
+	}
+
+	public function make_route_callback( $route ) {
+		$args = $route['args'] ?? null;
+		if ( !$args ) {
+			return;
+		}
+		$callable = $args['callable'] ?? null;
 		if ( $callable ) {
-			$callable = array( new $callable( $route_args ), 'page_callback' );
+			$callable = array( new $callable( $args ), 'page_callback' );
 		}
 		return $callable;
 	}
 
-	public function get_subpage_menu_slug( $args, $subroute_args ) {
-		$parent_slug = $args['menu_slug'] ?? null;
-		$slug = $subroute_args['menu_slug'] ?? null;
-		return implode( '-', array( $parent_slug, $slug ) );
+	public function get_subroute_slug( $route, $subroute ) {
+		$route_args = $route['args'] ?? null;
+		$subroute_args = $subroute['args'] ?? null;
+		if ( $route_args && $subroute_args ) {
+			$route_slug = $route_args['menu_slug'] ?? null;
+			$subroute_slug = $subroute_args['menu_slug'] ?? null;
+			return implode( '-', array( $route_slug, $subroute_slug ) );
+		}
 	}
 	
 	public function register_routes() {
 		foreach ( $this->routes as $route ) {
 			$args = $route['args'] ?? null;
 			if ( $args ) {
-				$callable = $this->get_route_callback( $args );
 				add_menu_page(
 					$args['page_title'] ?? null,
 					$args['menu_title'] ?? null,
 					$args['capability'] ?? null,
 					$args['menu_slug'] ?? null,
-					$callable,
+					$args['callable'] ?? null,
 					$args['icon_url'] ?? null,
 					$args['position'] ?? null,
 				);
@@ -105,43 +142,17 @@ class AdminRouter {
 				foreach ( $subroutes as $subroute ) {
 					$subroute_args = $subroute['args'] ?? null;
 					if ( $subroute_args ) {
-						$subroute_args['menu_slug'] = $this->get_subpage_menu_slug( $args, $subroute_args );
-						$callable = $this->get_route_callback( $subroute_args );
 						add_submenu_page(
 							$args['menu_slug']  ?? null,
 							$subroute_args['page_title'] ?? null,
 							$subroute_args['menu_title'] ?? null,
 							$subroute_args['capability'] ?? null,
-							$subroute_args['menu_slug'],
-							$callable,
+							$subroute_args['menu_slug'] ?? null,
+							$subroute_args['callable'] ?? null,
 							$subroute_args['icon_url'] ?? null,
 							$subroute_args['position'] ?? null,
 						);
 					}
-				}
-			}
-		}
-	}
-
-	public function register_route_settings( $route ) {
-		$args = $route['args'] ?? null;
-		if ( $args ) {
-			$callable = $args['callable'] ?? null;
-			if ( $callable ) {
-				$callable = new $callable( $args );
-				$callable->register_settings();
-			}
-		}
-	}
-
-	public function register_settings() {
-		foreach ( $this->routes as $route ) {
-			$this->register_route_settings( $route );
-			$subroutes = $route['subroutes'] ?? null;
-			if ( $subroutes ) {
-				foreach ( $subroutes as $subroute ) {
-					$subroute['args']['menu_slug'] = $this->get_subpage_menu_slug($route['args'], $subroute['args']);
-					$this->register_route_settings( $subroute );
 				}
 			}
 		}

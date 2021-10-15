@@ -3,13 +3,10 @@
 namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Controllers\AuthController;
+use Tokenly\Wp\Controllers\SettingsController;
 
 class ApiRouter {
 	public $namespace = 'tokenly/v1';
-
-	public function __construct() {
-		//
-	}
 
 	public function register() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -31,6 +28,26 @@ class ApiRouter {
 					'methods'             => 'GET',
 					'callback'            => array( new AuthController(), 'authorize_callback' ),
 					'permission_callback' => '__return_true',
+				),
+			),
+			'settings-show' => array(
+				'path' => '/settings',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( new SettingsController(), 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings-update' => array(
+				'path' => '/settings',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( new SettingsController(), 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
 				),
 			),
 		];

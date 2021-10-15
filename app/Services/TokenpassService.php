@@ -14,6 +14,7 @@ class TokenpassService {
 
 	public function get_tokenpass_login_url() {
 		$settings = get_option( 'tokenpass_settings' );
+		error_log(print_r($settings, true));
 		$client_id;
 		if ( $settings ) {
 			$client_id = $settings['client_id'] ?? null;

@@ -40,7 +40,7 @@ class AuthService {
 
 	public function find_existing_user( $tokenpass_user ) {
 		$email = $tokenpass_user['email'] ?? null;
-		if ( $email ) {
+		if ( !$email ) {
 			return false;
 		}
 		$user = get_user_by( 'email', $email );
@@ -49,7 +49,7 @@ class AuthService {
 
 	public function create_user_from_tokenpass_user( $tokenpass_user ) {
 		$username = $tokenpass_user['username'] ?? null;
-		$password = wp_generate_password();
+		$password = wp_generate_password( 12, false );
 		$email = $tokenpass_user['email'] ?? null;
 		$user_id = wp_create_user( $username, $password, $email );
 		if ( is_numeric( $user_id ) === false ) {
@@ -64,7 +64,7 @@ class AuthService {
 		if ( !$uuid ) {
 			return false;
 		}
-		$user_id = $local_user->ID;
+		update_user_meta( $user->ID, 'tokenly_uuid', $uuid );
 	}
 
 	public function authorize_callback( $state, $code ) {
@@ -76,7 +76,7 @@ class AuthService {
 		$access_token = $client->getOAuthAccessToken( $code );
 		$tokenpass_user = $client->getUserByToken( $access_token );
 		if ( $tokenpass_user ) {
-			$can_login = $this->can_social_login();
+			$can_login = $this->can_social_login( $tokenpass_user );
 			if ( $can_login === false ) {
 				return;
 			}
