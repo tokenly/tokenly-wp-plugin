@@ -60,6 +60,6 @@ class WebRouter {
 		}
 		add_filter( 'generate_rewrite_rules', array( $this, 'merge_rewrite_rules' ) );
 		add_filter( 'query_vars', array( $this, 'merge_query_vars' ) );
-		add_filter( 'template_include', function( $template ) {
+		add_filter( 'template_include', function( $template ) { });
 	}
 }
