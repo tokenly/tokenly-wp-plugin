@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Controllers;
+namespace Tokenly\Wp\Controllers\Api;
 
 class SettingsController {
 	public function show( $request ) {

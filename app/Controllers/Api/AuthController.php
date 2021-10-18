@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Controllers;
+namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Services\TokenpassService;
 use Tokenly\Wp\Services\AuthService;

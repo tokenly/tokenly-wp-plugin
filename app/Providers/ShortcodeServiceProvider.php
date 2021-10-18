@@ -1,18 +1,18 @@
 <?php
 
-namespace Tokenly\Wp;
+namespace Tokenly\Wp\Providers;
 
 use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 
-class ShortcodeManager {
-	public function init() {
+class ShortcodeServiceProvider {
+	public function boot() {
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 	}
 	
 	public function get_shortcodes() {
-		return [
+		return array(
 			LoginButtonShortcode::class,
-		];
+		);
 	}
 
 	public function register_shortcodes() {

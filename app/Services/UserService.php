@@ -3,10 +3,6 @@
 namespace Tokenly\Wp\Services;
 
 class UserService {
-	public function __construct() {
-		//
-	}
-
 	public function get_by_uuid( $uuid ) {
 		$params = array(
 			'number' => 1,

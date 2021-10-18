@@ -2,13 +2,13 @@
 
 namespace Tokenly\Wp\Routes;
 
-use Tokenly\Wp\Controllers\AuthController;
-use Tokenly\Wp\Controllers\SettingsController;
+use Tokenly\Wp\Controllers\Api\AuthController;
+use Tokenly\Wp\Controllers\Api\SettingsController;
 
 class ApiRouter {
 	public $namespace = 'tokenly/v1';
 
-	public function register() {
+	public function boot() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 

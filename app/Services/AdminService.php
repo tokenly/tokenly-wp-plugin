@@ -7,15 +7,6 @@ namespace Tokenly\Wp\Services;
  */
 
 class AdminService {
-	public $settings_service;
-
-	public function __construct() {
-		//
-	}
-
-	public function init() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-	}
 
 	public function enqueue_scripts() {
 		wp_register_script( 'tokenly-admin', plugins_url( '../../build/admin.js', __FILE__ ), array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), null, true );

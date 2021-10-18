@@ -2,16 +2,16 @@
 
 namespace Tokenly\Wp\Routes;
 
-use Tokenly\Wp\Admin\TokenpassPage;
-use Tokenly\Wp\Admin\Tokenpass\TokenpassVendorPage;
-use Tokenly\Wp\Admin\Tokenpass\TokenpassWhitelistPage;
-use Tokenly\Wp\Admin\Tokenpass\TokenpassConnectionPage;
-use Tokenly\Wp\Admin\Tokenpass\TokenpassSettingsPage;
+use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
+use Tokenly\Wp\Controllers\Web\Admin\VendorController;
+use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
+use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
+use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
 
 class AdminRouter {
 	public $routes;
 
-	public function register() {
+	public function boot() {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ) );
 	}
@@ -23,9 +23,9 @@ class AdminRouter {
 					'page_title' => 'Tokenpass',
 					'menu_title' => 'Tokenpass',
 					'menu_slug'  => 'tokenpass',
-					'callable'   => TokenpassPage::class,
+					'callable'   => array( new DashboardController(), 'show' ),
 					'capability' => 'manage_options',
-					'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( plugin_dir_url( __FILE__ ) . '../../assets/images/tokenly_logo.svg' ) ),
+					'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( plugin_dir_url( __FILE__ ) . '../../resources/images/tokenly_logo.svg' ) ),
 					'position'   => 3,
 				),
 				'subroutes'   => array(
@@ -34,7 +34,7 @@ class AdminRouter {
 							'page_title' => 'Tokenly Vendor',
 							'menu_title' => 'Vendor',
 							'menu_slug'  => 'vendor',
-							'callable'   => TokenpassVendorPage::class,
+							'callable'   => array( new VendorController(), 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -43,7 +43,7 @@ class AdminRouter {
 							'page_title' => 'Gallery Token Whitelist',
 							'menu_title' => 'Whitelist',
 							'menu_slug'  => 'whitelist',
-							'callable'   => TokenpassWhitelistPage::class,
+							'callable'   => array( new WhitelistController(), 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -52,7 +52,7 @@ class AdminRouter {
 							'page_title' => 'Connection Status',
 							'menu_title' => 'Connection',
 							'menu_slug'  => 'connection',
-							'callable'   => TokenpassConnectionPage::class,
+							'callable'   => array( new ConnectionController(), 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -61,7 +61,7 @@ class AdminRouter {
 							'page_title' => 'Settings',
 							'menu_title' => 'Settings',
 							'menu_slug'  => 'settings',
-							'callable'   => TokenpassSettingsPage::class,
+							'callable'   => array( new SettingsController(), 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -74,12 +74,6 @@ class AdminRouter {
 
 	public function prepare_routes( $routes ) {
 		$routes = array_map( function( $route ) {
-			$args = $route['args'] ?? null;
-			if ( $args ) {
-				$callable = $this->make_route_callback( $route );
-				$args['callable'] = $callable;
-			}
-			$route['args'] = $args;
 			$subroutes = $route['subroutes'] ?? null;
 			if ( $subroutes ) {
 				$subroutes = array_map( function( $subroute ) use ( $route ) {
@@ -88,8 +82,6 @@ class AdminRouter {
 						$menu_slug = $this->get_subroute_slug( $route, $subroute );
 						$subroute_args['menu_slug']= $menu_slug;
 						$subroute['args'] = $subroute_args;
-						$callable = $this->make_route_callback( $subroute );
-						$subroute_args['callable'] = $callable;
 					}
 					$subroute['args'] = $subroute_args;
 					return $subroute;
@@ -99,18 +91,6 @@ class AdminRouter {
 			return $route;
 		}, $routes );
 		return $routes;
-	}
-
-	public function make_route_callback( $route ) {
-		$args = $route['args'] ?? null;
-		if ( !$args ) {
-			return;
-		}
-		$callable = $args['callable'] ?? null;
-		if ( $callable ) {
-			$callable = array( new $callable( $args ), 'page_callback' );
-		}
-		return $callable;
 	}
 
 	public function get_subroute_slug( $route, $subroute ) {

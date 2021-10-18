@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./app/Admin/Tokenpass/TokenpassSettingsPage.js":
-/*!******************************************************!*\
-  !*** ./app/Admin/Tokenpass/TokenpassSettingsPage.js ***!
-  \******************************************************/
+/***/ "./resources/js/pages/admin/settings.js":
+/*!**********************************************!*\
+  !*** ./resources/js/pages/admin/settings.js ***!
+  \**********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -170,10 +170,10 @@ function init() {
 
 /***/ }),
 
-/***/ "./assets/scss/admin.scss":
-/*!********************************!*\
-  !*** ./assets/scss/admin.scss ***!
-  \********************************/
+/***/ "./resources/scss/admin.scss":
+/*!***********************************!*\
+  !*** ./resources/scss/admin.scss ***!
+  \***********************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -263,18 +263,18 @@ module.exports = window["wp"]["element"];
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 !function() {
-/*!****************************!*\
-  !*** ./assets/js/admin.js ***!
-  \****************************/
+/*!*******************************!*\
+  !*** ./resources/js/admin.js ***!
+  \*******************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _assets_scss_admin_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../assets/scss/admin.scss */ "./assets/scss/admin.scss");
-/* harmony import */ var _app_Admin_Tokenpass_TokenpassSettingsPage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../app/Admin/Tokenpass/TokenpassSettingsPage */ "./app/Admin/Tokenpass/TokenpassSettingsPage.js");
+/* harmony import */ var _resources_scss_admin_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
+/* harmony import */ var _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/settings.js */ "./resources/js/pages/admin/settings.js");
 
 
 
 class Admin {
   init() {
-    (0,_app_Admin_Tokenpass_TokenpassSettingsPage__WEBPACK_IMPORTED_MODULE_1__.init)();
+    (0,_resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__.init)();
   }
 
 }
