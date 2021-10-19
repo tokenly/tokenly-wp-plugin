@@ -11,4 +11,10 @@
   align-items: center !important;
 }
 
+body.login .tokenpass-login-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
 /*# sourceMappingURL=admin.css.map*/

@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Routes\ApiRouter;
+use Tokenly\Wp\Views\Admin\SettingsView;
 
 class SettingsController {
 	public $api_router;
@@ -18,6 +19,7 @@ class SettingsController {
 		$data['app_homepage_url'] = $app_homepage_url;
 		$client_auth_url = $this->api_router->get_route_url( 'authorize-callback' );
 		$data['client_auth_url'] = $client_auth_url;
-		include TOKENLY_PLUGIN_DIR . 'resources/views/admin/settings.php';
+		$view = new SettingsView( $data );
+		echo $view->render();
 	}
 }

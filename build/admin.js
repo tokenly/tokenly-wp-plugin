@@ -163,9 +163,12 @@ class TokenpassSettingsPageComponent extends Component {
 
 function init() {
   const postBody = document.querySelector('#tokenpass-settings-page-content');
-  const appContainer = document.createElement('div');
-  postBody.appendChild(appContainer);
-  render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TokenpassSettingsPageComponent, null), appContainer);
+
+  if (postBody) {
+    const appContainer = document.createElement('div');
+    postBody.appendChild(appContainer);
+    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TokenpassSettingsPageComponent, null), appContainer);
+  }
 }
 
 /***/ }),
@@ -275,6 +278,22 @@ __webpack_require__.r(__webpack_exports__);
 class Admin {
   init() {
     (0,_resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__.init)();
+    this.registerRedirects();
+  }
+
+  registerRedirects() {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (adminRedirects) {
+        adminRedirects.forEach(redirect => {
+          const element = document.querySelector(`[href='${redirect.from}']`);
+
+          if (element) {
+            element.href = redirect.to;
+            element.target = '_blank';
+          }
+        });
+      }
+    });
   }
 
 }

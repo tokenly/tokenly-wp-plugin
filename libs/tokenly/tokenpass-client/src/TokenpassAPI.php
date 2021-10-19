@@ -678,6 +678,7 @@ class TokenpassAPI
             $response = $this->fetchFromTokenpassAPI('GET', 'tca/public/balances', $params, $oauth_token);
         } catch (TokenpassAPIException $e) {
             self::$errors[] = $e->getMessage();
+			error_log($e->getMessage());
             return false;
         }
         return $response;

@@ -5,23 +5,13 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Controllers\Web\UserController;
 
 class WebRouter {
+	public $rules = array();
+	public $vars = array();
+	public $routes = array();
+	public $callbacks = array();
+	
 	public function boot() {
-		add_filter( 'generate_rewrite_rules', function ( $wp_rewrite ){
-			$wp_rewrite->rules = array_merge(
-				['tokenly-user/(\d+)\/?$' => 'index.php?tokenly_user_id=$matches[1]'],
-				$wp_rewrite->rules
-			);
-		} );
-		add_filter( 'query_vars', function( $query_vars ){
-			$query_vars[] = 'tokenly_user_id';
-			return $query_vars;
-		} );
-		add_filter( 'template_include', function( $template ) {
-			$tokenly_user_id = intval( get_query_var( 'tokenly_user_id' ) );
-			if ( $tokenly_user_id ) {
-				return TOKENLY_PLUGIN_DIR . 'resources/views/user.php';
-			}
-		} );
+		$this->register_routes();
 	}
 
 	public function get_routes() {
@@ -40,26 +30,43 @@ class WebRouter {
 
 	public function merge_rewrite_rules( $wp_rewrite ) {
 		$wp_rewrite->rules = array_merge(
-			$rules,
+			$this->rules,
 			$wp_rewrite->rules
 		);
 	}
 
 	public function merge_query_vars( $query_vars ) {
-		$query_vars = array_merge( $query_vars, $vars );
+		$query_vars = array_merge( $query_vars, $this->vars );
 		return $query_vars;
+	}
+
+	public function find_template( $template ) {
+		foreach ( $this->routes as $route ) {
+			$query_vars = $route['vars'] ?? null;
+			if ( $query_vars ) {
+				foreach ( $query_vars as $query_var ) {
+					$query_var = get_query_var( $query_var );
+					if ( $query_var ) {
+						$callback = $route['callback'] ?? null;
+						if ( $callback ) {
+							return call_user_func( $callback );
+						}
+					}
+				}
+			}
+		}
+		return $template;
 	}
 
 	public function register_routes() {
 		$this->routes = $this->get_routes();
-		$this->rules = array();
-		$this->vars = array();
-		foreach ( $routes as $route ) {
+		foreach ( $this->routes as $route ) {
 			$this->rules = array_merge( $this->rules, $route['rules'] ?? null );
 			$this->vars = array_merge( $this->vars, $route['vars'] ?? null );
+			$this->callbacks[] = $route['callback'] ?? null;
 		}
 		add_filter( 'generate_rewrite_rules', array( $this, 'merge_rewrite_rules' ) );
 		add_filter( 'query_vars', array( $this, 'merge_query_vars' ) );
-		add_filter( 'template_include', function( $template ) { });
+		add_filter( 'template_include', array( $this, 'find_template' ) );
 	}
 }

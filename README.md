@@ -18,6 +18,7 @@ The plugin integrates Tokenpass features into a WordPress website.
 Use the shortcode [tokenpass_login] on a page to display the Login button
 
 ## Contributing
+
 [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/) are followed with the exception to filenames and classnames. The exceptions are due to Composer's autoloader requirements. It expects PSR-4 styled code for autoloading to work.
 
 * ```test.sh``` is used to run tests and check code style

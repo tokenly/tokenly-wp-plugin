@@ -24,7 +24,7 @@ class TokenpassService {
 		$args = array(
 			'client_id'     => $client_id,
 			'redirect_uri'  => $redirect_uri,
-			'scope'         => 'user',
+			'scope'         => 'user,tca',
 			'response_type' => 'code',
 			'state'         => $state,
 		);

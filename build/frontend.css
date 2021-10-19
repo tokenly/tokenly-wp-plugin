@@ -1,4 +1,82 @@
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/frontend.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
+.component-card-token-item {
+  background-color: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 12px 12px 8px 0px rgba(0, 0, 0, 0.025);
+}
+.component-card-token-item .token-name {
+  font-size: 1.125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+.block-list-card-token-item .row .container {
+  display: -ms-grid;
+  display: grid;
+  grid-auto-flow: row;
+  -ms-grid-columns: (minmax(0, 1fr))[1];
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-gap: 12px;
+}
+.block-list-card-token-item .row .container .component-card-token-item {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .block-list-card-token-item .row .container {
+    -ms-grid-columns: (minmax(0, 1fr))[2];
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1280px) {
+  .block-list-card-token-item .row .container {
+    -ms-grid-columns: (minmax(0, 1fr))[3];
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 
+.tokenly-component * {
+  box-sizing: border-box;
+}
+.tokenly-component .row {
+  width: 100%;
+  max-width: 1920px;
+  padding: 0 10%;
+  margin: auto;
+}
+@media (min-width: 1800px) {
+  .tokenly-component .row {
+    padding: 0 14%;
+  }
+}
+
+.tokenly-component.spacer.sm {
+  margin: 12px;
+}
+.tokenly-component.spacer.md {
+  margin: 24px;
+}
+.tokenly-component.spacer.lg {
+  margin: 48px;
+}
+.tokenly-component.spacer.xl {
+  margin: 64px;
+}
+@media (min-width: 1280px) {
+  .tokenly-component.spacer.sm {
+    margin: 16px;
+  }
+  .tokenly-component.spacer.md {
+    margin: 32px;
+  }
+  .tokenly-component.spacer.lg {
+    margin: 64px;
+  }
+  .tokenly-component.spacer.xl {
+    margin: 86px;
+  }
+}
+
+/*# sourceMappingURL=frontend.css.map*/

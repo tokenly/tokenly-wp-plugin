@@ -164,14 +164,16 @@ class TokenpassSettingsPageComponent extends Component {
 }
 
 export function init() {
-	const postBody = document.querySelector( '#tokenpass-settings-page-content' );
-	const appContainer = document.createElement( 'div' );
-	postBody.appendChild( appContainer );
-	
-	render(
-		<TokenpassSettingsPageComponent/>,
-		appContainer
-	);
+	const postBody = document.querySelector('#tokenpass-settings-page-content');
+	if ( postBody ) {
+		const appContainer = document.createElement( 'div' );
+		postBody.appendChild( appContainer );
+		
+		render(
+			<TokenpassSettingsPageComponent/>,
+			appContainer
+		);
+	}
 }
  
 

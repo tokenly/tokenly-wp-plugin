@@ -3,10 +3,13 @@
 namespace Tokenly\Wp\Services;
 
 /**
- * Handles main admin logic
+ * Admin area related functions.
  */
 
 class AdminService {
+	/**
+	 * Load styles and scripts for admin pages.
+	 */
 
 	public function enqueue_scripts() {
 		wp_register_script( 'tokenly-admin', plugins_url( '../../build/admin.js', __FILE__ ), array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), null, true );

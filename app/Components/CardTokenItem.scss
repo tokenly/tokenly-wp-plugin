@@ -1,0 +1,20 @@
+@use '/resources/scss/variables' as *;
+
+.component-card-token-item {
+	background-color: white;
+	border-radius: 12px;
+	padding: 18px;
+	box-shadow: 12px 12px 8px 0px rgba(0, 0, 0, 0.025);
+	.token-name {
+		font-size: 1.125rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-weight: 700;
+	}
+	@include md {
+
+	}
+	@include lg {
+
+	}
+}

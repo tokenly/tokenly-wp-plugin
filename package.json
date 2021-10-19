@@ -6,7 +6,7 @@
   "scripts": {
     "build": "wp-scripts build resources/js/frontend.js resources/js/admin.js",
     "start": "wp-scripts start resources/js/frontend.js resources/js/admin.js",
-	"test:unit": "wp-scripts test-unit-js"
+    "test:unit": "wp-scripts test-unit-js"
   },
   "devDependencies": {
     "@wordpress/scripts": "^18.1.0",

@@ -10,10 +10,30 @@ use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
 
 class AdminRouter {
 	public $routes;
+	public $redirects = array();
 
 	public function boot() {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ) );
+		add_action( 'admin_print_scripts', array( $this,  'add_redirects' ) );
+	}
+
+	public function add_redirects() {
+		$id = get_current_user_id();
+		echo "	
+			<script type='text/javascript'>
+				const adminRedirects = [
+					{
+						from: 'tokenpass-inventory',
+						to: '/tokenly-user/{$id}',
+					},
+					{
+						from: 'tokenpass-dashboard',
+						to: 'https://tokenpass.tokenly.com/dashboard',
+					},
+				];
+			</script>
+		"; 
 	}
 
 	public function get_routes() {
@@ -29,6 +49,31 @@ class AdminRouter {
 					'position'   => 3,
 				),
 				'subroutes'   => array(
+					'dashboard' => array(
+						'args'      => array(
+							'page_title' => 'Dashboard',
+							'menu_title' => 'Dashboard',
+							'menu_slug'  => 'dashboard',
+							'capability' => 'read',
+						),
+					),
+					'inventory' => array(
+						'args'      => array(
+							'page_title' => 'Inventory',
+							'menu_title' => 'Inventory',
+							'menu_slug'  => 'inventory',
+							'capability' => 'read',
+						),
+					),
+					'connection' => array(
+						'args'      => array(
+							'page_title' => 'Connection Status',
+							'menu_title' => 'Connection',
+							'menu_slug'  => 'connection',
+							'callable'   => array( new ConnectionController(), 'show' ),
+							'capability' => 'read',
+						),
+					),
 					'vendor' => array(
 						'args'      => array(
 							'page_title' => 'Tokenly Vendor',
@@ -44,15 +89,6 @@ class AdminRouter {
 							'menu_title' => 'Whitelist',
 							'menu_slug'  => 'whitelist',
 							'callable'   => array( new WhitelistController(), 'show' ),
-							'capability' => 'manage_options',
-						),
-					),
-					'connection' => array(
-						'args'      => array(
-							'page_title' => 'Connection Status',
-							'menu_title' => 'Connection',
-							'menu_slug'  => 'connection',
-							'callable'   => array( new ConnectionController(), 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -99,7 +135,9 @@ class AdminRouter {
 		if ( $route_args && $subroute_args ) {
 			$route_slug = $route_args['menu_slug'] ?? null;
 			$subroute_slug = $subroute_args['menu_slug'] ?? null;
-			return implode( '-', array( $route_slug, $subroute_slug ) );
+			if( $route_slug && $subroute_slug ) {
+				return implode( '-', array( $route_slug, $subroute_slug ) );
+			}
 		}
 	}
 	
