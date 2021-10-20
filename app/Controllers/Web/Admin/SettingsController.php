@@ -13,18 +13,9 @@ class SettingsController extends WebController {
 	}
 
 	public function show() {
-		$data = array();
-		$app_homepage_url = 'https://';
-		$app_homepage_url .= $_SERVER['HTTP_HOST'] . '/tokenly';
-		global $tokenly_routes;
-		$api_routes = $tokenly_routes['api'] ?? null;
-		if ( !$api_routes ) {
-			return;
-		}
-		$client_auth_url = $api_routes['authorize-callback'] ?? null;
 		$render = $this->settings_view->render( array(
-			'app_homepage_url' => $app_homepage_url,
-			'client_auth_url'  => $client_auth_url,
+			'app_homepage_url' => get_site_url(),
+			'client_auth_url'  => TOKENLY_PLUGIN_AUTH_REDIRECT_URI,
 		) );
 		echo $render;
 	}
