@@ -2,6 +2,90 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./app/Components/ButtonLoginComponent.js":
+/*!************************************************!*\
+  !*** ./app/Components/ButtonLoginComponent.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */ });
+class ButtonLoginComponent {
+  constructor(buttonElement) {
+    this.buttonElement = buttonElement;
+    this.buttonElement.addEventListener('click', this.connect.bind(this));
+  }
+
+  connect() {
+    console.log('click');
+    return new Promise((resolve, reject) => {
+      const params = {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          'X-WP-Nonce': wpApiSettings.nonce
+        }
+      };
+      const url = '/wp-json/tokenly/v1/authorize';
+      fetch(url, params).then(response => response.json()).then(data => {
+        var _data$url;
+
+        console.log(data);
+        const redirectUrl = (_data$url = data.url) !== null && _data$url !== void 0 ? _data$url : null;
+
+        if (redirectUrl) {
+          window.location = redirectUrl;
+        }
+
+        resolve(data);
+      }).catch(err => {
+        console.log(err);
+        reject(err);
+      });
+    });
+  }
+
+}
+
+function init() {
+  const buttonElements = document.querySelectorAll('button.tokenpass-login');
+  console.log(buttonElements);
+  buttonElements.forEach(buttonElement => {
+    buttonElement = new ButtonLoginComponent(buttonElement);
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/common.js":
+/*!********************************!*\
+  !*** ./resources/js/common.js ***!
+  \********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */ });
+/* harmony import */ var _app_Components_ButtonLoginComponent_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../app/Components/ButtonLoginComponent.js */ "./app/Components/ButtonLoginComponent.js");
+
+
+class Common {
+  init() {
+    (0,_app_Components_ButtonLoginComponent_js__WEBPACK_IMPORTED_MODULE_0__.init)();
+  }
+
+}
+
+function init() {
+  const common = new Common();
+  common.init();
+}
+
+/***/ }),
+
 /***/ "./resources/js/pages/admin/connection.js":
 /*!************************************************!*\
   !*** ./resources/js/pages/admin/connection.js ***!
@@ -36,6 +120,7 @@ const {
 class TokenpassConnectionPageComponent extends Component {
   constructor() {
     super(...arguments);
+    this.connect = this.connect.bind(this);
     this.state = {
       isAPILoaded: false,
       isAPISaving: false,
@@ -64,7 +149,7 @@ class TokenpassConnectionPageComponent extends Component {
           'X-WP-Nonce': wpApiSettings.nonce
         }
       };
-      const url = '/wp-json/tokenly/v1/authorize/status';
+      const url = '/wp-json/tokenly/v1/authorize';
       fetch(url, params).then(response => response.json()).then(data => {
         console.log(data);
         this.setState({ ...((data === null || data === void 0 ? void 0 : data.status) && {
@@ -76,6 +161,52 @@ class TokenpassConnectionPageComponent extends Component {
     });
   }
 
+  getStatusText() {
+    if (this.state.status === true) {
+      return 'Connected';
+    } else {
+      return 'Not connected';
+    }
+  }
+
+  connect() {
+    return new Promise((resolve, reject) => {
+      const params = {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          'X-WP-Nonce': wpApiSettings.nonce
+        }
+      };
+      const url = '/wp-json/tokenly/v1/authorize';
+      fetch(url, params).then(response => response.json()).then(data => {
+        var _data$url;
+
+        const redirectUrl = (_data$url = data.url) !== null && _data$url !== void 0 ? _data$url : null;
+
+        if (redirectUrl) {
+          window.location = redirectUrl;
+        }
+      }).catch(err => reject(err));
+    });
+  }
+
+  disconnect() {
+    return new Promise((resolve, reject) => {
+      const params = {
+        method: 'DELETE',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          'X-WP-Nonce': wpApiSettings.nonce
+        }
+      };
+      const url = '/wp-json/tokenly/v1/authorize';
+      fetch(url, params).then(response => response.json()).then(data => {
+        window.location.reload(false);
+      }).catch(err => reject(err));
+    });
+  }
+
   render() {
     if (!this.state.isAPILoaded) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Placeholder, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Spinner, null));
@@ -83,16 +214,20 @@ class TokenpassConnectionPageComponent extends Component {
 
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Connection"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
       header: "Connection Status"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Connection status: "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, "Connected")))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Connection status: "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, this.getStatusText())))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
-      href: "/wp-json/tokenly/v1/authorize",
-      disabled: this.state.status
+      disabled: this.state.status,
+      onClick: () => {
+        this.connect();
+      }
     }, __('Connect to Tokenpass'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
-      href: "/wp-json/tokenly/v1/authorize/disconnect",
-      disabled: !this.state.status
+      disabled: !this.state.status,
+      onClick: () => {
+        this.disconnect();
+      }
     }, __('Disconnect from Tokenpass'))))));
   }
 
@@ -379,23 +514,26 @@ var __webpack_exports__ = {};
   \*******************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _resources_scss_admin_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
-/* harmony import */ var _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/settings.js */ "./resources/js/pages/admin/settings.js");
-/* harmony import */ var _resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/connection.js */ "./resources/js/pages/admin/connection.js");
+/* harmony import */ var _resources_js_common_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/common.js */ "./resources/js/common.js");
+/* harmony import */ var _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/settings.js */ "./resources/js/pages/admin/settings.js");
+/* harmony import */ var _resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/connection.js */ "./resources/js/pages/admin/connection.js");
+
 
 
 
 
 class Admin {
   init() {
-    (0,_resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__.init)();
-    (0,_resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_2__.init)();
+    (0,_resources_js_common_js__WEBPACK_IMPORTED_MODULE_1__.init)();
+    (0,_resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_2__.init)();
+    (0,_resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_3__.init)();
     this.registerRedirects();
   }
 
   registerRedirects() {
     document.addEventListener('DOMContentLoaded', () => {
-      if (adminRedirects) {
-        adminRedirects.forEach(redirect => {
+      if (window.adminRedirects) {
+        window.adminRedirects.forEach(redirect => {
           const element = document.querySelector(`[href='${redirect.from}']`);
 
           if (element) {
@@ -409,8 +547,10 @@ class Admin {
 
 }
 
-const admin = new Admin();
-admin.init();
+(function () {
+  const admin = new Admin();
+  admin.init();
+})();
 }();
 /******/ })()
 ;

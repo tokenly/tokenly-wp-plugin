@@ -22,17 +22,25 @@ class AuthController {
 	}
 
 	public function authorize( $request ) {
-		$this->auth_service->authorize_begin();
+		return $this->auth_service->authorize_begin();
 	}
 
-	public function authorize_callback( $request ) {
-		$code = $request['code'] ?? null;
-		$state = $request['state'] ?? null;
+	public function authorize_callback() {
+		$code = $_GET['code'];
+		$state = $_GET['state'];
+		error_log($code);
 		if ( !$code || !$state ) {
 			return;
 		}
 		$result = $this->auth_service->authorize_callback( $state, $code );
-		wp_redirect( get_site_url() );
+		wp_redirect( '/wp-admin/admin.php?page=tokenpass-connection' );
 		exit();
+	}
+	
+	public function disconnect() {
+		$result = $this->auth_service->disconnect();
+		return array(
+			'status' => 'Successfully disconnected!'
+		);
 	}
 }

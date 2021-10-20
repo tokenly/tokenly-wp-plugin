@@ -31,8 +31,7 @@ class UserService {
 		}
 	}
 
-	public function get_inventory() {
-		$user_id = get_current_user_id();
+	public function get_inventory( $user_id ) {
 		$oauth_token = get_user_meta( $user_id, 'tokenly_oauth_token' );
 		if ( $oauth_token ) {		
 			$oauth_token = $oauth_token[0];

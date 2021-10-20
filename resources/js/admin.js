@@ -1,9 +1,11 @@
 import '/resources/scss/admin.scss';
+import {init as initCommon} from '/resources/js/common.js';
 import {init as initTokenpassSettingsPage} from '/resources/js/pages/admin/settings.js';
 import {init as initTokenpassConnectionPage} from '/resources/js/pages/admin/connection.js';
 
 class Admin {
 	init() {
+		initCommon();
 		initTokenpassSettingsPage();
 		initTokenpassConnectionPage();
 		this.registerRedirects();
@@ -11,8 +13,8 @@ class Admin {
 
 	registerRedirects() {
 		document.addEventListener('DOMContentLoaded', () => {
-			if ( adminRedirects ) {
-				adminRedirects.forEach((redirect) => {
+			if ( window.adminRedirects ) {
+				window.adminRedirects.forEach((redirect) => {
 					const element = document.querySelector(`[href='${redirect.from}']`);
 					if (element) {
 						element.href = redirect.to;
@@ -25,5 +27,7 @@ class Admin {
 	}
 }
 
-const admin = new Admin();
-admin.init();
+(function() {
+	const admin = new Admin();
+	admin.init();
+})();

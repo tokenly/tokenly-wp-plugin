@@ -113,6 +113,7 @@ class AuthService {
 			}
 			update_user_meta( $user->ID, 'tokenly_uuid', $tokenpass_user['id'] ?? null );
 			update_user_meta( $user->ID, 'tokenly_oauth_token', $access_token );
+			$user->add_cap( 'use_tokenpass');
 			wp_set_auth_cookie( $user->ID );
 		}
 	}
@@ -139,13 +140,28 @@ class AuthService {
 				return;
 			}
 			$this->set_state( $state );
-			wp_redirect( $url );
-			exit;
+			error_log($url);
+			return array(
+				'url' => $url,
+			);
 		}
 	}
 
 	public function is_connected( $id ) {
-		return ( get_user_meta( $id, 'tokenly_uuid' )[0] ?? null );
+		if ( get_user_meta( $id, 'tokenly_uuid' )[0] ) {
+			return true;
+		} else {
+			return false;
+		};
+	}
+	
+	public function disconnect() {
+		$user = wp_get_current_user();
+		if ( $user ) {
+			delete_user_meta( $user->ID, 'tokenly_uuid' );
+			delete_user_meta( $user->ID, 'tokenly_oauth_token' );
+			$user->remove_cap( 'use_tokenpass');
+		}
 	}
 
 	public function get_tokenpass_login_url() {

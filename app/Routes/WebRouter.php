@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Controllers\Web\UserController;
+use Tokenly\Wp\Controllers\Api\AuthController;
 
 class WebRouter {
 	public $rules = array();
@@ -10,11 +11,15 @@ class WebRouter {
 	public $routes = array();
 	public $callbacks = array();
 	public $controllers = array();
+	public $auth_controller;
 
 	public function __construct(
-		UserController $user_controller
+		UserController $user_controller,
+		AuthController $auth_controller
 	) {
+		$this->auth_controller = $auth_controller;
 		$this->controllers = array(
+			'auth' => $auth_controller,
 			'user' => $user_controller,
 		);
 	}
@@ -27,13 +32,22 @@ class WebRouter {
 		return array(
 			'tokenly-user' => array(
 				'rules'     => array(
-					'tokenly-user/(\d+)\/?$' => 'index.php?tokenly_user_id=$matches[1]',
+					'tokenpass-user/(\d+)\/?$' => 'index.php?tokenpass_user_id=$matches[1]',
 				),
 				'vars'		=> array(
-					'tokenly_user_id',
+					'tokenpass_user_id',
 				),
 				'callback'	=> array( $this->controllers['user'], 'show' ),
 			),
+			'tokenpass-oauth-callback' => array(
+				'rules'		=> array(
+					'tokenpass-oauth-callback/?$' => 'index.php?tokenpass-oauth-callback=1',
+				),
+				'vars'		=> array(
+					'tokenpass-oauth-callback',
+				),
+				'callback'	=> array( $this->controllers['auth'], 'authorize_callback' ),
+			)
 		);
 	}
 

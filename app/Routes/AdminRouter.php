@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Routes;
 
+use Tokenly\Wp\Services\AuthService;
+
 use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
 use Tokenly\Wp\Controllers\Web\Admin\VendorController;
 use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
@@ -13,12 +15,15 @@ class AdminRouter {
 	public $redirects = array();
 
 	public function __construct(
+		AuthService $auth_service,
+		
 		DashboardController $dashboard_controller,
 		VendorController $vendor_controller,
 		WhitelistController $whitelist_controller,
 		ConnectionController $connection_controller,
 		SettingsController $settings_controller
 	) {
+		$this->auth_service =$auth_service;
 		$this->controllers = array(
 			'dashboard'  => $dashboard_controller,
 			'vendor'     => $vendor_controller,
@@ -38,10 +43,10 @@ class AdminRouter {
 		$id = get_current_user_id();
 		echo "	
 			<script type='text/javascript'>
-				const adminRedirects = [
+				window.adminRedirects = [
 					{
 						from: 'tokenpass-inventory',
-						to: '/tokenly-user/{$id}',
+						to: '/tokenpass-user/{$id}',
 					},
 					{
 						from: 'tokenpass-dashboard',
@@ -50,6 +55,14 @@ class AdminRouter {
 				];
 			</script>
 		"; 
+	}
+	
+	public function can_view_inventory() {
+		if ( current_user_can( 'read' ) === true && $this->auth_service->is_connected() === true ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function get_routes() {
@@ -70,7 +83,7 @@ class AdminRouter {
 							'page_title' => 'Dashboard',
 							'menu_title' => 'Dashboard',
 							'menu_slug'  => 'dashboard',
-							'capability' => 'read',
+							'capability' => 'use_tokenpass',
 						),
 					),
 					'inventory' => array(
@@ -78,7 +91,7 @@ class AdminRouter {
 							'page_title' => 'Inventory',
 							'menu_title' => 'Inventory',
 							'menu_slug'  => 'inventory',
-							'capability' => 'read',
+							'capability' => 'use_tokenpass',
 						),
 					),
 					'connection' => array(

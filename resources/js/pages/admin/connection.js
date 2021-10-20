@@ -19,6 +19,7 @@ const {
 class TokenpassConnectionPageComponent extends Component {
 	constructor() {
 		super( ...arguments );
+		this.connect = this.connect.bind( this );
 		this.state = {
 			isAPILoaded: false,
 			isAPISaving: false,
@@ -47,7 +48,7 @@ class TokenpassConnectionPageComponent extends Component {
 					'X-WP-Nonce': wpApiSettings.nonce,
 				},
 			}
-			const url = '/wp-json/tokenly/v1/authorize/status';
+			const url = '/wp-json/tokenly/v1/authorize';
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( data => {
@@ -56,6 +57,55 @@ class TokenpassConnectionPageComponent extends Component {
 						...(data?.status) && {status: data.status},
 					} );
 					resolve( data );
+				} )
+				.catch( err => reject( err ) );
+		});
+	}
+	
+	getStatusText() {
+		if ( this.state.status === true ) {
+			return 'Connected';
+		} else {
+			return 'Not connected';
+		}
+	}
+
+	connect() {
+		return new Promise((resolve, reject) => {
+			const params = {
+				method: 'POST',
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+					'X-WP-Nonce': wpApiSettings.nonce,
+				},
+			}
+			const url = '/wp-json/tokenly/v1/authorize';
+			fetch( url, params )
+				.then( response => response.json() )
+				.then( data => {
+					const redirectUrl = data.url ?? null;
+					if (redirectUrl) {
+						window.location = redirectUrl;
+					}	
+				} )
+				.catch( err => reject( err ) );
+		});
+	}
+	
+	disconnect() {
+		return new Promise((resolve, reject) => {
+			const params = {
+				method: 'DELETE',
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+					'X-WP-Nonce': wpApiSettings.nonce,
+				},
+			}
+			const url = '/wp-json/tokenly/v1/authorize';
+			fetch( url, params )
+				.then( response => response.json() )
+				.then( data => {
+					window.location.reload( false );
 				} )
 				.catch( err => reject( err ) );
 		});
@@ -77,15 +127,17 @@ class TokenpassConnectionPageComponent extends Component {
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<span>Connection status: </span><span><strong>Connected</strong></span>
+								<span>Connection status: </span><span><strong>{this.getStatusText()}</strong></span>
 							</div>
 						</PanelRow>
 						<PanelRow>
 							<Button
 								isPrimary
 								isLarge
-								href="/wp-json/tokenly/v1/authorize"
 								disabled={ this.state.status }
+								onClick={ () => {
+									this.connect();
+								}}
 							>
 								{ __( 'Connect to Tokenpass' ) }
 							</Button>
@@ -94,8 +146,10 @@ class TokenpassConnectionPageComponent extends Component {
 							<Button
 								isPrimary
 								isLarge
-								href="/wp-json/tokenly/v1/authorize/disconnect"
 								disabled={ !this.state.status }
+								onClick={ () => {
+									this.disconnect();
+								}}
 							>
 								{ __( 'Disconnect from Tokenpass' ) }
 							</Button>
