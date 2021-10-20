@@ -7,23 +7,26 @@ use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\Wp\Routes\WebRouter;
 
 class RouteServiceProvider {
-	public function boot() {
+	public $routers;
+
+	public function __construct(
+		AdminRouter $admin_router,
+		ApiRouter $api_router,
+		WebRouter $web_router
+	) {
+		$this->routers = array(
+			'admin' => $admin_router,
+			'api'	=> $api_router,
+			'web'	=> $web_router,
+		);
+	}
+	public function register() {
 		add_action( 'init', array( $this, 'register_routers' ) );
 	}
 
-	public function get_routers() {
-		return array(
-			AdminRouter::class,
-			ApiRouter::class,
-			WebRouter::class,
-		);
-	}
-
 	public function register_routers() {
-		$routers = $this->get_routers();
-		foreach ( $routers as $router ) {
-			$router = new $router();
-			$router->boot();
+		foreach ( $this->routers as $router ) {
+			$router->register();
 		}
 	}
 }

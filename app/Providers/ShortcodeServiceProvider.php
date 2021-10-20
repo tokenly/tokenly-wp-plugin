@@ -7,12 +7,15 @@ use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 class ShortcodeServiceProvider {
 	public $shortcodes;
 
-	public function boot(
+	public function __construct(
 		LoginButtonShortcode $login_button_shortcode
 	) {
 		$this->shortcodes = array(
 			$login_button_shortcode,
 		);
+	}
+
+	public function register() {
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 	}
 

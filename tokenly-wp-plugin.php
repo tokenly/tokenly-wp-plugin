@@ -21,10 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'TOKENLY_PLUGIN_DIR', plugin_dir_path( dirname( __FILE__ ) ) . '/tokenly-wp-plugin/' );
 define( 'TOKENLY_PLUGIN_TEMPLATE_DIR', TOKENLY_PLUGIN_DIR . 'resources/views/' );
 define( 'TOKENLY_PLUGIN_TEMPLATE_CACHE_DIR', TOKENLY_PLUGIN_DIR . 'build/template-cache/' );
+define( 'TOKENLY_PLUGIN_AUTH_REDIRECT_URI', get_site_url() . '/wp-json/tokenly/v1/authorize/callback' );
 
 require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 use Tokenly\Wp\Bootstrap;
 
 $bootstrap = new Bootstrap();
-$bootstrap->boot();

@@ -2,13 +2,19 @@
 
 namespace Tokenly\Wp\Views;
 
-use Tokenly\Wp\Components\ListCardTokenItem;
+use Tokenly\Wp\Components\ListCardTokenItemComponent;
+use Tokenly\Wp\Views\View;
+use Twig\Environment;
 
-class UserView {
+class UserView extends View {
 	public $balances = array();
 
-	public function __construct( $data ) {
-		$this->balances = $data['balances'] ?? null;
+	public function __construct(
+		Environment $twig,
+		ListCardTokenItemComponent $list_card_token_item_component
+	) {
+		parent::__construct( $twig );
+		$this->list_card_token_item_component = $list_card_token_item_component;
 	}
 
 	public function render_header() {
@@ -23,26 +29,20 @@ class UserView {
 		return ob_get_clean();
 	}
 
-	public function render() {
+	public function render( $data ) {
+		$this->balances = $data['balances'] ?? null;
 		$html_header = $this->render_header();
 		$html_footer = $this->render_footer();
-		$html_block_token_list = new ListCardTokenItem(
+		$html_block_token_list = $this->list_card_token_item_component->render(
 			array(
 				'balances' => $this->balances,
 			)
 		);
-		$html_block_token_list = $html_block_token_list->render();
-		$html = "
-			{$html_header}
-			</div>
-			<main id='site-content' class='tokenly-page' role='main'>
-				<div class='tokenly-component spacer lg'></div>
-				{$html_block_token_list}
-				<div class='tokenly-component spacer lg'></div>
-			</main>
-			<div>
-			{$html_footer}
-		";
+		$html = $this->twig->render( 'user.html', array(
+			'header' => $html_header,
+			'footer' => $html_footer,
+			'block_token_list' => $html_block_token_list,
+		) );
 		return $html;
 	}
 }

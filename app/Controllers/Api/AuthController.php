@@ -2,39 +2,27 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
-use Tokenly\Wp\Services\TokenpassService;
 use Tokenly\Wp\Services\AuthService;
 
 class AuthController {
 	public $auth_service;
-	public $tokenly_service;
 
-	public function __construct() {
-		$this->auth_service = new AuthService();
-		$this->tokenly_service = new TokenpassService();
+	public function __construct(
+		AuthService $auth_service
+	) {
+		$this->auth_service = $auth_service;
+	}
+
+	public function status() {
+		$id = get_current_user_id();
+		$connected = $this->auth_service->is_connected( $id );
+		return array(
+			'status' => $connected
+		);
 	}
 
 	public function authorize( $request ) {
-		$this->auth_service->delete_state();
-		$result = $this->tokenly_service->get_tokenpass_login_url();
-		if ( $result ) {
-			$args = $result['args'] ?? null;
-			if ( !$args ) {
-				return;
-			}
-			$state;
-			$state = $args['state'] ?? null;
-			if ( !$state ) {
-				return;
-			}
-			$url = $result['url'] ?? null;
-			if ( !$url ) {
-				return;
-			}
-			$this->auth_service->set_state( $state );
-			wp_redirect( $url );
-			exit;
-		}
+		$this->auth_service->authorize_begin();
 	}
 
 	public function authorize_callback( $request ) {

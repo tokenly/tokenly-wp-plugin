@@ -12,7 +12,23 @@ class AdminRouter {
 	public $routes;
 	public $redirects = array();
 
-	public function boot() {
+	public function __construct(
+		DashboardController $dashboard_controller,
+		VendorController $vendor_controller,
+		WhitelistController $whitelist_controller,
+		ConnectionController $connection_controller,
+		SettingsController $settings_controller
+	) {
+		$this->controllers = array(
+			'dashboard'  => $dashboard_controller,
+			'vendor'     => $vendor_controller,
+			'whitelist'  => $whitelist_controller,
+			'connection' => $connection_controller,
+			'settings'   => $settings_controller
+		);
+	}
+
+	public function register() {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ) );
 		add_action( 'admin_print_scripts', array( $this,  'add_redirects' ) );
@@ -43,7 +59,7 @@ class AdminRouter {
 					'page_title' => 'Tokenpass',
 					'menu_title' => 'Tokenpass',
 					'menu_slug'  => 'tokenpass',
-					'callable'   => array( new DashboardController(), 'show' ),
+					'callable'   => array( $this->controllers['dashboard'], 'show' ),
 					'capability' => 'manage_options',
 					'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( plugin_dir_url( __FILE__ ) . '../../resources/images/tokenly_logo.svg' ) ),
 					'position'   => 3,
@@ -70,7 +86,7 @@ class AdminRouter {
 							'page_title' => 'Connection Status',
 							'menu_title' => 'Connection',
 							'menu_slug'  => 'connection',
-							'callable'   => array( new ConnectionController(), 'show' ),
+							'callable'   => array( $this->controllers['connection'], 'show' ),
 							'capability' => 'read',
 						),
 					),
@@ -79,7 +95,7 @@ class AdminRouter {
 							'page_title' => 'Tokenly Vendor',
 							'menu_title' => 'Vendor',
 							'menu_slug'  => 'vendor',
-							'callable'   => array( new VendorController(), 'show' ),
+							'callable'   => array( $this->controllers['vendor'], 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -88,7 +104,7 @@ class AdminRouter {
 							'page_title' => 'Gallery Token Whitelist',
 							'menu_title' => 'Whitelist',
 							'menu_slug'  => 'whitelist',
-							'callable'   => array( new WhitelistController(), 'show' ),
+							'callable'   => array( $this->controllers['whitelist'], 'show' ),
 							'capability' => 'manage_options',
 						),
 					),
@@ -97,7 +113,7 @@ class AdminRouter {
 							'page_title' => 'Settings',
 							'menu_title' => 'Settings',
 							'menu_slug'  => 'settings',
-							'callable'   => array( new SettingsController(), 'show' ),
+							'callable'   => array( $this->controllers['settings'], 'show' ),
 							'capability' => 'manage_options',
 						),
 					),

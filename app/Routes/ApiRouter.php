@@ -7,8 +7,21 @@ use Tokenly\Wp\Controllers\Api\SettingsController;
 
 class ApiRouter {
 	public $namespace = 'tokenly/v1';
+	public $controllers = array();
 
-	public function boot() {
+	public function __construct(
+		AuthController $auth_controller,
+		SettingsController $settings_controller
+	) {
+		$this->controllers = array(
+			'auth'       => $auth_controller,
+			'settings'   => $settings_controller,
+		);
+		global $tokenly_routes;
+		$tokenly_routes['api'] = $this->get_route_urls();
+	}
+
+	public function register() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
@@ -18,7 +31,7 @@ class ApiRouter {
 				'path' => '/authorize',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( new AuthController(), 'authorize' ),
+					'callback'            => array( $this->controllers['auth'], 'authorize' ),
 					'permission_callback' => '__return_true',
 				),
 			),
@@ -26,15 +39,25 @@ class ApiRouter {
 				'path' => '/authorize/callback',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( new AuthController(), 'authorize_callback' ),
+					'callback'            => array( $this->controllers['auth'], 'authorize_callback' ),
 					'permission_callback' => '__return_true',
+				),
+			),
+			'authorize-status' => array(
+				'path' => '/authorize/status',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['auth'], 'status' ),
+					'permission_callback' => function () {
+						return current_user_can( 'read' );
+					},
 				),
 			),
 			'settings-show' => array(
 				'path' => '/settings',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( new SettingsController(), 'show' ),
+					'callback'            => array( $this->controllers['settings'], 'show' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
@@ -44,7 +67,7 @@ class ApiRouter {
 				'path' => '/settings',
 				'args' => array(
 					'methods'             => 'PUT',
-					'callback'            => array( new SettingsController(), 'update' ),
+					'callback'            => array( $this->controllers['settings'], 'update' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
@@ -53,12 +76,14 @@ class ApiRouter {
 		];
 	}
 
-	public function get_route_url( $route_key ) {
+	public function get_route_urls() {
 		$routes = $this->get_routes();
-		$route = $routes[ $route_key ] ?? null;
-		if ( $route ) {
-			return get_site_url() . '/wp-json/' . $this->namespace . $route['path'];
+		$urls = array();
+		$base = get_site_url() . '/wp-json/' . $this->namespace;
+		foreach ( $routes as $key => $route ) {
+			$urls[ $key ] = $base . $route['path'];
 		}
+		return $urls;
 	}
 	
 	public function register_routes() {

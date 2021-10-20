@@ -2,6 +2,114 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./resources/js/pages/admin/connection.js":
+/*!************************************************!*\
+  !*** ./resources/js/pages/admin/connection.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const {
+  __
+} = wp.i18n;
+const {
+  Button,
+  TextControl,
+  Placeholder,
+  Spinner,
+  Panel,
+  PanelBody,
+  PanelRow
+} = wp.components;
+const {
+  render,
+  Component,
+  Fragment
+} = wp.element;
+
+class TokenpassConnectionPageComponent extends Component {
+  constructor() {
+    super(...arguments);
+    this.state = {
+      isAPILoaded: false,
+      isAPISaving: false,
+      status: false
+    };
+  }
+
+  componentDidMount() {
+    wp.api.loadPromise.then(() => {
+      if (false === this.state.isAPILoaded) {
+        this.getStatus().then(result => {
+          this.setState({
+            isAPILoaded: true
+          });
+        });
+      }
+    });
+  }
+
+  getStatus() {
+    return new Promise((resolve, reject) => {
+      const params = {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          'X-WP-Nonce': wpApiSettings.nonce
+        }
+      };
+      const url = '/wp-json/tokenly/v1/authorize/status';
+      fetch(url, params).then(response => response.json()).then(data => {
+        console.log(data);
+        this.setState({ ...((data === null || data === void 0 ? void 0 : data.status) && {
+            status: data.status
+          })
+        });
+        resolve(data);
+      }).catch(err => reject(err));
+    });
+  }
+
+  render() {
+    if (!this.state.isAPILoaded) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Placeholder, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Spinner, null));
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Connection"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+      header: "Connection Status"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Connection status: "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, "Connected")))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isPrimary: true,
+      isLarge: true,
+      href: "/wp-json/tokenly/v1/authorize",
+      disabled: this.state.status
+    }, __('Connect to Tokenpass'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isPrimary: true,
+      isLarge: true,
+      href: "/wp-json/tokenly/v1/authorize/disconnect",
+      disabled: !this.state.status
+    }, __('Disconnect from Tokenpass'))))));
+  }
+
+}
+
+function init() {
+  const postBody = document.querySelector('#tokenpass-connection-page-content');
+
+  if (postBody) {
+    const appContainer = document.createElement('div');
+    postBody.appendChild(appContainer);
+    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TokenpassConnectionPageComponent, null), appContainer);
+  }
+}
+
+/***/ }),
+
 /***/ "./resources/js/pages/admin/settings.js":
 /*!**********************************************!*\
   !*** ./resources/js/pages/admin/settings.js ***!
@@ -272,12 +380,15 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _resources_scss_admin_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
 /* harmony import */ var _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/settings.js */ "./resources/js/pages/admin/settings.js");
+/* harmony import */ var _resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/connection.js */ "./resources/js/pages/admin/connection.js");
+
 
 
 
 class Admin {
   init() {
     (0,_resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_1__.init)();
+    (0,_resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_2__.init)();
     this.registerRedirects();
   }
 

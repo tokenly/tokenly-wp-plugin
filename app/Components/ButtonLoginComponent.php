@@ -2,23 +2,24 @@
 
 namespace Tokenly\Wp\Components;
 
-use Tokenly\Wp\Routes\ApiRouter;
+use Tokenly\Wp\Components\Component;
+use Twig\Environment;
 
-class ButtonLoginComponent {
-	public $url;
-	public $api_router;
-	
-	public function __construct() {
-		$this->api_router = new ApiRouter();
-		$this->url = $this->api_router->get_route_url( 'authorize' );
+class ButtonLoginComponent extends Component {
+	public function __construct( Environment $twig ) {
+		parent::__construct( $twig );
 	}
 
 	public function render() {
-		$html = "
-			<div class='tokenpass-login-container'>
-				<a href='{$this->url}' class='button tokenpass-login'>Login with Tokenpass</a>
-			</div>
-		";
+		global $tokenly_routes;
+		$api_routes = $tokenly_routes['api'];
+		$url;
+		if ( $api_routes ) {
+			$url = $api_routes['authorize'] ?? null;
+		}
+		$html = $this->twig->render( 'components/ButtonLoginComponent.html', array(
+			'url' => $url,
+		) );
 		return $html;
 	}
 }

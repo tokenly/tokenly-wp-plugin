@@ -2,24 +2,30 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
-use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\Wp\Views\Admin\SettingsView;
+use Tokenly\Wp\Controllers\Web\WebController;
 
-class SettingsController {
-	public $api_router;
+class SettingsController extends WebController {
+	public $settings_view;
 
-	public function __construct() {
-		$this->api_router = new ApiRouter();
+	public function __construct( SettingsView $settings_view ) {
+		$this->settings_view = $settings_view;
 	}
 
 	public function show() {
 		$data = array();
 		$app_homepage_url = 'https://';
 		$app_homepage_url .= $_SERVER['HTTP_HOST'] . '/tokenly';
-		$data['app_homepage_url'] = $app_homepage_url;
-		$client_auth_url = $this->api_router->get_route_url( 'authorize-callback' );
-		$data['client_auth_url'] = $client_auth_url;
-		$view = new SettingsView( $data );
-		echo $view->render();
+		global $tokenly_routes;
+		$api_routes = $tokenly_routes['api'] ?? null;
+		if ( !$api_routes ) {
+			return;
+		}
+		$client_auth_url = $api_routes['authorize-callback'] ?? null;
+		$render = $this->settings_view->render( array(
+			'app_homepage_url' => $app_homepage_url,
+			'client_auth_url'  => $client_auth_url,
+		) );
+		echo $render;
 	}
 }

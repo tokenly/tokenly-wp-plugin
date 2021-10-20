@@ -9,8 +9,17 @@ class WebRouter {
 	public $vars = array();
 	public $routes = array();
 	public $callbacks = array();
-	
-	public function boot() {
+	public $controllers = array();
+
+	public function __construct(
+		UserController $user_controller
+	) {
+		$this->controllers = array(
+			'user' => $user_controller,
+		);
+	}
+
+	public function register() {
 		$this->register_routes();
 	}
 
@@ -23,7 +32,7 @@ class WebRouter {
 				'vars'		=> array(
 					'tokenly_user_id',
 				),
-				'callback'	=> array( new UserController(), 'show' ),
+				'callback'	=> array( $this->controllers['user'], 'show' ),
 			),
 		);
 	}
