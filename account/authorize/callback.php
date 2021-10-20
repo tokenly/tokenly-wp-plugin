@@ -13,7 +13,7 @@ $path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
 include($path.'/wp-load.php');
 
 $current_web_url =  "https://";;
-$current_web_url .=  $_SERVER['HTTP_HOST'];
+$current_web_url .=  $_SERVER['HTTP_HOST'].'';
 
 $client_id = $client_id_0;
 $client_secret = $client_secret_1;
@@ -151,4 +151,5 @@ if(isset($authorization_code)){
 }else{
   echo "<script> alert('ERROR !! Please try again.');</script>";
 }
+// get_footer();
 ?>

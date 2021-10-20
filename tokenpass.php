@@ -38,9 +38,20 @@ function tk_activation_function(){
         'Tokenly Member', // Display name of the role.
         array( 
             'read' => true, 
-            'tk_manage_options_user' => true
+            'tk_manage_options_user' => true,
+            'read'         => true,
+            'read_post' => true,
+            'edit_posts'   => true,
+            'delete_post' => true,
+            'publish_post' => true,
+            'publish_post' => true,
+            'upload_files' => true,
+            'delete_pages' => true,
+            'edit_pages' => true,
+            'publish_pages' => true,
+            'edit_theme_options' => true,            
         ) 
-        );
+    );
 }
 
 register_activation_hook(__FILE__, 'tk_activation_function');
