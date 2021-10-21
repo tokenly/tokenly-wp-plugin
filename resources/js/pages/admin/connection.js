@@ -2,7 +2,6 @@ const { __ } = wp.i18n;
 
 const {
 	Button,
-	TextControl,
 	Placeholder,
 	Spinner,
 	Panel,

@@ -30,12 +30,36 @@ class UserService {
 			}
 		}
 	}
+	
+	public function filter_balances( $balances ) {
+		$settings = get_option( 'tokenpass_whitelist', array() );
+		$use_whitelist = $settings['use_whitelist'] ?? null;
+		if ( $use_whitelist && $use_whitelist === true ) {
+			$whitelist = $settings['whitelist'] ?? null;
+			$balances_filtered = array();
+			if ( $whitelist ) {
+				foreach ( $whitelist as $whitelist_rule ) {
+					$address = $whitelist_rule['address'] ?? null;
+					$index = $whitelist_rule['index'] ?? null;
+					$whitelist_rule = implode( ':', array_filter( array( $address, $index ) ) );
+					$search = array_search( $whitelist_rule, array_column( $balances, 'asset' ) );
+					if ( $search !== false ) {
+						$balances_filtered[] = $balances[ $search ];
+					}
+				}
+			}
+			return $balances_filtered;
+		}
+		return $balances;
+	}
 
 	public function get_inventory( $user_id ) {
 		$oauth_token = get_user_meta( $user_id, 'tokenly_oauth_token' );
 		if ( $oauth_token ) {		
 			$oauth_token = $oauth_token[0];
 			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+			// error_log(print_r($balances, true));
+			$balances = $this->filter_balances( $balances );
 			return $balances;
 		}
 	}

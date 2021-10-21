@@ -2,12 +2,14 @@ import '/resources/scss/admin.scss';
 import {init as initCommon} from '/resources/js/common.js';
 import {init as initTokenpassSettingsPage} from '/resources/js/pages/admin/settings.js';
 import {init as initTokenpassConnectionPage} from '/resources/js/pages/admin/connection.js';
+import {init as initTokenpassWhitelistPage} from '/resources/js/pages/admin/whitelist.js';
 
 class Admin {
 	init() {
 		initCommon();
 		initTokenpassSettingsPage();
 		initTokenpassConnectionPage();
+		initTokenpassWhitelistPage();
 		this.registerRedirects();
 	}
 

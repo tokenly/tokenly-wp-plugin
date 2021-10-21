@@ -74,8 +74,8 @@ class TokenpassSettingsPageComponent extends Component {
 			},
 			body: JSON.stringify( {
 				settings: {
-					...( this.state.clientId ) && { 'client_id': this.state.clientId },
-					...( this.state.clientSecret ) && { 'client_secret': this.state.clientSecret },
+					...{ 'client_id': this.state.clientId ?? '' },
+					...{ 'client_secret': this.state.clientSecret ?? '' },
 				}
 			} ),
 		 }

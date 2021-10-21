@@ -5,11 +5,14 @@
 	border-radius: 12px;
 	padding: 18px;
 	box-shadow: 12px 12px 8px 0px rgba(0, 0, 0, 0.025);
+	min-height: 150px;
+	display: flex;
+	flex-direction: column;
 	.token-name {
 		font-size: 1.125rem;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		word-wrap: break-word;
 		font-weight: 700;
+		flex: 1;
 	}
 	@include md {
 

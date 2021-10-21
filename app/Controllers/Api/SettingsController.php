@@ -3,6 +3,8 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 class SettingsController {
+	public $update_schema;
+	
 	public function show( $request ) {
 		$settings = get_option( 'tokenpass_settings', array() );
 		return $settings;
@@ -20,4 +22,24 @@ class SettingsController {
 			'status' => 'Settings were updated successfully.',
 		);
 	}
+	
+	public function update_get_schema() {
+        if ( $this->update_schema ) {
+            return $this->update_schema;
+        }
+        $this->update_schema = array(
+            '$schema'              => 'http://json-schema.org/draft-04/schema#',
+            'title'                => 'settings-update',
+            'type'                 => 'object',
+            'properties'           => array(
+                'client_id' => array(
+                    'type'         => 'string',
+                ),
+                'client_secret' => array(
+                    'type'         => 'string',
+                ),
+            ),
+        );
+        return $this->update_schema;
+    }
 }

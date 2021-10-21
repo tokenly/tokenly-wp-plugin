@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Controllers\Api\AuthController;
 use Tokenly\Wp\Controllers\Api\SettingsController;
+use Tokenly\Wp\Controllers\Api\WhitelistController;
 
 class ApiRouter {
 	public $namespace = 'tokenly/v1';
@@ -11,11 +12,13 @@ class ApiRouter {
 
 	public function __construct(
 		AuthController $auth_controller,
-		SettingsController $settings_controller
+		SettingsController $settings_controller,
+		WhitelistController $whitelist_controller
 	) {
 		$this->controllers = array(
 			'auth'       => $auth_controller,
 			'settings'   => $settings_controller,
+			'whitelist'  => $whitelist_controller,
 		);
 		global $tokenly_routes;
 		$tokenly_routes['api'] = $this->get_route_urls();
@@ -74,6 +77,27 @@ class ApiRouter {
 						return current_user_can( 'manage_options' );
 					},
 				),
+				'schema' => array( $this->controllers['settings'], 'get_update_schema' ),
+			),
+			'whitelist-show' => array(
+				'path' => '/whitelist',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['whitelist'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'whitelist-update' => array(
+				'path' => '/whitelist',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['whitelist'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
 			),
 		];
 	}
@@ -91,7 +115,17 @@ class ApiRouter {
 	public function register_routes() {
 		$routes = $this->get_routes();
 		foreach ( $routes as $route ) {
-			register_rest_route( $this->namespace, $route['path'], $route['args'] );
+			$path = $route['path'] ?? null;
+			$args = $route['args'] ?? null;
+			$schema = $route['schema'] ?? null;
+			register_rest_route(
+				$this->namespace,
+				$path,
+				array(
+					$args,
+					'schema' => $schema,
+				)
+			);
 		}
 	}
 }
