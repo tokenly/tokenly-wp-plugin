@@ -1,4 +1,4 @@
-import {init as initButtonLoginComponent} from '/app/Components/ButtonLoginComponent.js';
+
 
 class Common {
 	init() {
