@@ -1,3 +1,5 @@
+import Page from '/resources/js/pages/admin/page.js';
+
 const { __ } = wp.i18n;
 
 const {
@@ -11,36 +13,21 @@ const {
 } = wp.components;
 
 const {
-	render,
 	Component,
 	Fragment
 } = wp.element;
 
-class TokenpassSettingsPageComponent extends Component {
-	constructor() {
-		super( ...arguments );
+export default class SettingsPage extends Page {
+	constructor( props ) {
+		super( props );
 		this.updateSettings = this.updateSettings.bind( this );
-		this.state = {
-			isAPILoaded: false,
-			isAPISaving: false,
+		this.state = Object.assign( {
 			clientId: null,
 			clientSecret: null,
-		};
+		}, this.state );
 	}
 
-	componentDidMount() {
-		wp.api.loadPromise.then( () => {
-			if ( false === this.state.isAPILoaded ) {
-				this.getSettings().then(result => {
-					this.setState({
-						isAPILoaded: true,
-					});
-				});
-			}
-		});
-	}
-
-	getSettings() {
+	getProps() {
 		return new Promise((resolve, reject) => {
 			const params = {
 				method: 'GET',
@@ -113,8 +100,8 @@ class TokenpassSettingsPageComponent extends Component {
 							<div class='tk_app_details'>
 								<h3>Register Client Application</h3>
 								<span> <b>CLIENT NAME: </b> Random Input </span><br/>
-								<span> <b>APP HOMEPAGE URL: </b> <a href={appHomepageUrl} target="_blank">{appHomepageUrl}</a> </span><br/>
-								<span> <b>CLIENT AUTHORIZATION REDIRECT URL: </b> <a href={clientAuthUrl} target="_blank">{clientAuthUrl}</a> </span>
+								<span> <b>APP HOMEPAGE URL: </b> <a href={this.state.props.app_homepage_url} target="_blank">{this.state.props.app_homepage_url}</a> </span><br/>
+								<span> <b>CLIENT AUTHORIZATION REDIRECT URL: </b> <a href={this.state.props.client_auth_url} target="_blank">{this.state.props.client_auth_url}</a> </span>
 							</div>
 						</PanelRow>
 						<PanelRow className="api-input-container">
@@ -162,18 +149,3 @@ class TokenpassSettingsPageComponent extends Component {
 		);
 	}
 }
-
-export function init() {
-	const postBody = document.querySelector('#tokenpass-settings-page-content');
-	if ( postBody ) {
-		const appContainer = document.createElement( 'div' );
-		postBody.appendChild( appContainer );
-		
-		render(
-			<TokenpassSettingsPageComponent/>,
-			appContainer
-		);
-	}
-}
- 
-

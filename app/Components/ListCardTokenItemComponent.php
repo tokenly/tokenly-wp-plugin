@@ -24,7 +24,7 @@ class ListCardTokenItemComponent extends Component {
 		foreach ( $balances as $balance ) {
 			$html_token_items .= $this->card_token_item_component->render( array( 'balance' => $balance, ) );
 		}
-		$html = $this->twig->render( 'components/ListCardTokenItemComponent.html', array(
+		$html = $this->twig->render( 'components/ListCardTokenItemComponent.twig', array(
 			'token_items' => $html_token_items,
 		) );
 		return $html;

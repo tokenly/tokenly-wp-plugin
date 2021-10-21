@@ -38,7 +38,7 @@ class UserView extends View {
 				'balances' => $this->balances,
 			)
 		);
-		$html = $this->twig->render( 'user.html', array(
+		$html = $this->twig->render( 'user.twig', array(
 			'header' => $html_header,
 			'footer' => $html_footer,
 			'block_token_list' => $html_block_token_list,

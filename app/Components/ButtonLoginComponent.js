@@ -5,7 +5,6 @@ class ButtonLoginComponent {
 	}
 
 	connect() {
-		console.log('click');
 		return new Promise((resolve, reject) => {
 			const params = {
 				method: 'POST',

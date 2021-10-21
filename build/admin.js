@@ -19,7 +19,6 @@ class ButtonLoginComponent {
   }
 
   connect() {
-    console.log('click');
     return new Promise((resolve, reject) => {
       const params = {
         method: 'POST',
@@ -59,29 +58,21 @@ function init() {
 
 /***/ }),
 
-/***/ "./resources/js/common.js":
-/*!********************************!*\
-  !*** ./resources/js/common.js ***!
-  \********************************/
+/***/ "./resources/js/app.js":
+/*!*****************************!*\
+  !*** ./resources/js/app.js ***!
+  \*****************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */   "default": function() { return /* binding */ App; }
 /* harmony export */ });
 /* harmony import */ var _app_Components_ButtonLoginComponent_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../app/Components/ButtonLoginComponent.js */ "./app/Components/ButtonLoginComponent.js");
 
+class App {
+  constructor() {}
 
-class Common {
-  init() {
-    (0,_app_Components_ButtonLoginComponent_js__WEBPACK_IMPORTED_MODULE_0__.init)();
-  }
-
-}
-
-function init() {
-  const common = new Common();
-  common.init();
 }
 
 /***/ }),
@@ -94,10 +85,14 @@ function init() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */   "default": function() { return /* binding */ ConnectionPage; }
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _resources_js_pages_admin_page_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/page.js */ "./resources/js/pages/admin/page.js");
+
+
 
 const {
   __
@@ -110,16 +105,13 @@ const {
   PanelBody,
   PanelRow
 } = wp.components;
-const {
-  render,
-  Component,
-  Fragment
-} = wp.element;
-
-class TokenpassConnectionPageComponent extends Component {
-  constructor() {
+class ConnectionPage extends _resources_js_pages_admin_page_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
+  constructor(authService) {
     super(...arguments);
-    this.connect = this.connect.bind(this);
+
+    (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(this, "authService", void 0);
+
+    this.authService = authService;
     this.state = {
       isAPILoaded: false,
       isAPISaving: false,
@@ -127,36 +119,16 @@ class TokenpassConnectionPageComponent extends Component {
     };
   }
 
-  componentDidMount() {
-    wp.api.loadPromise.then(() => {
-      if (false === this.state.isAPILoaded) {
-        this.getStatus().then(result => {
-          this.setState({
-            isAPILoaded: true
-          });
-        });
-      }
-    });
-  }
-
-  getStatus() {
+  getProps() {
     return new Promise((resolve, reject) => {
-      const params = {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-          'X-WP-Nonce': wpApiSettings.nonce
-        }
-      };
-      const url = '/wp-json/tokenly/v1/authorize';
-      fetch(url, params).then(response => response.json()).then(data => {
-        console.log(data);
-        this.setState({ ...((data === null || data === void 0 ? void 0 : data.status) && {
+      this.authService.getStatus().then(data => {
+        resolve({ ...((data === null || data === void 0 ? void 0 : data.status) && {
             status: data.status
           })
         });
-        resolve(data);
-      }).catch(err => reject(err));
+      }).catch(error => {
+        reject(error);
+      });
     });
   }
 
@@ -168,78 +140,78 @@ class TokenpassConnectionPageComponent extends Component {
     }
   }
 
-  connect() {
-    return new Promise((resolve, reject) => {
-      const params = {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-          'X-WP-Nonce': wpApiSettings.nonce
-        }
-      };
-      const url = '/wp-json/tokenly/v1/authorize';
-      fetch(url, params).then(response => response.json()).then(data => {
-        var _data$url;
-
-        const redirectUrl = (_data$url = data.url) !== null && _data$url !== void 0 ? _data$url : null;
-
-        if (redirectUrl) {
-          window.location = redirectUrl;
-        }
-      }).catch(err => reject(err));
-    });
-  }
-
-  disconnect() {
-    return new Promise((resolve, reject) => {
-      const params = {
-        method: 'DELETE',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-          'X-WP-Nonce': wpApiSettings.nonce
-        }
-      };
-      const url = '/wp-json/tokenly/v1/authorize';
-      fetch(url, params).then(response => response.json()).then(data => {
-        window.location.reload(false);
-      }).catch(err => reject(err));
-    });
-  }
-
   render() {
     if (!this.state.isAPILoaded) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Placeholder, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Spinner, null));
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Placeholder, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Spinner, null));
     }
 
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Connection"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("h2", null, "Connection"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Panel, {
       header: "Connection Status"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Connection status: "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, this.getStatusText())))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PanelBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", null, "Connection status: "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("strong", null, this.getStatusText())))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
       disabled: this.state.status,
       onClick: () => {
-        this.connect();
+        this.authService.connect();
       }
-    }, __('Connect to Tokenpass'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }, __('Connect to Tokenpass'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
       disabled: !this.state.status,
       onClick: () => {
-        this.disconnect();
+        this.authService.disconnect();
       }
     }, __('Disconnect from Tokenpass'))))));
   }
 
 }
 
-function init() {
-  const postBody = document.querySelector('#tokenpass-connection-page-content');
+/***/ }),
 
-  if (postBody) {
-    const appContainer = document.createElement('div');
-    postBody.appendChild(appContainer);
-    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TokenpassConnectionPageComponent, null), appContainer);
+/***/ "./resources/js/pages/admin/page.js":
+/*!******************************************!*\
+  !*** ./resources/js/pages/admin/page.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ Page; }
+/* harmony export */ });
+const Component = wp.element.Component;
+class Page extends Component {
+  constructor(props) {
+    super();
+    this.state = {
+      isAPILoaded: false,
+      isAPISaving: false,
+      props: props.props
+    };
   }
+
+  componentDidMount() {
+    wp.api.loadPromise.then(() => {
+      if (false === this.state.isAPILoaded) {
+        this.getProps().then(data => {
+          let newState = Object.assign({}, this.state);
+          newState = Object.assign(newState, { ...data,
+            isAPILoaded: true
+          });
+          this.setState(newState);
+        });
+      }
+    });
+  }
+
+  getProps() {
+    return new Promise((resolve, reject) => {
+      resolve({});
+    });
+  }
+
+  render() {//
+  }
+
 }
 
 /***/ }),
@@ -252,10 +224,12 @@ function init() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */   "default": function() { return /* binding */ SettingsPage; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _resources_js_pages_admin_page_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/page.js */ "./resources/js/pages/admin/page.js");
+
 
 const {
   __
@@ -270,36 +244,20 @@ const {
   PanelRow
 } = wp.components;
 const {
-  render,
   Component,
   Fragment
 } = wp.element;
-
-class TokenpassSettingsPageComponent extends Component {
-  constructor() {
-    super(...arguments);
+class SettingsPage extends _resources_js_pages_admin_page_js__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(props) {
+    super(props);
     this.updateSettings = this.updateSettings.bind(this);
-    this.state = {
-      isAPILoaded: false,
-      isAPISaving: false,
+    this.state = Object.assign({
       clientId: null,
       clientSecret: null
-    };
+    }, this.state);
   }
 
-  componentDidMount() {
-    wp.api.loadPromise.then(() => {
-      if (false === this.state.isAPILoaded) {
-        this.getSettings().then(result => {
-          this.setState({
-            isAPILoaded: true
-          });
-        });
-      }
-    });
-  }
-
-  getSettings() {
+  getProps() {
     return new Promise((resolve, reject) => {
       const params = {
         method: 'GET',
@@ -368,12 +326,12 @@ class TokenpassSettingsPageComponent extends Component {
     }, "Tokenpass Developers")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "2. Use below details to create App"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       class: "tk_app_details"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, "Register Client Application"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "CLIENT NAME: "), " Random Input "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "APP HOMEPAGE URL: "), " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-      href: appHomepageUrl,
+      href: this.state.props.app_homepage_url,
       target: "_blank"
-    }, appHomepageUrl), " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "CLIENT AUTHORIZATION REDIRECT URL: "), " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-      href: clientAuthUrl,
+    }, this.state.props.app_homepage_url), " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "CLIENT AUTHORIZATION REDIRECT URL: "), " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+      href: this.state.props.client_auth_url,
       target: "_blank"
-    }, clientAuthUrl), " "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, {
+    }, this.state.props.client_auth_url), " "))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, {
       className: "api-input-container"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
       label: "Client ID",
@@ -405,16 +363,6 @@ class TokenpassSettingsPageComponent extends Component {
 
 }
 
-function init() {
-  const postBody = document.querySelector('#tokenpass-settings-page-content');
-
-  if (postBody) {
-    const appContainer = document.createElement('div');
-    postBody.appendChild(appContainer);
-    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TokenpassSettingsPageComponent, null), appContainer);
-  }
-}
-
 /***/ }),
 
 /***/ "./resources/js/pages/admin/whitelist.js":
@@ -425,10 +373,12 @@ function init() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "init": function() { return /* binding */ init; }
+/* harmony export */   "default": function() { return /* binding */ WhitelistPage; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _resources_js_pages_admin_page_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/page.js */ "./resources/js/pages/admin/page.js");
+
 
 const {
   __
@@ -447,8 +397,6 @@ const {
 } = wp.components;
 const Spacer = wp.components.__experimentalSpacer;
 const {
-  render,
-  useEffect,
   Component,
   Fragment
 } = wp.element;
@@ -526,7 +474,7 @@ class Whitelist extends Component {
 
 }
 
-class TokenpassWhitelistPageComponent extends Component {
+class WhitelistPage extends _resources_js_pages_admin_page_js__WEBPACK_IMPORTED_MODULE_1__["default"] {
   constructor() {
     super(...arguments);
     this.getWhitelist = this.getWhitelist.bind(this);
@@ -543,19 +491,7 @@ class TokenpassWhitelistPageComponent extends Component {
     };
   }
 
-  componentDidMount() {
-    wp.api.loadPromise.then(() => {
-      if (false === this.state.isAPILoaded) {
-        this.getWhitelist().then(result => {
-          this.setState({
-            isAPILoaded: true
-          });
-        });
-      }
-    });
-  }
-
-  getWhitelist() {
+  getProps() {
     return new Promise((resolve, reject) => {
       const params = {
         method: 'GET',
@@ -568,8 +504,7 @@ class TokenpassWhitelistPageComponent extends Component {
       fetch(url, params).then(response => response.json()).then(data => {
         var _data$use_whitelist;
 
-        console.log(data);
-        this.setState({ ...{
+        resolve({ ...{
             useWhitelist: (_data$use_whitelist = data.use_whitelist) !== null && _data$use_whitelist !== void 0 ? _data$use_whitelist : false
           },
           ...((data === null || data === void 0 ? void 0 : data.whitelist) && {
@@ -657,16 +592,6 @@ class TokenpassWhitelistPageComponent extends Component {
 
 }
 
-function init() {
-  const postBody = document.querySelector('#tokenpass-whitelist-page-content');
-
-  if (postBody) {
-    const appContainer = document.createElement('div');
-    postBody.appendChild(appContainer);
-    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TokenpassWhitelistPageComponent, null), appContainer);
-  }
-}
-
 /***/ }),
 
 /***/ "./resources/scss/admin.scss":
@@ -688,6 +613,33 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module) {
 
 module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ _defineProperty; }
+/* harmony export */ });
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
 
 /***/ })
 
@@ -766,30 +718,61 @@ var __webpack_exports__ = {};
   !*** ./resources/js/admin.js ***!
   \*******************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _resources_scss_admin_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
-/* harmony import */ var _resources_js_common_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/js/common.js */ "./resources/js/common.js");
-/* harmony import */ var _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/settings.js */ "./resources/js/pages/admin/settings.js");
-/* harmony import */ var _resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/connection.js */ "./resources/js/pages/admin/connection.js");
-/* harmony import */ var _resources_js_pages_admin_whitelist_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/whitelist.js */ "./resources/js/pages/admin/whitelist.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _resources_scss_admin_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
+/* harmony import */ var _resources_js_app_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../../resources/js/app.js */ "./resources/js/app.js");
+/* harmony import */ var _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/settings.js */ "./resources/js/pages/admin/settings.js");
+/* harmony import */ var _resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/connection.js */ "./resources/js/pages/admin/connection.js");
+/* harmony import */ var _resources_js_pages_admin_whitelist_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../../../../../resources/js/pages/admin/whitelist.js */ "./resources/js/pages/admin/whitelist.js");
 
 
 
 
 
 
-class Admin {
-  init() {
-    (0,_resources_js_common_js__WEBPACK_IMPORTED_MODULE_1__.init)();
-    (0,_resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_2__.init)();
-    (0,_resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_3__.init)();
-    (0,_resources_js_pages_admin_whitelist_js__WEBPACK_IMPORTED_MODULE_4__.init)();
-    this.registerRedirects();
+const render = wp.element.render;
+
+class AdminApp extends _resources_js_app_js__WEBPACK_IMPORTED_MODULE_2__["default"] {
+  constructor() {
+    super();
+    this.pageElement = document.querySelector('.tokenpass-admin-page');
+
+    if (this.pageElement) {
+      this.view = this.pageElement.dataset.view;
+      this.props = JSON.parse(this.pageElement.dataset.props);
+      const views = this.getViews();
+      const ViewComponent = views[this.view];
+      this.render(ViewComponent);
+    }
+  }
+
+  getViews() {
+    return {
+      settings: _resources_js_pages_admin_settings_js__WEBPACK_IMPORTED_MODULE_3__["default"],
+      connection: _resources_js_pages_admin_connection_js__WEBPACK_IMPORTED_MODULE_4__["default"],
+      whitelist: _resources_js_pages_admin_whitelist_js__WEBPACK_IMPORTED_MODULE_5__["default"]
+    };
+  }
+
+  render(ViewComponent) {
+    if (!this.pageElement) {
+      return;
+    }
+
+    const pageContainer = document.createElement('div');
+    this.pageElement.appendChild(pageContainer);
+    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ViewComponent, {
+      props: this.props
+    }), pageContainer);
   }
 
   registerRedirects() {
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.adminRedirects) {
-        window.adminRedirects.forEach(redirect => {
+      var _window;
+
+      if ((_window = window) !== null && _window !== void 0 && _window.tokenpassRedirects) {
+        window.tokenpassRedirects.forEach(redirect => {
           const element = document.querySelector(`[href='${redirect.from}']`);
 
           if (element) {
@@ -804,8 +787,7 @@ class Admin {
 }
 
 (function () {
-  const admin = new Admin();
-  admin.init();
+  const admin = new AdminApp();
 })();
 }();
 /******/ })()

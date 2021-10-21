@@ -43,7 +43,7 @@ class AdminRouter {
 		$id = get_current_user_id();
 		echo "	
 			<script type='text/javascript'>
-				window.adminRedirects = [
+				window.tokenpassRedirects = [
 					{
 						from: 'tokenpass-inventory',
 						to: '/tokenpass-user/{$id}',

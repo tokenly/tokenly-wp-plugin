@@ -1,3 +1,5 @@
+import Page from '/resources/js/pages/admin/page.js';
+
 const { __ } = wp.i18n;
 
 const {
@@ -16,8 +18,6 @@ const {
 const Spacer = wp.components.__experimentalSpacer;
 
 const {
-	render,
-	useEffect,
 	Component,
 	Fragment
 } = wp.element;
@@ -104,7 +104,7 @@ class Whitelist extends Component {
 	}
 }
 
-class TokenpassWhitelistPageComponent extends Component {
+export default class WhitelistPage extends Page {
 	constructor() {
 		super( ...arguments );
 		this.getWhitelist = this.getWhitelist.bind( this );
@@ -123,20 +123,8 @@ class TokenpassWhitelistPageComponent extends Component {
 		};
 	}
 
-	componentDidMount() {
-		wp.api.loadPromise.then( () => {
-			if ( false === this.state.isAPILoaded ) {
-				this.getWhitelist().then(result => {
-					this.setState({
-						isAPILoaded: true,
-					});
-				});
-			}
-		});
-	}
-
-	getWhitelist() {
-		return new Promise((resolve, reject) => {
+	getProps() {
+		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
 				headers: {
@@ -148,15 +136,14 @@ class TokenpassWhitelistPageComponent extends Component {
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( data => {
-					console.log(data);
-					this.setState( {
+					resolve( {
 						... { useWhitelist: data.use_whitelist ?? false },
 						...( data?.whitelist ) && { whitelist: data.whitelist },
 					} );
 					resolve( data );
 				} )
 				.catch( err => reject( err ) );
-		});
+		} );
 	}
 	
 	updateWhitelist() {
@@ -197,7 +184,7 @@ class TokenpassWhitelistPageComponent extends Component {
 	}
 
 	render() {
-		if ( ! this.state.isAPILoaded ) {
+		if ( !this.state.isAPILoaded ) {
 			return (
 				<Placeholder>
 					<Spinner/>
@@ -258,19 +245,6 @@ class TokenpassWhitelistPageComponent extends Component {
 					</PanelBody>
 				</Panel>
 			</Fragment>
-		);
-	}
-}
-
-export function init() {
-	const postBody = document.querySelector('#tokenpass-whitelist-page-content');
-	if ( postBody ) {
-		const appContainer = document.createElement( 'div' );
-		postBody.appendChild( appContainer );
-		
-		render(
-			<TokenpassWhitelistPageComponent/>,
-			appContainer
 		);
 	}
 }

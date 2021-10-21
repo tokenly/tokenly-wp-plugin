@@ -11,8 +11,8 @@ class WhitelistView extends View {
 	}
 
 	public function render( $data ) {
-		$html = $this->twig->render( 'admin/whitelist.html', array(
-			//
+		$html = $this->twig->render( 'admin.twig', array(
+			'view' => 'whitelist',
 		) );
 		return $html;
 	}

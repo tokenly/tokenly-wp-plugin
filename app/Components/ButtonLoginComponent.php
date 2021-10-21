@@ -17,7 +17,7 @@ class ButtonLoginComponent extends Component {
 		if ( $api_routes ) {
 			$url = $api_routes['authorize'] ?? null;
 		}
-		$html = $this->twig->render( 'components/ButtonLoginComponent.html', array(
+		$html = $this->twig->render( 'components/ButtonLoginComponent.twig', array(
 			'url' => $url,
 		) );
 		return $html;

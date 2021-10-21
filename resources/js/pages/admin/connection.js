@@ -1,3 +1,5 @@
+import Page from '/resources/js/pages/admin/page.js';
+
 const { __ } = wp.i18n;
 
 const {
@@ -9,16 +11,12 @@ const {
 	PanelRow,
 } = wp.components;
 
-const {
-	render,
-	Component,
-	Fragment
-} = wp.element;
-
-class TokenpassConnectionPageComponent extends Component {
-	constructor() {
+export default class ConnectionPage extends Page {
+	authService;
+	
+	constructor( authService ) {
 		super( ...arguments );
-		this.connect = this.connect.bind( this );
+		this.authService = authService;
 		this.state = {
 			isAPILoaded: false,
 			isAPISaving: false,
@@ -26,39 +24,16 @@ class TokenpassConnectionPageComponent extends Component {
 		};
 	}
 
-	componentDidMount() {
-		wp.api.loadPromise.then( () => {
-			if ( false === this.state.isAPILoaded ) {
-				this.getStatus().then(result => {
-					this.setState({
-						isAPILoaded: true,
-					});
-				});
-			}
-		});
-	}
-
-	getStatus() {
-		return new Promise((resolve, reject) => {
-			const params = {
-				method: 'GET',
-				headers: {
-					'Content-type': 'application/json; charset=UTF-8',
-					'X-WP-Nonce': wpApiSettings.nonce,
-				},
-			}
-			const url = '/wp-json/tokenly/v1/authorize';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( data => {
-					console.log(data);
-					this.setState( {
-						...(data?.status) && {status: data.status},
-					} );
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
-		});
+	getProps() {
+		return new Promise( ( resolve, reject ) => {
+			this.authService.getStatus().then( data => {
+				resolve ( {
+					...( data?.status ) && { status: data.status },
+				} );
+			} ).catch( error => {
+				reject( error );
+			});
+		} );
 	}
 	
 	getStatusText() {
@@ -69,47 +44,6 @@ class TokenpassConnectionPageComponent extends Component {
 		}
 	}
 
-	connect() {
-		return new Promise((resolve, reject) => {
-			const params = {
-				method: 'POST',
-				headers: {
-					'Content-type': 'application/json; charset=UTF-8',
-					'X-WP-Nonce': wpApiSettings.nonce,
-				},
-			}
-			const url = '/wp-json/tokenly/v1/authorize';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( data => {
-					const redirectUrl = data.url ?? null;
-					if (redirectUrl) {
-						window.location = redirectUrl;
-					}	
-				} )
-				.catch( err => reject( err ) );
-		});
-	}
-	
-	disconnect() {
-		return new Promise((resolve, reject) => {
-			const params = {
-				method: 'DELETE',
-				headers: {
-					'Content-type': 'application/json; charset=UTF-8',
-					'X-WP-Nonce': wpApiSettings.nonce,
-				},
-			}
-			const url = '/wp-json/tokenly/v1/authorize';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( data => {
-					window.location.reload( false );
-				} )
-				.catch( err => reject( err ) );
-		});
-	}
-
 	render() {
 		if ( ! this.state.isAPILoaded ) {
 			return (
@@ -118,7 +52,6 @@ class TokenpassConnectionPageComponent extends Component {
 				</Placeholder>
 			);
 		}
-
 		return (
 			<Fragment>
 				<h2>Connection</h2> 
@@ -135,7 +68,7 @@ class TokenpassConnectionPageComponent extends Component {
 								isLarge
 								disabled={ this.state.status }
 								onClick={ () => {
-									this.connect();
+									this.authService.connect();
 								}}
 							>
 								{ __( 'Connect to Tokenpass' ) }
@@ -147,7 +80,7 @@ class TokenpassConnectionPageComponent extends Component {
 								isLarge
 								disabled={ !this.state.status }
 								onClick={ () => {
-									this.disconnect();
+									this.authService.disconnect();
 								}}
 							>
 								{ __( 'Disconnect from Tokenpass' ) }
@@ -156,19 +89,6 @@ class TokenpassConnectionPageComponent extends Component {
 					</PanelBody>
 				</Panel>
 			</Fragment>
-		);
-	}
-}
-
-export function init() {
-	const postBody = document.querySelector('#tokenpass-connection-page-content');
-	if ( postBody ) {
-		const appContainer = document.createElement( 'div' );
-		postBody.appendChild( appContainer );
-		
-		render(
-			<TokenpassConnectionPageComponent/>,
-			appContainer
 		);
 	}
 }
