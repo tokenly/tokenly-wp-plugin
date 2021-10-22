@@ -1,10 +1,14 @@
+import { appContainer } from "./inversify.config";
 import '/resources/scss/admin.scss';
+import { Provider } from 'inversify-react';
+import * as React from 'react';
 import App from './app';
-import SettingsPage from './pages/admin/settings';
-import ConnectionPage from './pages/admin/connection';
-import WhitelistPage from './pages/admin/whitelist';
+import SettingsPage from './admin/pages/SettingsPage';
+import ConnectionPage from './admin/pages/ConnectionPage';
+import WhitelistPage from './admin/pages/WhitelistPage';
 
 declare const wp: any;
+declare const document: any;
 declare const window: any;
 
 const render = wp.element.render;
@@ -15,20 +19,22 @@ interface Redirect {
 } 
 
 class AdminApp extends App {
-	pageElement: HTMLElement;
+	container = appContainer;
+	pageElement: any;
 	view: string;
-	props: object;
+	pageData: object;
 	
 	constructor() {
 		super();
 		this.pageElement = document.querySelector( '.tokenpass-admin-page' );
 		if ( this.pageElement ) {
 			this.view = this.pageElement.dataset.view;
-			this.props = JSON.parse( this.pageElement.dataset.props );
+			this.pageData = JSON.parse( this.pageElement.dataset.props );
 			const views = this.getViews();
-			const ViewComponent = views[this.view];
+			const ViewComponent = views[ this.view ];
 			this.render( ViewComponent );
 		}
+		this.registerRedirects();
 	}
 	
 	getViews() {
@@ -46,27 +52,29 @@ class AdminApp extends App {
 		const pageContainer = document.createElement( 'div' );
 		this.pageElement.appendChild( pageContainer );
 		render(
-			<ViewComponent props={ this.props } />,
+			<Provider container={ this.container }>
+				<ViewComponent pageData={ this.pageData } />
+			</Provider>,
 			pageContainer
 		);
 	}
 
 	registerRedirects() {
-		document.addEventListener('DOMContentLoaded', () => {
+		document.addEventListener( 'DOMContentLoaded', () => {
 			if ( window['tokenpassRedirects'] ) {
 				window['tokenpassRedirects'].forEach( ( redirect: Redirect ) => {
-					const element: HTMLAnchorElement = document.querySelector(`[href='${redirect.from}']`);
-					if (element) {
+					const element: any = document.querySelector( `[href='${redirect.from}']` );
+					if ( element ) {
 						element.href = redirect.to;
 						element.target = '_blank';
 					}
-				});
+				} );
 			}
 		})
 
 	}
 }
 
-(function() {
+( function() {
 	const admin = new AdminApp();
-})();
+} )();

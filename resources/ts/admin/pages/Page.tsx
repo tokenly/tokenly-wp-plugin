@@ -1,3 +1,4 @@
+import * as React from 'react';
 declare const wp: any;
 import { Component } from 'react';
 

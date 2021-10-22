@@ -18,6 +18,7 @@ class WhitelistController {
 				'status' => 'Error. Whitelist was not updated.',
 			);
 		}
+		error_log(print_r($settings, true));
 		update_option( 'tokenpass_whitelist', array(
 			'use_whitelist' => $settings['use_whitelist'] ?? false,
 			'whitelist'     => $settings['whitelist'] ?? array(),

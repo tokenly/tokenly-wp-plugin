@@ -1,9 +1,10 @@
-import Page from './page';
-import AuthService from '../../services/AuthService';
+import { resolve } from 'inversify-react';
+import * as React from 'react';
+import Page from './Page';
+import { AuthService } from '../../services/AuthService';
 import { Component } from 'react';
 
 declare const wp: any;
-
 
 const { __ } = wp.i18n;
 
@@ -27,13 +28,14 @@ interface StatusResponse {
 }
 
 export default class ConnectionPage extends Component<ConnectionPageProps, ConnectionPageState> {
-	authService: AuthService;
+	@resolve
+    authService: AuthService;
+	
 	state: ConnectionPageState = {
 		status: false,
 	};
-	constructor( props: ConnectionPageProps, authService: AuthService ) {
+	constructor( props: ConnectionPageProps ) {
 		super( props );
-		this.authService = authService;
 	}
 	
 	componentDidMount() {

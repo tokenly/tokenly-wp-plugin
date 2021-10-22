@@ -1,3 +1,5 @@
+import { injectable } from "inversify";
+
 declare const wpApiSettings: any;
 
 export interface SettingsData {
@@ -5,6 +7,7 @@ export interface SettingsData {
 	client_secret: string;
 }
 
+@injectable()
 export class SettingsService {
 	namespace = '/wp-json/tokenly/v1/';
 	
@@ -29,6 +32,7 @@ export class SettingsService {
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data: SettingsData ) => {
+					console.log(data);
 					resolve( data );
 				} )
 				.catch( err => reject( err ) );

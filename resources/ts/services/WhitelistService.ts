@@ -1,3 +1,5 @@
+import { injectable } from "inversify";
+
 declare const wpApiSettings: any;
 
 export interface WhitelistItem {
@@ -10,6 +12,7 @@ export interface WhitelistData {
 	whitelist: Array<WhitelistItem>;
 }
 
+@injectable()
 export class WhitelistService {
 	namespace = '/wp-json/tokenly/v1/';
 	
@@ -25,7 +28,7 @@ export class WhitelistService {
 	}
 	
 	getWhitelist() {
-		return new Promise( ( resolve, reject ) => {
+		return new Promise<WhitelistData>( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
 				headers: this.headers,
@@ -33,9 +36,9 @@ export class WhitelistService {
 			const url = this.namespace + 'whitelist';
 			fetch( url, params )
 				.then( response => response.json() )
-				.then( data => {
+				.then( ( data: WhitelistData ) => {
 					resolve( {
-						... { useWhitelist: data.use_whitelist ?? false },
+						... { use_whitelist: data.use_whitelist ?? false },
 						...( data?.whitelist ) && { whitelist: data.whitelist },
 					} );
 					resolve( data );
@@ -46,7 +49,7 @@ export class WhitelistService {
 	
 	updateWhitelist( newWhitelist: WhitelistData ) {
 		return new Promise( ( resolve, reject ) => {
-		let body = JSON.stringify({
+		const body = JSON.stringify({
 			settings: {
 				...( newWhitelist.use_whitelist ) && { use_whitelist: newWhitelist.use_whitelist },
 				...( newWhitelist.whitelist ) && { whitelist: newWhitelist.whitelist },

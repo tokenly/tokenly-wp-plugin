@@ -2,10 +2,19 @@
 	"compilerOptions": {
 		"outDir": "./dist/",
 		"noImplicitAny": true,
-		"module": "es6",
+		"module": "commonjs",
+		"types": ["reflect-metadata"],
+		"lib": ["es6", "DOM"],
 		"target": "es5",
-		"jsx": "react-jsx",
+		"jsx": "react",
 		"allowJs": true,
 		"moduleResolution": "node",
-	}
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"exclude": [
+		"node_modules",
+		"build",
+		"vendor"
+	],
 }

@@ -4,12 +4,13 @@
   "main": "Gruntfile.js",
   "author": "YOUR NAME HERE",
   "scripts": {
-    "build": "wp-scripts build resources/js/frontend.tsx resources/js/admin.tsx",
-    "start": "wp-scripts start resources/js/frontend.tsx resources/js/admin.tsx",
+    "build": "wp-scripts build resources/ts/frontend resources/ts/admin",
+    "start": "wp-scripts start resources/ts/frontend resources/ts/admin",
     "test:unit": "wp-scripts test-unit-js"
   },
   "devDependencies": {
     "@wordpress/scripts": "^18.1.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "grunt": "~0.4.5",
     "grunt-wp-i18n": "~0.5.0",
     "grunt-wp-readme-to-markdown": "~1.0.0",
@@ -30,6 +31,9 @@
   },
   "homepage": "https://github.com/encore-by-dev/tokenly-wp-plugin#readme",
   "dependencies": {
-    "@types/react": "^17.0.31"
+    "@types/react": "^17.0.31",
+    "inversify": "^6.0.1",
+    "inversify-react": "^1.0.0",
+    "reflect-metadata": "^0.1.13"
   }
 }

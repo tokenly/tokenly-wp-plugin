@@ -1,6 +1,13 @@
+import { injectable } from "inversify";
+
 declare const wpApiSettings: any;
 
-export default class AuthService {
+interface AuthData {
+	status: boolean,
+}
+
+@injectable()
+export class AuthService {
 	namespace = '/wp-json/tokenly/v1/';
 	
 	constructor() {
@@ -15,7 +22,7 @@ export default class AuthService {
 	}
 	
 	getStatus() {
-		return new Promise( ( resolve, reject ) => {
+		return new Promise<AuthData>( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
 				headers: this.headers,
@@ -23,7 +30,7 @@ export default class AuthService {
 			const url = this.namespace + 'authorize';
 			fetch( url, params )
 				.then( response => response.json() )
-				.then( data => {
+				.then( ( data: AuthData ) => {
 					resolve( data );
 				} )
 				.catch( err => reject( err ) );
