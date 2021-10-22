@@ -1,12 +1,24 @@
 import '/resources/scss/admin.scss';
-import App from '/resources/js/app.js';
-import SettingsPage from '/resources/js/pages/admin/settings.js';
-import ConnectionPage from '/resources/js/pages/admin/connection.js';
-import WhitelistPage from '/resources/js/pages/admin/whitelist.js';
+import App from './app';
+import SettingsPage from './pages/admin/settings';
+import ConnectionPage from './pages/admin/connection';
+import WhitelistPage from './pages/admin/whitelist';
+
+declare const wp: any;
+declare const window: any;
 
 const render = wp.element.render;
 
+interface Redirect {
+	from: string;
+	to: string;
+} 
+
 class AdminApp extends App {
+	pageElement: HTMLElement;
+	view: string;
+	props: object;
+	
 	constructor() {
 		super();
 		this.pageElement = document.querySelector( '.tokenpass-admin-page' );
@@ -21,13 +33,13 @@ class AdminApp extends App {
 	
 	getViews() {
 		return {
-			settings:   SettingsPage,
-			connection: ConnectionPage,
-			whitelist:  WhitelistPage,
-		}
+			'settings':   SettingsPage,
+			'connection': ConnectionPage,
+			'whitelist':  WhitelistPage,
+		} as any;
 	}
 	
-	render( ViewComponent ) {
+	render( ViewComponent: any ) {
 		if ( !this.pageElement ) {
 			return;
 		}
@@ -41,9 +53,9 @@ class AdminApp extends App {
 
 	registerRedirects() {
 		document.addEventListener('DOMContentLoaded', () => {
-			if ( window?.tokenpassRedirects ) {
-				window.tokenpassRedirects.forEach((redirect) => {
-					const element = document.querySelector(`[href='${redirect.from}']`);
+			if ( window['tokenpassRedirects'] ) {
+				window['tokenpassRedirects'].forEach( ( redirect: Redirect ) => {
+					const element: HTMLAnchorElement = document.querySelector(`[href='${redirect.from}']`);
 					if (element) {
 						element.href = redirect.to;
 						element.target = '_blank';

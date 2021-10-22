@@ -1,4 +1,8 @@
-import Page from '/resources/js/pages/admin/page.js';
+import Page from './page';
+import { Component } from 'react';
+
+declare const wp: any;
+declare const wpApiSettings: any;
 
 const { __ } = wp.i18n;
 
@@ -12,12 +16,7 @@ const {
 	PanelRow,
 } = wp.components;
 
-const {
-	Component,
-	Fragment
-} = wp.element;
-
-export default class SettingsPage extends Page {
+export default class SettingsPage extends Component {
 	constructor( props ) {
 		super( props );
 		this.updateSettings = this.updateSettings.bind( this );
@@ -27,63 +26,8 @@ export default class SettingsPage extends Page {
 		}, this.state );
 	}
 
-	getProps() {
-		return new Promise((resolve, reject) => {
-			const params = {
-				method: 'GET',
-				headers: {
-					'Content-type': 'application/json; charset=UTF-8',
-					'X-WP-Nonce': wpApiSettings.nonce,
-				},
-			}
-			const url = '/wp-json/tokenly/v1/settings';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( data => {
-					console.log(data);
-					this.setState( {
-						...(data?.client_id) && {clientId: data.client_id},
-						...(data?.client_secret) && {clientSecret: data.client_secret},
-					} );
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
-		});
-	}
-
-	updateSettings() {
-		this.setState( { isAPISaving: true } );
-		const params = {
-			method: 'PUT',
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8',
-				'X-WP-Nonce': wpApiSettings.nonce,
-			},
-			body: JSON.stringify( {
-				settings: {
-					...{ 'client_id': this.state.clientId ?? '' },
-					...{ 'client_secret': this.state.clientSecret ?? '' },
-				}
-			} ),
-		 }
-		 const url = '/wp-json/tokenly/v1/settings';
-		 fetch( url, params )
-			.then( response => response.json() )
-			.then( data => {
-				this.setState( {
-					isAPISaving: false
-				} ) } )
-			.catch( err => console.log( err ) );
-	}
-
 	render() {
-		if ( ! this.state.isAPILoaded ) {
-			return (
-				<Placeholder>
-					<Spinner/>
-				</Placeholder>
-			);
-		}
+
 
 		return (
 			<Fragment>
