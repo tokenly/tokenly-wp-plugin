@@ -1,21 +1,32 @@
 import 'reflect-metadata';
-import { Container } from "inversify";
+import { Container, interfaces } from "inversify";
 import { AuthService } from './services/AuthService';
-import { SettingsService } from './services/SettingsService';
-import { WhitelistService } from './services/WhitelistService';
-import { ButtonLoginComponent } from './../../app/Components/ButtonLoginComponent';
+import { SettingsRepository } from './repositories/SettingsRepository';
+import { VendorRepository } from './repositories/VendorRepository';
+import { WhitelistRepository } from './repositories/WhitelistRepository';
+import { ComponentProvider } from './providers/ComponentProvider';
+import { ButtonLoginComponent } from './components/ButtonLoginComponent';
+import { Component } from './interfaces';
+import { TYPES } from "./types";
 
-const appContainer = new Container();
+
+const container = new Container();
 
 const services = [
 	AuthService,
-	SettingsService,
-	WhitelistService,
+	SettingsRepository,
+	VendorRepository,
+	WhitelistRepository,
 	ButtonLoginComponent,
+	ComponentProvider,
 ];
 
 services.forEach( ( service: any ) => {
-	appContainer.bind( service ).toSelf();
+	container.bind( service ).toSelf();
 } );
 
-export { appContainer };
+container.bind<Component>( 'Component' ).to( ButtonLoginComponent ).whenTargetNamed( 'buttonLoginComponent' );
+container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
+         .toAutoNamedFactory<Component>( 'Component' );
+		 
+export { container };

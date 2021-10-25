@@ -8,7 +8,7 @@ export interface SettingsData {
 }
 
 @injectable()
-export class SettingsService {
+export class SettingsRepository {
 	namespace = '/wp-json/tokenly/v1/';
 	
 	constructor() {
@@ -22,7 +22,7 @@ export class SettingsService {
 		}
 	}
 	
-	getSettings() {
+	read() {
 		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
@@ -39,7 +39,7 @@ export class SettingsService {
 		});
 	}
 	
-	updateSettings( newSettings: SettingsData ) {
+	update( newSettings: SettingsData ) {
 		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'PUT',

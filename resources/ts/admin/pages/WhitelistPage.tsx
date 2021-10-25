@@ -4,7 +4,7 @@ import Page from './Page';
 import { Whitelist } from '../components/Whitelist';
 import { SavePanel } from '../components/SavePanel';
 import { Component } from 'react';
-import { WhitelistService, WhitelistItem, WhitelistData } from '../../services/WhitelistService';
+import { WhitelistRepository, WhitelistItem, WhitelistData } from '../../repositories/WhitelistRepository';
 
 declare const wp: any;
 
@@ -28,7 +28,7 @@ interface WhitelistPageState {
 
 export default class WhitelistPage extends Component<WhitelistPageProps, WhitelistPageState> {
 	@resolve
-	whitelistService: WhitelistService;
+	whitelistRepository: WhitelistRepository;
 	
 	state: WhitelistPageState = {
 		whitelistData: {
@@ -50,7 +50,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	}
 	
 	componentDidMount() {
-		this.whitelistService.getWhitelist().then( ( whitelistData: WhitelistData ) => {
+		this.whitelistRepository.read().then( ( whitelistData: WhitelistData ) => {
 			this.setState( {
 				whitelistData: whitelistData,
 			} );
@@ -74,7 +74,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	
 	onSave() {
 		this.setState( { saving: true } );
-		this.whitelistService.updateWhitelist( this.state.whitelistData ).then( result => {
+		this.whitelistRepository.update( this.state.whitelistData ).then( result => {
 			this.setState( { saving: false } );
 		} ).catch( error => {
 			console.log( error );

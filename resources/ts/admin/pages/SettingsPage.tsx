@@ -3,7 +3,7 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { SavePanel } from '../components/SavePanel';
-import { SettingsService, SettingsData } from '../../services/SettingsService';
+import { SettingsRepository, SettingsData } from '../../repositories/SettingsRepository';
 
 declare const wp: any;
 
@@ -32,7 +32,7 @@ interface SettingsPageState {
 
 export default class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
 	@resolve
-	settingsService: SettingsService;
+	settingsRepository: SettingsRepository;
 	
 	state: SettingsPageState = {
 		settingsData: {
@@ -59,7 +59,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	}
 	
 	componentDidMount() {
-		this.settingsService.getSettings().then( ( settingsData: SettingsData ) => {
+		this.settingsRepository.read().then( ( settingsData: SettingsData ) => {
 			this.setState( {
 				settingsData: settingsData,
 			} );
@@ -68,7 +68,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	
 	onSave() {
 		this.setState( { saving: true } );
-		this.settingsService.updateSettings( this.state.settingsData ).then( result => {
+		this.settingsRepository.update( this.state.settingsData ).then( result => {
 			this.setState( { saving: false } );
 		} ).catch( error => {
 			console.log( error );

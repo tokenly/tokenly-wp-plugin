@@ -2,13 +2,17 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
+use Tokenly\Wp\Repositories\WhitelistRepository;
+
 class WhitelistController {
+	public function __construct(
+		WhitelistRepository $whitelist_repository
+	) {
+		$this->whitelist_repository = $whitelist_repository;
+	}
+	
 	public function show( $request ) {
-		$settings = get_option( 'tokenpass_whitelist', array() );
-		return array(
-			'use_whitelist' => $settings['use_whitelist'] ?? false,
-			'whitelist'     => $settings['whitelist'] ?? array(),
-		);
+		return $this->whitelist_repository->show();
 	}
 
 	public function update( $request ) {
@@ -18,11 +22,7 @@ class WhitelistController {
 				'status' => 'Error. Whitelist was not updated.',
 			);
 		}
-		error_log(print_r($settings, true));
-		update_option( 'tokenpass_whitelist', array(
-			'use_whitelist' => $settings['use_whitelist'] ?? false,
-			'whitelist'     => $settings['whitelist'] ?? array(),
-		) );
+		$this->whitelist_repository->update( $settings );
 		return array(
 			'status' => 'Whitelist was updated successfully.',
 		);

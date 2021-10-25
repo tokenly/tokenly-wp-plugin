@@ -2,12 +2,20 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
+use Tokenly\Wp\Repositories\SettingsRepository;
+
 class SettingsController {
 	public $update_schema;
+	public $settings_repository;
+	
+	public function __construct(
+		SettingsRepository $settings_repository
+	) {
+		$this->settings_repository = $settings_repository;
+	}
 	
 	public function show( $request ) {
-		$settings = get_option( 'tokenpass_settings', array() );
-		return $settings;
+		return $settings_repository->show(); 
 	}
 
 	public function update( $request ) {
@@ -17,7 +25,7 @@ class SettingsController {
 				'status' => 'Error. Settings were not updated.',
 			);
 		}
-		update_option( 'tokenpass_settings', $settings );
+		$this->settings_repository->update( $settings );
 		return array(
 			'status' => 'Settings were updated successfully.',
 		);

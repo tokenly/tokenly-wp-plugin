@@ -1,9 +1,10 @@
-import { appContainer } from "./inversify.config";
+import { container } from "./inversify.config";
 import '/resources/scss/admin.scss';
 import { Provider } from 'inversify-react';
 import * as React from 'react';
 import App from './app';
 import SettingsPage from './admin/pages/SettingsPage';
+import VendorPage from './admin/pages/VendorPage';
 import ConnectionPage from './admin/pages/ConnectionPage';
 import WhitelistPage from './admin/pages/WhitelistPage';
 
@@ -19,7 +20,7 @@ interface Redirect {
 } 
 
 class AdminApp extends App {
-	container = appContainer;
+	container = container;
 	pageElement: any;
 	view: string;
 	pageData: object;
@@ -41,6 +42,7 @@ class AdminApp extends App {
 		return {
 			'settings':   SettingsPage,
 			'connection': ConnectionPage,
+			'vendor':  VendorPage,
 			'whitelist':  WhitelistPage,
 		} as any;
 	}

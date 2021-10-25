@@ -13,7 +13,7 @@ export interface WhitelistData {
 }
 
 @injectable()
-export class WhitelistService {
+export class WhitelistRepository {
 	namespace = '/wp-json/tokenly/v1/';
 	
 	constructor() {
@@ -27,7 +27,7 @@ export class WhitelistService {
 		}
 	}
 	
-	getWhitelist() {
+	read() {
 		return new Promise<WhitelistData>( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
@@ -47,7 +47,7 @@ export class WhitelistService {
 		} );
 	}
 	
-	updateWhitelist( newWhitelist: WhitelistData ) {
+	update( newWhitelist: WhitelistData ) {
 		return new Promise( ( resolve, reject ) => {
 		const body = JSON.stringify({
 			settings: {
