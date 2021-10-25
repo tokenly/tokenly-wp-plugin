@@ -15,7 +15,7 @@ class SettingsController {
 	}
 	
 	public function show( $request ) {
-		return $settings_repository->show(); 
+		return $this->settings_repository->show(); 
 	}
 
 	public function update( $request ) {
