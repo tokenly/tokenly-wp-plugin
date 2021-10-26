@@ -5,6 +5,8 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Controllers\Api\AuthController;
 use Tokenly\Wp\Controllers\Api\SettingsController;
 use Tokenly\Wp\Controllers\Api\WhitelistController;
+use Tokenly\Wp\Controllers\Api\PromiseController;
+use Tokenly\Wp\Controllers\Api\UserController;
 
 class ApiRouter {
 	public $namespace = 'tokenly/v1';
@@ -13,12 +15,16 @@ class ApiRouter {
 	public function __construct(
 		AuthController $auth_controller,
 		SettingsController $settings_controller,
-		WhitelistController $whitelist_controller
+		WhitelistController $whitelist_controller,
+		PromiseController $promise_controller,
+		UserController $user_controller
 	) {
 		$this->controllers = array(
 			'auth'       => $auth_controller,
 			'settings'   => $settings_controller,
 			'whitelist'  => $whitelist_controller,
+			'promise'    => $promise_controller,
+			'user'       => $user_controller,
 		);
 		global $tokenly_routes;
 		$tokenly_routes['api'] = $this->get_route_urls();
@@ -96,6 +102,36 @@ class ApiRouter {
 					'callback'            => array( $this->controllers['whitelist'], 'update' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'promise-index' => array(
+				'path' => '/promise',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['promise'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'promise-store' => array(
+				'path' => '/promise',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['promise'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user-index' => array(
+				'path' => '/user',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'read' );
 					},
 				),
 			),

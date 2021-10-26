@@ -2,7 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { VendorRepository, VendorData } from '../../repositories/VendorRepository';
+import { PromiseRepository, PromiseData, PromiseStoreData } from '../../repositories/PromiseRepository';
+import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
 declare const wp: any;
 
@@ -10,13 +11,10 @@ const { __ } = wp.i18n;
 
 const {
 	Button,
-	Spinner,
-	ComboboxControl,
-	TextControl,
-	TextareaControl,
 	Panel,
 	PanelBody,
 	PanelRow,
+	Modal,
 } = wp.components;
 
 interface VendorPageData {
@@ -34,31 +32,30 @@ interface User {
 }
 
 interface VendorPageState {
-	vendorData: VendorData;
-	userSearch: string;
-	users: Array<User>;
+	promiseData: Array<PromiseData>;
+	isCreatePromiseModalOpen: boolean;
+	storingPromise: boolean;
 }
 
 export default class VendorPage extends Component<VendorPageProps, VendorPageState> {
 	@resolve
-	vendorRepository: VendorRepository;
+	promiseRepository: PromiseRepository;
 	
 	state: VendorPageState = {
-		vendorData: {
-			//
-		},
-		userSearch: '',
-		users: [],
+		promiseData: [],
+		isCreatePromiseModalOpen: false,
+		storingPromise: false,
 	}
 	constructor( props: VendorPageProps ) {
 		super( props );
-		this.onUserSearch = this.onUserSearch.bind( this );
+		this.openCreatePromiseModal = this.openCreatePromiseModal.bind( this );
+		this.closeCreatePromiseModal = this.closeCreatePromiseModal.bind( this );
 	}
 	
 	componentDidMount() {
-		this.vendorRepository.read().then( ( vendorData: VendorData ) => {
+		this.promiseRepository.index().then( ( promiseData: Array<PromiseData> ) => {
 			this.setState( {
-				vendorData: vendorData,
+				promiseData: promiseData,
 			} );
 		} );
 	}
@@ -71,61 +68,41 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		
 	}
 	
-	onPromiseSubmit() {
-		//
+	onPromiseSubmit( promise: PromiseStoreData ) {
+		
+	}
+	
+	openCreatePromiseModal() {
+		this.setState( { isCreatePromiseModalOpen: true } );
+	}
+	
+	closeCreatePromiseModal() {
+		this.setState( { isCreatePromiseModalOpen: false } );
 	}
 	
 	render() {
 		return (
 			<Page title={'Tokenpass Vendor'}>
-				<Panel header="Create transaction">
+				<Panel header="Token promises">
 					<PanelBody>
 						<PanelRow>
-						<ComboboxControl
-							label="Destination user"
-							onChange={ (value: any) => {} }
-							options={ this.state.users }
-							onFilterValueChange={ ( keywords: string ) => {
-								this.onUserSearch( keywords );
-							} }
-						/>
-						</PanelRow>
-						<PanelRow>
-							<TextControl
-								label="Asset ID"
-							/>
-						</PanelRow>
-						<PanelRow>
-							<TextControl
-								label="Quantity"
-								type="number"
-								value={ 1 }
-							/>
-						</PanelRow>
-						<PanelRow>
-							<TextControl
-								label="Ref"
-							/>
-						</PanelRow>
-						<PanelRow>
-							<TextareaControl
-								label="Note"
-							/>
-						</PanelRow>
-						<PanelRow>
-							<Button
+							<Button 
 								isPrimary
 								isLarge
-								disabled={ this.props.saving }
-								onClick={ () => {
-									this.onPromiseSubmit();
-								}}
+								onClick={ this.openCreatePromiseModal }
 							>
-								{ __( 'Create transaction' ) }
+								Create token promise
 							</Button>
-							{this.props.saving === true &&
-									<Spinner/>
-							}
+							{ this.state.isCreatePromiseModalOpen && (
+								<Modal title="Create token promise" onRequestClose={ this.closeCreatePromiseModal }>
+									<PromiseStoreForm onSubmit={ this.onPromiseSubmit } saving={ this.state.storingPromise } />
+								</Modal>
+							) }
+						</PanelRow>
+						<PanelRow>
+							<div>
+								<div>Current promises:</div>
+							</div>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

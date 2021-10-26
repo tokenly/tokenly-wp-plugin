@@ -5118,7 +5118,8 @@ __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Ref
 var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 var AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resources/ts/services/AuthService.ts");
 var SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
-var VendorRepository_1 = __webpack_require__(/*! ./repositories/VendorRepository */ "./resources/ts/repositories/VendorRepository.ts");
+var PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+var UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
 var WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
 var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
 var ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
@@ -5127,7 +5128,8 @@ exports.container = container;
 var services = [
     AuthService_1.AuthService,
     SettingsRepository_1.SettingsRepository,
-    VendorRepository_1.VendorRepository,
+    PromiseRepository_1.PromiseRepository,
+    UserRepository_1.UserRepository,
     WhitelistRepository_1.WhitelistRepository,
     ButtonLoginComponent_1.ButtonLoginComponent,
     ComponentProvider_1.ComponentProvider,
@@ -5200,6 +5202,90 @@ var ComponentProvider = /** @class */ (function () {
     return ComponentProvider;
 }());
 exports.ComponentProvider = ComponentProvider;
+
+
+/***/ }),
+
+/***/ "./resources/ts/repositories/PromiseRepository.ts":
+/*!********************************************************!*\
+  !*** ./resources/ts/repositories/PromiseRepository.ts ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PromiseRepository = void 0;
+var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+var PromiseRepository = /** @class */ (function () {
+    function PromiseRepository() {
+        this.namespace = '/wp-json/tokenly/v1/';
+        //
+    }
+    Object.defineProperty(PromiseRepository.prototype, "headers", {
+        get: function () {
+            return {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-WP-Nonce': wpApiSettings.nonce,
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
+    PromiseRepository.prototype.store = function (promise) {
+        var _this = this;
+        promise.destination = 'user:' + promise.destination;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'POST',
+                headers: _this.headers,
+                body: JSON.stringify({
+                    promise: promise,
+                }),
+            };
+            var url = _this.namespace + 'promise';
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                console.log(data);
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    PromiseRepository.prototype.index = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'GET',
+                headers: _this.headers,
+            };
+            var url = _this.namespace + 'promise';
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                console.log(data);
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    PromiseRepository = __decorate([
+        (0, inversify_1.injectable)(),
+        __metadata("design:paramtypes", [])
+    ], PromiseRepository);
+    return PromiseRepository;
+}());
+exports.PromiseRepository = PromiseRepository;
 
 
 /***/ }),
@@ -5298,14 +5384,25 @@ exports.SettingsRepository = SettingsRepository;
 
 /***/ }),
 
-/***/ "./resources/ts/repositories/VendorRepository.ts":
-/*!*******************************************************!*\
-  !*** ./resources/ts/repositories/VendorRepository.ts ***!
-  \*******************************************************/
+/***/ "./resources/ts/repositories/UserRepository.ts":
+/*!*****************************************************!*\
+  !*** ./resources/ts/repositories/UserRepository.ts ***!
+  \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5316,14 +5413,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.VendorRepository = void 0;
+exports.UserRepository = void 0;
 var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var VendorRepository = /** @class */ (function () {
-    function VendorRepository() {
+var UserRepository = /** @class */ (function () {
+    function UserRepository() {
         this.namespace = '/wp-json/tokenly/v1/';
         //
     }
-    Object.defineProperty(VendorRepository.prototype, "headers", {
+    Object.defineProperty(UserRepository.prototype, "headers", {
         get: function () {
             return {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -5333,57 +5430,14 @@ var VendorRepository = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    VendorRepository.prototype.create = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'POST',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: {
-                    //
-                    }
-                }),
-            };
-            var url = _this.namespace + 'vendor';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    VendorRepository.prototype.read = function () {
+    UserRepository.prototype.index = function (indexParameters) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var params = {
                 method: 'GET',
                 headers: _this.headers,
             };
-            var url = _this.namespace + 'vendor';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    VendorRepository.prototype.update = function (newSettings) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'PUT',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: {
-                    //
-                    }
-                }),
-            };
-            var url = _this.namespace + 'vendor';
+            var url = _this.namespace + 'user?' + new URLSearchParams(__assign({}, indexParameters));
             fetch(url, params)
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
@@ -5392,34 +5446,13 @@ var VendorRepository = /** @class */ (function () {
                 .catch(function (err) { return reject(err); });
         });
     };
-    VendorRepository.prototype.delete = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'DELETE',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: {
-                    //
-                    }
-                }),
-            };
-            var url = _this.namespace + 'vendor';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    VendorRepository = __decorate([
+    UserRepository = __decorate([
         (0, inversify_1.injectable)(),
         __metadata("design:paramtypes", [])
-    ], VendorRepository);
-    return VendorRepository;
+    ], UserRepository);
+    return UserRepository;
 }());
-exports.VendorRepository = VendorRepository;
+exports.UserRepository = UserRepository;
 
 
 /***/ }),

@@ -29,6 +29,6 @@ module.exports = {
 	},
 	resolve: {
 		...defaultConfig.resolve,
-		extensions: ['.tsx', '.ts', '.js' ],
+		extensions: ['.tsx', '.ts', '.js', '.scss' ],
 	},
 }

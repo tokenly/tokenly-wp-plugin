@@ -2,6 +2,15 @@ import { injectable } from "inversify";
 
 declare const wpApiSettings: any;
 
+export interface UserSuggestion {
+	id: number;
+	name: string;
+}
+
+export interface UserIndexParameters {
+	name: string,
+}
+
 @injectable()
 export class UserRepository {
 	namespace = '/wp-json/tokenly/v1/';
@@ -17,17 +26,16 @@ export class UserRepository {
 		}
 	}
 	
-	read() {
+	index( indexParameters: UserIndexParameters ) {
 		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
 				headers: this.headers,
 			}
-			const url = this.namespace + 'user';
+			const url = this.namespace + 'user?' + new URLSearchParams( { ...indexParameters } );
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data ) => {
-					console.log(data);
 					resolve( data );
 				} )
 				.catch( err => reject( err ) );

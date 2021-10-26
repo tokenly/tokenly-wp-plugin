@@ -536,7 +536,7 @@ class TokenpassAPI
         return $call['result'];
     }
 	
-    public function promiseTransaction($source, $destination, $asset, $quantity, $expiration, $txid = null, $fingerprint = null, $ref = null, $chain = 'bitcoin', $protocol = 'counterparty')
+    public function promiseTransaction($source, $destination, $asset, $quantity, $expiration, $txid = null, $fingerprint = null, $ref = null, $chain = 'bitcoin', $protocol = 'counterparty', $pseudo = false, $note = null)
     {
         try {
             $params = [];
@@ -547,6 +547,8 @@ class TokenpassAPI
             $params['expiration'] = $expiration;
             $params['chain'] = $chain;
             $params['protocol'] = $protocol;
+			$params['pseudo'] = $pseudo;
+			$params['note'] = $note;
             if($txid != null){
                 $params['txid'] = $txid;
             }

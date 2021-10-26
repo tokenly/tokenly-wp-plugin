@@ -5080,6 +5080,88 @@ var AdminApp = /** @class */ (function (_super) {
 
 /***/ }),
 
+/***/ "./resources/ts/admin/components/PromiseStoreForm.tsx":
+/*!************************************************************!*\
+  !*** ./resources/ts/admin/components/PromiseStoreForm.tsx ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PromiseStoreForm = void 0;
+var React = __webpack_require__(/*! react */ "react");
+var react_1 = __webpack_require__(/*! react */ "react");
+var __ = wp.i18n.__;
+var _a = wp.components, Button = _a.Button, Spinner = _a.Spinner, TextControl = _a.TextControl, TextareaControl = _a.TextareaControl;
+var PromiseStoreForm = /** @class */ (function (_super) {
+    __extends(PromiseStoreForm, _super);
+    function PromiseStoreForm(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            promise: {
+                source: null,
+                destination: null,
+                asset: null,
+                quantity: 1,
+                ref: null,
+                note: null,
+            },
+        };
+        _this.onPromiseSubmit = _this.onPromiseSubmit.bind(_this);
+        _this.onUserChange = _this.onUserChange.bind(_this);
+        return _this;
+    }
+    PromiseStoreForm.prototype.onPromiseSubmit = function () {
+        this.props.onSubmit(this.state.promise);
+    };
+    PromiseStoreForm.prototype.onUserChange = function (user) {
+        var promise = Object.assign({}, this.state.promise);
+        promise.destination = user;
+        this.setState({ promise: promise });
+    };
+    PromiseStoreForm.prototype.render = function () {
+        var _this = this;
+        return React.createElement("div", null,
+            React.createElement("form", { style: { maxWidth: "500px" } },
+                React.createElement(TextControl, { label: "User", value: this.state.promise.destination, onChange: function (value) {
+                        var state = Object.assign({}, _this.state.promise);
+                        state.destination = value;
+                        _this.setState({ promise: state });
+                    } }),
+                React.createElement(TextControl, { label: "Source address", value: this.state.promise.source }),
+                React.createElement(TextControl, { label: "Asset ID", value: this.state.promise.asset }),
+                React.createElement(TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity }),
+                React.createElement(TextControl, { label: "Ref", value: this.state.promise.ref }),
+                React.createElement(TextareaControl, { label: "Note", value: this.state.promise.note }),
+                React.createElement(Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
+                        _this.onPromiseSubmit();
+                    } }, __('Create transaction')),
+                this.props.saving === true &&
+                    React.createElement(Spinner, null)));
+    };
+    return PromiseStoreForm;
+}(react_1.Component));
+exports.PromiseStoreForm = PromiseStoreForm;
+
+
+/***/ }),
+
 /***/ "./resources/ts/admin/components/SavePanel.tsx":
 /*!*****************************************************!*\
   !*** ./resources/ts/admin/components/SavePanel.tsx ***!
@@ -5556,28 +5638,28 @@ var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modul
 var React = __webpack_require__(/*! react */ "react");
 var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
 var react_1 = __webpack_require__(/*! react */ "react");
-var VendorRepository_1 = __webpack_require__(/*! ../../repositories/VendorRepository */ "./resources/ts/repositories/VendorRepository.ts");
+var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+var PromiseStoreForm_1 = __webpack_require__(/*! ../components/PromiseStoreForm */ "./resources/ts/admin/components/PromiseStoreForm.tsx");
 var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Spinner = _a.Spinner, ComboboxControl = _a.ComboboxControl, TextControl = _a.TextControl, TextareaControl = _a.TextareaControl, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow, Modal = _a.Modal;
 var VendorPage = /** @class */ (function (_super) {
     __extends(VendorPage, _super);
     function VendorPage(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
-            vendorData: {
-            //
-            },
-            userSearch: '',
-            users: [],
+            promiseData: [],
+            isCreatePromiseModalOpen: false,
+            storingPromise: false,
         };
-        _this.onUserSearch = _this.onUserSearch.bind(_this);
+        _this.openCreatePromiseModal = _this.openCreatePromiseModal.bind(_this);
+        _this.closeCreatePromiseModal = _this.closeCreatePromiseModal.bind(_this);
         return _this;
     }
     VendorPage.prototype.componentDidMount = function () {
         var _this = this;
-        this.vendorRepository.read().then(function (vendorData) {
+        this.promiseRepository.index().then(function (promiseData) {
             _this.setState({
-                vendorData: vendorData,
+                promiseData: promiseData,
             });
         });
     };
@@ -5585,37 +5667,30 @@ var VendorPage = /** @class */ (function (_super) {
     };
     VendorPage.prototype.onUserSelect = function (username) {
     };
-    VendorPage.prototype.onPromiseSubmit = function () {
-        //
+    VendorPage.prototype.onPromiseSubmit = function (promise) {
+    };
+    VendorPage.prototype.openCreatePromiseModal = function () {
+        this.setState({ isCreatePromiseModalOpen: true });
+    };
+    VendorPage.prototype.closeCreatePromiseModal = function () {
+        this.setState({ isCreatePromiseModalOpen: false });
     };
     VendorPage.prototype.render = function () {
-        var _this = this;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Vendor' },
-            React.createElement(Panel, { header: "Create transaction" },
+            React.createElement(Panel, { header: "Token promises" },
                 React.createElement(PanelBody, null,
                     React.createElement(PanelRow, null,
-                        React.createElement(ComboboxControl, { label: "Destination user", onChange: function (value) { }, options: this.state.users, onFilterValueChange: function (keywords) {
-                                _this.onUserSearch(keywords);
-                            } })),
+                        React.createElement(Button, { isPrimary: true, isLarge: true, onClick: this.openCreatePromiseModal }, "Create token promise"),
+                        this.state.isCreatePromiseModalOpen && (React.createElement(Modal, { title: "Create token promise", onRequestClose: this.closeCreatePromiseModal },
+                            React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onPromiseSubmit, saving: this.state.storingPromise })))),
                     React.createElement(PanelRow, null,
-                        React.createElement(TextControl, { label: "Asset ID" })),
-                    React.createElement(PanelRow, null,
-                        React.createElement(TextControl, { label: "Quantity", type: "number", value: 1 })),
-                    React.createElement(PanelRow, null,
-                        React.createElement(TextControl, { label: "Ref" })),
-                    React.createElement(PanelRow, null,
-                        React.createElement(TextareaControl, { label: "Note" })),
-                    React.createElement(PanelRow, null,
-                        React.createElement(Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
-                                _this.onPromiseSubmit();
-                            } }, __('Create transaction')),
-                        this.props.saving === true &&
-                            React.createElement(Spinner, null))))));
+                        React.createElement("div", null,
+                            React.createElement("div", null, "Current promises:")))))));
     };
     __decorate([
         inversify_react_1.resolve,
-        __metadata("design:type", VendorRepository_1.VendorRepository)
-    ], VendorPage.prototype, "vendorRepository", void 0);
+        __metadata("design:type", PromiseRepository_1.PromiseRepository)
+    ], VendorPage.prototype, "promiseRepository", void 0);
     return VendorPage;
 }(react_1.Component));
 exports["default"] = VendorPage;
@@ -5855,7 +5930,8 @@ __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Ref
 var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 var AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resources/ts/services/AuthService.ts");
 var SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
-var VendorRepository_1 = __webpack_require__(/*! ./repositories/VendorRepository */ "./resources/ts/repositories/VendorRepository.ts");
+var PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+var UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
 var WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
 var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
 var ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
@@ -5864,7 +5940,8 @@ exports.container = container;
 var services = [
     AuthService_1.AuthService,
     SettingsRepository_1.SettingsRepository,
-    VendorRepository_1.VendorRepository,
+    PromiseRepository_1.PromiseRepository,
+    UserRepository_1.UserRepository,
     WhitelistRepository_1.WhitelistRepository,
     ButtonLoginComponent_1.ButtonLoginComponent,
     ComponentProvider_1.ComponentProvider,
@@ -5937,6 +6014,90 @@ var ComponentProvider = /** @class */ (function () {
     return ComponentProvider;
 }());
 exports.ComponentProvider = ComponentProvider;
+
+
+/***/ }),
+
+/***/ "./resources/ts/repositories/PromiseRepository.ts":
+/*!********************************************************!*\
+  !*** ./resources/ts/repositories/PromiseRepository.ts ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PromiseRepository = void 0;
+var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+var PromiseRepository = /** @class */ (function () {
+    function PromiseRepository() {
+        this.namespace = '/wp-json/tokenly/v1/';
+        //
+    }
+    Object.defineProperty(PromiseRepository.prototype, "headers", {
+        get: function () {
+            return {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-WP-Nonce': wpApiSettings.nonce,
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
+    PromiseRepository.prototype.store = function (promise) {
+        var _this = this;
+        promise.destination = 'user:' + promise.destination;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'POST',
+                headers: _this.headers,
+                body: JSON.stringify({
+                    promise: promise,
+                }),
+            };
+            var url = _this.namespace + 'promise';
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                console.log(data);
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    PromiseRepository.prototype.index = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'GET',
+                headers: _this.headers,
+            };
+            var url = _this.namespace + 'promise';
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                console.log(data);
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    PromiseRepository = __decorate([
+        (0, inversify_1.injectable)(),
+        __metadata("design:paramtypes", [])
+    ], PromiseRepository);
+    return PromiseRepository;
+}());
+exports.PromiseRepository = PromiseRepository;
 
 
 /***/ }),
@@ -6035,14 +6196,25 @@ exports.SettingsRepository = SettingsRepository;
 
 /***/ }),
 
-/***/ "./resources/ts/repositories/VendorRepository.ts":
-/*!*******************************************************!*\
-  !*** ./resources/ts/repositories/VendorRepository.ts ***!
-  \*******************************************************/
+/***/ "./resources/ts/repositories/UserRepository.ts":
+/*!*****************************************************!*\
+  !*** ./resources/ts/repositories/UserRepository.ts ***!
+  \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6053,14 +6225,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.VendorRepository = void 0;
+exports.UserRepository = void 0;
 var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var VendorRepository = /** @class */ (function () {
-    function VendorRepository() {
+var UserRepository = /** @class */ (function () {
+    function UserRepository() {
         this.namespace = '/wp-json/tokenly/v1/';
         //
     }
-    Object.defineProperty(VendorRepository.prototype, "headers", {
+    Object.defineProperty(UserRepository.prototype, "headers", {
         get: function () {
             return {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -6070,57 +6242,14 @@ var VendorRepository = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    VendorRepository.prototype.create = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'POST',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: {
-                    //
-                    }
-                }),
-            };
-            var url = _this.namespace + 'vendor';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    VendorRepository.prototype.read = function () {
+    UserRepository.prototype.index = function (indexParameters) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var params = {
                 method: 'GET',
                 headers: _this.headers,
             };
-            var url = _this.namespace + 'vendor';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    VendorRepository.prototype.update = function (newSettings) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'PUT',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: {
-                    //
-                    }
-                }),
-            };
-            var url = _this.namespace + 'vendor';
+            var url = _this.namespace + 'user?' + new URLSearchParams(__assign({}, indexParameters));
             fetch(url, params)
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
@@ -6129,34 +6258,13 @@ var VendorRepository = /** @class */ (function () {
                 .catch(function (err) { return reject(err); });
         });
     };
-    VendorRepository.prototype.delete = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'DELETE',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: {
-                    //
-                    }
-                }),
-            };
-            var url = _this.namespace + 'vendor';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    VendorRepository = __decorate([
+    UserRepository = __decorate([
         (0, inversify_1.injectable)(),
         __metadata("design:paramtypes", [])
-    ], VendorRepository);
-    return VendorRepository;
+    ], UserRepository);
+    return UserRepository;
 }());
-exports.VendorRepository = VendorRepository;
+exports.UserRepository = UserRepository;
 
 
 /***/ }),

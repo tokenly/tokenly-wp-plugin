@@ -31,6 +31,8 @@
   },
   "homepage": "https://github.com/encore-by-dev/tokenly-wp-plugin#readme",
   "dependencies": {
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
     "@types/react": "^17.0.31",
     "inversify": "^6.0.1",
     "inversify-react": "^1.0.0",
