@@ -7,6 +7,10 @@ export interface UserSuggestion {
 	name: string;
 }
 
+export interface UserShowParameters {
+	id: number,
+}
+
 export interface UserIndexParameters {
 	name: string,
 }
@@ -32,7 +36,29 @@ export class UserRepository {
 				method: 'GET',
 				headers: this.headers,
 			}
-			const url = this.namespace + 'user?' + new URLSearchParams( { ...indexParameters } );
+			const args = {
+				index_parameters: JSON.stringify( indexParameters ),
+			}
+			const url = this.namespace + 'user?' + new URLSearchParams( args as any );
+			fetch( url, params )
+				.then( response => response.json() )
+				.then( ( data ) => {
+					resolve( data );
+				} )
+				.catch( err => reject( err ) );
+		});
+	}
+
+	show( showParameters: UserShowParameters ) {
+		return new Promise( ( resolve, reject ) => {
+			const params = {
+				method: 'GET',
+				headers: this.headers,
+			}
+			const args = {
+				show_parameters: JSON.stringify( showParameters ),
+			}
+			const url = this.namespace + 'user/?' + new URLSearchParams( args as any );
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data ) => {
