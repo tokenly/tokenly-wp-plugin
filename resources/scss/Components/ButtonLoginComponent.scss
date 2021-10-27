@@ -1,0 +1,25 @@
+.tokenpass-login-container {
+	.button-logo {
+		margin-right: 8px;
+		display: flex;
+		align-items: center;
+		svg {
+			width: 32px;
+			height: 32px;
+			& * {
+				fill: #2271b1 !important;
+			}
+			
+		}
+	}
+	.button-title {
+
+	}
+
+	button.tokenpass-login {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 8px 12px;
+	}
+}

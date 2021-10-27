@@ -2,14 +2,19 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\Wp\Services\TokenlyService;
 use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\Wp\Repositories\TokenMetaRepository;
 
 class UserService {
 	public $client;
+	public $token_meta_repository;
 
-	public function __construct( TokenpassAPI $client ) {
+	public function __construct(
+		TokenpassAPI $client,
+		TokenMetaRepository $token_meta_repository
+	) {
 		$this->client = $client;
+		$this->token_meta_repository = $token_meta_repository;
 	}
 
 	public function get_by_uuid( $uuid ) {
@@ -53,13 +58,31 @@ class UserService {
 		return $balances;
 	}
 
+	public function get_token_meta( $balances ) {
+		$balances = array_map( function( $balance ) {
+			$token_meta_post = $this->token_meta_repository->show( array(
+				'name' => $balance['name'] ?? null,
+			) );
+			if ( $token_meta_post ) {
+				$description = get_the_excerpt( $token_meta_post );
+				$image = get_the_post_thumbnail( $token_meta_post, 'full' );
+				$balance['meta'] = array(
+					'description' => $description,
+					'image'       => $image,
+				);
+			}
+			return $balance;
+		}, $balances );
+		return $balances;
+	}
+
 	public function get_inventory( $user_id ) {
 		$oauth_token = get_user_meta( $user_id, 'tokenly_oauth_token' );
 		if ( $oauth_token ) {		
 			$oauth_token = $oauth_token[0];
 			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
-			// error_log(print_r($balances, true));
 			$balances = $this->filter_balances( $balances );
+			$balances = $this->get_token_meta( $balances );
 			return $balances;
 		}
 	}

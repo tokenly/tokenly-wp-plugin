@@ -1,4 +1,5 @@
 import { container } from './inversify.config';
+import '/resources/scss/main.scss';
 
 import { ComponentProvider } from './providers/ComponentProvider';
 

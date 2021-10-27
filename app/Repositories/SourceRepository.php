@@ -31,6 +31,7 @@ class SourceRepository {
 			$proof = $proof,
 			$source['assets'] ?? null,
 		);
+
 		return $result;
 	}
 }

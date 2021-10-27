@@ -3839,6 +3839,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/scss/main.scss":
+/*!**********************************!*\
+  !*** ./resources/scss/main.scss ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./node_modules/reflect-metadata/Reflect.js":
 /*!**************************************************!*\
   !*** ./node_modules/reflect-metadata/Reflect.js ***!
@@ -4990,6 +5003,7 @@ var Reflect;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
+__webpack_require__(/*! ../../../../../../../../../resources/scss/main.scss */ "./resources/scss/main.scss");
 var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
 var App = /** @class */ (function () {
     function App() {

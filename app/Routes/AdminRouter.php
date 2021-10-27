@@ -41,7 +41,7 @@ class AdminRouter {
 
 	public function register() {
 		$this->routes = $this->get_routes();
-		add_action( 'admin_menu', array( $this, 'register_routes' ) );
+		add_action( 'admin_menu', array( $this, 'register_routes' ), 9 );
 		add_action( 'admin_print_scripts', array( $this,  'add_redirects' ) );
 	}
 

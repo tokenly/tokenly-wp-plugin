@@ -3850,6 +3850,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/scss/main.scss":
+/*!**********************************!*\
+  !*** ./resources/scss/main.scss ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./node_modules/reflect-metadata/Reflect.js":
 /*!**************************************************!*\
   !*** ./node_modules/reflect-metadata/Reflect.js ***!
@@ -5027,6 +5040,7 @@ var WhitelistPage_1 = __webpack_require__(/*! ./admin/pages/WhitelistPage */ "./
 var PromiseStorePage_1 = __webpack_require__(/*! ./admin/pages/PromiseStorePage */ "./resources/ts/admin/pages/PromiseStorePage.tsx");
 var SourceIndexPage_1 = __webpack_require__(/*! ./admin/pages/SourceIndexPage */ "./resources/ts/admin/pages/SourceIndexPage.tsx");
 var SourceStorePage_1 = __webpack_require__(/*! ./admin/pages/SourceStorePage */ "./resources/ts/admin/pages/SourceStorePage.tsx");
+var TokenMetaEditPage_1 = __webpack_require__(/*! ./admin/pages/TokenMetaEditPage */ "./resources/ts/admin/pages/TokenMetaEditPage.tsx");
 var render = wp.element.render;
 var AdminApp = /** @class */ (function (_super) {
     __extends(AdminApp, _super);
@@ -5053,6 +5067,7 @@ var AdminApp = /** @class */ (function (_super) {
             'promise-store': PromiseStorePage_1.default,
             'source-index': SourceIndexPage_1.default,
             'source-store': SourceStorePage_1.default,
+            'token-meta-edit': TokenMetaEditPage_1.default,
         };
     };
     AdminApp.prototype.render = function (ViewComponent) {
@@ -6048,6 +6063,53 @@ exports["default"] = SourceIndexPage;
 
 /***/ }),
 
+/***/ "./resources/ts/admin/pages/TokenMetaEditPage.tsx":
+/*!********************************************************!*\
+  !*** ./resources/ts/admin/pages/TokenMetaEditPage.tsx ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var React = __webpack_require__(/*! react */ "react");
+var react_1 = __webpack_require__(/*! react */ "react");
+var __ = wp.i18n.__;
+var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var TokenMetaEditPage = /** @class */ (function (_super) {
+    __extends(TokenMetaEditPage, _super);
+    function TokenMetaEditPage(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            storingSource: false,
+        };
+        return _this;
+    }
+    TokenMetaEditPage.prototype.render = function () {
+        return (React.createElement("div", null));
+    };
+    return TokenMetaEditPage;
+}(react_1.Component));
+exports["default"] = TokenMetaEditPage;
+
+
+/***/ }),
+
 /***/ "./resources/ts/admin/pages/VendorPage.tsx":
 /*!*************************************************!*\
   !*** ./resources/ts/admin/pages/VendorPage.tsx ***!
@@ -6274,6 +6336,7 @@ exports["default"] = WhitelistPage;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
+__webpack_require__(/*! ../../../../../../../../../resources/scss/main.scss */ "./resources/scss/main.scss");
 var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
 var App = /** @class */ (function () {
     function App() {

@@ -10,6 +10,7 @@ import WhitelistPage from './admin/pages/WhitelistPage';
 import PromiseStorePage from './admin/pages/PromiseStorePage';
 import SourceIndexPage from './admin/pages/SourceIndexPage';
 import SourceStorePage from './admin/pages/SourceStorePage';
+import TokenMetaEditPage from './admin/pages/TokenMetaEditPage';
 
 declare const wp: any;
 declare const document: any;
@@ -50,6 +51,7 @@ class AdminApp extends App {
 			'promise-store': PromiseStorePage,
 			'source-index': SourceIndexPage,
 			'source-store': SourceStorePage,
+			'token-meta-edit': TokenMetaEditPage,
 		} as any;
 	}
 	
