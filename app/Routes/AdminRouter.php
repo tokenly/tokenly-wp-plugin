@@ -79,7 +79,7 @@ class AdminRouter {
 					'menu_title' => 'Tokenpass',
 					'menu_slug'  => 'tokenpass',
 					'callable'   => array( $this->controllers['dashboard'], 'show' ),
-					'capability' => 'manage_options',
+					'capability' => 'read',
 					'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( plugin_dir_url( __FILE__ ) . '../../resources/images/tokenly_logo.svg' ) ),
 					'position'   => 3,
 				),
