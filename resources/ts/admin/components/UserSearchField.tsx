@@ -42,17 +42,24 @@ export class UserSearchField extends Component<UserSearchFieldProps, UserSearchF
 	}
 	
 	onKeywordsChange( keywords: string ) {
+		
+		if( keywords == '' ) {
+			return;
+		}
 		this.setState( { keywords: keywords } );
 		this.userRepository.index({
 			name: keywords,
 		}).then( ( results: Array<UserSuggestion> ) => {
+			if ( results.length <= 0 ) {
+				return;
+			} 
 			const options = results.map( ( user: any ) => {
 				return {
 					value: user.id,
 					label: user.name,
 				} as ComboboxOption;
 			} );
-			this.setState( { users: options } );
+			this.setState( { users: [options[0]] } );
 		}).catch( error => {
 			console.log( error );
 		} );
@@ -64,7 +71,7 @@ export class UserSearchField extends Component<UserSearchFieldProps, UserSearchF
 	}
 
 	render() {
-		return <div>
+		return <div style={{height: '90px'}}>
 			<ComboboxControl
 				label="User"
 				value={ this.state.user }

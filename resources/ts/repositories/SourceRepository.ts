@@ -2,21 +2,17 @@ import { injectable } from "inversify";
 
 declare const wpApiSettings: any;
 
-export interface PromiseData {
+export interface SourceData {
 	//
 }
 
-export interface PromiseStoreData {
-	source: string;
-	destination: number;
-	asset: string;
-	quantity: number;
-	ref: string;
-	note: string;
+export interface SourceStoreData {
+	address: string,
+	assets: string,
 }
 
 @injectable()
-export class PromiseRepository {
+export class SourceRepository {
 	namespace = '/wp-json/tokenly/v1/';
 	
 	constructor() {
@@ -30,16 +26,16 @@ export class PromiseRepository {
 		}
 	}
 	
-	store( promise: PromiseStoreData ) {
+	store( sourceData: SourceStoreData ) {
 		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'POST',
 				headers: this.headers,
 				body: JSON.stringify( {
-					promise: promise,
+					source_data: sourceData,
 				} ),
 			}
-			const url = this.namespace + 'promise';
+			const url = this.namespace + 'source';
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data: any ) => {
@@ -56,7 +52,7 @@ export class PromiseRepository {
 				method: 'GET',
 				headers: this.headers,
 			}
-			const url = this.namespace + 'promise';
+			const url = this.namespace + 'source';
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data: any ) => {

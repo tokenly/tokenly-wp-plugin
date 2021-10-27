@@ -6,24 +6,24 @@ import { PromiseRepository, PromiseData, PromiseStoreData } from '../../reposito
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
 declare const wp: any;
+declare const window: any;
 
 const { __ } = wp.i18n;
 
 const {
 	Button,
-	ButtonGroup,
 	Panel,
 	PanelBody,
 	PanelRow,
 	Modal,
 } = wp.components;
 
-interface VendorPageData {
+interface SourceIndexPageData {
 	//
 }
 
-interface VendorPageProps {
-	pageData: VendorPageData;
+interface SourceIndexPageProps {
+	pageData: SourceIndexPageData;
 	saving: boolean;
 }
 
@@ -32,23 +32,24 @@ interface User {
 	id: number;
 }
 
-interface VendorPageState {
+interface SourceIndexPageState {
 	promiseData: Array<PromiseData>;
 	isCreatePromiseModalOpen: boolean;
 	storingPromise: boolean;
 }
 
-export default class VendorPage extends Component<VendorPageProps, VendorPageState> {
+export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
 	@resolve
 	promiseRepository: PromiseRepository;
 	
-	state: VendorPageState = {
+	state: SourceIndexPageState = {
 		promiseData: [],
 		isCreatePromiseModalOpen: false,
 		storingPromise: false,
 	}
-	constructor( props: VendorPageProps ) {
+	constructor( props: SourceIndexPageProps ) {
 		super( props );
+		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
 	}
 	
 	componentDidMount() {
@@ -59,32 +60,24 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		} );
 	}
 	
+	onPromiseSubmit( promise: PromiseStoreData ) {
+		this.promiseRepository.store( promise ).then( result => {
+			window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+		});
+	}
+	
 	render() {
 		return (
-			<Page title={'Tokenpass Vendor'}>
-				<Panel header="Token promises">
+			<Page title={'Create token promise'}>
+				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<ButtonGroup>
-								<Button
-									text='Create token promise'
-									isPrimary
-									isLarge
-									href='/wp-admin/admin.php?page=tokenpass-promise-store'
-									style={ { marginRight: '8px' } }
-								/>
-								<Button
-									text='Manage source addresses'
-									isPrimary
-									isLarge
-									href='/wp-admin/admin.php?page=tokenpass-source-index'
-								/>
-							</ButtonGroup>
-						</PanelRow>
-						<PanelRow>
-							<div>
-								<div>Current promises:</div>
-							</div>
+							<Button
+								text='Register source address'
+								isPrimary
+								isLarge
+								href='/wp-admin/admin.php?page=tokenpass-source-store'
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

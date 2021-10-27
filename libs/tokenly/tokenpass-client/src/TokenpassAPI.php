@@ -454,7 +454,7 @@ class TokenpassAPI
         try {
             $params = [];
             $params['address'] = $address;
-            $params['type'] = $chain;
+            //$params['type'] = $chain;
             $params['proof'] = $proof;
             $params['assets'] = $assets;
             $valid_extra = array('assign_user', 'assign_user_hash', 'assign_user_label');
@@ -463,6 +463,7 @@ class TokenpassAPI
                     $params[$f] = $extra_opts[$f];
                 }
             }
+			error_log(print_r( $params, true ));
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/register', $params);
         }
         catch (TokenpassAPIException $e){
@@ -556,10 +557,12 @@ class TokenpassAPI
                 $params['fingerprint'] = $fingerprint;
             }
             $params['ref'] = $ref;
+			error_log(print_r( $params, true ));
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/tx', $params);
         }
         catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
+			error_log( $e );
             return false;
         }
         if(!isset($call['result'])){

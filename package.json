@@ -1,7 +1,7 @@
 {
   "name": "tokenly-wp-plugin",
   "version": "0.1.0",
-  "main": "Gruntfile.js",
+  "main": "index.js",
   "author": "YOUR NAME HERE",
   "scripts": {
     "build": "wp-scripts build resources/ts/frontend resources/ts/admin",
@@ -11,13 +11,10 @@
   "devDependencies": {
     "@wordpress/scripts": "^18.1.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
-    "grunt": "~0.4.5",
-    "grunt-wp-i18n": "~0.5.0",
-    "grunt-wp-readme-to-markdown": "~1.0.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4"
   },
-  "description": "=== Tokenly Wp Plugin === Contributors: (this should be a list of wordpress.org userid's) Donate link: https://example.com/ Tags: comments, spam Requires at least: 4.5 Tested up to: 5.8.1 Requires PHP: 5.6 Stable tag: 0.1.0 License: GPLv2 or later License URI: https://www.gnu.org/licenses/gpl-2.0.html",
+  "description": "Tokenpass WordPress integration",
   "directories": {
     "test": "tests"
   },
@@ -31,8 +28,6 @@
   },
   "homepage": "https://github.com/encore-by-dev/tokenly-wp-plugin#readme",
   "dependencies": {
-    "@emotion/react": "^11.5.0",
-    "@emotion/styled": "^11.3.0",
     "@types/react": "^17.0.31",
     "inversify": "^6.0.1",
     "inversify-react": "^1.0.0",

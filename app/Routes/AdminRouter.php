@@ -9,6 +9,8 @@ use Tokenly\Wp\Controllers\Web\Admin\VendorController;
 use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
 use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
 use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
+use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
+use Tokenly\Wp\Controllers\Web\Admin\SourceController;
 
 class AdminRouter {
 	public $routes;
@@ -21,7 +23,9 @@ class AdminRouter {
 		VendorController $vendor_controller,
 		WhitelistController $whitelist_controller,
 		ConnectionController $connection_controller,
-		SettingsController $settings_controller
+		SettingsController $settings_controller,
+		PromiseController $promise_controller,
+		SourceController $source_controller
 	) {
 		$this->auth_service =$auth_service;
 		$this->controllers = array(
@@ -29,7 +33,9 @@ class AdminRouter {
 			'vendor'     => $vendor_controller,
 			'whitelist'  => $whitelist_controller,
 			'connection' => $connection_controller,
-			'settings'   => $settings_controller
+			'settings'   => $settings_controller,
+			'promise'    => $promise_controller,
+			'source'     => $source_controller,
 		);
 	}
 
@@ -112,6 +118,36 @@ class AdminRouter {
 							'capability' => 'manage_options',
 						),
 					),
+					'promise-store' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'Create token promise',
+							'menu_title'  => 'Create promise',
+							'menu_slug'   => 'promise-store',
+							'callable'   => array( $this->controllers['promise'], 'store' ),
+							'capability'  => 'manage_options',
+						),
+					),
+					'source-index' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'Manage source addresses',
+							'menu_title'  => 'Source',
+							'menu_slug'   => 'source-index',
+							'callable'   => array( $this->controllers['source'], 'index' ),
+							'capability'  => 'manage_options',
+						),
+					),
+					'source-store' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'Register source address',
+							'menu_title'  => 'Register source',
+							'menu_slug'   => 'source-store',
+							'callable'   => array( $this->controllers['source'], 'store' ),
+							'capability'  => 'manage_options',
+						),
+					),
 					'whitelist' => array(
 						'args'      => array(
 							'page_title' => 'Gallery Token Whitelist',
@@ -189,8 +225,11 @@ class AdminRouter {
 				foreach ( $subroutes as $subroute ) {
 					$subroute_args = $subroute['args'] ?? null;
 					if ( $subroute_args ) {
+						if ( array_key_exists( 'parent_slug', $subroute_args ) === false ) {
+							$subroute_args['parent_slug'] = $args['menu_slug'] ?? null;
+						}
 						add_submenu_page(
-							$args['menu_slug']  ?? null,
+							$subroute_args['parent_slug'] ?? null,
 							$subroute_args['page_title'] ?? null,
 							$subroute_args['menu_title'] ?? null,
 							$subroute_args['capability'] ?? null,

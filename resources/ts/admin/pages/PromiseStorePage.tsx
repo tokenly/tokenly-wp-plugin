@@ -6,24 +6,24 @@ import { PromiseRepository, PromiseData, PromiseStoreData } from '../../reposito
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
 declare const wp: any;
+declare const window: any;
 
 const { __ } = wp.i18n;
 
 const {
 	Button,
-	ButtonGroup,
 	Panel,
 	PanelBody,
 	PanelRow,
 	Modal,
 } = wp.components;
 
-interface VendorPageData {
+interface PromiseStorePageData {
 	//
 }
 
-interface VendorPageProps {
-	pageData: VendorPageData;
+interface PromiseStorePageProps {
+	pageData: PromiseStorePageData;
 	saving: boolean;
 }
 
@@ -32,23 +32,24 @@ interface User {
 	id: number;
 }
 
-interface VendorPageState {
+interface PromiseStorePageState {
 	promiseData: Array<PromiseData>;
 	isCreatePromiseModalOpen: boolean;
 	storingPromise: boolean;
 }
 
-export default class VendorPage extends Component<VendorPageProps, VendorPageState> {
+export default class PromiseStorePage extends Component<PromiseStorePageProps, PromiseStorePageState> {
 	@resolve
 	promiseRepository: PromiseRepository;
 	
-	state: VendorPageState = {
+	state: PromiseStorePageState = {
 		promiseData: [],
 		isCreatePromiseModalOpen: false,
 		storingPromise: false,
 	}
-	constructor( props: VendorPageProps ) {
+	constructor( props: PromiseStorePageProps ) {
 		super( props );
+		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
 	}
 	
 	componentDidMount() {
@@ -59,32 +60,23 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		} );
 	}
 	
+	onPromiseSubmit( promise: PromiseStoreData ) {
+		this.promiseRepository.store( promise ).then( result => {
+			window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+		});
+	}
+	
 	render() {
 		return (
-			<Page title={'Tokenpass Vendor'}>
-				<Panel header="Token promises">
+			<Page title={'Create token promise'}>
+				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<ButtonGroup>
-								<Button
-									text='Create token promise'
-									isPrimary
-									isLarge
-									href='/wp-admin/admin.php?page=tokenpass-promise-store'
-									style={ { marginRight: '8px' } }
-								/>
-								<Button
-									text='Manage source addresses'
-									isPrimary
-									isLarge
-									href='/wp-admin/admin.php?page=tokenpass-source-index'
-								/>
-							</ButtonGroup>
-						</PanelRow>
-						<PanelRow>
-							<div>
-								<div>Current promises:</div>
-							</div>
+							<PromiseStoreForm
+								onSubmit={ this.onPromiseSubmit }
+								saving={ this.state.storingPromise }
+								style={ { marginBottom: '12px' } }
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

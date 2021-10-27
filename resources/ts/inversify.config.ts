@@ -6,6 +6,7 @@ import { AuthService } from './services/AuthService';
 import { SettingsRepository } from './repositories/SettingsRepository';
 import { PromiseRepository } from './repositories/PromiseRepository';
 import { UserRepository } from './repositories/UserRepository';
+import { SourceRepository } from './repositories/SourceRepository';
 import { WhitelistRepository } from './repositories/WhitelistRepository';
 import { ComponentProvider } from './providers/ComponentProvider';
 import { ButtonLoginComponent } from './components/ButtonLoginComponent';
@@ -17,6 +18,7 @@ const services = [
 	SettingsRepository,
 	PromiseRepository,
 	UserRepository,
+	SourceRepository,
 	WhitelistRepository,
 	ButtonLoginComponent,
 	ComponentProvider,

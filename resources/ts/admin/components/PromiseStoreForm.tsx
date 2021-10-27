@@ -17,6 +17,7 @@ const {
 interface PromiseStoreFormProps {
 	saving: boolean;
 	onSubmit: any;
+	style: any;
 }
 
 interface PromiseStoreFormState {
@@ -44,59 +45,87 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		this.props.onSubmit( this.state.promise );
 	}
 	
-	onUserChange( user: string ) {
+	onUserChange( userId: number ) {
 		const promise = Object.assign( {}, this.state.promise );
-		promise.destination = user;
+		promise.destination = userId;
 		this.setState( { promise: promise } );
 	}
 
 	render() {
 		return <div>
-			<form style={{maxWidth: "500px"}}>
-				<TextControl
-					label="User"
-					value={ this.state.promise.destination }
-					onChange={ (value: any) => {
-						const state = Object.assign( {}, this.state.promise );
-						state.destination = value;
-						this.setState( { promise: state } );
-					} }
-					
-				/>
-				<TextControl
-					label="Source address"
-					value={ this.state.promise.source }
-				/>
-				<TextControl
-					label="Asset ID"
-					value={ this.state.promise.asset }
-				/>
-				<TextControl
-					label="Quantity"
-					type="number"
-					value={ this.state.promise.quantity }
-				/>
-				<TextControl
-					label="Ref"
-					value={ this.state.promise.ref }
-				/>
-				<TextareaControl
-					label="Note"
-					value={ this.state.promise.note }
-				/>
-				<Button
-					isPrimary
-					isLarge
-					disabled={ this.props.saving }
-					onClick={ () => {
-						this.onPromiseSubmit();
-					}}
-				>
-					{ __( 'Create transaction' ) }
-				</Button>
-					{this.props.saving === true &&
-							<Spinner/>
-					}
+			<form>
+				<div>
+					<UserSearchField
+						onChange={ (value: any) => {
+							const state = Object.assign( {}, this.state.promise );
+							state.destination = value;
+							this.setState( { promise: state } );
+						} }
+						
+					/>
+				</div>
+				<div style={{maxWidth: "320px"}}>
+					<TextControl
+						label="Source address"
+						value={ this.state.promise.source }
+						onChange={ (value: any) => {
+							const state = Object.assign( {}, this.state.promise );
+							state.source = value;
+							this.setState( { promise: state } );
+						} }
+					/>
+					<TextControl
+						label="Asset ID"
+						value={ this.state.promise.asset }
+						onChange={ (value: any) => {
+							const state = Object.assign( {}, this.state.promise );
+							state.asset = value;
+							this.setState( { promise: state } );
+						} }
+					/>
+					<TextControl
+						label="Quantity"
+						type="number"
+						value={ this.state.promise.quantity }
+						onChange={ (value: any) => {
+							const state = Object.assign( {}, this.state.promise );
+							state.quantity = value;
+							this.setState( { promise: state } );
+						} }
+					/>
+					<TextControl
+						label="Ref"
+						value={ this.state.promise.ref }
+						onChange={ (value: any) => {
+							const state = Object.assign( {}, this.state.promise );
+							state.ref = value;
+							this.setState( { promise: state } );
+						} }
+					/>
+					<TextareaControl
+						label="Note"
+						value={ this.state.promise.note }
+						onChange={ (value: any) => {
+							const state = Object.assign( {}, this.state.promise );
+							state.note = value;
+							this.setState( { promise: state } );
+						} }
+					/>
+					<Button
+						isPrimary
+						isLarge
+						disabled={ this.props.saving }
+						onClick={ () => {
+							this.onPromiseSubmit();
+						}}
+						style={ { marginTop: '12px' } }
+					>
+						{ __( 'Create transaction' ) }
+					</Button>
+						{this.props.saving === true &&
+								<Spinner/>
+						}
+				</div>
 			</form>
 		</div>
 	}

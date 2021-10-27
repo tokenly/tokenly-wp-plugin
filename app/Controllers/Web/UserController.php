@@ -21,7 +21,6 @@ class UserController extends WebController {
 	
 	public function show() {
 		$id = get_query_var('tokenpass_user_id');
-		error_log($id);
 		$balances = $this->user_service->get_inventory( $id );
 		$render = $this->user_view->render( array(
 			'balances' => $balances,

@@ -7,6 +7,7 @@ use Tokenly\Wp\Controllers\Api\SettingsController;
 use Tokenly\Wp\Controllers\Api\WhitelistController;
 use Tokenly\Wp\Controllers\Api\PromiseController;
 use Tokenly\Wp\Controllers\Api\UserController;
+use Tokenly\Wp\Controllers\Api\SourceController;
 
 class ApiRouter {
 	public $namespace = 'tokenly/v1';
@@ -17,6 +18,7 @@ class ApiRouter {
 		SettingsController $settings_controller,
 		WhitelistController $whitelist_controller,
 		PromiseController $promise_controller,
+		SourceController $source_controller,
 		UserController $user_controller
 	) {
 		$this->controllers = array(
@@ -24,6 +26,7 @@ class ApiRouter {
 			'settings'   => $settings_controller,
 			'whitelist'  => $whitelist_controller,
 			'promise'    => $promise_controller,
+			'source'     => $source_controller,
 			'user'       => $user_controller,
 		);
 		global $tokenly_routes;
@@ -125,18 +128,49 @@ class ApiRouter {
 					},
 				),
 			),
+			'source-index' => array(
+				'path' => '/source',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['source'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'source-store' => array(
+				'path' => '/source',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['source'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'user-index' => array(
 				'path' => '/user',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user'], 'index' ),
 					'permission_callback' => function () {
-						return current_user_can( 'read' );
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user-show' => array(
+				'path' => '/user/(?P<id>[\d]+)',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
 					},
 				),
 			),
 		];
 	}
+	
 
 	public function get_route_urls() {
 		$routes = $this->get_routes();

@@ -7,6 +7,9 @@ import SettingsPage from './admin/pages/SettingsPage';
 import VendorPage from './admin/pages/VendorPage';
 import ConnectionPage from './admin/pages/ConnectionPage';
 import WhitelistPage from './admin/pages/WhitelistPage';
+import PromiseStorePage from './admin/pages/PromiseStorePage';
+import SourceIndexPage from './admin/pages/SourceIndexPage';
+import SourceStorePage from './admin/pages/SourceStorePage';
 
 declare const wp: any;
 declare const document: any;
@@ -44,6 +47,9 @@ class AdminApp extends App {
 			'connection': ConnectionPage,
 			'vendor':  VendorPage,
 			'whitelist':  WhitelistPage,
+			'promise-store': PromiseStorePage,
+			'source-index': SourceIndexPage,
+			'source-store': SourceStorePage,
 		} as any;
 	}
 	

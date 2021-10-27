@@ -12,9 +12,22 @@ class UserController {
 	}
 	
 	public function index( $request ) {
-		$index_parameters = $request['index_parameters'] ?? null;
+		$index_parameters = $request['index_parameters'];
+		if ( $index_parameters ) {
+			$index_parameters = json_decode( $index_parameters, true );
+		} else {
+			$index_parameters = array();
+		}
 		$users = $this->user_repository->index( $index_parameters );
-		error_log( print_r($users, true) );
 		return $users;
+	}
+
+	public function show( $request ) {
+		$id = (string) $request['id'];
+		if ( !$id ) {
+			return;
+		}
+		$user = $this->user_repository->show( $id );
+		return $user;
 	}
 }

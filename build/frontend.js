@@ -5120,6 +5120,7 @@ var AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resourc
 var SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
 var PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
 var UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
+var SourceRepository_1 = __webpack_require__(/*! ./repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
 var WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
 var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
 var ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
@@ -5130,6 +5131,7 @@ var services = [
     SettingsRepository_1.SettingsRepository,
     PromiseRepository_1.PromiseRepository,
     UserRepository_1.UserRepository,
+    SourceRepository_1.SourceRepository,
     WhitelistRepository_1.WhitelistRepository,
     ButtonLoginComponent_1.ButtonLoginComponent,
     ComponentProvider_1.ComponentProvider,
@@ -5243,7 +5245,6 @@ var PromiseRepository = /** @class */ (function () {
     });
     PromiseRepository.prototype.store = function (promise) {
         var _this = this;
-        promise.destination = 'user:' + promise.destination;
         return new Promise(function (resolve, reject) {
             var params = {
                 method: 'POST',
@@ -5384,6 +5385,89 @@ exports.SettingsRepository = SettingsRepository;
 
 /***/ }),
 
+/***/ "./resources/ts/repositories/SourceRepository.ts":
+/*!*******************************************************!*\
+  !*** ./resources/ts/repositories/SourceRepository.ts ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SourceRepository = void 0;
+var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+var SourceRepository = /** @class */ (function () {
+    function SourceRepository() {
+        this.namespace = '/wp-json/tokenly/v1/';
+        //
+    }
+    Object.defineProperty(SourceRepository.prototype, "headers", {
+        get: function () {
+            return {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-WP-Nonce': wpApiSettings.nonce,
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
+    SourceRepository.prototype.store = function (sourceData) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'POST',
+                headers: _this.headers,
+                body: JSON.stringify({
+                    source_data: sourceData,
+                }),
+            };
+            var url = _this.namespace + 'source';
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                console.log(data);
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    SourceRepository.prototype.index = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'GET',
+                headers: _this.headers,
+            };
+            var url = _this.namespace + 'source';
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                console.log(data);
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    SourceRepository = __decorate([
+        (0, inversify_1.injectable)(),
+        __metadata("design:paramtypes", [])
+    ], SourceRepository);
+    return SourceRepository;
+}());
+exports.SourceRepository = SourceRepository;
+
+
+/***/ }),
+
 /***/ "./resources/ts/repositories/UserRepository.ts":
 /*!*****************************************************!*\
   !*** ./resources/ts/repositories/UserRepository.ts ***!
@@ -5392,17 +5476,6 @@ exports.SettingsRepository = SettingsRepository;
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5437,7 +5510,29 @@ var UserRepository = /** @class */ (function () {
                 method: 'GET',
                 headers: _this.headers,
             };
-            var url = _this.namespace + 'user?' + new URLSearchParams(__assign({}, indexParameters));
+            var args = {
+                index_parameters: JSON.stringify(indexParameters),
+            };
+            var url = _this.namespace + 'user?' + new URLSearchParams(args);
+            fetch(url, params)
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                resolve(data);
+            })
+                .catch(function (err) { return reject(err); });
+        });
+    };
+    UserRepository.prototype.show = function (showParameters) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var params = {
+                method: 'GET',
+                headers: _this.headers,
+            };
+            var args = {
+                show_parameters: JSON.stringify(showParameters),
+            };
+            var url = _this.namespace + 'user/?' + new URLSearchParams(args);
             fetch(url, params)
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
