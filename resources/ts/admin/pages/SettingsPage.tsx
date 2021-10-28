@@ -5,16 +5,12 @@ import { Component } from 'react';
 import { SavePanel } from '../components/SavePanel';
 import { SettingsRepository, SettingsData } from '../../repositories/SettingsRepository';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	TextControl,
 	Panel,
 	PanelBody,
 	PanelRow,
-} = wp.components;
+} from '@wordpress/components';
 
 interface SettingsPageData {
 	app_homepage_url: string;

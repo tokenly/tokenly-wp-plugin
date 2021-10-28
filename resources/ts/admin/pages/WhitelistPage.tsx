@@ -6,16 +6,12 @@ import { SavePanel } from '../components/SavePanel';
 import { Component } from 'react';
 import { WhitelistRepository, WhitelistItem, WhitelistData } from '../../repositories/WhitelistRepository';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Panel,
 	PanelBody,
 	PanelRow,
 	ToggleControl,
-} = wp.components;
+} from '@wordpress/components';
 
 interface WhitelistPageProps {
 	//

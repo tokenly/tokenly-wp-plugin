@@ -39,6 +39,15 @@ class WebRouter {
 				),
 				'callback'	=> array( $this->controllers['user'], 'show' ),
 			),
+			'tokenly-user-me' => array(
+				'rules'     => array(
+					'tokenpass-user/me' => 'index.php?tokenpass_user_id=me',
+				),
+				'vars'		=> array(
+					'tokenpass_user_id',
+				),
+				'callback'	=> array( $this->controllers['user'], 'show' ),
+			),
 			'tokenpass-oauth-callback' => array(
 				'rules'		=> array(
 					'tokenpass-oauth-callback/?$' => 'index.php?tokenpass-oauth-callback=1',

@@ -13,7 +13,6 @@ class SettingsRepository {
 
 	public function is_configured() {
 		$settings = $this->show();
-		error_log(print_r( $settings, true ));
 		if ( !empty( $settings['client_id'] ?? null ) && !empty( $settings['client_secret'] ?? null ) ) {
 			return true;
 		} else {

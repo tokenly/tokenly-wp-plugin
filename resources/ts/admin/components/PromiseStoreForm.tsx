@@ -3,16 +3,12 @@ import { Component } from 'react';
 import { PromiseStoreData } from '../../repositories/PromiseRepository';
 import { UserSearchField } from './UserSearchField';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Spinner,
 	TextControl,
 	TextareaControl,
-} = wp.components;
+} from '@wordpress/components';
 
 interface PromiseStoreFormProps {
 	saving: boolean;
@@ -61,7 +57,6 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 							state.destination = value;
 							this.setState( { promise: state } );
 						} }
-						
 					/>
 				</div>
 				<div style={{maxWidth: "320px"}}>
@@ -120,11 +115,11 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						}}
 						style={ { marginTop: '12px' } }
 					>
-						{ __( 'Create transaction' ) }
+						Create transaction
 					</Button>
-						{this.props.saving === true &&
-								<Spinner/>
-						}
+					{this.props.saving === true &&
+						<Spinner/>
+					}
 				</div>
 			</form>
 		</div>

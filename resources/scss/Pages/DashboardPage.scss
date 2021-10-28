@@ -1,0 +1,22 @@
+@use '/resources/scss/variables' as *;
+
+#tokenpass-admin-page-dashboard {
+	.api-input-container {
+		margin-top: 24px;
+	}
+	.dashboard-card-grid {
+		display: grid;
+		grid-auto-flow: row;
+		@include md {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-gap: 15px 36px;
+		}
+		@include lg {
+			grid-gap: 15px 13px;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		@include xl {
+			grid-gap: 20px 16px;
+		}
+	}
+}

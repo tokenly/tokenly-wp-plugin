@@ -52,7 +52,7 @@ class AdminRouter {
 				window.tokenpassRedirects = [
 					{
 						from: 'tokenpass-inventory',
-						to: '/tokenpass-user/{$id}',
+						to: '/tokenpass-user/me',
 					},
 					{
 						from: 'tokenpass-dashboard',

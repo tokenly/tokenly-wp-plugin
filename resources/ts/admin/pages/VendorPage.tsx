@@ -5,18 +5,14 @@ import { Component } from 'react';
 import { PromiseRepository, PromiseData, PromiseStoreData } from '../../repositories/PromiseRepository';
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	ButtonGroup,
 	Panel,
 	PanelBody,
 	PanelRow,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 
 interface VendorPageData {
 	//
@@ -25,11 +21,6 @@ interface VendorPageData {
 interface VendorPageProps {
 	pageData: VendorPageData;
 	saving: boolean;
-}
-
-interface User {
-	name: string;
-	id: number;
 }
 
 interface VendorPageState {
@@ -67,18 +58,20 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 						<PanelRow>
 							<ButtonGroup>
 								<Button
-									text='Create token promise'
 									isPrimary
 									isLarge
 									href='/wp-admin/admin.php?page=tokenpass-promise-store'
 									style={ { marginRight: '8px' } }
-								/>
+								>
+									Create token promise
+								</Button>
 								<Button
-									text='Manage source addresses'
 									isPrimary
 									isLarge
 									href='/wp-admin/admin.php?page=tokenpass-source-index'
-								/>
+								>
+									Manage source addresses
+								</Button>
 							</ButtonGroup>
 						</PanelRow>
 						<PanelRow>

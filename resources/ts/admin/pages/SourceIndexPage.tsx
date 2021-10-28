@@ -5,18 +5,14 @@ import { Component } from 'react';
 import { PromiseRepository, PromiseData, PromiseStoreData } from '../../repositories/PromiseRepository';
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
-declare const wp: any;
 declare const window: any;
 
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
-	Modal,
-} = wp.components;
+} from '@wordpress/components';
 
 interface SourceIndexPageData {
 	//
@@ -73,11 +69,10 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 					<PanelBody>
 						<PanelRow>
 							<Button
-								text='Register source address'
 								isPrimary
 								isLarge
 								href='/wp-admin/admin.php?page=tokenpass-source-store'
-							/>
+							>Register source address</Button>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

@@ -1,6 +1,6 @@
 @use '/resources/scss/variables' as *;
-@use '/app/Components/CardTokenItem.scss' as *;
-@use '/app/Components/ListCardTokenItem.scss' as *;
+@use '/resources/scss/Components/CardTokenItemComponent.scss' as *;
+@use '/resources/scss/Components/ListCardTokenItemComponent.scss' as *;
 
 .tokenly-component {
 	& * {

@@ -2,8 +2,22 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
-class DashboardController {
+use Tokenly\Wp\Controllers\Web\WebController;
+use Tokenly\Wp\Views\Admin\DashboardView;
+
+class DashboardController extends WebController {
+	public $dashboard_view;
+
+	public function __construct(
+		DashboardView $dashboard_view
+	) {
+		$this->dashboard_view = $dashboard_view;
+	}
+
 	public function show() {
-		//
+		$render = $this->dashboard_view->render( array(
+			//
+		) );
+		echo $render;
 	}
 }

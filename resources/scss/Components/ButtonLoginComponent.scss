@@ -16,8 +16,8 @@
 
 	}
 
-	button.tokenpass-login {
-		display: flex;
+	.button.tokenpass-login {
+		display: inline-flex;
 		flex-direction: row;
 		align-items: center;
 		padding: 8px 12px;

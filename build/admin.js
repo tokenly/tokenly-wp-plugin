@@ -5040,8 +5040,9 @@ var WhitelistPage_1 = __webpack_require__(/*! ./admin/pages/WhitelistPage */ "./
 var PromiseStorePage_1 = __webpack_require__(/*! ./admin/pages/PromiseStorePage */ "./resources/ts/admin/pages/PromiseStorePage.tsx");
 var SourceIndexPage_1 = __webpack_require__(/*! ./admin/pages/SourceIndexPage */ "./resources/ts/admin/pages/SourceIndexPage.tsx");
 var SourceStorePage_1 = __webpack_require__(/*! ./admin/pages/SourceStorePage */ "./resources/ts/admin/pages/SourceStorePage.tsx");
+var DashboardPage_1 = __webpack_require__(/*! ./admin/pages/DashboardPage */ "./resources/ts/admin/pages/DashboardPage.tsx");
 var TokenMetaEditPage_1 = __webpack_require__(/*! ./admin/pages/TokenMetaEditPage */ "./resources/ts/admin/pages/TokenMetaEditPage.tsx");
-var render = wp.element.render;
+var element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 var AdminApp = /** @class */ (function (_super) {
     __extends(AdminApp, _super);
     function AdminApp() {
@@ -5068,6 +5069,7 @@ var AdminApp = /** @class */ (function (_super) {
             'source-index': SourceIndexPage_1.default,
             'source-store': SourceStorePage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
+            'dashboard': DashboardPage_1.default,
         };
     };
     AdminApp.prototype.render = function (ViewComponent) {
@@ -5076,7 +5078,7 @@ var AdminApp = /** @class */ (function (_super) {
         }
         var pageContainer = document.createElement('div');
         this.pageElement.appendChild(pageContainer);
-        render(React.createElement(inversify_react_1.Provider, { container: this.container },
+        (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
             React.createElement(ViewComponent, { pageData: this.pageData })), pageContainer);
     };
     AdminApp.prototype.registerRedirects = function () {
@@ -5129,8 +5131,7 @@ exports.PromiseStoreForm = void 0;
 var React = __webpack_require__(/*! react */ "react");
 var react_1 = __webpack_require__(/*! react */ "react");
 var UserSearchField_1 = __webpack_require__(/*! ./UserSearchField */ "./resources/ts/admin/components/UserSearchField.tsx");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Spinner = _a.Spinner, TextControl = _a.TextControl, TextareaControl = _a.TextareaControl;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var PromiseStoreForm = /** @class */ (function (_super) {
     __extends(PromiseStoreForm, _super);
     function PromiseStoreForm(props) {
@@ -5168,36 +5169,36 @@ var PromiseStoreForm = /** @class */ (function (_super) {
                             _this.setState({ promise: state });
                         } })),
                 React.createElement("div", { style: { maxWidth: "320px" } },
-                    React.createElement(TextControl, { label: "Source address", value: this.state.promise.source, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Source address", value: this.state.promise.source, onChange: function (value) {
                             var state = Object.assign({}, _this.state.promise);
                             state.source = value;
                             _this.setState({ promise: state });
                         } }),
-                    React.createElement(TextControl, { label: "Asset ID", value: this.state.promise.asset, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Asset ID", value: this.state.promise.asset, onChange: function (value) {
                             var state = Object.assign({}, _this.state.promise);
                             state.asset = value;
                             _this.setState({ promise: state });
                         } }),
-                    React.createElement(TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, onChange: function (value) {
                             var state = Object.assign({}, _this.state.promise);
                             state.quantity = value;
                             _this.setState({ promise: state });
                         } }),
-                    React.createElement(TextControl, { label: "Ref", value: this.state.promise.ref, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Ref", value: this.state.promise.ref, onChange: function (value) {
                             var state = Object.assign({}, _this.state.promise);
                             state.ref = value;
                             _this.setState({ promise: state });
                         } }),
-                    React.createElement(TextareaControl, { label: "Note", value: this.state.promise.note, onChange: function (value) {
+                    React.createElement(components_1.TextareaControl, { label: "Note", value: this.state.promise.note, onChange: function (value) {
                             var state = Object.assign({}, _this.state.promise);
                             state.note = value;
                             _this.setState({ promise: state });
                         } }),
-                    React.createElement(Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
+                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
                             _this.onPromiseSubmit();
-                        }, style: { marginTop: '12px' } }, __('Create transaction')),
+                        }, style: { marginTop: '12px' } }, "Create transaction"),
                     this.props.saving === true &&
-                        React.createElement(Spinner, null))));
+                        React.createElement(components_1.Spinner, null))));
     };
     return PromiseStoreForm;
 }(react_1.Component));
@@ -5233,8 +5234,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SavePanel = void 0;
 var React = __webpack_require__(/*! react */ "react");
 var react_1 = __webpack_require__(/*! react */ "react");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Spinner = _a.Spinner, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var SavePanel = /** @class */ (function (_super) {
     __extends(SavePanel, _super);
     function SavePanel(props) {
@@ -5242,14 +5242,14 @@ var SavePanel = /** @class */ (function (_super) {
     }
     SavePanel.prototype.render = function () {
         var _this = this;
-        return (React.createElement(Panel, null,
-            React.createElement(PanelBody, null,
-                React.createElement(PanelRow, { className: "save-button-container" },
-                    React.createElement(Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
+        return (React.createElement(components_1.Panel, null,
+            React.createElement(components_1.PanelBody, null,
+                React.createElement(components_1.PanelRow, { className: "save-button-container" },
+                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
                             _this.props.onClick();
-                        } }, __('Save settings')),
+                        } }, "Save settings"),
                     this.props.saving === true &&
-                        React.createElement(Spinner, null)))));
+                        React.createElement(components_1.Spinner, null)))));
     };
     return SavePanel;
 }(react_1.Component));
@@ -5285,8 +5285,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SourceStoreForm = void 0;
 var React = __webpack_require__(/*! react */ "react");
 var react_1 = __webpack_require__(/*! react */ "react");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Spinner = _a.Spinner, TextControl = _a.TextControl;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var SourceStoreForm = /** @class */ (function (_super) {
     __extends(SourceStoreForm, _super);
     function SourceStoreForm(props) {
@@ -5308,21 +5307,23 @@ var SourceStoreForm = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("form", null,
                 React.createElement("div", { style: { maxWidth: "320px" } },
-                    React.createElement(TextControl, { label: "Address", value: this.state.store.address, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Address", value: this.state.store.address, onChange: function (value) {
                             var state = Object.assign({}, _this.state.store);
                             state.address = value;
                             _this.setState({ store: state });
                         } }),
-                    React.createElement(TextControl, { label: "Assets", hint: "Comma-separated values", value: this.state.store.assets, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Assets", 
+                        // @ts-ignore
+                        hint: "Comma-separated values", value: this.state.store.assets, onChange: function (value) {
                             var state = Object.assign({}, _this.state.store);
                             state.assets = value;
                             _this.setState({ store: state });
                         } }),
-                    React.createElement(Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
+                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
                             _this.onSourceSubmit();
-                        }, style: { marginTop: '12px' } }, __('Register address')),
+                        }, style: { marginTop: '12px' } }, "Register address"),
                     this.props.saving === true &&
-                        React.createElement(Spinner, null))));
+                        React.createElement(components_1.Spinner, null))));
     };
     return SourceStoreForm;
 }(react_1.Component));
@@ -5370,7 +5371,7 @@ var React = __webpack_require__(/*! react */ "react");
 var react_1 = __webpack_require__(/*! react */ "react");
 var UserRepository_1 = __webpack_require__(/*! ../../repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
 var __ = wp.i18n.__;
-var ComboboxControl = wp.components.ComboboxControl;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var UserSearchField = /** @class */ (function (_super) {
     __extends(UserSearchField, _super);
     function UserSearchField(props) {
@@ -5414,7 +5415,7 @@ var UserSearchField = /** @class */ (function (_super) {
     UserSearchField.prototype.render = function () {
         var _this = this;
         return React.createElement("div", { style: { height: '90px' } },
-            React.createElement(ComboboxControl, { label: "User", value: this.state.user, onChange: function (value) {
+            React.createElement(components_1.ComboboxControl, { label: "User", value: this.state.user, onChange: function (value) {
                     _this.onUserChange(value);
                 }, options: this.state.users, onFilterValueChange: function (keywords) {
                     _this.onKeywordsChange(keywords);
@@ -5469,9 +5470,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Whitelist = void 0;
 var React = __webpack_require__(/*! react */ "react");
 var react_1 = __webpack_require__(/*! react */ "react");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Flex = _a.Flex, TextControl = _a.TextControl, Dashicon = _a.Dashicon;
-var Spacer = wp.components.__experimentalSpacer;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var Whitelist = /** @class */ (function (_super) {
     __extends(Whitelist, _super);
     function Whitelist(props) {
@@ -5505,30 +5504,29 @@ var Whitelist = /** @class */ (function (_super) {
         var _this = this;
         var listItems = this.state.whitelist.map(function (listItem, i) {
             return React.createElement("div", null,
-                React.createElement(Flex, null,
-                    React.createElement(TextControl, { label: "Contract Address", value: listItem.address, onChange: function (value) {
+                React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
+                    React.createElement(components_1.TextControl, { label: "Contract Address", value: listItem.address, onChange: function (value) {
                             var newState = Object.assign({}, _this.state);
                             newState.whitelist[i].address = value;
                             _this.setState(__assign({}, newState));
                             _this.dispatchUpdate();
                         } }),
-                    React.createElement(TextControl, { label: "Token Index", value: listItem.index, onChange: function (value) {
+                    React.createElement(components_1.TextControl, { label: "Token Index", value: listItem.index, onChange: function (value) {
                             var newState = Object.assign({}, _this.state);
                             newState.whitelist[i].index = value;
                             _this.setState(__assign({}, newState));
                             _this.dispatchUpdate();
                         } }),
-                    React.createElement(Button, { variant: "secondary", onClick: function () {
+                    React.createElement(components_1.Button, { isTertiary: true, onClick: function () {
                             _this.onRemove(i);
                         } },
-                        React.createElement(Dashicon, { icon: "no" }))),
-                React.createElement(Spacer, { margin: 4 }));
+                        React.createElement(components_1.Dashicon, { icon: "no" }))));
         });
         return React.createElement("div", null,
             React.createElement("ul", null, listItems),
-            React.createElement(Button, { isPrimary: true, isLarge: true, onClick: function () {
+            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: function () {
                     _this.onAdd();
-                } }, __('Add Token')));
+                } }, "Add Token"));
     };
     return Whitelist;
 }(react_1.Component));
@@ -5575,8 +5573,7 @@ var React = __webpack_require__(/*! react */ "react");
 var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
 var AuthService_1 = __webpack_require__(/*! ../../services/AuthService */ "./resources/ts/services/AuthService.ts");
 var react_1 = __webpack_require__(/*! react */ "react");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var ConnectionPage = /** @class */ (function (_super) {
     __extends(ConnectionPage, _super);
     function ConnectionPage(props) {
@@ -5608,21 +5605,21 @@ var ConnectionPage = /** @class */ (function (_super) {
     ConnectionPage.prototype.render = function () {
         var _this = this;
         return (React.createElement(Page_1.default, { title: 'Connection' },
-            React.createElement(Panel, { header: "Connection Status" },
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
+            React.createElement(components_1.Panel, { header: "Connection Status" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
                             React.createElement("span", null, "Connection status: "),
                             React.createElement("span", null,
                                 React.createElement("strong", null, this.getStatusText())))),
-                    React.createElement(PanelRow, null,
-                        React.createElement(Button, { isPrimary: true, isLarge: true, disabled: this.state.status, onClick: function () {
-                                _this.authService.connect();
-                            } }, __('Connect to Tokenpass'))),
-                    React.createElement(PanelRow, null,
-                        React.createElement(Button, { isPrimary: true, isLarge: true, disabled: !this.state.status, onClick: function () {
-                                _this.authService.disconnect();
-                            } }, __('Disconnect from Tokenpass')))))));
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { justify: 'flex-start' },
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.state.status, onClick: function () {
+                                    _this.authService.connect();
+                                } }, "Connect to Tokenpass"),
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: !this.state.status, onClick: function () {
+                                    _this.authService.disconnect();
+                                } }, "Disconnect from Tokenpass")))))));
     };
     __decorate([
         inversify_react_1.resolve,
@@ -5631,6 +5628,125 @@ var ConnectionPage = /** @class */ (function (_super) {
     return ConnectionPage;
 }(react_1.Component));
 exports["default"] = ConnectionPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/admin/pages/DashboardPage.tsx":
+/*!****************************************************!*\
+  !*** ./resources/ts/admin/pages/DashboardPage.tsx ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var React = __webpack_require__(/*! react */ "react");
+var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+var react_1 = __webpack_require__(/*! react */ "react");
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+var DashboardPage = /** @class */ (function (_super) {
+    __extends(DashboardPage, _super);
+    function DashboardPage(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            cards: [
+                {
+                    title: 'Main Dashboard',
+                    description: 'Tokenpass main dashboard (external).',
+                    icon: 'dashboard',
+                    url: 'https://tokenpass.tokenly.com/dashboard',
+                    admin: false,
+                },
+                {
+                    title: 'Inventory',
+                    description: 'View the list of currently owned token assets.',
+                    icon: 'money',
+                    url: '/tokenpass-user/me',
+                    admin: false,
+                },
+                {
+                    title: 'Connection',
+                    description: 'Connect or disconnect to Tokenpass network.',
+                    icon: 'admin-plugins',
+                    url: '/wp-admin/admin.php?page=tokenpass-connection',
+                    admin: false,
+                },
+                {
+                    title: 'Vendor',
+                    description: 'Manage token promises.',
+                    icon: 'share',
+                    url: '/wp-admin/admin.php?page=tokenpass-vendor',
+                    admin: true,
+                },
+                {
+                    title: 'Whitelist',
+                    description: 'Configure a filter for tokens displayed on the inventory pages.',
+                    icon: 'forms',
+                    url: '/wp-admin/admin.php?page=tokenpass-whitelist',
+                    admin: true,
+                },
+                {
+                    title: 'Token Meta',
+                    description: 'Manage additional information for tokens, displayed on the Inventory page.',
+                    icon: 'media-default',
+                    url: '/wp-admin/edit.php?post_type=token-meta',
+                    admin: true,
+                },
+                {
+                    title: 'Settings',
+                    description: 'Manage plugin settings.',
+                    icon: 'admin-settings',
+                    url: '/wp-admin/admin.php?page=tokenpass-settings',
+                    admin: true,
+                },
+            ],
+        };
+        _this.canView = _this.canView.bind(_this);
+        return _this;
+    }
+    DashboardPage.prototype.canView = function (cardItem) {
+        if (this.props.pageData.is_admin === true || cardItem.admin === false) {
+            return true;
+        }
+        else {
+            false;
+        }
+    };
+    DashboardPage.prototype.render = function () {
+        var _this = this;
+        var cards = this.state.cards.map(function (cardItem, i) {
+            if (_this.canView(cardItem) === true) {
+                return (React.createElement(components_1.Card, null,
+                    React.createElement(components_1.CardHeader, { style: { display: 'flex', justifyContent: 'flex-start', } },
+                        React.createElement(components_1.Dashicon, { icon: cardItem.icon }),
+                        React.createElement("h3", null, cardItem.title)),
+                    React.createElement(components_1.CardBody, { size: "large" }, cardItem.description),
+                    React.createElement(components_1.CardFooter, null,
+                        React.createElement(components_1.Button, { isPrimary: true, href: cardItem.url }, "Visit page"))));
+            }
+        });
+        return (React.createElement(Page_1.default, { title: 'Tokenpass Dashboard' },
+            React.createElement("div", { className: "dashboard-card-grid" }, cards)));
+    };
+    return DashboardPage;
+}(react_1.Component));
+exports["default"] = DashboardPage;
 
 
 /***/ }),
@@ -5722,8 +5838,7 @@ var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.
 var react_1 = __webpack_require__(/*! react */ "react");
 var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
 var PromiseStoreForm_1 = __webpack_require__(/*! ../components/PromiseStoreForm */ "./resources/ts/admin/components/PromiseStoreForm.tsx");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow, Modal = _a.Modal;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var PromiseStorePage = /** @class */ (function (_super) {
     __extends(PromiseStorePage, _super);
     function PromiseStorePage(props) {
@@ -5751,9 +5866,9 @@ var PromiseStorePage = /** @class */ (function (_super) {
     };
     PromiseStorePage.prototype.render = function () {
         return (React.createElement(Page_1.default, { title: 'Create token promise' },
-            React.createElement(Panel, null,
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onPromiseSubmit, saving: this.state.storingPromise, style: { marginBottom: '12px' } }))))));
     };
     __decorate([
@@ -5806,8 +5921,7 @@ var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.
 var react_1 = __webpack_require__(/*! react */ "react");
 var SavePanel_1 = __webpack_require__(/*! ../components/SavePanel */ "./resources/ts/admin/components/SavePanel.tsx");
 var SettingsRepository_1 = __webpack_require__(/*! ../../repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
-var __ = wp.i18n.__;
-var _a = wp.components, TextControl = _a.TextControl, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var SettingsPage = /** @class */ (function (_super) {
     __extends(SettingsPage, _super);
     function SettingsPage(props) {
@@ -5852,15 +5966,15 @@ var SettingsPage = /** @class */ (function (_super) {
     SettingsPage.prototype.render = function () {
         var _this = this;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
-            React.createElement(Panel, { header: "How to Setup" },
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
+            React.createElement(components_1.Panel, { header: "How to Setup" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement("ul", { className: "tk_steps" },
                             React.createElement("li", null,
                                 "1. Create App on ",
                                 React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers")),
                             React.createElement("li", null, "2. Use below details to create App"))),
-                    React.createElement(PanelRow, null,
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement("div", { className: "tk_app_details" },
                             React.createElement("h3", null, "Register Client Application"),
                             React.createElement("span", null,
@@ -5881,12 +5995,12 @@ var SettingsPage = /** @class */ (function (_super) {
                                 " ",
                                 React.createElement("a", { href: this.props.pageData.client_auth_url, target: "_blank" }, this.props.pageData.client_auth_url),
                                 " "))),
-                    React.createElement(PanelRow, { className: "api-input-container" },
-                        React.createElement(TextControl, { label: "Client ID", value: this.state.settingsData.client_id, onChange: function (value) {
+                    React.createElement(components_1.PanelRow, { className: "api-input-container" },
+                        React.createElement(components_1.TextControl, { label: "Client ID", value: this.state.settingsData.client_id, onChange: function (value) {
                                 _this.setClientId(value);
                             } })),
-                    React.createElement(PanelRow, null,
-                        React.createElement(TextControl, { label: "Client Secret", value: this.state.settingsData.client_secret, onChange: function (value) {
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.TextControl, { label: "Client Secret", value: this.state.settingsData.client_secret, onChange: function (value) {
                                 _this.setClientSecret(value);
                             } })))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
@@ -5940,8 +6054,7 @@ var React = __webpack_require__(/*! react */ "react");
 var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
 var react_1 = __webpack_require__(/*! react */ "react");
 var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow, Modal = _a.Modal;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var SourceIndexPage = /** @class */ (function (_super) {
     __extends(SourceIndexPage, _super);
     function SourceIndexPage(props) {
@@ -5969,10 +6082,10 @@ var SourceIndexPage = /** @class */ (function (_super) {
     };
     SourceIndexPage.prototype.render = function () {
         return (React.createElement(Page_1.default, { title: 'Create token promise' },
-            React.createElement(Panel, null,
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
-                        React.createElement(Button, { text: 'Register source address', isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }))))));
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source address"))))));
     };
     __decorate([
         inversify_react_1.resolve,
@@ -6024,8 +6137,7 @@ var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.
 var react_1 = __webpack_require__(/*! react */ "react");
 var SourceRepository_1 = __webpack_require__(/*! ../../repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
 var SourceStoreForm_1 = __webpack_require__(/*! ../components/SourceStoreForm */ "./resources/ts/admin/components/SourceStoreForm.tsx");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var SourceIndexPage = /** @class */ (function (_super) {
     __extends(SourceIndexPage, _super);
     function SourceIndexPage(props) {
@@ -6043,9 +6155,9 @@ var SourceIndexPage = /** @class */ (function (_super) {
     };
     SourceIndexPage.prototype.render = function () {
         return (React.createElement(Page_1.default, { title: 'Register source address' },
-            React.createElement(Panel, null,
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
                             React.createElement("div", { style: { marginBottom: '12px' } },
                                 React.createElement("a", { href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses")),
@@ -6089,19 +6201,34 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var React = __webpack_require__(/*! react */ "react");
 var react_1 = __webpack_require__(/*! react */ "react");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var TokenMetaEditPage = /** @class */ (function (_super) {
     __extends(TokenMetaEditPage, _super);
     function TokenMetaEditPage(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
             storingSource: false,
+            tokenMeta: {
+                asset: '',
+            }
         };
         return _this;
     }
+    TokenMetaEditPage.prototype.updateAsset = function (value) {
+        var state = Object.assign({}, this.state);
+        state.tokenMeta.asset = value;
+        this.setState(state);
+    };
     TokenMetaEditPage.prototype.render = function () {
-        return (React.createElement("div", null));
+        var _this = this;
+        return (React.createElement(components_1.Panel, { header: "Additional token meta" },
+            React.createElement(components_1.PanelBody, null,
+                React.createElement(components_1.PanelRow, null,
+                    React.createElement("div", { style: { width: '100%' } },
+                        React.createElement(components_1.TextControl, { value: this.state.tokenMeta.asset, label: "Asset", onChange: function (value) {
+                                _this.updateAsset(value);
+                            }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
+                        React.createElement("div", { style: { opacity: 0.8 } }, "Is used for pairing meta with an asset"))))));
     };
     return TokenMetaEditPage;
 }(react_1.Component));
@@ -6148,8 +6275,7 @@ var React = __webpack_require__(/*! react */ "react");
 var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
 var react_1 = __webpack_require__(/*! react */ "react");
 var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var __ = wp.i18n.__;
-var _a = wp.components, Button = _a.Button, ButtonGroup = _a.ButtonGroup, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow, Modal = _a.Modal;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var VendorPage = /** @class */ (function (_super) {
     __extends(VendorPage, _super);
     function VendorPage(props) {
@@ -6171,13 +6297,13 @@ var VendorPage = /** @class */ (function (_super) {
     };
     VendorPage.prototype.render = function () {
         return (React.createElement(Page_1.default, { title: 'Tokenpass Vendor' },
-            React.createElement(Panel, { header: "Token promises" },
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
-                        React.createElement(ButtonGroup, null,
-                            React.createElement(Button, { text: 'Create token promise', isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-promise-store', style: { marginRight: '8px' } }),
-                            React.createElement(Button, { text: 'Manage source addresses', isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }))),
-                    React.createElement(PanelRow, null,
+            React.createElement(components_1.Panel, { header: "Token promises" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.ButtonGroup, null,
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-promise-store', style: { marginRight: '8px' } }, "Create token promise"),
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses"))),
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
                             React.createElement("div", null, "Current promises:")))))));
     };
@@ -6243,8 +6369,7 @@ var Whitelist_1 = __webpack_require__(/*! ../components/Whitelist */ "./resource
 var SavePanel_1 = __webpack_require__(/*! ../components/SavePanel */ "./resources/ts/admin/components/SavePanel.tsx");
 var react_1 = __webpack_require__(/*! react */ "react");
 var WhitelistRepository_1 = __webpack_require__(/*! ../../repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
-var __ = wp.i18n.__;
-var _a = wp.components, Panel = _a.Panel, PanelBody = _a.PanelBody, PanelRow = _a.PanelRow, ToggleControl = _a.ToggleControl;
+var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 var WhitelistPage = /** @class */ (function (_super) {
     __extends(WhitelistPage, _super);
     function WhitelistPage(props) {
@@ -6298,20 +6423,20 @@ var WhitelistPage = /** @class */ (function (_super) {
     WhitelistPage.prototype.render = function () {
         var _this = this;
         return (React.createElement(Page_1.default, { title: 'Token Whitelist' },
-            React.createElement(Panel, { header: "Token Whitelist Settings" },
-                React.createElement(PanelBody, null,
-                    React.createElement(PanelRow, null,
+            React.createElement(components_1.Panel, { header: "Token Whitelist Settings" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
                         React.createElement("p", null, "Whitelist allows to control which token assets to display on the Inventory screen.")),
-                    React.createElement(PanelRow, null,
-                        React.createElement(ToggleControl, { label: "Use whitelist", help: this.state.whitelistData.use_whitelist
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.ToggleControl, { label: "Use whitelist", help: this.state.whitelistData.use_whitelist
                                 ? 'Whitelist enabled.'
                                 : 'Whitelist disabled.', checked: this.state.whitelistData.use_whitelist, onChange: function (value) {
                                 _this.setUseWhitelist(value);
                             } })))),
             this.state.whitelistData.use_whitelist === true &&
-                React.createElement(Panel, { header: "Token Whitelist Editor" },
-                    React.createElement(PanelBody, null,
-                        React.createElement(PanelRow, null,
+                React.createElement(components_1.Panel, { header: "Token Whitelist Editor" },
+                    React.createElement(components_1.PanelBody, null,
+                        React.createElement(components_1.PanelRow, null,
                             React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.whitelist })))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
     };
@@ -7060,6 +7185,28 @@ exports.AuthService = AuthService;
 
 "use strict";
 module.exports = window["React"];
+
+/***/ }),
+
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+"use strict";
+module.exports = window["wp"]["element"];
 
 /***/ })
 

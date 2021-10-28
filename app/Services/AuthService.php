@@ -62,11 +62,15 @@ class AuthService {
 	}
 
 	public function find_existing_user( $tokenpass_user ) {
+		$uuid = $tokenpass_user['id'] ?? null;
 		$email = $tokenpass_user['email'] ?? null;
-		if ( !$email ) {
-			return false;
+		$user;
+		if ( $uuid ) {
+			$user = $this->user_service->get_by_uuid( $uuid );
+			
+		} else if ( $email ) {
+			$user = get_user_by( 'email', $email );
 		}
-		$user = get_user_by( 'email', $email );
 		return $user;
 	}
 
@@ -94,11 +98,7 @@ class AuthService {
 		$tokenpass_user = $this->client->getUserByToken( $access_token );
 		if ( $tokenpass_user ) {
 			$user = wp_get_current_user();
-			error_log(print_r($user, true));
-			if ( is_user_logged_in() === true ) {
-				
-			} else {
-				error_log('not logged in');
+			if ( is_user_logged_in() === false ) {
 				$can_login = $this->can_social_login( $tokenpass_user );
 				if ( $can_login === false ) {
 					return;
@@ -148,7 +148,8 @@ class AuthService {
 	}
 
 	public function is_connected( $id ) {
-		if ( get_user_meta( $id, 'tokenly_uuid' )[0] ) {
+		$uuid = get_user_meta( $id, 'tokenly_uuid' );
+		if ( $uuid && $uuid[0] ?? null && !empty( $uuid[0] ) ) {
 			return true;
 		} else {
 			return false;

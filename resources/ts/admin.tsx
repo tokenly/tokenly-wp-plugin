@@ -10,13 +10,16 @@ import WhitelistPage from './admin/pages/WhitelistPage';
 import PromiseStorePage from './admin/pages/PromiseStorePage';
 import SourceIndexPage from './admin/pages/SourceIndexPage';
 import SourceStorePage from './admin/pages/SourceStorePage';
+import DashboardPage from './admin/pages/DashboardPage';
 import TokenMetaEditPage from './admin/pages/TokenMetaEditPage';
 
-declare const wp: any;
+
 declare const document: any;
 declare const window: any;
 
-const render = wp.element.render;
+import { 
+	render,
+} from '@wordpress/element';
 
 interface Redirect {
 	from: string;
@@ -52,6 +55,7 @@ class AdminApp extends App {
 			'source-index': SourceIndexPage,
 			'source-store': SourceStorePage,
 			'token-meta-edit': TokenMetaEditPage,
+			'dashboard': DashboardPage,
 		} as any;
 	}
 	

@@ -29,6 +29,8 @@
   "homepage": "https://github.com/encore-by-dev/tokenly-wp-plugin#readme",
   "dependencies": {
     "@types/react": "^17.0.31",
+    "@types/wordpress__components": "^14.0.4",
+    "@wordpress/components": "^19.0.0",
     "inversify": "^6.0.1",
     "inversify-react": "^1.0.0",
     "reflect-metadata": "^0.1.13"

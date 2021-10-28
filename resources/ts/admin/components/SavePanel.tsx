@@ -1,17 +1,13 @@
 import * as React from 'react';
 import { Component } from 'react';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Spinner,
 	Panel,
 	PanelBody,
 	PanelRow,
-} = wp.components;
+} from '@wordpress/components';
 
 interface SavePanelProps {
 	saving: boolean;
@@ -41,10 +37,10 @@ export class SavePanel extends Component<SavePanelProps, SavePanelState> {
 								this.props.onClick();
 							}}
 						>
-							{ __( 'Save settings' ) }
+							Save settings
 						</Button>
 						{this.props.saving === true &&
-								<Spinner/>
+							<Spinner/>
 						}
 					</PanelRow>
 				</PanelBody>

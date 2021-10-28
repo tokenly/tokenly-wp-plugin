@@ -5,17 +5,14 @@ import { Component } from 'react';
 import { SourceRepository, SourceData, SourceStoreData } from '../../repositories/SourceRepository';
 import { SourceStoreForm } from '../components/SourceStoreForm';
 
-declare const wp: any;
 declare const window: any;
 
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
-} = wp.components;
+} from '@wordpress/components';
 
 interface SourceIndexPageData {
 	//

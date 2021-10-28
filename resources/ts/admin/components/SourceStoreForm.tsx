@@ -2,15 +2,11 @@ import * as React from 'react';
 import { Component } from 'react';
 import { SourceStoreData } from '../../repositories/SourceRepository';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Spinner,
 	TextControl,
-} = wp.components;
+} from '@wordpress/components';
 
 interface SourceStoreFormProps {
 	saving: boolean;
@@ -53,6 +49,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 					/>
 					<TextControl
 						label="Assets"
+						// @ts-ignore
 						hint="Comma-separated values"
 						value={ this.state.store.assets }
 						onChange={ (value: any) => {
@@ -70,11 +67,11 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 						}}
 						style={ { marginTop: '12px' } }
 					>
-						{ __( 'Register address' ) }
+						Register address
 					</Button>
-						{this.props.saving === true &&
-								<Spinner/>
-						}
+					{this.props.saving === true &&
+						<Spinner/>
+					}
 				</div>
 			</form>
 		</div>

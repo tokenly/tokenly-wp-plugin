@@ -7,9 +7,10 @@ declare const wp: any;
 
 const { __ } = wp.i18n;
 
-const {
+import { 
+	// @ts-ignore
 	ComboboxControl,
-} = wp.components;
+} from '@wordpress/components';
 
 interface UserSearchFieldProps {
 	onChange: any;
@@ -42,7 +43,6 @@ export class UserSearchField extends Component<UserSearchFieldProps, UserSearchF
 	}
 	
 	onKeywordsChange( keywords: string ) {
-		
 		if( keywords == '' ) {
 			return;
 		}

@@ -1,5 +1,6 @@
-@use '/resources/ts/admin/pages/SettingsPage.scss' as *;
-@use '/resources/ts/admin/pages/WhitelistPage.scss' as *;
+@use '/resources/scss/Pages/DashboardPage.scss' as *;
+@use '/resources/scss/Pages/SettingsPage.scss' as *;
+@use '/resources/scss/Pages/WhitelistPage.scss' as *;
 
 body.login {
 	.tokenpass-login-container {

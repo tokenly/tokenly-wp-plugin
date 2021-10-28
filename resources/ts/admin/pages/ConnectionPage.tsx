@@ -4,16 +4,13 @@ import Page from './Page';
 import { AuthService } from '../../services/AuthService';
 import { Component } from 'react';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
-} = wp.components;
+	Flex,
+} from '@wordpress/components';
 
 interface ConnectionPageProps {
 	//
@@ -68,28 +65,28 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 							</div>
 						</PanelRow>
 						<PanelRow>
-							<Button
-								isPrimary
-								isLarge
-								disabled={ this.state.status }
-								onClick={ () => {
-									this.authService.connect();
-								}}
-							>
-								{ __( 'Connect to Tokenpass' ) }
-							</Button>
-						</PanelRow>
-						<PanelRow>
-							<Button
-								isPrimary
-								isLarge
-								disabled={ !this.state.status }
-								onClick={ () => {
-									this.authService.disconnect();
-								}}
-							>
-								{ __( 'Disconnect from Tokenpass' ) }
-							</Button>
+							<Flex justify='flex-start'>
+								<Button
+									isPrimary
+									isLarge
+									disabled={ this.state.status }
+									onClick={ () => {
+										this.authService.connect();
+									}}
+								>
+									Connect to Tokenpass
+								</Button>
+								<Button
+									isPrimary
+									isLarge
+									disabled={ !this.state.status }
+									onClick={ () => {
+										this.authService.disconnect();
+									}}
+								>
+									Disconnect from Tokenpass
+								</Button>
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

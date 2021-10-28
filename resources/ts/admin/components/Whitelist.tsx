@@ -2,18 +2,12 @@ import * as React from 'react';
 import { Component } from 'react';
 import { WhitelistItem } from '../../repositories/WhitelistRepository';
 
-declare const wp: any;
-
-const { __ } = wp.i18n;
-
-const {
+import { 
 	Button,
 	Flex,
 	TextControl,
 	Dashicon,
-} = wp.components;
-
-const Spacer = wp.components.__experimentalSpacer;
+} from '@wordpress/components';
 
 interface WhitelistProps {
 	whitelist: Array<WhitelistItem>;
@@ -58,53 +52,51 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 
 	render() {
 		const listItems = this.state.whitelist.map( ( listItem: WhitelistItem, i: number ) =>
-		<div>
-			<Flex>
-				<TextControl
-					label="Contract Address"
-					value={ listItem.address }
-					onChange={ ( value: string ) => {
-							let newState = Object.assign( {}, this.state );
-							newState.whitelist[i].address = value;
-							this.setState( { ...newState } );
-							this.dispatchUpdate();
+			<div>
+				<Flex style={{alignItems: 'flex-end', margin: '8px 0'}}>
+					<TextControl
+						label="Contract Address"
+						value={ listItem.address }
+						onChange={ ( value: string ) => {
+								let newState = Object.assign( {}, this.state );
+								newState.whitelist[i].address = value;
+								this.setState( { ...newState } );
+								this.dispatchUpdate();
+							}
 						}
-					}
-				/>
-				<TextControl
-					label="Token Index"
-					value={ listItem.index }
-					onChange={ ( value: string ) => {
-							let newState = Object.assign( {}, this.state );
-							newState.whitelist[i].index = value;
-							this.setState({ ...newState } );
-							this.dispatchUpdate();
+					/>
+					<TextControl
+						label="Token Index"
+						value={ listItem.index }
+						onChange={ ( value: string ) => {
+								let newState = Object.assign( {}, this.state );
+								newState.whitelist[i].index = value;
+								this.setState({ ...newState } );
+								this.dispatchUpdate();
+							}
 						}
-					}
-				/>
-				<Button
-					variant="secondary"
-					onClick={ () => {
-						this.onRemove( i );
-					}}
-				>
-					<Dashicon icon="no" />
-				</Button>
-			</Flex>
-			<Spacer margin={4} />
-		</div>
-		
-	);
+					/>
+					<Button
+						isTertiary
+						onClick={ () => {
+							this.onRemove( i );
+						}}
+					>
+						<Dashicon icon="no" />
+					</Button>
+				</Flex>
+			</div>
+		);
 		return <div>
 				<ul>{listItems}</ul>
 				<Button
-					isPrimary
+					isSecondary
 					isLarge
 					onClick={ () => {
 						this.onAdd();
 					}}
 				>
-					{ __( 'Add Token' ) }
+					Add Token
 				</Button>
 			</div>
 	}
