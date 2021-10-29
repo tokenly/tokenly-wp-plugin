@@ -4,7 +4,8 @@ import Page from './Page';
 import { Whitelist } from '../components/Whitelist';
 import { SavePanel } from '../components/SavePanel';
 import { Component } from 'react';
-import { WhitelistRepository, WhitelistItem, WhitelistData } from '../../repositories/WhitelistRepository';
+import { WhitelistData, WhitelistItem } from '../../interfaces';
+import { WhitelistRepository } from '../../repositories/WhitelistRepository';
 
 import { 
 	Panel,
@@ -46,7 +47,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	}
 	
 	componentDidMount() {
-		this.whitelistRepository.read().then( ( whitelistData: WhitelistData ) => {
+		this.whitelistRepository.show().then( ( whitelistData: WhitelistData ) => {
 			this.setState( {
 				whitelistData: whitelistData,
 			} );

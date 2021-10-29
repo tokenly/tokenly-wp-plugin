@@ -5002,31 +5002,26 @@ var Reflect;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
+const inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
 __webpack_require__(/*! ../../../../../../../../../resources/scss/main.scss */ "./resources/scss/main.scss");
-var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
-var App = /** @class */ (function () {
-    function App() {
+const ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
+class App {
+    constructor() {
         this.container = inversify_config_1.container;
-        var componentProvider = this.container.get(ComponentProvider_1.ComponentProvider);
+        const componentProvider = this.container.get(ComponentProvider_1.ComponentProvider);
         componentProvider.register();
     }
-    Object.defineProperty(App.prototype, "providers", {
-        get: function () {
-            return [
-                ComponentProvider_1.ComponentProvider,
-            ];
-        },
-        enumerable: false,
-        configurable: true
-    });
-    App.prototype.registerProviders = function () {
-        this.providers.forEach(function (provider) {
+    get providers() {
+        return [
+            ComponentProvider_1.ComponentProvider,
+        ];
+    }
+    registerProviders() {
+        this.providers.forEach(provider => {
             provider.register();
         });
-    };
-    return App;
-}());
+    }
+}
 exports["default"] = App;
 
 
@@ -5054,66 +5049,24 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ButtonLoginComponent = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var AuthService_1 = __webpack_require__(/*! ../services/AuthService */ "./resources/ts/services/AuthService.ts");
-var ButtonLoginComponent = /** @class */ (function () {
-    function ButtonLoginComponent(authService) {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AuthService_1 = __webpack_require__(/*! ../services/AuthService */ "./resources/ts/services/AuthService.ts");
+let ButtonLoginComponent = class ButtonLoginComponent {
+    constructor(authService) {
         this.authService = authService;
     }
-    ButtonLoginComponent.prototype.register = function (selector) {
-        var _this = this;
-        this.element.addEventListener('click', function () {
-            _this.authService.connect();
+    register(selector) {
+        this.element.addEventListener('click', () => {
+            this.authService.connect();
         });
-    };
-    ButtonLoginComponent = __decorate([
-        (0, inversify_1.injectable)(),
-        __param(0, (0, inversify_1.inject)(AuthService_1.AuthService)),
-        __metadata("design:paramtypes", [AuthService_1.AuthService])
-    ], ButtonLoginComponent);
-    return ButtonLoginComponent;
-}());
-exports.ButtonLoginComponent = ButtonLoginComponent;
-
-
-/***/ }),
-
-/***/ "./resources/ts/frontend.tsx":
-/*!***********************************!*\
-  !*** ./resources/ts/frontend.tsx ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-var app_1 = __webpack_require__(/*! ./app */ "./resources/ts/app.tsx");
-__webpack_require__(/*! ../../../../../../../../../resources/scss/frontend.scss */ "./resources/scss/frontend.scss");
-var FrontendApp = /** @class */ (function (_super) {
-    __extends(FrontendApp, _super);
-    function FrontendApp() {
-        return _super.call(this) || this;
     }
-    return FrontendApp;
-}(app_1.default));
-(function () {
-    var frontend = new FrontendApp();
-})();
+};
+ButtonLoginComponent = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AuthService_1.AuthService)),
+    __metadata("design:paramtypes", [AuthService_1.AuthService])
+], ButtonLoginComponent);
+exports.ButtonLoginComponent = ButtonLoginComponent;
 
 
 /***/ }),
@@ -5129,28 +5082,32 @@ var FrontendApp = /** @class */ (function (_super) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.container = void 0;
 __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Reflect.js");
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resources/ts/services/AuthService.ts");
-var SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
-var PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
-var SourceRepository_1 = __webpack_require__(/*! ./repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
-var WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
-var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
-var ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
-var container = new inversify_1.Container();
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resources/ts/services/AuthService.ts");
+const SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
+const PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+const UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
+const SourceRepository_1 = __webpack_require__(/*! ./repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
+const WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
+const TokenMetaRepository_1 = __webpack_require__(/*! ./repositories/TokenMetaRepository */ "./resources/ts/repositories/TokenMetaRepository.ts");
+const ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
+const ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
+const AdminApiService_1 = __webpack_require__(/*! ./services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+const container = new inversify_1.Container();
 exports.container = container;
-var services = [
+const services = [
     AuthService_1.AuthService,
+    AdminApiService_1.AdminApiService,
     SettingsRepository_1.SettingsRepository,
     PromiseRepository_1.PromiseRepository,
     UserRepository_1.UserRepository,
     SourceRepository_1.SourceRepository,
     WhitelistRepository_1.WhitelistRepository,
+    TokenMetaRepository_1.TokenMetaRepository,
     ButtonLoginComponent_1.ButtonLoginComponent,
     ComponentProvider_1.ComponentProvider,
 ];
-services.forEach(function (service) {
+services.forEach((service) => {
     container.bind(service).toSelf();
 });
 container.bind('Component').to(ButtonLoginComponent_1.ButtonLoginComponent).whenTargetNamed('buttonLoginComponent');
@@ -5182,41 +5139,35 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ComponentProvider = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var ComponentProvider = /** @class */ (function () {
-    function ComponentProvider(componentFactory) {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let ComponentProvider = class ComponentProvider {
+    constructor(componentFactory) {
         this.componentFactory = componentFactory;
     }
-    Object.defineProperty(ComponentProvider.prototype, "components", {
-        get: function () {
-            return [
-                {
-                    name: 'buttonLoginComponent',
-                    selector: 'button.tokenpass-login',
-                }
-            ];
-        },
-        enumerable: false,
-        configurable: true
-    });
-    ComponentProvider.prototype.register = function () {
-        var _this = this;
-        this.components.forEach(function (component) {
-            var elements = document.querySelectorAll(component.selector);
-            elements.forEach(function (element) {
-                var componentInstance = _this.componentFactory(component.name);
+    get components() {
+        return [
+            {
+                name: 'buttonLoginComponent',
+                selector: 'button.tokenpass-login',
+            }
+        ];
+    }
+    register() {
+        this.components.forEach((component) => {
+            const elements = document.querySelectorAll(component.selector);
+            elements.forEach((element) => {
+                const componentInstance = this.componentFactory(component.name);
                 componentInstance.element = element;
                 componentInstance.register();
             });
         });
-    };
-    ComponentProvider = __decorate([
-        (0, inversify_1.injectable)(),
-        __param(0, (0, inversify_1.inject)("Factory<Component>")),
-        __metadata("design:paramtypes", [Function])
-    ], ComponentProvider);
-    return ComponentProvider;
-}());
+    }
+};
+ComponentProvider = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)("Factory<Component>")),
+    __metadata("design:paramtypes", [Function])
+], ComponentProvider);
 exports.ComponentProvider = ComponentProvider;
 
 
@@ -5239,67 +5190,58 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PromiseRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var PromiseRepository = /** @class */ (function () {
-    function PromiseRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let PromiseRepository = class PromiseRepository {
+    constructor(AdminApiService) {
+        this.AdminApiService = AdminApiService;
     }
-    Object.defineProperty(PromiseRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    PromiseRepository.prototype.store = function (promise) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    store(promise) {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'POST',
-                headers: _this.headers,
+                headers: this.AdminApiService.headers,
                 body: JSON.stringify({
                     promise: promise,
                 }),
             };
-            var url = _this.namespace + 'promise';
+            const url = this.AdminApiService.namespace + 'promise';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 console.log(data);
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    PromiseRepository.prototype.index = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    index() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.AdminApiService.headers,
             };
-            var url = _this.namespace + 'promise';
+            const url = this.AdminApiService.namespace + 'promise';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 console.log(data);
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    PromiseRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], PromiseRepository);
-    return PromiseRepository;
-}());
+    }
+};
+PromiseRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], PromiseRepository);
 exports.PromiseRepository = PromiseRepository;
 
 
@@ -5313,17 +5255,6 @@ exports.PromiseRepository = PromiseRepository;
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5333,67 +5264,41 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SettingsRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var SettingsRepository = /** @class */ (function () {
-    function SettingsRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let SettingsRepository = class SettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    Object.defineProperty(SettingsRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    SettingsRepository.prototype.read = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'GET',
-                headers: _this.headers,
-            };
-            var url = _this.namespace + 'settings';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsShow().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SettingsRepository.prototype.update = function (newSettings) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var _a, _b;
-            var params = {
-                method: 'PUT',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: __assign({ client_id: (_a = newSettings.client_id) !== null && _a !== void 0 ? _a : '' }, { client_secret: (_b = newSettings.client_secret) !== null && _b !== void 0 ? _b : '' })
-                }),
-            };
-            var url = _this.namespace + 'settings';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SettingsRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], SettingsRepository);
-    return SettingsRepository;
-}());
+    }
+};
+SettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], SettingsRepository);
 exports.SettingsRepository = SettingsRepository;
 
 
@@ -5416,68 +5321,96 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SourceRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var SourceRepository = /** @class */ (function () {
-    function SourceRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let SourceRepository = class SourceRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    Object.defineProperty(SourceRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    SourceRepository.prototype.store = function (sourceData) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'POST',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    source_data: sourceData,
-                }),
-            };
-            var url = _this.namespace + 'source';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    index() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceIndex().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SourceRepository.prototype.index = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'GET',
-                headers: _this.headers,
-            };
-            var url = _this.namespace + 'source';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SourceRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], SourceRepository);
-    return SourceRepository;
-}());
+    }
+};
+SourceRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], SourceRepository);
 exports.SourceRepository = SourceRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/repositories/TokenMetaRepository.ts":
+/*!**********************************************************!*\
+  !*** ./resources/ts/repositories/TokenMetaRepository.ts ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TokenMetaRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let TokenMetaRepository = class TokenMetaRepository {
+    constructor(AdminApiService) {
+        this.AdminApiService = AdminApiService;
+    }
+    show(postId) {
+        return new Promise((resolve, reject) => {
+            const params = {
+                method: 'GET',
+                headers: this.AdminApiService.headers,
+            };
+            const url = this.AdminApiService.namespace + 'whitelist' + '/' + postId;
+            fetch(url, params)
+                .then(response => response.json())
+                .then((data) => {
+                resolve(data);
+            })
+                .catch(err => reject(err));
+        });
+    }
+};
+TokenMetaRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], TokenMetaRepository);
+exports.TokenMetaRepository = TokenMetaRepository;
 
 
 /***/ }),
@@ -5501,66 +5434,59 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var UserRepository = /** @class */ (function () {
-    function UserRepository() {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let UserRepository = class UserRepository {
+    constructor() {
         this.namespace = '/wp-json/tokenly/v1/';
         //
     }
-    Object.defineProperty(UserRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    UserRepository.prototype.index = function (indexParameters) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    get headers() {
+        return {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-WP-Nonce': wpApiSettings.nonce,
+        };
+    }
+    index(indexParameters) {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var args = {
+            const args = {
                 index_parameters: JSON.stringify(indexParameters),
             };
-            var url = _this.namespace + 'user?' + new URLSearchParams(args);
+            const url = this.namespace + 'user?' + new URLSearchParams(args);
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    UserRepository.prototype.show = function (showParameters) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    show(showParameters) {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var args = {
+            const args = {
                 show_parameters: JSON.stringify(showParameters),
             };
-            var url = _this.namespace + 'user/?' + new URLSearchParams(args);
+            const url = this.namespace + 'user/?' + new URLSearchParams(args);
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    UserRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], UserRepository);
-    return UserRepository;
-}());
+    }
+};
+UserRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], UserRepository);
 exports.UserRepository = UserRepository;
 
 
@@ -5574,17 +5500,6 @@ exports.UserRepository = UserRepository;
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5594,69 +5509,155 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.WhitelistRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var WhitelistRepository = /** @class */ (function () {
-    function WhitelistRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let WhitelistRepository = class WhitelistRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    Object.defineProperty(WhitelistRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    WhitelistRepository.prototype.read = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'GET',
-                headers: _this.headers,
-            };
-            var url = _this.namespace + 'whitelist';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                var _a;
-                resolve(__assign({ use_whitelist: (_a = data.use_whitelist) !== null && _a !== void 0 ? _a : false }, (data === null || data === void 0 ? void 0 : data.whitelist) && { whitelist: data.whitelist }));
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    WhitelistRepository.prototype.update = function (newWhitelist) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var body = JSON.stringify({
-                settings: __assign(__assign({}, (newWhitelist.use_whitelist) && { use_whitelist: newWhitelist.use_whitelist }), (newWhitelist.whitelist) && { whitelist: newWhitelist.whitelist })
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.whitelistShow().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
             });
-            var params = {
-                method: 'PUT',
-                headers: _this.headers,
-                body: body,
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.whitelistUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+WhitelistRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], WhitelistRepository);
+exports.WhitelistRepository = WhitelistRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/services/AdminApiService.ts":
+/*!**************************************************!*\
+  !*** ./resources/ts/services/AdminApiService.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AdminApiService = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let AdminApiService = class AdminApiService {
+    constructor() {
+        this.namespace = '/wp-json/tokenly/v1';
+    }
+    get headers() {
+        return {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-WP-Nonce': wpApiSettings.nonce,
+        };
+    }
+    settingsShow() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/settings').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    settingsUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/settings', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/source').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/source', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    whitelistShow() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/whitelist').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    whitelistUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/whitelist', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    makeRequest(method = '', route = '', args = {}) {
+        return new Promise((resolve, reject) => {
+            const params = {
+                method: method,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'whitelist';
+            const withBody = ['POST', 'PUT', 'UPDATE'];
+            let url = `${this.namespace}${route}`;
+            if (withBody.includes(method)) {
+                params.body = JSON.stringify(args);
+            }
+            else {
+                const queryParams = new URLSearchParams(args);
+                url = `${url}? + ${queryParams}`;
+            }
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    WhitelistRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], WhitelistRepository);
-    return WhitelistRepository;
-}());
-exports.WhitelistRepository = WhitelistRepository;
+    }
+};
+AdminApiService = __decorate([
+    (0, inversify_1.injectable)()
+], AdminApiService);
+exports.AdminApiService = AdminApiService;
 
 
 /***/ }),
@@ -5680,80 +5681,72 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthService = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var AuthService = /** @class */ (function () {
-    function AuthService() {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let AuthService = class AuthService {
+    constructor() {
         this.namespace = '/wp-json/tokenly/v1/';
         //
     }
-    Object.defineProperty(AuthService.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    AuthService.prototype.getStatus = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    get headers() {
+        return {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-WP-Nonce': wpApiSettings.nonce,
+        };
+    }
+    getStatus() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'authorize';
+            const url = this.namespace + 'authorize';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    AuthService.prototype.connect = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    connect() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'POST',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'authorize';
+            const url = this.namespace + 'authorize';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then(data => {
                 var _a;
-                var redirectUrl = (_a = data.url) !== null && _a !== void 0 ? _a : null;
+                const redirectUrl = (_a = data.url) !== null && _a !== void 0 ? _a : null;
                 if (redirectUrl) {
                     window.location = redirectUrl;
                 }
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    AuthService.prototype.disconnect = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    disconnect() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'DELETE',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'authorize';
+            const url = this.namespace + 'authorize';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then(data => {
                 window.location.reload();
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    AuthService = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], AuthService);
-    return AuthService;
-}());
+    }
+};
+AuthService = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], AuthService);
 exports.AuthService = AuthService;
 
 
@@ -5827,12 +5820,28 @@ exports.AuthService = AuthService;
 /******/ 	}();
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./resources/ts/frontend.tsx");
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+!function() {
+"use strict";
+var exports = __webpack_exports__;
+/*!***********************************!*\
+  !*** ./resources/ts/frontend.tsx ***!
+  \***********************************/
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const app_1 = __webpack_require__(/*! ./app */ "./resources/ts/app.tsx");
+__webpack_require__(/*! ../../../../../../../../../resources/scss/frontend.scss */ "./resources/scss/frontend.scss");
+class FrontendApp extends app_1.default {
+    constructor() {
+        super();
+    }
+}
+(function () {
+    const frontend = new FrontendApp();
+})();
+
+}();
 /******/ })()
 ;
 //# sourceMappingURL=frontend.js.map

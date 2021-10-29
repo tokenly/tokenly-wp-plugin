@@ -22,8 +22,6 @@ class PromiseRepository {
 	}
 	
 	public function store( $promise ) {
-		$whitelist = $this->client->getProvisionalSourceList();
-		error_log(print_r($whitelist, true));
 		$destination = $promise['destination'] ?? null;
 		if ( $destination ) {
 			$tokenpass_user = $this->user_repository->show( $destination );
@@ -31,7 +29,6 @@ class PromiseRepository {
 				$destination = 'user:' . $tokenpass_user['username'] ?? null;
 			}
 		}
-		error_log('destination: ' . $destination );
 		$response = $this->client->promiseTransaction(
 			$promise['source'] ?? null,
 			$destination,

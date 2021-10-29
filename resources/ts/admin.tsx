@@ -13,7 +13,6 @@ import SourceStorePage from './admin/pages/SourceStorePage';
 import DashboardPage from './admin/pages/DashboardPage';
 import TokenMetaEditPage from './admin/pages/TokenMetaEditPage';
 
-
 declare const document: any;
 declare const window: any;
 

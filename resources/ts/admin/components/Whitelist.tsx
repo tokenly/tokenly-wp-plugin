@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { WhitelistItem } from '../../repositories/WhitelistRepository';
+import { WhitelistItem } from '../../interfaces';
 
 import { 
 	Button,

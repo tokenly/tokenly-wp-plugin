@@ -14,16 +14,20 @@ return array(
 		return $twig;
 	},
 	TokenpassAPI::class => function () {
-		$client_id = null;
-		$client_secret = null;
-		$privileged_client_id = null;
-		$privileged_client_secret = null;
-		$oauth_client_id = null;
-		$oauth_client_secret = null;
+		$client_id;
+		$client_secret;
+		$privileged_client_id;
+		$privileged_client_secret;
+		$oauth_client_id;
+		$oauth_client_secret;
 		$settings = get_option( 'tokenpass_settings' );
 		if ( $settings ) {
 			$client_id = $settings['client_id'] ?? null;
 			$client_secret = $settings['client_secret'] ?? null;
+			$privileged_client_id = $client_id;
+			$privileged_client_secret = $client_secret;
+			$oauth_client_id = $client_id;
+			$oauth_client_secret = $client_secret;
 		}
 		$tokenpass_url = 'https://tokenpass.tokenly.com';
 		$redirect_uri = TOKENLY_PLUGIN_AUTH_REDIRECT_URI;

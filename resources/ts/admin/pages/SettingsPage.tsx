@@ -3,7 +3,8 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { SavePanel } from '../components/SavePanel';
-import { SettingsRepository, SettingsData } from '../../repositories/SettingsRepository';
+import { SettingsData } from '../../interfaces';
+import { SettingsRepository } from '../../repositories/SettingsRepository';
 
 import { 
 	TextControl,
@@ -55,7 +56,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	}
 	
 	componentDidMount() {
-		this.settingsRepository.read().then( ( settingsData: SettingsData ) => {
+		this.settingsRepository.show().then( ( settingsData: SettingsData ) => {
 			this.setState( {
 				settingsData: settingsData,
 			} );

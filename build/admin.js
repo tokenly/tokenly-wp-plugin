@@ -5004,105 +5004,6 @@ var Reflect;
 
 /***/ }),
 
-/***/ "./resources/ts/admin.tsx":
-/*!********************************!*\
-  !*** ./resources/ts/admin.tsx ***!
-  \********************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
-__webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var app_1 = __webpack_require__(/*! ./app */ "./resources/ts/app.tsx");
-var SettingsPage_1 = __webpack_require__(/*! ./admin/pages/SettingsPage */ "./resources/ts/admin/pages/SettingsPage.tsx");
-var VendorPage_1 = __webpack_require__(/*! ./admin/pages/VendorPage */ "./resources/ts/admin/pages/VendorPage.tsx");
-var ConnectionPage_1 = __webpack_require__(/*! ./admin/pages/ConnectionPage */ "./resources/ts/admin/pages/ConnectionPage.tsx");
-var WhitelistPage_1 = __webpack_require__(/*! ./admin/pages/WhitelistPage */ "./resources/ts/admin/pages/WhitelistPage.tsx");
-var PromiseStorePage_1 = __webpack_require__(/*! ./admin/pages/PromiseStorePage */ "./resources/ts/admin/pages/PromiseStorePage.tsx");
-var SourceIndexPage_1 = __webpack_require__(/*! ./admin/pages/SourceIndexPage */ "./resources/ts/admin/pages/SourceIndexPage.tsx");
-var SourceStorePage_1 = __webpack_require__(/*! ./admin/pages/SourceStorePage */ "./resources/ts/admin/pages/SourceStorePage.tsx");
-var DashboardPage_1 = __webpack_require__(/*! ./admin/pages/DashboardPage */ "./resources/ts/admin/pages/DashboardPage.tsx");
-var TokenMetaEditPage_1 = __webpack_require__(/*! ./admin/pages/TokenMetaEditPage */ "./resources/ts/admin/pages/TokenMetaEditPage.tsx");
-var element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-var AdminApp = /** @class */ (function (_super) {
-    __extends(AdminApp, _super);
-    function AdminApp() {
-        var _this = _super.call(this) || this;
-        _this.container = inversify_config_1.container;
-        _this.pageElement = document.querySelector('.tokenpass-admin-page');
-        if (_this.pageElement) {
-            _this.view = _this.pageElement.dataset.view;
-            _this.pageData = JSON.parse(_this.pageElement.dataset.props);
-            var views = _this.getViews();
-            var ViewComponent = views[_this.view];
-            _this.render(ViewComponent);
-        }
-        _this.registerRedirects();
-        return _this;
-    }
-    AdminApp.prototype.getViews = function () {
-        return {
-            'settings': SettingsPage_1.default,
-            'connection': ConnectionPage_1.default,
-            'vendor': VendorPage_1.default,
-            'whitelist': WhitelistPage_1.default,
-            'promise-store': PromiseStorePage_1.default,
-            'source-index': SourceIndexPage_1.default,
-            'source-store': SourceStorePage_1.default,
-            'token-meta-edit': TokenMetaEditPage_1.default,
-            'dashboard': DashboardPage_1.default,
-        };
-    };
-    AdminApp.prototype.render = function (ViewComponent) {
-        if (!this.pageElement) {
-            return;
-        }
-        var pageContainer = document.createElement('div');
-        this.pageElement.appendChild(pageContainer);
-        (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
-            React.createElement(ViewComponent, { pageData: this.pageData })), pageContainer);
-    };
-    AdminApp.prototype.registerRedirects = function () {
-        document.addEventListener('DOMContentLoaded', function () {
-            if (window['tokenpassRedirects']) {
-                window['tokenpassRedirects'].forEach(function (redirect) {
-                    var element = document.querySelector("[href='" + redirect.from + "']");
-                    if (element) {
-                        element.href = redirect.to;
-                        element.target = '_blank';
-                    }
-                });
-            }
-        });
-    };
-    return AdminApp;
-}(app_1.default));
-(function () {
-    var admin = new AdminApp();
-})();
-
-
-/***/ }),
-
 /***/ "./resources/ts/admin/components/PromiseStoreForm.tsx":
 /*!************************************************************!*\
   !*** ./resources/ts/admin/components/PromiseStoreForm.tsx ***!
@@ -5111,32 +5012,16 @@ var AdminApp = /** @class */ (function (_super) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PromiseStoreForm = void 0;
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var UserSearchField_1 = __webpack_require__(/*! ./UserSearchField */ "./resources/ts/admin/components/UserSearchField.tsx");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var PromiseStoreForm = /** @class */ (function (_super) {
-    __extends(PromiseStoreForm, _super);
-    function PromiseStoreForm(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const UserSearchField_1 = __webpack_require__(/*! ./UserSearchField */ "./resources/ts/admin/components/UserSearchField.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class PromiseStoreForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             promise: {
                 source: null,
                 destination: null,
@@ -5146,62 +5031,59 @@ var PromiseStoreForm = /** @class */ (function (_super) {
                 note: null,
             },
         };
-        _this.onPromiseSubmit = _this.onPromiseSubmit.bind(_this);
-        _this.onUserChange = _this.onUserChange.bind(_this);
-        return _this;
+        this.onPromiseSubmit = this.onPromiseSubmit.bind(this);
+        this.onUserChange = this.onUserChange.bind(this);
     }
-    PromiseStoreForm.prototype.onPromiseSubmit = function () {
+    onPromiseSubmit() {
         this.props.onSubmit(this.state.promise);
-    };
-    PromiseStoreForm.prototype.onUserChange = function (userId) {
-        var promise = Object.assign({}, this.state.promise);
+    }
+    onUserChange(userId) {
+        const promise = Object.assign({}, this.state.promise);
         promise.destination = userId;
         this.setState({ promise: promise });
-    };
-    PromiseStoreForm.prototype.render = function () {
-        var _this = this;
+    }
+    render() {
         return React.createElement("div", null,
             React.createElement("form", null,
                 React.createElement("div", null,
-                    React.createElement(UserSearchField_1.UserSearchField, { onChange: function (value) {
-                            var state = Object.assign({}, _this.state.promise);
+                    React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
                             state.destination = value;
-                            _this.setState({ promise: state });
+                            this.setState({ promise: state });
                         } })),
                 React.createElement("div", { style: { maxWidth: "320px" } },
-                    React.createElement(components_1.TextControl, { label: "Source address", value: this.state.promise.source, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.promise);
+                    React.createElement(components_1.TextControl, { label: "Source address", value: this.state.promise.source, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
                             state.source = value;
-                            _this.setState({ promise: state });
+                            this.setState({ promise: state });
                         } }),
-                    React.createElement(components_1.TextControl, { label: "Asset ID", value: this.state.promise.asset, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.promise);
+                    React.createElement(components_1.TextControl, { label: "Asset ID", value: this.state.promise.asset, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
                             state.asset = value;
-                            _this.setState({ promise: state });
+                            this.setState({ promise: state });
                         } }),
-                    React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.promise);
+                    React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
                             state.quantity = value;
-                            _this.setState({ promise: state });
+                            this.setState({ promise: state });
                         } }),
-                    React.createElement(components_1.TextControl, { label: "Ref", value: this.state.promise.ref, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.promise);
+                    React.createElement(components_1.TextControl, { label: "Ref", value: this.state.promise.ref, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
                             state.ref = value;
-                            _this.setState({ promise: state });
+                            this.setState({ promise: state });
                         } }),
-                    React.createElement(components_1.TextareaControl, { label: "Note", value: this.state.promise.note, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.promise);
+                    React.createElement(components_1.TextareaControl, { label: "Note", value: this.state.promise.note, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
                             state.note = value;
-                            _this.setState({ promise: state });
+                            this.setState({ promise: state });
                         } }),
-                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
-                            _this.onPromiseSubmit();
+                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                            this.onPromiseSubmit();
                         }, style: { marginTop: '12px' } }, "Create transaction"),
                     this.props.saving === true &&
                         React.createElement(components_1.Spinner, null))));
-    };
-    return PromiseStoreForm;
-}(react_1.Component));
+    }
+}
 exports.PromiseStoreForm = PromiseStoreForm;
 
 
@@ -5215,44 +5097,26 @@ exports.PromiseStoreForm = PromiseStoreForm;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SavePanel = void 0;
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var SavePanel = /** @class */ (function (_super) {
-    __extends(SavePanel, _super);
-    function SavePanel(props) {
-        return _super.call(this, props) || this;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SavePanel extends react_1.Component {
+    constructor(props) {
+        super(props);
     }
-    SavePanel.prototype.render = function () {
-        var _this = this;
+    render() {
         return (React.createElement(components_1.Panel, null,
             React.createElement(components_1.PanelBody, null,
                 React.createElement(components_1.PanelRow, { className: "save-button-container" },
-                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
-                            _this.props.onClick();
+                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                            this.props.onClick();
                         } }, "Save settings"),
                     this.props.saving === true &&
                         React.createElement(components_1.Spinner, null)))));
-    };
-    return SavePanel;
-}(react_1.Component));
+    }
+}
 exports.SavePanel = SavePanel;
 
 
@@ -5266,67 +5130,48 @@ exports.SavePanel = SavePanel;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SourceStoreForm = void 0;
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var SourceStoreForm = /** @class */ (function (_super) {
-    __extends(SourceStoreForm, _super);
-    function SourceStoreForm(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceStoreForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             store: {
                 address: null,
                 assets: null,
             },
         };
-        _this.onSourceSubmit = _this.onSourceSubmit.bind(_this);
-        return _this;
+        this.onSourceSubmit = this.onSourceSubmit.bind(this);
     }
-    SourceStoreForm.prototype.onSourceSubmit = function () {
+    onSourceSubmit() {
         this.props.onSubmit(this.state.store);
-    };
-    SourceStoreForm.prototype.render = function () {
-        var _this = this;
+    }
+    render() {
         return React.createElement("div", null,
             React.createElement("form", null,
                 React.createElement("div", { style: { maxWidth: "320px" } },
-                    React.createElement(components_1.TextControl, { label: "Address", value: this.state.store.address, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.store);
+                    React.createElement(components_1.TextControl, { label: "Address", value: this.state.store.address, onChange: (value) => {
+                            const state = Object.assign({}, this.state.store);
                             state.address = value;
-                            _this.setState({ store: state });
+                            this.setState({ store: state });
                         } }),
                     React.createElement(components_1.TextControl, { label: "Assets", 
                         // @ts-ignore
-                        hint: "Comma-separated values", value: this.state.store.assets, onChange: function (value) {
-                            var state = Object.assign({}, _this.state.store);
+                        hint: "Comma-separated values", value: this.state.store.assets, onChange: (value) => {
+                            const state = Object.assign({}, this.state.store);
                             state.assets = value;
-                            _this.setState({ store: state });
+                            this.setState({ store: state });
                         } }),
-                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: function () {
-                            _this.onSourceSubmit();
+                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                            this.onSourceSubmit();
                         }, style: { marginTop: '12px' } }, "Register address"),
                     this.props.saving === true &&
                         React.createElement(components_1.Spinner, null))));
-    };
-    return SourceStoreForm;
-}(react_1.Component));
+    }
+}
 exports.SourceStoreForm = SourceStoreForm;
 
 
@@ -5340,21 +5185,6 @@ exports.SourceStoreForm = SourceStoreForm;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5366,67 +5196,62 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserSearchField = void 0;
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var UserRepository_1 = __webpack_require__(/*! ../../repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
-var __ = wp.i18n.__;
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var UserSearchField = /** @class */ (function (_super) {
-    __extends(UserSearchField, _super);
-    function UserSearchField(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const UserRepository_1 = __webpack_require__(/*! ../../repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
+const { __ } = wp.i18n;
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class UserSearchField extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             keywords: null,
             user: null,
             users: [],
         };
-        _this.onKeywordsChange = _this.onKeywordsChange.bind(_this);
-        _this.onUserChange = _this.onUserChange.bind(_this);
-        return _this;
+        this.onKeywordsChange = this.onKeywordsChange.bind(this);
+        this.onUserChange = this.onUserChange.bind(this);
     }
-    UserSearchField.prototype.onKeywordsChange = function (keywords) {
-        var _this = this;
+    onKeywordsChange(keywords) {
         if (keywords == '') {
             return;
         }
         this.setState({ keywords: keywords });
         this.userRepository.index({
             name: keywords,
-        }).then(function (results) {
+        }).then((results) => {
             if (results.length <= 0) {
                 return;
             }
-            var options = results.map(function (user) {
+            const options = results.map((user) => {
                 return {
                     value: user.id,
                     label: user.name,
                 };
             });
-            _this.setState({ users: [options[0]] });
-        }).catch(function (error) {
+            this.setState({ users: [options[0]] });
+        }).catch(error => {
             console.log(error);
         });
-    };
-    UserSearchField.prototype.onUserChange = function (id) {
+    }
+    onUserChange(id) {
         this.setState({ user: id });
         this.props.onChange(id);
-    };
-    UserSearchField.prototype.render = function () {
-        var _this = this;
+    }
+    render() {
         return React.createElement("div", { style: { height: '90px' } },
-            React.createElement(components_1.ComboboxControl, { label: "User", value: this.state.user, onChange: function (value) {
-                    _this.onUserChange(value);
-                }, options: this.state.users, onFilterValueChange: function (keywords) {
-                    _this.onKeywordsChange(keywords);
+            React.createElement(components_1.ComboboxControl, { label: "User", value: this.state.user, onChange: (value) => {
+                    this.onUserChange(value);
+                }, options: this.state.users, onFilterValueChange: (keywords) => {
+                    this.onKeywordsChange(keywords);
                 } }));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", UserRepository_1.UserRepository)
-    ], UserSearchField.prototype, "userRepository", void 0);
-    return UserSearchField;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", UserRepository_1.UserRepository)
+], UserSearchField.prototype, "userRepository", void 0);
 exports.UserSearchField = UserSearchField;
 
 
@@ -5440,96 +5265,64 @@ exports.UserSearchField = UserSearchField;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Whitelist = void 0;
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var Whitelist = /** @class */ (function (_super) {
-    __extends(Whitelist, _super);
-    function Whitelist(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class Whitelist extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             whitelist: [],
         };
-        _this.onUpdate = props.onUpdate;
-        _this.state.whitelist = Object.assign([], props.whitelist);
-        return _this;
+        this.onUpdate = props.onUpdate;
+        this.state.whitelist = Object.assign([], props.whitelist);
     }
-    Whitelist.prototype.onUpdate = function (whitelist) {
+    onUpdate(whitelist) {
         //
-    };
-    Whitelist.prototype.onAdd = function () {
-        var newState = Object.assign({}, this.state);
+    }
+    onAdd() {
+        let newState = Object.assign({}, this.state);
         newState.whitelist[newState.whitelist.length] = { address: '', index: '' };
         this.setState(newState);
         this.dispatchUpdate();
-    };
-    Whitelist.prototype.onRemove = function (index) {
-        var newState = Object.assign({}, this.state);
+    }
+    onRemove(index) {
+        let newState = Object.assign({}, this.state);
         delete newState.whitelist[index];
         this.setState(newState);
         this.dispatchUpdate();
-    };
-    Whitelist.prototype.dispatchUpdate = function () {
+    }
+    dispatchUpdate() {
         this.onUpdate(this.state.whitelist);
-    };
-    Whitelist.prototype.render = function () {
-        var _this = this;
-        var listItems = this.state.whitelist.map(function (listItem, i) {
-            return React.createElement("div", null,
-                React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
-                    React.createElement(components_1.TextControl, { label: "Contract Address", value: listItem.address, onChange: function (value) {
-                            var newState = Object.assign({}, _this.state);
-                            newState.whitelist[i].address = value;
-                            _this.setState(__assign({}, newState));
-                            _this.dispatchUpdate();
-                        } }),
-                    React.createElement(components_1.TextControl, { label: "Token Index", value: listItem.index, onChange: function (value) {
-                            var newState = Object.assign({}, _this.state);
-                            newState.whitelist[i].index = value;
-                            _this.setState(__assign({}, newState));
-                            _this.dispatchUpdate();
-                        } }),
-                    React.createElement(components_1.Button, { isTertiary: true, onClick: function () {
-                            _this.onRemove(i);
-                        } },
-                        React.createElement(components_1.Dashicon, { icon: "no" }))));
-        });
+    }
+    render() {
+        const listItems = this.state.whitelist.map((listItem, i) => React.createElement("div", null,
+            React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
+                React.createElement(components_1.TextControl, { label: "Contract Address", value: listItem.address, onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.whitelist[i].address = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                React.createElement(components_1.TextControl, { label: "Token Index", value: listItem.index, onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.whitelist[i].index = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                React.createElement(components_1.Button, { isTertiary: true, onClick: () => {
+                        this.onRemove(i);
+                    } },
+                    React.createElement(components_1.Dashicon, { icon: "no" })))));
         return React.createElement("div", null,
             React.createElement("ul", null, listItems),
-            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: function () {
-                    _this.onAdd();
+            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: () => {
+                    this.onAdd();
                 } }, "Add Token"));
-    };
-    return Whitelist;
-}(react_1.Component));
+    }
+}
 exports.Whitelist = Whitelist;
 
 
@@ -5543,21 +5336,6 @@ exports.Whitelist = Whitelist;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5568,30 +5346,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var AuthService_1 = __webpack_require__(/*! ../../services/AuthService */ "./resources/ts/services/AuthService.ts");
-var react_1 = __webpack_require__(/*! react */ "react");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var ConnectionPage = /** @class */ (function (_super) {
-    __extends(ConnectionPage, _super);
-    function ConnectionPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const AuthService_1 = __webpack_require__(/*! ../../services/AuthService */ "./resources/ts/services/AuthService.ts");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class ConnectionPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             status: false,
         };
-        return _this;
     }
-    ConnectionPage.prototype.componentDidMount = function () {
-        var _this = this;
-        this.authService.getStatus().then(function (data) {
-            _this.setState({
+    componentDidMount() {
+        this.authService.getStatus().then((data) => {
+            this.setState({
                 status: data === null || data === void 0 ? void 0 : data.status,
             });
         });
-    };
-    ConnectionPage.prototype.getStatusText = function () {
+    }
+    getStatusText() {
         if (!this.state.status) {
             return;
         }
@@ -5601,9 +5376,8 @@ var ConnectionPage = /** @class */ (function (_super) {
         else {
             return 'Not connected';
         }
-    };
-    ConnectionPage.prototype.render = function () {
-        var _this = this;
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Connection' },
             React.createElement(components_1.Panel, { header: "Connection Status" },
                 React.createElement(components_1.PanelBody, null,
@@ -5614,19 +5388,18 @@ var ConnectionPage = /** @class */ (function (_super) {
                                 React.createElement("strong", null, this.getStatusText())))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: 'flex-start' },
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.state.status, onClick: function () {
-                                    _this.authService.connect();
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.state.status, onClick: () => {
+                                    this.authService.connect();
                                 } }, "Connect to Tokenpass"),
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: !this.state.status, onClick: function () {
-                                    _this.authService.disconnect();
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: !this.state.status, onClick: () => {
+                                    this.authService.disconnect();
                                 } }, "Disconnect from Tokenpass")))))));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", AuthService_1.AuthService)
-    ], ConnectionPage.prototype, "authService", void 0);
-    return ConnectionPage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", AuthService_1.AuthService)
+], ConnectionPage.prototype, "authService", void 0);
 exports["default"] = ConnectionPage;
 
 
@@ -5640,31 +5413,15 @@ exports["default"] = ConnectionPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var DashboardPage = /** @class */ (function (_super) {
-    __extends(DashboardPage, _super);
-    function DashboardPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class DashboardPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             cards: [
                 {
                     title: 'Main Dashboard',
@@ -5717,21 +5474,19 @@ var DashboardPage = /** @class */ (function (_super) {
                 },
             ],
         };
-        _this.canView = _this.canView.bind(_this);
-        return _this;
+        this.canView = this.canView.bind(this);
     }
-    DashboardPage.prototype.canView = function (cardItem) {
+    canView(cardItem) {
         if (this.props.pageData.is_admin === true || cardItem.admin === false) {
             return true;
         }
         else {
             false;
         }
-    };
-    DashboardPage.prototype.render = function () {
-        var _this = this;
-        var cards = this.state.cards.map(function (cardItem, i) {
-            if (_this.canView(cardItem) === true) {
+    }
+    render() {
+        const cards = this.state.cards.map((cardItem, i) => {
+            if (this.canView(cardItem) === true) {
                 return (React.createElement(components_1.Card, null,
                     React.createElement(components_1.CardHeader, { style: { display: 'flex', justifyContent: 'flex-start', } },
                         React.createElement(components_1.Dashicon, { icon: cardItem.icon }),
@@ -5743,9 +5498,8 @@ var DashboardPage = /** @class */ (function (_super) {
         });
         return (React.createElement(Page_1.default, { title: 'Tokenpass Dashboard' },
             React.createElement("div", { className: "dashboard-card-grid" }, cards)));
-    };
-    return DashboardPage;
-}(react_1.Component));
+    }
+}
 exports["default"] = DashboardPage;
 
 
@@ -5759,41 +5513,23 @@ exports["default"] = DashboardPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var Fragment = wp.element.Fragment;
-var Page = /** @class */ (function (_super) {
-    __extends(Page, _super);
-    function Page(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class Page extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
         //
         };
-        return _this;
     }
-    Page.prototype.render = function () {
-        return (React.createElement(Fragment, null,
+    render() {
+        return (React.createElement(element_1.Fragment, null,
             React.createElement("h2", null, this.props.title),
             this.props.children));
-    };
-    return Page;
-}(react_1.Component));
+    }
+}
 exports["default"] = Page;
 
 
@@ -5807,21 +5543,6 @@ exports["default"] = Page;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5832,51 +5553,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var PromiseStoreForm_1 = __webpack_require__(/*! ../components/PromiseStoreForm */ "./resources/ts/admin/components/PromiseStoreForm.tsx");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var PromiseStorePage = /** @class */ (function (_super) {
-    __extends(PromiseStorePage, _super);
-    function PromiseStorePage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+const PromiseStoreForm_1 = __webpack_require__(/*! ../components/PromiseStoreForm */ "./resources/ts/admin/components/PromiseStoreForm.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class PromiseStorePage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             promiseData: [],
             isCreatePromiseModalOpen: false,
             storingPromise: false,
         };
-        _this.onPromiseSubmit = _this.onPromiseSubmit.bind(_this);
-        return _this;
+        this.onPromiseSubmit = this.onPromiseSubmit.bind(this);
     }
-    PromiseStorePage.prototype.componentDidMount = function () {
-        var _this = this;
-        this.promiseRepository.index().then(function (promiseData) {
-            _this.setState({
+    componentDidMount() {
+        this.promiseRepository.index().then((promiseData) => {
+            this.setState({
                 promiseData: promiseData,
             });
         });
-    };
-    PromiseStorePage.prototype.onPromiseSubmit = function (promise) {
-        this.promiseRepository.store(promise).then(function (result) {
+    }
+    onPromiseSubmit(promise) {
+        this.promiseRepository.store(promise).then(result => {
             window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
         });
-    };
-    PromiseStorePage.prototype.render = function () {
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Create token promise' },
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onPromiseSubmit, saving: this.state.storingPromise, style: { marginBottom: '12px' } }))))));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", PromiseRepository_1.PromiseRepository)
-    ], PromiseStorePage.prototype, "promiseRepository", void 0);
-    return PromiseStorePage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", PromiseRepository_1.PromiseRepository)
+], PromiseStorePage.prototype, "promiseRepository", void 0);
 exports["default"] = PromiseStorePage;
 
 
@@ -5890,21 +5607,6 @@ exports["default"] = PromiseStorePage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5915,56 +5617,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var SavePanel_1 = __webpack_require__(/*! ../components/SavePanel */ "./resources/ts/admin/components/SavePanel.tsx");
-var SettingsRepository_1 = __webpack_require__(/*! ../../repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var SettingsPage = /** @class */ (function (_super) {
-    __extends(SettingsPage, _super);
-    function SettingsPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const SavePanel_1 = __webpack_require__(/*! ../components/SavePanel */ "./resources/ts/admin/components/SavePanel.tsx");
+const SettingsRepository_1 = __webpack_require__(/*! ../../repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SettingsPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             settingsData: {
                 client_id: '',
                 client_secret: '',
             },
             saving: false,
         };
-        _this.onSave = _this.onSave.bind(_this);
-        return _this;
+        this.onSave = this.onSave.bind(this);
     }
-    SettingsPage.prototype.setClientId = function (value) {
-        var state = Object.assign({}, this.state);
+    setClientId(value) {
+        let state = Object.assign({}, this.state);
         state.settingsData.client_id = value;
         this.setState(state);
-    };
-    SettingsPage.prototype.setClientSecret = function (value) {
-        var state = Object.assign({}, this.state);
+    }
+    setClientSecret(value) {
+        let state = Object.assign({}, this.state);
         state.settingsData.client_secret = value;
         this.setState(state);
-    };
-    SettingsPage.prototype.componentDidMount = function () {
-        var _this = this;
-        this.settingsRepository.read().then(function (settingsData) {
-            _this.setState({
+    }
+    componentDidMount() {
+        this.settingsRepository.show().then((settingsData) => {
+            this.setState({
                 settingsData: settingsData,
             });
         });
-    };
-    SettingsPage.prototype.onSave = function () {
-        var _this = this;
+    }
+    onSave() {
         this.setState({ saving: true });
-        this.settingsRepository.update(this.state.settingsData).then(function (result) {
-            _this.setState({ saving: false });
-        }).catch(function (error) {
+        this.settingsRepository.update(this.state.settingsData).then(result => {
+            this.setState({ saving: false });
+        }).catch(error => {
             console.log(error);
         });
-    };
-    SettingsPage.prototype.render = function () {
-        var _this = this;
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
             React.createElement(components_1.Panel, { header: "How to Setup" },
                 React.createElement(components_1.PanelBody, null,
@@ -5996,21 +5693,20 @@ var SettingsPage = /** @class */ (function (_super) {
                                 React.createElement("a", { href: this.props.pageData.client_auth_url, target: "_blank" }, this.props.pageData.client_auth_url),
                                 " "))),
                     React.createElement(components_1.PanelRow, { className: "api-input-container" },
-                        React.createElement(components_1.TextControl, { label: "Client ID", value: this.state.settingsData.client_id, onChange: function (value) {
-                                _this.setClientId(value);
+                        React.createElement(components_1.TextControl, { label: "Client ID", value: this.state.settingsData.client_id, onChange: (value) => {
+                                this.setClientId(value);
                             } })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.TextControl, { label: "Client Secret", value: this.state.settingsData.client_secret, onChange: function (value) {
-                                _this.setClientSecret(value);
+                        React.createElement(components_1.TextControl, { label: "Client Secret", value: this.state.settingsData.client_secret, onChange: (value) => {
+                                this.setClientSecret(value);
                             } })))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", SettingsRepository_1.SettingsRepository)
-    ], SettingsPage.prototype, "settingsRepository", void 0);
-    return SettingsPage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", SettingsRepository_1.SettingsRepository)
+], SettingsPage.prototype, "settingsRepository", void 0);
 exports["default"] = SettingsPage;
 
 
@@ -6024,21 +5720,6 @@ exports["default"] = SettingsPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6049,50 +5730,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var SourceIndexPage = /** @class */ (function (_super) {
-    __extends(SourceIndexPage, _super);
-    function SourceIndexPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceIndexPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             promiseData: [],
             isCreatePromiseModalOpen: false,
             storingPromise: false,
         };
-        _this.onPromiseSubmit = _this.onPromiseSubmit.bind(_this);
-        return _this;
+        this.onPromiseSubmit = this.onPromiseSubmit.bind(this);
     }
-    SourceIndexPage.prototype.componentDidMount = function () {
-        var _this = this;
-        this.promiseRepository.index().then(function (promiseData) {
-            _this.setState({
+    componentDidMount() {
+        this.promiseRepository.index().then((promiseData) => {
+            this.setState({
                 promiseData: promiseData,
             });
         });
-    };
-    SourceIndexPage.prototype.onPromiseSubmit = function (promise) {
-        this.promiseRepository.store(promise).then(function (result) {
+    }
+    onPromiseSubmit(promise) {
+        this.promiseRepository.store(promise).then(result => {
             window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
         });
-    };
-    SourceIndexPage.prototype.render = function () {
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Create token promise' },
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source address"))))));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", PromiseRepository_1.PromiseRepository)
-    ], SourceIndexPage.prototype, "promiseRepository", void 0);
-    return SourceIndexPage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", PromiseRepository_1.PromiseRepository)
+], SourceIndexPage.prototype, "promiseRepository", void 0);
 exports["default"] = SourceIndexPage;
 
 
@@ -6106,21 +5783,6 @@ exports["default"] = SourceIndexPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6131,29 +5793,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var SourceRepository_1 = __webpack_require__(/*! ../../repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
-var SourceStoreForm_1 = __webpack_require__(/*! ../components/SourceStoreForm */ "./resources/ts/admin/components/SourceStoreForm.tsx");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var SourceIndexPage = /** @class */ (function (_super) {
-    __extends(SourceIndexPage, _super);
-    function SourceIndexPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const SourceRepository_1 = __webpack_require__(/*! ../../repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
+const SourceStoreForm_1 = __webpack_require__(/*! ../components/SourceStoreForm */ "./resources/ts/admin/components/SourceStoreForm.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceIndexPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             storingSource: false,
         };
-        _this.onSourceSubmit = _this.onSourceSubmit.bind(_this);
-        return _this;
+        this.onSourceSubmit = this.onSourceSubmit.bind(this);
     }
-    SourceIndexPage.prototype.onSourceSubmit = function (promise) {
-        this.sourceRepository.store(promise).then(function (result) {
+    onSourceSubmit(promise) {
+        this.sourceRepository.store(promise).then((result) => {
             window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
         });
-    };
-    SourceIndexPage.prototype.render = function () {
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Register source address' },
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
@@ -6163,13 +5823,12 @@ var SourceIndexPage = /** @class */ (function (_super) {
                                 React.createElement("a", { href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses")),
                             React.createElement("div", null,
                                 React.createElement(SourceStoreForm_1.SourceStoreForm, { onSubmit: this.onSourceSubmit, saving: this.state.storingSource, style: { marginBottom: '12px' } }))))))));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", SourceRepository_1.SourceRepository)
-    ], SourceIndexPage.prototype, "sourceRepository", void 0);
-    return SourceIndexPage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", SourceRepository_1.SourceRepository)
+], SourceIndexPage.prototype, "sourceRepository", void 0);
 exports["default"] = SourceIndexPage;
 
 
@@ -6183,55 +5842,64 @@ exports["default"] = SourceIndexPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var React = __webpack_require__(/*! react */ "react");
-var react_1 = __webpack_require__(/*! react */ "react");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var TokenMetaEditPage = /** @class */ (function (_super) {
-    __extends(TokenMetaEditPage, _super);
-    function TokenMetaEditPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const TokenMetaRepository_1 = __webpack_require__(/*! ../../repositories/TokenMetaRepository */ "./resources/ts/repositories/TokenMetaRepository.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class TokenMetaEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             storingSource: false,
             tokenMeta: {
                 asset: '',
-            }
+            },
+            postId: null,
         };
-        return _this;
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = parseInt(urlParams.get('post'));
+        this.state.postId = postId;
     }
-    TokenMetaEditPage.prototype.updateAsset = function (value) {
-        var state = Object.assign({}, this.state);
+    updateAsset(value) {
+        const state = Object.assign({}, this.state);
         state.tokenMeta.asset = value;
         this.setState(state);
-    };
-    TokenMetaEditPage.prototype.render = function () {
-        var _this = this;
-        return (React.createElement(components_1.Panel, { header: "Additional token meta" },
-            React.createElement(components_1.PanelBody, null,
-                React.createElement(components_1.PanelRow, null,
-                    React.createElement("div", { style: { width: '100%' } },
-                        React.createElement(components_1.TextControl, { value: this.state.tokenMeta.asset, label: "Asset", onChange: function (value) {
-                                _this.updateAsset(value);
-                            }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
-                        React.createElement("div", { style: { opacity: 0.8 } }, "Is used for pairing meta with an asset"))))));
-    };
-    return TokenMetaEditPage;
-}(react_1.Component));
+    }
+    componentDidMount() {
+        this.tokenMetaRepository.show(this.state.postId).then((tokenMeta) => {
+            this.setState({
+                tokenMeta: tokenMeta,
+            });
+        });
+    }
+    render() {
+        return (React.createElement(element_1.Fragment, null,
+            React.createElement(components_1.Panel, { header: "Additional token meta" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement("div", { style: { width: '100%' } },
+                            React.createElement(components_1.TextControl, { value: this.state.tokenMeta.asset, label: "Asset", onChange: (value) => {
+                                    this.updateAsset(value);
+                                }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
+                            React.createElement("div", { style: { opacity: 0.8 } }, "Is used for pairing meta with an asset")))))));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", TokenMetaRepository_1.TokenMetaRepository)
+], TokenMetaEditPage.prototype, "tokenMetaRepository", void 0);
 exports["default"] = TokenMetaEditPage;
 
 
@@ -6245,21 +5913,6 @@ exports["default"] = TokenMetaEditPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6270,32 +5923,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var VendorPage = /** @class */ (function (_super) {
-    __extends(VendorPage, _super);
-    function VendorPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class VendorPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             promiseData: [],
             isCreatePromiseModalOpen: false,
             storingPromise: false,
         };
-        return _this;
     }
-    VendorPage.prototype.componentDidMount = function () {
-        var _this = this;
-        this.promiseRepository.index().then(function (promiseData) {
-            _this.setState({
+    componentDidMount() {
+        this.promiseRepository.index().then((promiseData) => {
+            this.setState({
                 promiseData: promiseData,
             });
         });
-    };
-    VendorPage.prototype.render = function () {
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Tokenpass Vendor' },
             React.createElement(components_1.Panel, { header: "Token promises" },
                 React.createElement(components_1.PanelBody, null,
@@ -6306,13 +5956,12 @@ var VendorPage = /** @class */ (function (_super) {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
                             React.createElement("div", null, "Current promises:")))))));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", PromiseRepository_1.PromiseRepository)
-    ], VendorPage.prototype, "promiseRepository", void 0);
-    return VendorPage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", PromiseRepository_1.PromiseRepository)
+], VendorPage.prototype, "promiseRepository", void 0);
 exports["default"] = VendorPage;
 
 
@@ -6326,32 +5975,6 @@ exports["default"] = VendorPage;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6362,19 +5985,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
-var React = __webpack_require__(/*! react */ "react");
-var Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
-var Whitelist_1 = __webpack_require__(/*! ../components/Whitelist */ "./resources/ts/admin/components/Whitelist.tsx");
-var SavePanel_1 = __webpack_require__(/*! ../components/SavePanel */ "./resources/ts/admin/components/SavePanel.tsx");
-var react_1 = __webpack_require__(/*! react */ "react");
-var WhitelistRepository_1 = __webpack_require__(/*! ../../repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
-var components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-var WhitelistPage = /** @class */ (function (_super) {
-    __extends(WhitelistPage, _super);
-    function WhitelistPage(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const Whitelist_1 = __webpack_require__(/*! ../components/Whitelist */ "./resources/ts/admin/components/Whitelist.tsx");
+const SavePanel_1 = __webpack_require__(/*! ../components/SavePanel */ "./resources/ts/admin/components/SavePanel.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const WhitelistRepository_1 = __webpack_require__(/*! ../../repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class WhitelistPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             whitelistData: {
                 use_whitelist: false,
                 whitelist: [
@@ -6386,42 +6008,38 @@ var WhitelistPage = /** @class */ (function (_super) {
             },
             saving: false,
         };
-        _this.onSave = _this.onSave.bind(_this);
-        _this.onWhitelistChange = _this.onWhitelistChange.bind(_this);
-        return _this;
+        this.onSave = this.onSave.bind(this);
+        this.onWhitelistChange = this.onWhitelistChange.bind(this);
     }
-    WhitelistPage.prototype.componentDidMount = function () {
-        var _this = this;
-        this.whitelistRepository.read().then(function (whitelistData) {
-            _this.setState({
+    componentDidMount() {
+        this.whitelistRepository.show().then((whitelistData) => {
+            this.setState({
                 whitelistData: whitelistData,
             });
         });
-    };
-    WhitelistPage.prototype.onWhitelistChange = function (newWhitelist) {
-        var newState = Object.assign({}, this.state);
+    }
+    onWhitelistChange(newWhitelist) {
+        let newState = Object.assign({}, this.state);
         newState.whitelistData.whitelist = Object.assign([], newWhitelist);
         newState.whitelistData.whitelist = newState.whitelistData.whitelist.filter(function (whitelistItem) {
             return whitelistItem != null;
         });
-        this.setState(__assign({}, newState));
-    };
-    WhitelistPage.prototype.setUseWhitelist = function (value) {
-        var newState = Object.assign({}, this.state);
+        this.setState(Object.assign({}, newState));
+    }
+    setUseWhitelist(value) {
+        let newState = Object.assign({}, this.state);
         newState.whitelistData.use_whitelist = value;
         this.setState(newState);
-    };
-    WhitelistPage.prototype.onSave = function () {
-        var _this = this;
+    }
+    onSave() {
         this.setState({ saving: true });
-        this.whitelistRepository.update(this.state.whitelistData).then(function (result) {
-            _this.setState({ saving: false });
-        }).catch(function (error) {
+        this.whitelistRepository.update(this.state.whitelistData).then(result => {
+            this.setState({ saving: false });
+        }).catch(error => {
             console.log(error);
         });
-    };
-    WhitelistPage.prototype.render = function () {
-        var _this = this;
+    }
+    render() {
         return (React.createElement(Page_1.default, { title: 'Token Whitelist' },
             React.createElement(components_1.Panel, { header: "Token Whitelist Settings" },
                 React.createElement(components_1.PanelBody, null,
@@ -6430,8 +6048,8 @@ var WhitelistPage = /** @class */ (function (_super) {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.ToggleControl, { label: "Use whitelist", help: this.state.whitelistData.use_whitelist
                                 ? 'Whitelist enabled.'
-                                : 'Whitelist disabled.', checked: this.state.whitelistData.use_whitelist, onChange: function (value) {
-                                _this.setUseWhitelist(value);
+                                : 'Whitelist disabled.', checked: this.state.whitelistData.use_whitelist, onChange: (value) => {
+                                this.setUseWhitelist(value);
                             } })))),
             this.state.whitelistData.use_whitelist === true &&
                 React.createElement(components_1.Panel, { header: "Token Whitelist Editor" },
@@ -6439,13 +6057,12 @@ var WhitelistPage = /** @class */ (function (_super) {
                         React.createElement(components_1.PanelRow, null,
                             React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.whitelist })))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
-    };
-    __decorate([
-        inversify_react_1.resolve,
-        __metadata("design:type", WhitelistRepository_1.WhitelistRepository)
-    ], WhitelistPage.prototype, "whitelistRepository", void 0);
-    return WhitelistPage;
-}(react_1.Component));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", WhitelistRepository_1.WhitelistRepository)
+], WhitelistPage.prototype, "whitelistRepository", void 0);
 exports["default"] = WhitelistPage;
 
 
@@ -6460,31 +6077,26 @@ exports["default"] = WhitelistPage;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
+const inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
 __webpack_require__(/*! ../../../../../../../../../resources/scss/main.scss */ "./resources/scss/main.scss");
-var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
-var App = /** @class */ (function () {
-    function App() {
+const ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
+class App {
+    constructor() {
         this.container = inversify_config_1.container;
-        var componentProvider = this.container.get(ComponentProvider_1.ComponentProvider);
+        const componentProvider = this.container.get(ComponentProvider_1.ComponentProvider);
         componentProvider.register();
     }
-    Object.defineProperty(App.prototype, "providers", {
-        get: function () {
-            return [
-                ComponentProvider_1.ComponentProvider,
-            ];
-        },
-        enumerable: false,
-        configurable: true
-    });
-    App.prototype.registerProviders = function () {
-        this.providers.forEach(function (provider) {
+    get providers() {
+        return [
+            ComponentProvider_1.ComponentProvider,
+        ];
+    }
+    registerProviders() {
+        this.providers.forEach(provider => {
             provider.register();
         });
-    };
-    return App;
-}());
+    }
+}
 exports["default"] = App;
 
 
@@ -6512,25 +6124,23 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ButtonLoginComponent = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var AuthService_1 = __webpack_require__(/*! ../services/AuthService */ "./resources/ts/services/AuthService.ts");
-var ButtonLoginComponent = /** @class */ (function () {
-    function ButtonLoginComponent(authService) {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AuthService_1 = __webpack_require__(/*! ../services/AuthService */ "./resources/ts/services/AuthService.ts");
+let ButtonLoginComponent = class ButtonLoginComponent {
+    constructor(authService) {
         this.authService = authService;
     }
-    ButtonLoginComponent.prototype.register = function (selector) {
-        var _this = this;
-        this.element.addEventListener('click', function () {
-            _this.authService.connect();
+    register(selector) {
+        this.element.addEventListener('click', () => {
+            this.authService.connect();
         });
-    };
-    ButtonLoginComponent = __decorate([
-        (0, inversify_1.injectable)(),
-        __param(0, (0, inversify_1.inject)(AuthService_1.AuthService)),
-        __metadata("design:paramtypes", [AuthService_1.AuthService])
-    ], ButtonLoginComponent);
-    return ButtonLoginComponent;
-}());
+    }
+};
+ButtonLoginComponent = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AuthService_1.AuthService)),
+    __metadata("design:paramtypes", [AuthService_1.AuthService])
+], ButtonLoginComponent);
 exports.ButtonLoginComponent = ButtonLoginComponent;
 
 
@@ -6547,28 +6157,32 @@ exports.ButtonLoginComponent = ButtonLoginComponent;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.container = void 0;
 __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Reflect.js");
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resources/ts/services/AuthService.ts");
-var SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
-var PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
-var UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
-var SourceRepository_1 = __webpack_require__(/*! ./repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
-var WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
-var ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
-var ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
-var container = new inversify_1.Container();
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AuthService_1 = __webpack_require__(/*! ./services/AuthService */ "./resources/ts/services/AuthService.ts");
+const SettingsRepository_1 = __webpack_require__(/*! ./repositories/SettingsRepository */ "./resources/ts/repositories/SettingsRepository.ts");
+const PromiseRepository_1 = __webpack_require__(/*! ./repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+const UserRepository_1 = __webpack_require__(/*! ./repositories/UserRepository */ "./resources/ts/repositories/UserRepository.ts");
+const SourceRepository_1 = __webpack_require__(/*! ./repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
+const WhitelistRepository_1 = __webpack_require__(/*! ./repositories/WhitelistRepository */ "./resources/ts/repositories/WhitelistRepository.ts");
+const TokenMetaRepository_1 = __webpack_require__(/*! ./repositories/TokenMetaRepository */ "./resources/ts/repositories/TokenMetaRepository.ts");
+const ComponentProvider_1 = __webpack_require__(/*! ./providers/ComponentProvider */ "./resources/ts/providers/ComponentProvider.ts");
+const ButtonLoginComponent_1 = __webpack_require__(/*! ./components/ButtonLoginComponent */ "./resources/ts/components/ButtonLoginComponent.ts");
+const AdminApiService_1 = __webpack_require__(/*! ./services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+const container = new inversify_1.Container();
 exports.container = container;
-var services = [
+const services = [
     AuthService_1.AuthService,
+    AdminApiService_1.AdminApiService,
     SettingsRepository_1.SettingsRepository,
     PromiseRepository_1.PromiseRepository,
     UserRepository_1.UserRepository,
     SourceRepository_1.SourceRepository,
     WhitelistRepository_1.WhitelistRepository,
+    TokenMetaRepository_1.TokenMetaRepository,
     ButtonLoginComponent_1.ButtonLoginComponent,
     ComponentProvider_1.ComponentProvider,
 ];
-services.forEach(function (service) {
+services.forEach((service) => {
     container.bind(service).toSelf();
 });
 container.bind('Component').to(ButtonLoginComponent_1.ButtonLoginComponent).whenTargetNamed('buttonLoginComponent');
@@ -6600,41 +6214,35 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ComponentProvider = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var ComponentProvider = /** @class */ (function () {
-    function ComponentProvider(componentFactory) {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let ComponentProvider = class ComponentProvider {
+    constructor(componentFactory) {
         this.componentFactory = componentFactory;
     }
-    Object.defineProperty(ComponentProvider.prototype, "components", {
-        get: function () {
-            return [
-                {
-                    name: 'buttonLoginComponent',
-                    selector: 'button.tokenpass-login',
-                }
-            ];
-        },
-        enumerable: false,
-        configurable: true
-    });
-    ComponentProvider.prototype.register = function () {
-        var _this = this;
-        this.components.forEach(function (component) {
-            var elements = document.querySelectorAll(component.selector);
-            elements.forEach(function (element) {
-                var componentInstance = _this.componentFactory(component.name);
+    get components() {
+        return [
+            {
+                name: 'buttonLoginComponent',
+                selector: 'button.tokenpass-login',
+            }
+        ];
+    }
+    register() {
+        this.components.forEach((component) => {
+            const elements = document.querySelectorAll(component.selector);
+            elements.forEach((element) => {
+                const componentInstance = this.componentFactory(component.name);
                 componentInstance.element = element;
                 componentInstance.register();
             });
         });
-    };
-    ComponentProvider = __decorate([
-        (0, inversify_1.injectable)(),
-        __param(0, (0, inversify_1.inject)("Factory<Component>")),
-        __metadata("design:paramtypes", [Function])
-    ], ComponentProvider);
-    return ComponentProvider;
-}());
+    }
+};
+ComponentProvider = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)("Factory<Component>")),
+    __metadata("design:paramtypes", [Function])
+], ComponentProvider);
 exports.ComponentProvider = ComponentProvider;
 
 
@@ -6657,67 +6265,58 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PromiseRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var PromiseRepository = /** @class */ (function () {
-    function PromiseRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let PromiseRepository = class PromiseRepository {
+    constructor(AdminApiService) {
+        this.AdminApiService = AdminApiService;
     }
-    Object.defineProperty(PromiseRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    PromiseRepository.prototype.store = function (promise) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    store(promise) {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'POST',
-                headers: _this.headers,
+                headers: this.AdminApiService.headers,
                 body: JSON.stringify({
                     promise: promise,
                 }),
             };
-            var url = _this.namespace + 'promise';
+            const url = this.AdminApiService.namespace + 'promise';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 console.log(data);
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    PromiseRepository.prototype.index = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    index() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.AdminApiService.headers,
             };
-            var url = _this.namespace + 'promise';
+            const url = this.AdminApiService.namespace + 'promise';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 console.log(data);
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    PromiseRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], PromiseRepository);
-    return PromiseRepository;
-}());
+    }
+};
+PromiseRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], PromiseRepository);
 exports.PromiseRepository = PromiseRepository;
 
 
@@ -6731,17 +6330,6 @@ exports.PromiseRepository = PromiseRepository;
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6751,67 +6339,41 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SettingsRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var SettingsRepository = /** @class */ (function () {
-    function SettingsRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let SettingsRepository = class SettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    Object.defineProperty(SettingsRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    SettingsRepository.prototype.read = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'GET',
-                headers: _this.headers,
-            };
-            var url = _this.namespace + 'settings';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsShow().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SettingsRepository.prototype.update = function (newSettings) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var _a, _b;
-            var params = {
-                method: 'PUT',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    settings: __assign({ client_id: (_a = newSettings.client_id) !== null && _a !== void 0 ? _a : '' }, { client_secret: (_b = newSettings.client_secret) !== null && _b !== void 0 ? _b : '' })
-                }),
-            };
-            var url = _this.namespace + 'settings';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SettingsRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], SettingsRepository);
-    return SettingsRepository;
-}());
+    }
+};
+SettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], SettingsRepository);
 exports.SettingsRepository = SettingsRepository;
 
 
@@ -6834,68 +6396,96 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SourceRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var SourceRepository = /** @class */ (function () {
-    function SourceRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let SourceRepository = class SourceRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    Object.defineProperty(SourceRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    SourceRepository.prototype.store = function (sourceData) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'POST',
-                headers: _this.headers,
-                body: JSON.stringify({
-                    source_data: sourceData,
-                }),
-            };
-            var url = _this.namespace + 'source';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    index() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceIndex().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SourceRepository.prototype.index = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'GET',
-                headers: _this.headers,
-            };
-            var url = _this.namespace + 'source';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
-    };
-    SourceRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], SourceRepository);
-    return SourceRepository;
-}());
+    }
+};
+SourceRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], SourceRepository);
 exports.SourceRepository = SourceRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/repositories/TokenMetaRepository.ts":
+/*!**********************************************************!*\
+  !*** ./resources/ts/repositories/TokenMetaRepository.ts ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TokenMetaRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let TokenMetaRepository = class TokenMetaRepository {
+    constructor(AdminApiService) {
+        this.AdminApiService = AdminApiService;
+    }
+    show(postId) {
+        return new Promise((resolve, reject) => {
+            const params = {
+                method: 'GET',
+                headers: this.AdminApiService.headers,
+            };
+            const url = this.AdminApiService.namespace + 'whitelist' + '/' + postId;
+            fetch(url, params)
+                .then(response => response.json())
+                .then((data) => {
+                resolve(data);
+            })
+                .catch(err => reject(err));
+        });
+    }
+};
+TokenMetaRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], TokenMetaRepository);
+exports.TokenMetaRepository = TokenMetaRepository;
 
 
 /***/ }),
@@ -6919,66 +6509,59 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var UserRepository = /** @class */ (function () {
-    function UserRepository() {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let UserRepository = class UserRepository {
+    constructor() {
         this.namespace = '/wp-json/tokenly/v1/';
         //
     }
-    Object.defineProperty(UserRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    UserRepository.prototype.index = function (indexParameters) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    get headers() {
+        return {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-WP-Nonce': wpApiSettings.nonce,
+        };
+    }
+    index(indexParameters) {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var args = {
+            const args = {
                 index_parameters: JSON.stringify(indexParameters),
             };
-            var url = _this.namespace + 'user?' + new URLSearchParams(args);
+            const url = this.namespace + 'user?' + new URLSearchParams(args);
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    UserRepository.prototype.show = function (showParameters) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    show(showParameters) {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var args = {
+            const args = {
                 show_parameters: JSON.stringify(showParameters),
             };
-            var url = _this.namespace + 'user/?' + new URLSearchParams(args);
+            const url = this.namespace + 'user/?' + new URLSearchParams(args);
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    UserRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], UserRepository);
-    return UserRepository;
-}());
+    }
+};
+UserRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], UserRepository);
 exports.UserRepository = UserRepository;
 
 
@@ -6992,17 +6575,6 @@ exports.UserRepository = UserRepository;
 
 "use strict";
 
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7012,69 +6584,155 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.WhitelistRepository = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var WhitelistRepository = /** @class */ (function () {
-    function WhitelistRepository() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
+let WhitelistRepository = class WhitelistRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    Object.defineProperty(WhitelistRepository.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    WhitelistRepository.prototype.read = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
-                method: 'GET',
-                headers: _this.headers,
-            };
-            var url = _this.namespace + 'whitelist';
-            fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                var _a;
-                resolve(__assign({ use_whitelist: (_a = data.use_whitelist) !== null && _a !== void 0 ? _a : false }, (data === null || data === void 0 ? void 0 : data.whitelist) && { whitelist: data.whitelist }));
-                resolve(data);
-            })
-                .catch(function (err) { return reject(err); });
-        });
-    };
-    WhitelistRepository.prototype.update = function (newWhitelist) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var body = JSON.stringify({
-                settings: __assign(__assign({}, (newWhitelist.use_whitelist) && { use_whitelist: newWhitelist.use_whitelist }), (newWhitelist.whitelist) && { whitelist: newWhitelist.whitelist })
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.whitelistShow().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
             });
-            var params = {
-                method: 'PUT',
-                headers: _this.headers,
-                body: body,
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.whitelistUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+WhitelistRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
+], WhitelistRepository);
+exports.WhitelistRepository = WhitelistRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/services/AdminApiService.ts":
+/*!**************************************************!*\
+  !*** ./resources/ts/services/AdminApiService.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AdminApiService = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let AdminApiService = class AdminApiService {
+    constructor() {
+        this.namespace = '/wp-json/tokenly/v1';
+    }
+    get headers() {
+        return {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-WP-Nonce': wpApiSettings.nonce,
+        };
+    }
+    settingsShow() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/settings').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    settingsUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/settings', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/source').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/source', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    whitelistShow() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/whitelist').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    whitelistUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/whitelist', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    makeRequest(method = '', route = '', args = {}) {
+        return new Promise((resolve, reject) => {
+            const params = {
+                method: method,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'whitelist';
+            const withBody = ['POST', 'PUT', 'UPDATE'];
+            let url = `${this.namespace}${route}`;
+            if (withBody.includes(method)) {
+                params.body = JSON.stringify(args);
+            }
+            else {
+                const queryParams = new URLSearchParams(args);
+                url = `${url}? + ${queryParams}`;
+            }
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    WhitelistRepository = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], WhitelistRepository);
-    return WhitelistRepository;
-}());
-exports.WhitelistRepository = WhitelistRepository;
+    }
+};
+AdminApiService = __decorate([
+    (0, inversify_1.injectable)()
+], AdminApiService);
+exports.AdminApiService = AdminApiService;
 
 
 /***/ }),
@@ -7098,80 +6756,72 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthService = void 0;
-var inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-var AuthService = /** @class */ (function () {
-    function AuthService() {
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+let AuthService = class AuthService {
+    constructor() {
         this.namespace = '/wp-json/tokenly/v1/';
         //
     }
-    Object.defineProperty(AuthService.prototype, "headers", {
-        get: function () {
-            return {
-                'Content-type': 'application/json; charset=UTF-8',
-                'X-WP-Nonce': wpApiSettings.nonce,
-            };
-        },
-        enumerable: false,
-        configurable: true
-    });
-    AuthService.prototype.getStatus = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    get headers() {
+        return {
+            'Content-type': 'application/json; charset=UTF-8',
+            'X-WP-Nonce': wpApiSettings.nonce,
+        };
+    }
+    getStatus() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'GET',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'authorize';
+            const url = this.namespace + 'authorize';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then((data) => {
                 resolve(data);
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    AuthService.prototype.connect = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    connect() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'POST',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'authorize';
+            const url = this.namespace + 'authorize';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then(data => {
                 var _a;
-                var redirectUrl = (_a = data.url) !== null && _a !== void 0 ? _a : null;
+                const redirectUrl = (_a = data.url) !== null && _a !== void 0 ? _a : null;
                 if (redirectUrl) {
                     window.location = redirectUrl;
                 }
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    AuthService.prototype.disconnect = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var params = {
+    }
+    disconnect() {
+        return new Promise((resolve, reject) => {
+            const params = {
                 method: 'DELETE',
-                headers: _this.headers,
+                headers: this.headers,
             };
-            var url = _this.namespace + 'authorize';
+            const url = this.namespace + 'authorize';
             fetch(url, params)
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
+                .then(response => response.json())
+                .then(data => {
                 window.location.reload();
             })
-                .catch(function (err) { return reject(err); });
+                .catch(err => reject(err));
         });
-    };
-    AuthService = __decorate([
-        (0, inversify_1.injectable)(),
-        __metadata("design:paramtypes", [])
-    ], AuthService);
-    return AuthService;
-}());
+    }
+};
+AuthService = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], AuthService);
 exports.AuthService = AuthService;
 
 
@@ -7278,12 +6928,86 @@ module.exports = window["wp"]["element"];
 /******/ 	}();
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./resources/ts/admin.tsx");
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+!function() {
+"use strict";
+var exports = __webpack_exports__;
+/*!********************************!*\
+  !*** ./resources/ts/admin.tsx ***!
+  \********************************/
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const inversify_config_1 = __webpack_require__(/*! ./inversify.config */ "./resources/ts/inversify.config.ts");
+__webpack_require__(/*! ../../../../../../../../../resources/scss/admin.scss */ "./resources/scss/admin.scss");
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const app_1 = __webpack_require__(/*! ./app */ "./resources/ts/app.tsx");
+const SettingsPage_1 = __webpack_require__(/*! ./admin/pages/SettingsPage */ "./resources/ts/admin/pages/SettingsPage.tsx");
+const VendorPage_1 = __webpack_require__(/*! ./admin/pages/VendorPage */ "./resources/ts/admin/pages/VendorPage.tsx");
+const ConnectionPage_1 = __webpack_require__(/*! ./admin/pages/ConnectionPage */ "./resources/ts/admin/pages/ConnectionPage.tsx");
+const WhitelistPage_1 = __webpack_require__(/*! ./admin/pages/WhitelistPage */ "./resources/ts/admin/pages/WhitelistPage.tsx");
+const PromiseStorePage_1 = __webpack_require__(/*! ./admin/pages/PromiseStorePage */ "./resources/ts/admin/pages/PromiseStorePage.tsx");
+const SourceIndexPage_1 = __webpack_require__(/*! ./admin/pages/SourceIndexPage */ "./resources/ts/admin/pages/SourceIndexPage.tsx");
+const SourceStorePage_1 = __webpack_require__(/*! ./admin/pages/SourceStorePage */ "./resources/ts/admin/pages/SourceStorePage.tsx");
+const DashboardPage_1 = __webpack_require__(/*! ./admin/pages/DashboardPage */ "./resources/ts/admin/pages/DashboardPage.tsx");
+const TokenMetaEditPage_1 = __webpack_require__(/*! ./admin/pages/TokenMetaEditPage */ "./resources/ts/admin/pages/TokenMetaEditPage.tsx");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class AdminApp extends app_1.default {
+    constructor() {
+        super();
+        this.container = inversify_config_1.container;
+        this.pageElement = document.querySelector('.tokenpass-admin-page');
+        if (this.pageElement) {
+            this.view = this.pageElement.dataset.view;
+            this.pageData = JSON.parse(this.pageElement.dataset.props);
+            const views = this.getViews();
+            const ViewComponent = views[this.view];
+            this.render(ViewComponent);
+        }
+        this.registerRedirects();
+    }
+    getViews() {
+        return {
+            'settings': SettingsPage_1.default,
+            'connection': ConnectionPage_1.default,
+            'vendor': VendorPage_1.default,
+            'whitelist': WhitelistPage_1.default,
+            'promise-store': PromiseStorePage_1.default,
+            'source-index': SourceIndexPage_1.default,
+            'source-store': SourceStorePage_1.default,
+            'token-meta-edit': TokenMetaEditPage_1.default,
+            'dashboard': DashboardPage_1.default,
+        };
+    }
+    render(ViewComponent) {
+        if (!this.pageElement) {
+            return;
+        }
+        const pageContainer = document.createElement('div');
+        this.pageElement.appendChild(pageContainer);
+        (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
+            React.createElement(ViewComponent, { pageData: this.pageData })), pageContainer);
+    }
+    registerRedirects() {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window['tokenpassRedirects']) {
+                window['tokenpassRedirects'].forEach((redirect) => {
+                    const element = document.querySelector(`[href='${redirect.from}']`);
+                    if (element) {
+                        element.href = redirect.to;
+                        element.target = '_blank';
+                    }
+                });
+            }
+        });
+    }
+}
+(function () {
+    const admin = new AdminApp();
+})();
+
+}();
 /******/ })()
 ;
 //# sourceMappingURL=admin.js.map

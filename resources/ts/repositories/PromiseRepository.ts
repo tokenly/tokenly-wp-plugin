@@ -1,10 +1,5 @@
-import { injectable } from "inversify";
-
-declare const wpApiSettings: any;
-
-export interface PromiseData {
-	//
-}
+import { injectable, inject } from "inversify";
+import { AdminApiService } from '../services/AdminApiService';
 
 export interface PromiseStoreData {
 	source: string;
@@ -15,31 +10,30 @@ export interface PromiseStoreData {
 	note: string;
 }
 
+export interface PromiseData {
+	//
+}
+
 @injectable()
 export class PromiseRepository {
-	namespace = '/wp-json/tokenly/v1/';
+	AdminApiService;
 	
-	constructor() {
-		//
-	}
-	
-	get headers() {
-		return {
-			'Content-type': 'application/json; charset=UTF-8',
-			'X-WP-Nonce': wpApiSettings.nonce,
-		}
+	constructor(
+		@inject( AdminApiService ) AdminApiService: AdminApiService
+	) {
+		this.AdminApiService = AdminApiService;
 	}
 	
 	store( promise: PromiseStoreData ) {
 		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'POST',
-				headers: this.headers,
+				headers: this.AdminApiService.headers,
 				body: JSON.stringify( {
 					promise: promise,
 				} ),
 			}
-			const url = this.namespace + 'promise';
+			const url = this.AdminApiService.namespace + 'promise';
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data: any ) => {
@@ -54,9 +48,9 @@ export class PromiseRepository {
 		return new Promise( ( resolve, reject ) => {
 			const params = {
 				method: 'GET',
-				headers: this.headers,
+				headers: this.AdminApiService.headers,
 			}
-			const url = this.namespace + 'promise';
+			const url = this.AdminApiService.namespace + 'promise';
 			fetch( url, params )
 				.then( response => response.json() )
 				.then( ( data: any ) => {

@@ -27,10 +27,13 @@ class SourceRepository {
 		$proof =  $address . '_' . $hash;
 		$result = $this->client->registerProvisionalSource(
 			$source['address'] ?? null,
-			$chain = 'bitcoin',
-			$proof = $proof,
-			$source['assets'] ?? null,
+			'ethereum',
+			$proof,
+			null
 		);
+		// $result = $this->client->callPriviledged( 'registerProvisionalSource', array(
+		// 	$source['address'] ?? null,
+		// ) );
 
 		return $result;
 	}

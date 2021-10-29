@@ -1,10 +1,9 @@
 import * as React from 'react';
-declare const wp: any;
 import { Component } from 'react';
 
-const {
-	Fragment
-} = wp.element;
+import { 
+	Fragment,
+} from '@wordpress/element';
 
 interface PageProps {
 	title: string,

@@ -1,63 +1,34 @@
-import { injectable } from "inversify";
-
-declare const wpApiSettings: any;
-
-export interface SettingsData {
-	client_id: string;
-	client_secret: string;
-}
+import { injectable, inject } from "inversify";
+import { SettingsData } from '../interfaces';
+import { AdminApiService } from '../services/AdminApiService';
 
 @injectable()
 export class SettingsRepository {
-	namespace = '/wp-json/tokenly/v1/';
+	adminApiService;
 	
-	constructor() {
-		//
+	constructor(
+		@inject( AdminApiService ) adminApiService: AdminApiService
+	) {
+		this.adminApiService = adminApiService;
 	}
 	
-	get headers() {
-		return {
-			'Content-type': 'application/json; charset=UTF-8',
-			'X-WP-Nonce': wpApiSettings.nonce,
-		}
-	}
-	
-	read() {
+	show() {
 		return new Promise( ( resolve, reject ) => {
-			const params = {
-				method: 'GET',
-				headers: this.headers,
-			}
-			const url = this.namespace + 'settings';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( ( data: SettingsData ) => {
-					console.log(data);
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
+			this.adminApiService.settingsShow().then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
 		});
 	}
 	
-	update( newSettings: SettingsData ) {
+	update( params: SettingsData ) {
 		return new Promise( ( resolve, reject ) => {
-			const params = {
-				method: 'PUT',
-				headers: this.headers,
-				body: JSON.stringify( {
-					settings: {
-						...{ client_id: newSettings.client_id ?? '' },
-						...{ client_secret: newSettings.client_secret ?? '' },
-					}
-				} ),
-			}
-			const url = this.namespace + 'settings';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( ( data: SettingsData ) => {
-					resolve( data )
-				} )
-				.catch( err => reject( err ) );
+			this.adminApiService.settingsUpdate( params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
 			} );
+		});
 	}
 }
