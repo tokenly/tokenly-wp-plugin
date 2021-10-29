@@ -2,8 +2,9 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { PromiseRepository, PromiseData, PromiseStoreData } from '../../repositories/PromiseRepository';
+import { PromiseRepository } from '../../repositories/PromiseRepository';
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
+import { PromiseData, PromiseStoreParams } from '../../interfaces';
 
 declare const window: any;
 
@@ -57,8 +58,8 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 		} );
 	}
 	
-	onPromiseSubmit( promise: PromiseStoreData ) {
-		this.promiseRepository.store( promise ).then( result => {
+	onPromiseSubmit( params: PromiseStoreParams ) {
+		this.promiseRepository.store( params ).then( result => {
 			window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
 		});
 	}

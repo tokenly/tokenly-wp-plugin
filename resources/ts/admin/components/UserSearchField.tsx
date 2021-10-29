@@ -1,7 +1,8 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import { UserRepository, UserSuggestion } from '../../repositories/UserRepository';
+import { UserRepository } from '../../repositories/UserRepository';
+import { UserSuggestion } from '../../interfaces';
 
 declare const wp: any;
 

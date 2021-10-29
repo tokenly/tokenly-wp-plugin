@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Services;
 
 use Tokenly\TokenpassClient\TokenpassAPI;
-use Tokenly\Wp\Repositories\TokenMetaRepository;
+use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
 
 class UserService {
 	public $client;
@@ -58,7 +58,7 @@ class UserService {
 		return $balances;
 	}
 
-	public function get_token_meta( $balances ) {
+	public function embed_token_meta( $balances ) {
 		$balances = array_map( function( $balance ) {
 			$token_meta_post = $this->token_meta_repository->show( array(
 				'name' => $balance['name'] ?? null,
@@ -82,7 +82,7 @@ class UserService {
 			$oauth_token = $oauth_token[0];
 			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
 			$balances = $this->filter_balances( $balances );
-			$balances = $this->get_token_meta( $balances );
+			$balances = $this->embed_token_meta( $balances );
 			return $balances;
 		}
 	}

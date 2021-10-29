@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { SourceStoreData } from '../../repositories/SourceRepository';
+import { SourceData } from '../../interfaces';
 
 import { 
 	Button,
@@ -15,7 +15,7 @@ interface SourceStoreFormProps {
 }
 
 interface SourceStoreFormState {
-	store: SourceStoreData;
+	store: SourceData;
 }
 
 export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStoreFormState> {

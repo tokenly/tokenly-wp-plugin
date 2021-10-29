@@ -17,7 +17,6 @@ class PromiseRepository {
 	}
 	public function index() {
 		$response = $this->client->getPromisedTransactionList();
-		error_log( print_r( $response, true ) );
 		return $response;
 	}
 	

@@ -1,7 +1,8 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import { TokenMetaRepository, TokenMetaData } from '../../repositories/TokenMetaRepository';
+import { TokenMetaRepository } from '../../repositories/TokenMetaRepository';
+import { TokenMetaData } from '../../interfaces';
 
 import { 
 	TextControl,
@@ -32,6 +33,9 @@ interface TokenMetaEditPageState {
 	postId: number;
 }
 
+declare const wp: any;
+
+
 export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps, TokenMetaEditPageState> {
 	@resolve
 	tokenMetaRepository: TokenMetaRepository;
@@ -49,6 +53,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 		const urlParams = new URLSearchParams(window.location.search);
 		const postId = parseInt( urlParams.get( 'post' ) );
 		this.state.postId = postId;
+		console.log(wp);
 	}
 
 	updateAsset( value: any ) {
@@ -58,11 +63,11 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 	}
 
 	componentDidMount() {
-		this.tokenMetaRepository.show( this.state.postId ).then( ( tokenMeta: TokenMetaData ) => {
-			this.setState( {
-				tokenMeta: tokenMeta,
-			} );
-		} );
+		// this.tokenMetaRepository.show( this.state.postId ).then( ( tokenMeta: TokenMetaData ) => {
+		// 	this.setState( {
+		// 		tokenMeta: tokenMeta,
+		// 	} );
+		// } );
 	}
 
 	render() {
@@ -85,6 +90,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 						</PanelRow>
 					</PanelBody>
 				</Panel>
+				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.tokenMeta as any ) } />
 			</Fragment>
 		);
 	}

@@ -91,25 +91,25 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 								<span> <b>CLIENT AUTHORIZATION REDIRECT URL: </b> <a href={this.props.pageData.client_auth_url} target="_blank">{this.props.pageData.client_auth_url}</a> </span>
 							</div>
 						</PanelRow>
-						<PanelRow className="api-input-container">
-							<TextControl
-								label="Client ID"
-								value={ this.state.settingsData.client_id }
-								onChange={ ( value: string ) => {
-									this.setClientId( value );
-									}
-								}
-							/>
-						</PanelRow>
 						<PanelRow>
-							<TextControl
-								label="Client Secret"
-								value={ this.state.settingsData.client_secret }
-								onChange={ ( value: string ) => {
-										this.setClientSecret( value );
+							<div style={{flex: '1', maxWidth: '468px', marginTop: '12px'}}>
+								<TextControl
+									label="Client ID"
+									value={ this.state.settingsData.client_id }
+									onChange={ ( value: string ) => {
+										this.setClientId( value );
+										}
 									}
-								}
-							/>
+								/>
+								<TextControl
+									label="Client Secret"
+									value={ this.state.settingsData.client_secret }
+									onChange={ ( value: string ) => {
+											this.setClientSecret( value );
+										}
+									}
+								/>
+							</div>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

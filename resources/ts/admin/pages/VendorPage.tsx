@@ -2,7 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { PromiseRepository, PromiseData, PromiseStoreData } from '../../repositories/PromiseRepository';
+import { PromiseRepository } from '../../repositories/PromiseRepository';
+import { PromiseData, PromiseStoreParams } from '../../interfaces';
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
 import { 

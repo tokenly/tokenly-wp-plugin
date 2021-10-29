@@ -32,4 +32,34 @@ export interface SourceData {
 	assets: string,
 }
 
+export interface TokenMetaData {
+	asset: string;
+}
+
+export interface UserSuggestion {
+	id: number;
+	name: string;
+}
+
+export interface PromiseData {
+	//
+}
+
 // API Interfaces
+
+export interface UserShowParams {
+	id: number,
+}
+
+export interface UserIndexParams {
+	name: string,
+}
+
+export interface PromiseStoreParams {
+	source: string;
+	destination: number;
+	asset: string;
+	quantity: number;
+	ref: string;
+	note: string;
+}

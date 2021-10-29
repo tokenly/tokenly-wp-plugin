@@ -44,6 +44,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onWhitelistChange = this.onWhitelistChange.bind( this );
+		this.setUseWhitelist = this.setUseWhitelist.bind( this );
 	}
 	
 	componentDidMount() {
@@ -102,7 +103,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				{ this.state.whitelistData.use_whitelist === true &&
+				{ this.state.whitelistData.use_whitelist == true &&
 					<Panel header="Token Whitelist Editor">
 						<PanelBody>
 							<PanelRow>

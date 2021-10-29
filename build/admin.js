@@ -5577,8 +5577,8 @@ class PromiseStorePage extends react_1.Component {
             });
         });
     }
-    onPromiseSubmit(promise) {
-        this.promiseRepository.store(promise).then(result => {
+    onPromiseSubmit(params) {
+        this.promiseRepository.store(params).then(result => {
             window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
         });
     }
@@ -5692,14 +5692,14 @@ class SettingsPage extends react_1.Component {
                                 " ",
                                 React.createElement("a", { href: this.props.pageData.client_auth_url, target: "_blank" }, this.props.pageData.client_auth_url),
                                 " "))),
-                    React.createElement(components_1.PanelRow, { className: "api-input-container" },
-                        React.createElement(components_1.TextControl, { label: "Client ID", value: this.state.settingsData.client_id, onChange: (value) => {
-                                this.setClientId(value);
-                            } })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.TextControl, { label: "Client Secret", value: this.state.settingsData.client_secret, onChange: (value) => {
-                                this.setClientSecret(value);
-                            } })))),
+                        React.createElement("div", { style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
+                            React.createElement(components_1.TextControl, { label: "Client ID", value: this.state.settingsData.client_id, onChange: (value) => {
+                                    this.setClientId(value);
+                                } }),
+                            React.createElement(components_1.TextControl, { label: "Client Secret", value: this.state.settingsData.client_secret, onChange: (value) => {
+                                    this.setClientSecret(value);
+                                } }))))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
     }
 }
@@ -5753,8 +5753,8 @@ class SourceIndexPage extends react_1.Component {
             });
         });
     }
-    onPromiseSubmit(promise) {
-        this.promiseRepository.store(promise).then(result => {
+    onPromiseSubmit(params) {
+        this.promiseRepository.store(params).then(result => {
             window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
         });
     }
@@ -5871,6 +5871,7 @@ class TokenMetaEditPage extends react_1.Component {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = parseInt(urlParams.get('post'));
         this.state.postId = postId;
+        console.log(wp);
     }
     updateAsset(value) {
         const state = Object.assign({}, this.state);
@@ -5878,11 +5879,11 @@ class TokenMetaEditPage extends react_1.Component {
         this.setState(state);
     }
     componentDidMount() {
-        this.tokenMetaRepository.show(this.state.postId).then((tokenMeta) => {
-            this.setState({
-                tokenMeta: tokenMeta,
-            });
-        });
+        // this.tokenMetaRepository.show( this.state.postId ).then( ( tokenMeta: TokenMetaData ) => {
+        // 	this.setState( {
+        // 		tokenMeta: tokenMeta,
+        // 	} );
+        // } );
     }
     render() {
         return (React.createElement(element_1.Fragment, null,
@@ -5893,7 +5894,8 @@ class TokenMetaEditPage extends react_1.Component {
                             React.createElement(components_1.TextControl, { value: this.state.tokenMeta.asset, label: "Asset", onChange: (value) => {
                                     this.updateAsset(value);
                                 }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
-                            React.createElement("div", { style: { opacity: 0.8 } }, "Is used for pairing meta with an asset")))))));
+                            React.createElement("div", { style: { opacity: 0.8 } }, "Is used for pairing meta with an asset"))))),
+            React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.tokenMeta) })));
     }
 }
 __decorate([
@@ -6010,6 +6012,7 @@ class WhitelistPage extends react_1.Component {
         };
         this.onSave = this.onSave.bind(this);
         this.onWhitelistChange = this.onWhitelistChange.bind(this);
+        this.setUseWhitelist = this.setUseWhitelist.bind(this);
     }
     componentDidMount() {
         this.whitelistRepository.show().then((whitelistData) => {
@@ -6051,7 +6054,7 @@ class WhitelistPage extends react_1.Component {
                                 : 'Whitelist disabled.', checked: this.state.whitelistData.use_whitelist, onChange: (value) => {
                                 this.setUseWhitelist(value);
                             } })))),
-            this.state.whitelistData.use_whitelist === true &&
+            this.state.whitelistData.use_whitelist == true &&
                 React.createElement(components_1.Panel, { header: "Token Whitelist Editor" },
                     React.createElement(components_1.PanelBody, null,
                         React.createElement(components_1.PanelRow, null,
@@ -6273,42 +6276,25 @@ exports.PromiseRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
 let PromiseRepository = class PromiseRepository {
-    constructor(AdminApiService) {
-        this.AdminApiService = AdminApiService;
-    }
-    store(promise) {
-        return new Promise((resolve, reject) => {
-            const params = {
-                method: 'POST',
-                headers: this.AdminApiService.headers,
-                body: JSON.stringify({
-                    promise: promise,
-                }),
-            };
-            const url = this.AdminApiService.namespace + 'promise';
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(err => reject(err));
-        });
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
     index() {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.AdminApiService.headers,
-            };
-            const url = this.AdminApiService.namespace + 'promise';
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.promiseIndex().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.promiseStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
@@ -6461,22 +6447,25 @@ exports.TokenMetaRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
 let TokenMetaRepository = class TokenMetaRepository {
-    constructor(AdminApiService) {
-        this.AdminApiService = AdminApiService;
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
     show(postId) {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.AdminApiService.headers,
-            };
-            const url = this.AdminApiService.namespace + 'whitelist' + '/' + postId;
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.tokenMetaShow(postId).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(postId, params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.tokenMetaUpdate(postId, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
@@ -6507,60 +6496,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
 let UserRepository = class UserRepository {
-    constructor() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    get headers() {
-        return {
-            'Content-type': 'application/json; charset=UTF-8',
-            'X-WP-Nonce': wpApiSettings.nonce,
-        };
-    }
-    index(indexParameters) {
+    index(params) {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.headers,
-            };
-            const args = {
-                index_parameters: JSON.stringify(indexParameters),
-            };
-            const url = this.namespace + 'user?' + new URLSearchParams(args);
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.userIndex(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
-    show(showParameters) {
+    show(userId, params) {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.headers,
-            };
-            const args = {
-                show_parameters: JSON.stringify(showParameters),
-            };
-            const url = this.namespace + 'user/?' + new URLSearchParams(args);
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.userShow(userId, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
 UserRepository = __decorate([
     (0, inversify_1.injectable)(),
-    __metadata("design:paramtypes", [])
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
 ], UserRepository);
 exports.UserRepository = UserRepository;
 
@@ -6681,6 +6650,60 @@ let AdminApiService = class AdminApiService {
     sourceStore(params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('POST', '/source', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    promiseIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/promise').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    promiseStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/promise', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    tokenMetaShow(postId) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', `/token-meta/${postId}`).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    tokenMetaUpdate(postId, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', `/token-meta/${postId}`, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    userIndex(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/user', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    userShow(userId, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', `/user/${userId}`, params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);

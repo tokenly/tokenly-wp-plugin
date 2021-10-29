@@ -1,56 +1,34 @@
 import { injectable, inject } from "inversify";
 import { AdminApiService } from '../services/AdminApiService';
-
-export interface TokenMetaData {
-	asset: string;
-}
+import { TokenMetaData } from '../interfaces';
 
 @injectable()
 export class TokenMetaRepository {
-	AdminApiService;
+	adminApiService;
 	
 	constructor(
-		@inject( AdminApiService ) AdminApiService: AdminApiService
+		@inject( AdminApiService ) adminApiService: AdminApiService
 	) {
-		this.AdminApiService = AdminApiService;
+		this.adminApiService = adminApiService;
 	}
 	
 	show( postId: number ) {
-		return new Promise<TokenMetaData>( ( resolve, reject ) => {
-			const params = {
-				method: 'GET',
-				headers: this.AdminApiService.headers,
-			}
-			const url = this.AdminApiService.namespace + 'whitelist' + '/' + postId;
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( ( data: TokenMetaData ) => {
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
-		} );
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.tokenMetaShow( postId ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
 	}
 	
-	// update( newWhitelist: WhitelistData ) {
-	// 	return new Promise( ( resolve, reject ) => {
-	// 	const body = JSON.stringify({
-	// 		settings: {
-	// 			...( newWhitelist.use_whitelist ) && { use_whitelist: newWhitelist.use_whitelist },
-	// 			...( newWhitelist.whitelist ) && { whitelist: newWhitelist.whitelist },
-	// 		}
-	// 	});
-	// 	const params = {
-	// 		method: 'PUT',
-	// 		headers: this.headers,
-	// 		body: body,
-	// 	 }
-	// 	 const url = this.namespace + 'whitelist';
-	// 	 fetch( url, params )
-	// 		.then( response => response.json() )
-	// 		.then( data => {
-	// 			resolve( data );
-	// 		})
-	// 		.catch( err => reject( err ) );
-	// 	} );
-	// }
+	update( postId: number, params: TokenMetaData ) {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.tokenMetaUpdate( postId, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
 }

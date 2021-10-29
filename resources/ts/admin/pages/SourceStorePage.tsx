@@ -2,8 +2,9 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { SourceRepository, SourceData, SourceStoreData } from '../../repositories/SourceRepository';
+import { SourceRepository } from '../../repositories/SourceRepository';
 import { SourceStoreForm } from '../components/SourceStoreForm';
+import { SourceData } from '../../interfaces';
 
 declare const window: any;
 
@@ -39,7 +40,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		this.onSourceSubmit = this.onSourceSubmit.bind( this );
 	}
 	
-	onSourceSubmit( promise: SourceStoreData ) {
+	onSourceSubmit( promise: SourceData ) {
 		this.sourceRepository.store( promise ).then( ( result: any ) => {
 			window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
 		});

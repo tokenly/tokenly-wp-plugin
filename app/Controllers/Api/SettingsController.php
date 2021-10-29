@@ -19,13 +19,8 @@ class SettingsController {
 	}
 
 	public function update( $request ) {
-		$settings = $request['settings'] ?? null;
-		if ( !$settings ) {
-			return array(
-				'status' => 'Error. Settings were not updated.',
-			);
-		}
-		$this->settings_repository->update( $settings );
+		$params = $request->get_params();
+		$this->settings_repository->update( $params );
 		return array(
 			'status' => 'Settings were updated successfully.',
 		);

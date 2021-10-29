@@ -16,13 +16,8 @@ class WhitelistController {
 	}
 
 	public function update( $request ) {
-		$settings = $request['settings'] ?? null;
-		if ( !$settings ) {
-			return array(
-				'status' => 'Error. Whitelist was not updated.',
-			);
-		}
-		$this->whitelist_repository->update( $settings );
+		$params = $request->get_params();
+		$this->whitelist_repository->update( $params );
 		return array(
 			'status' => 'Whitelist was updated successfully.',
 		);

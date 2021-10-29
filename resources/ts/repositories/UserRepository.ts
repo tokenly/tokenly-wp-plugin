@@ -1,70 +1,34 @@
-import { injectable } from "inversify";
-
-declare const wpApiSettings: any;
-
-export interface UserSuggestion {
-	id: number;
-	name: string;
-}
-
-export interface UserShowParameters {
-	id: number,
-}
-
-export interface UserIndexParameters {
-	name: string,
-}
+import { injectable, inject } from "inversify";
+import { UserIndexParams, UserShowParams } from '../interfaces';
+import { AdminApiService } from '../services/AdminApiService';
 
 @injectable()
 export class UserRepository {
-	namespace = '/wp-json/tokenly/v1/';
-	
-	constructor() {
-		//
+	adminApiService;
+
+	constructor(
+		@inject( AdminApiService ) adminApiService: AdminApiService
+	) {
+		this.adminApiService = adminApiService;
 	}
 	
-	get headers() {
-		return {
-			'Content-type': 'application/json; charset=UTF-8',
-			'X-WP-Nonce': wpApiSettings.nonce,
-		}
-	}
-	
-	index( indexParameters: UserIndexParameters ) {
+	index( params: UserIndexParams ) {
 		return new Promise( ( resolve, reject ) => {
-			const params = {
-				method: 'GET',
-				headers: this.headers,
-			}
-			const args = {
-				index_parameters: JSON.stringify( indexParameters ),
-			}
-			const url = this.namespace + 'user?' + new URLSearchParams( args as any );
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( ( data ) => {
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
+			this.adminApiService.userIndex( params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
 		});
 	}
 
-	show( showParameters: UserShowParameters ) {
+	show( userId: number, params: UserShowParams ) {
 		return new Promise( ( resolve, reject ) => {
-			const params = {
-				method: 'GET',
-				headers: this.headers,
-			}
-			const args = {
-				show_parameters: JSON.stringify( showParameters ),
-			}
-			const url = this.namespace + 'user/?' + new URLSearchParams( args as any );
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( ( data ) => {
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
+			this.adminApiService.userShow( userId, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
 		});
 	}
 }

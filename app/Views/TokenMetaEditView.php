@@ -13,6 +13,7 @@ class TokenMetaEditView extends View {
 	public function render( $data ) {
 		$html = $this->twig->render( 'admin.twig', array(
 			'view' => 'token-meta-edit',
+			'props' => $data['props'] ?? null,
 		) );
 		return $html;
 	}

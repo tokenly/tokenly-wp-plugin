@@ -3,6 +3,10 @@ import {
 	SettingsData,
 	WhitelistData,
 	SourceData,
+	UserShowParams,
+	UserIndexParams,
+	TokenMetaData,
+	PromiseStoreParams,
 } from "../interfaces";
 
 declare const wpApiSettings: any;
@@ -58,6 +62,66 @@ export class AdminApiService {
 		});
 	}
 
+	promiseIndex() {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/promise' ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	promiseStore( params: PromiseStoreParams ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'POST', '/promise', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	tokenMetaShow( postId: number ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/token-meta/${postId}` ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	tokenMetaUpdate( postId: number, params: TokenMetaData ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', `/token-meta/${postId}`, params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	userIndex( params: UserIndexParams ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/user', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	userShow( userId: number, params: UserShowParams ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/user/${userId}`, params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
 	whitelistShow() {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/whitelist' ).then( result => {
@@ -86,7 +150,7 @@ export class AdminApiService {
 			};
 			const withBody = ['POST', 'PUT', 'UPDATE'];
 			let url = `${this.namespace}${route}`;
-			if( withBody.includes( method ) ) {
+			if ( withBody.includes( method ) ) {
 				params.body = JSON.stringify( args );
 			} else {
 				const queryParams = new URLSearchParams( args as any );

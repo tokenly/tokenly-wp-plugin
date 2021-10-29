@@ -5198,42 +5198,25 @@ exports.PromiseRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
 let PromiseRepository = class PromiseRepository {
-    constructor(AdminApiService) {
-        this.AdminApiService = AdminApiService;
-    }
-    store(promise) {
-        return new Promise((resolve, reject) => {
-            const params = {
-                method: 'POST',
-                headers: this.AdminApiService.headers,
-                body: JSON.stringify({
-                    promise: promise,
-                }),
-            };
-            const url = this.AdminApiService.namespace + 'promise';
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(err => reject(err));
-        });
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
     index() {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.AdminApiService.headers,
-            };
-            const url = this.AdminApiService.namespace + 'promise';
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                console.log(data);
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.promiseIndex().then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.promiseStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
@@ -5386,22 +5369,25 @@ exports.TokenMetaRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
 let TokenMetaRepository = class TokenMetaRepository {
-    constructor(AdminApiService) {
-        this.AdminApiService = AdminApiService;
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
     show(postId) {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.AdminApiService.headers,
-            };
-            const url = this.AdminApiService.namespace + 'whitelist' + '/' + postId;
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.tokenMetaShow(postId).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(postId, params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.tokenMetaUpdate(postId, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
@@ -5432,60 +5418,40 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const AdminApiService_1 = __webpack_require__(/*! ../services/AdminApiService */ "./resources/ts/services/AdminApiService.ts");
 let UserRepository = class UserRepository {
-    constructor() {
-        this.namespace = '/wp-json/tokenly/v1/';
-        //
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
     }
-    get headers() {
-        return {
-            'Content-type': 'application/json; charset=UTF-8',
-            'X-WP-Nonce': wpApiSettings.nonce,
-        };
-    }
-    index(indexParameters) {
+    index(params) {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.headers,
-            };
-            const args = {
-                index_parameters: JSON.stringify(indexParameters),
-            };
-            const url = this.namespace + 'user?' + new URLSearchParams(args);
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.userIndex(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
-    show(showParameters) {
+    show(userId, params) {
         return new Promise((resolve, reject) => {
-            const params = {
-                method: 'GET',
-                headers: this.headers,
-            };
-            const args = {
-                show_parameters: JSON.stringify(showParameters),
-            };
-            const url = this.namespace + 'user/?' + new URLSearchParams(args);
-            fetch(url, params)
-                .then(response => response.json())
-                .then((data) => {
-                resolve(data);
-            })
-                .catch(err => reject(err));
+            this.adminApiService.userShow(userId, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };
 UserRepository = __decorate([
     (0, inversify_1.injectable)(),
-    __metadata("design:paramtypes", [])
+    __param(0, (0, inversify_1.inject)(AdminApiService_1.AdminApiService)),
+    __metadata("design:paramtypes", [AdminApiService_1.AdminApiService])
 ], UserRepository);
 exports.UserRepository = UserRepository;
 
@@ -5606,6 +5572,60 @@ let AdminApiService = class AdminApiService {
     sourceStore(params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('POST', '/source', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    promiseIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/promise').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    promiseStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/promise', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    tokenMetaShow(postId) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', `/token-meta/${postId}`).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    tokenMetaUpdate(postId, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', `/token-meta/${postId}`, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    userIndex(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/user', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    userShow(userId, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', `/user/${userId}`, params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { PromiseStoreData } from '../../repositories/PromiseRepository';
+import { PromiseStoreParams } from '../../interfaces';
 import { UserSearchField } from './UserSearchField';
 
 import { 
@@ -17,7 +17,7 @@ interface PromiseStoreFormProps {
 }
 
 interface PromiseStoreFormState {
-	promise: PromiseStoreData;
+	promise: PromiseStoreParams;
 }
 
 export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseStoreFormState> {
