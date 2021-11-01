@@ -5030,9 +5030,16 @@ class PromiseStoreForm extends react_1.Component {
                 ref: null,
                 note: null,
             },
+            sources: [],
         };
         this.onPromiseSubmit = this.onPromiseSubmit.bind(this);
         this.onUserChange = this.onUserChange.bind(this);
+        this.state.sources = this.props.sources.map(source => {
+            return {
+                label: source.address,
+                value: source.address,
+            };
+        });
     }
     onPromiseSubmit() {
         this.props.onSubmit(this.state.promise);
@@ -5043,45 +5050,44 @@ class PromiseStoreForm extends react_1.Component {
         this.setState({ promise: promise });
     }
     render() {
-        return React.createElement("div", null,
-            React.createElement("form", null,
-                React.createElement("div", null,
-                    React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.destination = value;
-                            this.setState({ promise: state });
-                        } })),
-                React.createElement("div", { style: { maxWidth: "320px" } },
-                    React.createElement(components_1.TextControl, { label: "Source address", value: this.state.promise.source, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.source = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.TextControl, { label: "Asset ID", value: this.state.promise.asset, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.asset = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.quantity = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.TextControl, { label: "Ref", value: this.state.promise.ref, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.ref = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.TextareaControl, { label: "Note", value: this.state.promise.note, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.note = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
-                            this.onPromiseSubmit();
-                        }, style: { marginTop: '12px' } }, "Create transaction"),
-                    this.props.saving === true &&
-                        React.createElement(components_1.Spinner, null))));
+        return (React.createElement("form", { style: { width: '100%', maxWidth: '320px' } },
+            React.createElement("div", null,
+                React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                        const state = Object.assign({}, this.state.promise);
+                        state.destination = value;
+                        this.setState({ promise: state });
+                    } })),
+            React.createElement("div", null,
+                React.createElement(components_1.SelectControl, { label: "Source address", value: this.state.promise.source, options: this.state.sources, onChange: (value) => {
+                        const state = Object.assign({}, this.state.promise);
+                        state.source = value;
+                        this.setState({ promise: state });
+                    } }),
+                React.createElement(components_1.TextControl, { label: "Asset ID", value: this.state.promise.asset, onChange: (value) => {
+                        const state = Object.assign({}, this.state.promise);
+                        state.asset = value;
+                        this.setState({ promise: state });
+                    } }),
+                React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, onChange: (value) => {
+                        const state = Object.assign({}, this.state.promise);
+                        state.quantity = value;
+                        this.setState({ promise: state });
+                    } }),
+                React.createElement(components_1.TextControl, { label: "Ref", value: this.state.promise.ref, onChange: (value) => {
+                        const state = Object.assign({}, this.state.promise);
+                        state.ref = value;
+                        this.setState({ promise: state });
+                    } }),
+                React.createElement(components_1.TextareaControl, { label: "Note", value: this.state.promise.note, onChange: (value) => {
+                        const state = Object.assign({}, this.state.promise);
+                        state.note = value;
+                        this.setState({ promise: state });
+                    } }),
+                React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                        this.onPromiseSubmit();
+                    }, style: { marginTop: '12px' } }, "Create transaction"),
+                this.props.saving === true &&
+                    React.createElement(components_1.Spinner, null))));
     }
 }
 exports.PromiseStoreForm = PromiseStoreForm;
@@ -5118,6 +5124,113 @@ class SavePanel extends react_1.Component {
     }
 }
 exports.SavePanel = SavePanel;
+
+
+/***/ }),
+
+/***/ "./resources/ts/admin/components/SourceEditForm.tsx":
+/*!**********************************************************!*\
+  !*** ./resources/ts/admin/components/SourceEditForm.tsx ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SourceEditForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceEditForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            source: {
+                address: null,
+                assets: null,
+            },
+        };
+        this.onSave = this.onSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.state.source = Object.assign(this.state.source, this.props.sourceData);
+    }
+    onSave() {
+        this.props.onSave(this.state.source);
+    }
+    onDelete() {
+        this.props.onDelete();
+    }
+    render() {
+        return React.createElement("div", null,
+            React.createElement("form", null,
+                React.createElement("div", { style: { maxWidth: "320px" } },
+                    React.createElement("div", null,
+                        React.createElement(components_1.TextControl, { label: "Assets", 
+                            // @ts-ignore
+                            hint: "Comma-separated values", value: this.state.source.assets, onChange: (value) => {
+                                const state = Object.assign({}, this.state.source);
+                                state.assets = value;
+                                this.setState({ source: state });
+                            } })),
+                    React.createElement(components_1.Flex, { justify: "flex-start", style: { marginTop: '12px' } },
+                        React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                                this.onSave();
+                            } }, "Save address"),
+                        React.createElement(components_1.Button, { isSecondary: true, isLarge: true, disabled: this.props.deleting, onClick: () => {
+                                this.onDelete();
+                            } }, "Delete address")))));
+    }
+}
+exports.SourceEditForm = SourceEditForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/admin/components/SourceList.tsx":
+/*!******************************************************!*\
+  !*** ./resources/ts/admin/components/SourceList.tsx ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SourceList = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceList extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let listItems = Object.keys(this.props.sourceList).map((key) => this.props.sourceList[key]);
+        listItems = listItems.map((sourceItem, i) => {
+            var _a;
+            return React.createElement("div", { style: { width: '100%' } },
+                React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+                    React.createElement(components_1.CardHeader, null,
+                        React.createElement("div", null,
+                            React.createElement("strong", null, sourceItem.address))),
+                    React.createElement(components_1.CardBody, { style: { width: '100%' } },
+                        React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Type: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, sourceItem.type))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Assets: "),
+                                    React.createElement("strong", null, (_a = sourceItem.assets) !== null && _a !== void 0 ? _a : 'all'))))),
+                    React.createElement(components_1.CardFooter, null,
+                        React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${sourceItem.address}` }, "Manage address"))));
+        });
+        return (
+        // @ts-ignore
+        React.createElement(components_1.Flex, { style: { width: '100%' }, direction: "column" }, listItems));
+    }
+}
+exports.SourceList = SourceList;
 
 
 /***/ }),
@@ -5583,11 +5696,12 @@ class PromiseStorePage extends react_1.Component {
         });
     }
     render() {
+        const sources = Object.keys(this.props.pageData.sources).map((key) => this.props.pageData.sources[key]);
         return (React.createElement(Page_1.default, { title: 'Create token promise' },
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onPromiseSubmit, saving: this.state.storingPromise, style: { marginBottom: '12px' } }))))));
+                        React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onPromiseSubmit, saving: this.state.storingPromise, style: { marginBottom: '12px' }, sources: sources }))))));
     }
 }
 __decorate([
@@ -5712,10 +5826,10 @@ exports["default"] = SettingsPage;
 
 /***/ }),
 
-/***/ "./resources/ts/admin/pages/SourceIndexPage.tsx":
-/*!******************************************************!*\
-  !*** ./resources/ts/admin/pages/SourceIndexPage.tsx ***!
-  \******************************************************/
+/***/ "./resources/ts/admin/pages/SourceEditPage.tsx":
+/*!*****************************************************!*\
+  !*** ./resources/ts/admin/pages/SourceEditPage.tsx ***!
+  \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -5734,42 +5848,97 @@ const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_mod
 const React = __webpack_require__(/*! react */ "react");
 const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
 const react_1 = __webpack_require__(/*! react */ "react");
-const PromiseRepository_1 = __webpack_require__(/*! ../../repositories/PromiseRepository */ "./resources/ts/repositories/PromiseRepository.ts");
+const SourceRepository_1 = __webpack_require__(/*! ../../repositories/SourceRepository */ "./resources/ts/repositories/SourceRepository.ts");
+const SourceEditForm_1 = __webpack_require__(/*! ../components/SourceEditForm */ "./resources/ts/admin/components/SourceEditForm.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            saving: false,
+            deleting: false,
+        };
+        this.onSave = this.onSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+    }
+    return() {
+        window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+    }
+    onSave(source) {
+        this.setState({ saving: true });
+        this.sourceRepository.update(this.props.pageData.source.address, source).then((result) => {
+            this.setState({ saving: false });
+            //this.return();
+        });
+    }
+    onDelete() {
+        this.setState({ deleting: true });
+        this.sourceRepository.destroy(this.props.pageData.source.address).then((result) => {
+            this.setState({ deleting: false });
+            this.return();
+        });
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Manage source address' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source list"),
+                React.createElement("div", null,
+                    React.createElement("span", null, "Address: "),
+                    React.createElement("strong", null, this.props.pageData.source.address))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement("div", null,
+                            React.createElement(SourceEditForm_1.SourceEditForm, { onSave: this.onSave, onDelete: this.onDelete, saving: this.state.saving, deleting: this.state.deleting, sourceData: this.props.pageData.source })))))));
+    }
+}
+__decorate([
+    inversify_react_1.resolve,
+    __metadata("design:type", SourceRepository_1.SourceRepository)
+], SourceEditPage.prototype, "sourceRepository", void 0);
+exports["default"] = SourceEditPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/admin/pages/SourceIndexPage.tsx":
+/*!******************************************************!*\
+  !*** ./resources/ts/admin/pages/SourceIndexPage.tsx ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/admin/pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const SourceList_1 = __webpack_require__(/*! ../components/SourceList */ "./resources/ts/admin/components/SourceList.tsx");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SourceIndexPage extends react_1.Component {
     constructor(props) {
         super(props);
         this.state = {
-            promiseData: [],
+            sourceData: [],
             isCreatePromiseModalOpen: false,
             storingPromise: false,
         };
-        this.onPromiseSubmit = this.onPromiseSubmit.bind(this);
-    }
-    componentDidMount() {
-        this.promiseRepository.index().then((promiseData) => {
-            this.setState({
-                promiseData: promiseData,
-            });
-        });
-    }
-    onPromiseSubmit(params) {
-        this.promiseRepository.store(params).then(result => {
-            window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
-        });
     }
     render() {
-        return (React.createElement(Page_1.default, { title: 'Create token promise' },
-            React.createElement(components_1.Panel, null,
+        return (React.createElement(Page_1.default, { title: 'Source addresses' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+            React.createElement(components_1.Panel, { header: "Source actions" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source address"))))));
+                        React.createElement(components_1.Flex, { style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register address"))))),
+            React.createElement(components_1.Panel, { header: "Registered addresses" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SourceList_1.SourceList, { sourceList: this.props.pageData.sources }))))));
     }
 }
-__decorate([
-    inversify_react_1.resolve,
-    __metadata("design:type", PromiseRepository_1.PromiseRepository)
-], SourceIndexPage.prototype, "promiseRepository", void 0);
 exports["default"] = SourceIndexPage;
 
 
@@ -5815,12 +5984,12 @@ class SourceIndexPage extends react_1.Component {
     }
     render() {
         return (React.createElement(Page_1.default, { title: 'Register source address' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source address list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
-                            React.createElement("div", { style: { marginBottom: '12px' } },
-                                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses")),
                             React.createElement("div", null,
                                 React.createElement(SourceStoreForm_1.SourceStoreForm, { onSubmit: this.onSourceSubmit, saving: this.state.storingSource, style: { marginBottom: '12px' } }))))))));
     }
@@ -5949,15 +6118,15 @@ class VendorPage extends react_1.Component {
     }
     render() {
         return (React.createElement(Page_1.default, { title: 'Tokenpass Vendor' },
-            React.createElement(components_1.Panel, { header: "Token promises" },
+            React.createElement(components_1.Panel, { header: "Vendor actions" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.ButtonGroup, null,
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-promise-store', style: { marginRight: '8px' } }, "Create token promise"),
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses"))),
-                    React.createElement(components_1.PanelRow, null,
-                        React.createElement("div", null,
-                            React.createElement("div", null, "Current promises:")))))));
+                        React.createElement(components_1.Flex, { justify: "flex-start" },
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-promise-store', style: { marginRight: '8px' } }, "Create a promise"),
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses"))))),
+            React.createElement(components_1.Panel, { header: "Current promises" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null)))));
     }
 }
 __decorate([
@@ -6411,6 +6580,24 @@ let SourceRepository = class SourceRepository {
             });
         });
     }
+    update(address, params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceUpdate(address, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    destroy(address) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceDestroy(address).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };
 SourceRepository = __decorate([
     (0, inversify_1.injectable)(),
@@ -6650,6 +6837,24 @@ let AdminApiService = class AdminApiService {
     sourceStore(params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('POST', '/source', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceUpdate(address, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/source/' + address, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceDestroy(address) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('DELETE', '/source/' + address).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -6973,6 +7178,7 @@ const WhitelistPage_1 = __webpack_require__(/*! ./admin/pages/WhitelistPage */ "
 const PromiseStorePage_1 = __webpack_require__(/*! ./admin/pages/PromiseStorePage */ "./resources/ts/admin/pages/PromiseStorePage.tsx");
 const SourceIndexPage_1 = __webpack_require__(/*! ./admin/pages/SourceIndexPage */ "./resources/ts/admin/pages/SourceIndexPage.tsx");
 const SourceStorePage_1 = __webpack_require__(/*! ./admin/pages/SourceStorePage */ "./resources/ts/admin/pages/SourceStorePage.tsx");
+const SourceEditPage_1 = __webpack_require__(/*! ./admin/pages/SourceEditPage */ "./resources/ts/admin/pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./admin/pages/DashboardPage */ "./resources/ts/admin/pages/DashboardPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./admin/pages/TokenMetaEditPage */ "./resources/ts/admin/pages/TokenMetaEditPage.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
@@ -6999,6 +7205,7 @@ class AdminApp extends app_1.default {
             'promise-store': PromiseStorePage_1.default,
             'source-index': SourceIndexPage_1.default,
             'source-store': SourceStorePage_1.default,
+            'source-edit': SourceEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
             'dashboard': DashboardPage_1.default,
         };

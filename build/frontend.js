@@ -5333,6 +5333,24 @@ let SourceRepository = class SourceRepository {
             });
         });
     }
+    update(address, params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceUpdate(address, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    destroy(address) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.sourceDestroy(address).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };
 SourceRepository = __decorate([
     (0, inversify_1.injectable)(),
@@ -5572,6 +5590,24 @@ let AdminApiService = class AdminApiService {
     sourceStore(params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('POST', '/source', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceUpdate(address, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/source/' + address, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    sourceDestroy(address) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('DELETE', '/source/' + address).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);

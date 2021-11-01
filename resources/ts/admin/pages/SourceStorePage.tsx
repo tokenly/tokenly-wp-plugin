@@ -49,13 +49,13 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	render() {
 		return (
 			<Page title={'Register source address'}>
+				<div style={ { marginBottom: '8px' } }>
+					<a href='/wp-admin/admin.php?page=tokenpass-source-index'>Back to source address list</a>
+				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<div style={ { marginBottom: '12px' } }>
-									<a href='/wp-admin/admin.php?page=tokenpass-source-index'>Manage source addresses</a>
-								</div>
 								<div>
 									<SourceStoreForm
 										onSubmit={ this.onSourceSubmit }

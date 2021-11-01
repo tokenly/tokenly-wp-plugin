@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Services;
 
 use Tokenly\Wp\Services\UserService;
+use Tokenly\Wp\Repositories\SettingsRepository;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\TokenpassClient\TokenpassAPI;
 
@@ -10,15 +11,18 @@ class AuthService {
 	public $client;
 	public $user_service;
 	public $button_login_component;
+	public $settings_repository;
 
 	public function __construct(
 		TokenpassAPI $client,
 		UserService $user_service,
-		ButtonLoginComponent $button_login_component
+		ButtonLoginComponent $button_login_component,
+		SettingsRepository $settings_repository
 	) {
 		$this->client = $client;
 		$this->user_service = $user_service;
 		$this->button_login_component = $button_login_component;
+		$this->settings_repository = $settings_repository;
 	}
 
 	/**
@@ -166,7 +170,7 @@ class AuthService {
 	}
 
 	public function get_tokenpass_login_url() {
-		$settings = get_option( 'tokenpass_settings' );
+		$settings = $this->settings_repository->show();
 		$client_id;
 		if ( $settings ) {
 			$client_id = $settings['client_id'] ?? null;

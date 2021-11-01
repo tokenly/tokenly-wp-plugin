@@ -16,15 +16,8 @@ class PromiseController {
 	}
 
 	public function store( $request ) {
-		$promise = $request['promise'] ?? null;
-		if ( !$promise ) {
-			return array(
-				'status' => 'Error. Promise was not stored.',
-			);
-		}
-		$this->promise_repository->store( $promise );
-		return array(
-			'status' => 'Promise has been stored successfully.',
-		);
+		$params = $request->get_params();
+		$promies = $this->promise_repository->store( $params );
+		return $promise;
 	}
 }

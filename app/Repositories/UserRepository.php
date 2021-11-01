@@ -13,8 +13,8 @@ class UserRepository {
 		$this->client = $client;
 	}
 
-	public function index( $index_parameters ) {
-		$name = $index_parameters['name'] ?? null;
+	public function index( $params ) {
+		$name = $params['name'] ?? null;
 		$args = array(
 			'orderby' => 'ID',
 			'order' => 'ASC',

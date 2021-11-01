@@ -15,8 +15,16 @@ class SourceRepository {
 		$this->client = $client;
 		$this->settings_repository = $settings_repository;
 	}
+
+	public function show( $address ) {
+		$sources = $this->index();
+		$source = $sources[$address] ?? null;
+		return $source;
+	}
+
 	public function index() {
-		return $this->client->getProvisionalSourceList();
+		$sources = $this->client->getProvisionalSourceList();
+		return $sources;
 	}
 	
 	public function store( $source ) {
@@ -27,14 +35,18 @@ class SourceRepository {
 		$proof =  $address . '_' . $hash;
 		$result = $this->client->registerProvisionalSource(
 			$source['address'] ?? null,
-			'ethereum',
+			'bitcoin',
 			$proof,
-			null
+			$source['assets'] ?? null
 		);
-		// $result = $this->client->callPriviledged( 'registerProvisionalSource', array(
-		// 	$source['address'] ?? null,
-		// ) );
-
 		return $result;
+	}
+
+	public function update( $address, $params ) {
+		//
+	}
+
+	public function destroy( $address ) {
+		$this->client->deleteProvisionalSource( $address );
 	}
 }

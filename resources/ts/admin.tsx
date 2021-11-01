@@ -10,6 +10,7 @@ import WhitelistPage from './admin/pages/WhitelistPage';
 import PromiseStorePage from './admin/pages/PromiseStorePage';
 import SourceIndexPage from './admin/pages/SourceIndexPage';
 import SourceStorePage from './admin/pages/SourceStorePage';
+import SourceEditPage from './admin/pages/SourceEditPage';
 import DashboardPage from './admin/pages/DashboardPage';
 import TokenMetaEditPage from './admin/pages/TokenMetaEditPage';
 
@@ -53,6 +54,7 @@ class AdminApp extends App {
 			'promise-store': PromiseStorePage,
 			'source-index': SourceIndexPage,
 			'source-store': SourceStorePage,
+			'source-edit' : SourceEditPage,
 			'token-meta-edit': TokenMetaEditPage,
 			'dashboard': DashboardPage,
 		} as any;

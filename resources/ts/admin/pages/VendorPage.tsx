@@ -8,7 +8,7 @@ import { PromiseStoreForm } from '../components/PromiseStoreForm';
 
 import { 
 	Button,
-	ButtonGroup,
+	Flex,
 	Panel,
 	PanelBody,
 	PanelRow,
@@ -54,31 +54,33 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 	render() {
 		return (
 			<Page title={'Tokenpass Vendor'}>
-				<Panel header="Token promises">
+				<Panel header="Vendor actions">
 					<PanelBody>
 						<PanelRow>
-							<ButtonGroup>
+							<Flex justify="flex-start">
 								<Button
 									isPrimary
 									isLarge
 									href='/wp-admin/admin.php?page=tokenpass-promise-store'
 									style={ { marginRight: '8px' } }
 								>
-									Create token promise
+									Create a promise
 								</Button>
 								<Button
-									isPrimary
+									isSecondary
 									isLarge
 									href='/wp-admin/admin.php?page=tokenpass-source-index'
 								>
 									Manage source addresses
 								</Button>
-							</ButtonGroup>
+							</Flex>
 						</PanelRow>
+					</PanelBody>
+				</Panel>
+				<Panel header="Current promises">
+					<PanelBody>
 						<PanelRow>
-							<div>
-								<div>Current promises:</div>
-							</div>
+							
 						</PanelRow>
 					</PanelBody>
 				</Panel>

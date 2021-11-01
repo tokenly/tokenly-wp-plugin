@@ -4,7 +4,7 @@ import Page from './Page';
 import { Component } from 'react';
 import { PromiseRepository } from '../../repositories/PromiseRepository';
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
-import { PromiseData, PromiseStoreParams } from '../../interfaces';
+import { PromiseData, PromiseStoreParams, SourceItem } from '../../interfaces';
 
 declare const window: any;
 
@@ -17,17 +17,12 @@ import {
 } from '@wordpress/components';
 
 interface PromiseStorePageData {
-	//
+	sources: Array<SourceItem>;
 }
 
 interface PromiseStorePageProps {
 	pageData: PromiseStorePageData;
 	saving: boolean;
-}
-
-interface User {
-	name: string;
-	id: number;
 }
 
 interface PromiseStorePageState {
@@ -48,6 +43,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	constructor( props: PromiseStorePageProps ) {
 		super( props );
 		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
+		
 	}
 	
 	componentDidMount() {
@@ -65,6 +61,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 	
 	render() {
+		const sources = Object.keys( this.props.pageData.sources ).map( ( key: any ) => this.props.pageData.sources[key] ) as any;
 		return (
 			<Page title={'Create token promise'}>
 				<Panel>
@@ -74,6 +71,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 								onSubmit={ this.onPromiseSubmit }
 								saving={ this.state.storingPromise }
 								style={ { marginBottom: '12px' } }
+								sources={ sources }
 							/>
 						</PanelRow>
 					</PanelBody>

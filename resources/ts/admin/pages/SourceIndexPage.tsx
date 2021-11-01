@@ -2,21 +2,19 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { PromiseRepository } from '../../repositories/PromiseRepository';
-import { PromiseStoreForm } from '../components/PromiseStoreForm';
-import { PromiseData, PromiseStoreParams } from '../../interfaces';
-
-declare const window: any;
+import { SourceItem } from '../../interfaces';
+import { SourceList } from '../components/SourceList';
 
 import { 
 	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
+	Flex,
 } from '@wordpress/components';
 
 interface SourceIndexPageData {
-	//
+	sources: Array<SourceItem>;
 }
 
 interface SourceIndexPageProps {
@@ -24,56 +22,47 @@ interface SourceIndexPageProps {
 	saving: boolean;
 }
 
-interface User {
-	name: string;
-	id: number;
-}
-
 interface SourceIndexPageState {
-	promiseData: Array<PromiseData>;
+	sourceData: Array<SourceItem>;
 	isCreatePromiseModalOpen: boolean;
 	storingPromise: boolean;
 }
 
 export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
-	@resolve
-	promiseRepository: PromiseRepository;
-	
 	state: SourceIndexPageState = {
-		promiseData: [],
+		sourceData: [],
 		isCreatePromiseModalOpen: false,
 		storingPromise: false,
 	}
 	constructor( props: SourceIndexPageProps ) {
 		super( props );
-		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
-	}
-	
-	componentDidMount() {
-		this.promiseRepository.index().then( ( promiseData: Array<PromiseData> ) => {
-			this.setState( {
-				promiseData: promiseData,
-			} );
-		} );
-	}
-	
-	onPromiseSubmit( params: PromiseStoreParams ) {
-		this.promiseRepository.store( params ).then( result => {
-			window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
-		});
 	}
 	
 	render() {
 		return (
-			<Page title={'Create token promise'}>
-				<Panel>
+			<Page title={'Source addresses'}>
+				<div style={{marginBottom: '8px'}}>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
+				</div>
+				<Panel header="Source actions">
 					<PanelBody>
 						<PanelRow>
-							<Button
-								isPrimary
-								isLarge
-								href='/wp-admin/admin.php?page=tokenpass-source-store'
-							>Register source address</Button>
+							<Flex style={{width: '100%'}}>
+								<Button
+									isPrimary
+									isLarge
+									href='/wp-admin/admin.php?page=tokenpass-source-store'
+								>
+									Register address
+								</Button>
+							</Flex>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+				<Panel header="Registered addresses">
+					<PanelBody>
+						<PanelRow>
+							<SourceList sourceList={this.props.pageData.sources} />
 						</PanelRow>
 					</PanelBody>
 				</Panel>

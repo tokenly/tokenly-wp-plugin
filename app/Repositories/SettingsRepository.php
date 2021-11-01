@@ -14,10 +14,11 @@ class SettingsRepository {
 	}
 
 	public function show() {
-		return $this->option_repository->index( array(
+		$result = $this->option_repository->index( array(
 			'client_id',
 			'client_secret',
 		) );
+		return $result;
 	}
 	
 	public function update( $settings ) {

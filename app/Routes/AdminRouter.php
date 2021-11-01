@@ -148,6 +148,16 @@ class AdminRouter {
 							'capability'  => 'manage_options',
 						),
 					),
+					'source-edit' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'Manage source address',
+							'menu_title'  => 'Manage source',
+							'menu_slug'   => 'source-edit',
+							'callable'   => array( $this->controllers['source'], 'edit' ),
+							'capability'  => 'manage_options',
+						),
+					),
 					'whitelist' => array(
 						'args'      => array(
 							'page_title' => 'Gallery Token Whitelist',

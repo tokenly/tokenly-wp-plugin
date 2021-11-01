@@ -3,13 +3,8 @@
 namespace Tokenly\Wp\Views\Admin;
 
 use Tokenly\Wp\Views\View;
-use Twig\Environment;
 
 class SettingsView extends View {
-	public function __construct( Environment $twig ) {
-		parent::__construct( $twig );
-	}
-
 	public function render( $data ) {
 		$app_homepage_url = $data['app_homepage_url'] ?? null;
 		$client_auth_url = $data['client_auth_url'] ?? null;

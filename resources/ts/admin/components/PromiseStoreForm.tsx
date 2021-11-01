@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { PromiseStoreParams } from '../../interfaces';
+import { PromiseStoreParams, SourceItem } from '../../interfaces';
 import { UserSearchField } from './UserSearchField';
 
 import { 
@@ -8,16 +8,19 @@ import {
 	Spinner,
 	TextControl,
 	TextareaControl,
+	SelectControl
 } from '@wordpress/components';
 
 interface PromiseStoreFormProps {
 	saving: boolean;
 	onSubmit: any;
 	style: any;
+	sources: Array<SourceItem>;
 }
 
 interface PromiseStoreFormState {
 	promise: PromiseStoreParams;
+	sources: Array<string>;
 }
 
 export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseStoreFormState> {
@@ -30,11 +33,18 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 			ref: null,
 			note: null,
 		},
+		sources: [],
 	};
 	constructor( props: PromiseStoreFormProps ) {
 		super( props );
 		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
 		this.onUserChange = this.onUserChange.bind( this );
+		this.state.sources = this.props.sources.map( source => {
+			return {
+				label: source.address,
+				value: source.address,
+			} as any
+		} )
 	}
 	
 	onPromiseSubmit() {
@@ -48,8 +58,8 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	}
 
 	render() {
-		return <div>
-			<form>
+		return (
+			<form style={{width: '100%', maxWidth: '320px'}}>
 				<div>
 					<UserSearchField
 						onChange={ (value: any) => {
@@ -59,10 +69,11 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						} }
 					/>
 				</div>
-				<div style={{maxWidth: "320px"}}>
-					<TextControl
+				<div>
+					<SelectControl
 						label="Source address"
 						value={ this.state.promise.source }
+						options={ this.state.sources as any }
 						onChange={ (value: any) => {
 							const state = Object.assign( {}, this.state.promise );
 							state.source = value;
@@ -122,6 +133,6 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					}
 				</div>
 			</form>
-		</div>
+		);
 	}
 }

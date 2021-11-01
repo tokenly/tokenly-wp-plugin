@@ -62,6 +62,26 @@ export class AdminApiService {
 		});
 	}
 
+	sourceUpdate( address: string, params: SourceData ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', '/source/' + address, params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	sourceDestroy( address: string ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'DELETE', '/source/' + address ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
 	promiseIndex() {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/promise' ).then( result => {

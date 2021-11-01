@@ -31,4 +31,24 @@ export class SourceRepository {
 			} );
 		});
 	}
+
+	update( address: string, params: SourceData ) {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.sourceUpdate( address, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	destroy( address: string ) {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.sourceDestroy( address ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
 }

@@ -4,16 +4,14 @@ namespace Tokenly\Wp\Views\Admin;
 
 use Tokenly\Wp\Views\View;
 
-class DashboardView extends View {
+class SourceEditView extends View {
 	public function render( $data ) {
 		$html = $this->twig->render( 'admin.twig', array(
-			'view' => 'dashboard',
-			'props' => array( 
-				'is_admin' => current_user_can( 'administrator' ),
-			),
+			'view' => 'source-edit',
+			'props' => array(
+				'source' => $data['source'] ?? null,
+			)
 		) );
 		return $html;
 	}
 }
-
-

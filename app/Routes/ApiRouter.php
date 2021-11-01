@@ -148,6 +148,26 @@ class ApiRouter {
 					},
 				),
 			),
+			'source-update' => array(
+				'path' => '/source/(?P<address>[a-zA-Z0-9-]+)',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['source'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'source-destroy' => array(
+				'path' => '/source/(?P<address>[a-zA-Z0-9-]+)',
+				'args' => array(
+					'methods'             => 'DELETE',
+					'callback'            => array( $this->controllers['source'], 'destroy' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'user-index' => array(
 				'path' => '/user',
 				'args' => array(

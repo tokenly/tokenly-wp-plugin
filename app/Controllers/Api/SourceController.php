@@ -12,19 +12,31 @@ class SourceController {
 	}
 	
 	public function index( $request ) {
-		return $this->source_repository->index();
+		$sources = $this->source_repository->index();
+		return $sources;
 	}
 
 	public function store( $request ) {
-		$source_data = $request['source_data'] ?? null;
-		if ( !$source_data ) {
-			return array(
-				'status' => 'Error. Source was not stored.',
-			);
-		}
-		$this->source_repository->store( $source_data );
+		$params = $request->get_params();
+		$source = $this->source_repository->store( $params );
+		return $source;
+	}
+
+	public function update( $request ) {
+		$address = (string) $request['address'];
+		$params = $request->get_params();
+		error_log( print_r( $params, true ) );
+		$source = $this->source_repository->update( $address, $params );
+		return $source;
+	}
+
+	public function destroy( $request ) {
+		$address = (string) $request['address'];
+		$this->source_repository->destroy( $address );
 		return array(
-			'status' => 'Source has been stored successfully.',
+			'status' => "Address successfully destroyed!",
 		);
 	}
+
+
 }

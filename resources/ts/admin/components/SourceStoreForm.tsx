@@ -25,6 +25,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 			assets: null,
 		},
 	};
+	
 	constructor( props: SourceStoreFormProps ) {
 		super( props );
 		this.onSourceSubmit = this.onSourceSubmit.bind( this );

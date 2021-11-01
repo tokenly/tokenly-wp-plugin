@@ -12,13 +12,8 @@ class UserController {
 	}
 	
 	public function index( $request ) {
-		$index_parameters = $request['index_parameters'];
-		if ( $index_parameters ) {
-			$index_parameters = json_decode( $index_parameters, true );
-		} else {
-			$index_parameters = array();
-		}
-		$users = $this->user_repository->index( $index_parameters );
+		$params = $request->get_params();
+		$users = $this->user_repository->index( $params );
 		return $users;
 	}
 

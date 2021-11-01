@@ -17,6 +17,12 @@ export interface SettingsData {
 	client_secret: string;
 }
 
+export interface SourceItem {
+	address: string;
+	type: string;
+	assets: string;
+}
+
 export interface WhitelistItem {
 	address: string;
 	index: string;
