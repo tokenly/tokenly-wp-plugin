@@ -25,7 +25,6 @@ class SourceController {
 	public function update( $request ) {
 		$address = (string) $request['address'];
 		$params = $request->get_params();
-		error_log( print_r( $params, true ) );
 		$source = $this->source_repository->update( $address, $params );
 		return $source;
 	}
@@ -37,6 +36,4 @@ class SourceController {
 			'status' => "Address successfully destroyed!",
 		);
 	}
-
-
 }

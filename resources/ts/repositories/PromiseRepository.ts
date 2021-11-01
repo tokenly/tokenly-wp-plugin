@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { AdminApiService } from '../services/AdminApiService';
-import { PromiseStoreParams } from '../interfaces';
+import { PromiseStoreParams, PromiseUpdateParams, PromiseData } from '../interfaces';
 
 @injectable()
 export class PromiseRepository {
@@ -25,6 +25,26 @@ export class PromiseRepository {
 	store( params: PromiseStoreParams ) {
 		return new Promise( ( resolve, reject ) => {
 			this.adminApiService.promiseStore( params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	update( promiseId: number, params: PromiseUpdateParams ) {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.promiseUpdate( promiseId, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	destroy( promiseId: number ) {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.promiseDestroy( promiseId ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

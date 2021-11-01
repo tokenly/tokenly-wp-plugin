@@ -23,7 +23,7 @@ class MetaRepository {
 
 	public function show( $post_id, $key ) {
 		$key_namespaced = $this->namespace_key( $key );
-		$option = get_post_meta( $post_id, $key_namespaced );
+		$option = get_post_meta( $post_id, $key_namespaced, true );
 		return $option;
 	}
 

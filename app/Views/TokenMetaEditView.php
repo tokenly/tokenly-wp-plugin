@@ -3,17 +3,14 @@
 namespace Tokenly\Wp\Views;
 
 use Tokenly\Wp\Views\View;
-use Twig\Environment;
 
 class TokenMetaEditView extends View {
-	public function __construct( Environment $twig ) {
-		parent::__construct( $twig );
-	}
-
 	public function render( $data ) {
 		$html = $this->twig->render( 'admin.twig', array(
 			'view' => 'token-meta-edit',
-			'props' => $data['props'] ?? null,
+			'props' => array(
+				'meta' => $data['meta'] ?? null,
+			),
 		) );
 		return $html;
 	}

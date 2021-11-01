@@ -3,8 +3,8 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { PromiseRepository } from '../../repositories/PromiseRepository';
-import { PromiseData, PromiseStoreParams } from '../../interfaces';
-import { PromiseStoreForm } from '../components/PromiseStoreForm';
+import { PromiseData } from '../../interfaces';
+import { PromiseList } from '../components/PromiseList';
 
 import { 
 	Button,
@@ -16,7 +16,7 @@ import {
 } from '@wordpress/components';
 
 interface VendorPageData {
-	//
+	promises: Array<PromiseData>;
 }
 
 interface VendorPageProps {
@@ -41,14 +41,6 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 	}
 	constructor( props: VendorPageProps ) {
 		super( props );
-	}
-	
-	componentDidMount() {
-		this.promiseRepository.index().then( ( promiseData: Array<PromiseData> ) => {
-			this.setState( {
-				promiseData: promiseData,
-			} );
-		} );
 	}
 	
 	render() {
@@ -80,7 +72,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				<Panel header="Current promises">
 					<PanelBody>
 						<PanelRow>
-							
+							<PromiseList promises={this.props.pageData.promises} />
 						</PanelRow>
 					</PanelBody>
 				</Panel>

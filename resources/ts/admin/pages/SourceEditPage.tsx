@@ -51,7 +51,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.setState( { saving: true } );
 		this.sourceRepository.update( this.props.pageData.source.address, source ).then( ( result: any ) => {
 			this.setState( { saving: false } );
-			//this.return();
+			this.return();
 		});
 	}
 
@@ -64,6 +64,10 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	}
 	
 	render() {
+		const source = Object.assign( {}, this.props.pageData.source ) as any;
+		if ( source?.assets?.length ) {
+			source.assets = source.assets.join( ', ' );
+		}		
 		return (
 			<Page title={'Manage source address'}>
 				<div style={{marginBottom: '8px'}}>
@@ -79,7 +83,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 									onDelete={ this.onDelete }
 									saving={this.state.saving}
 									deleting={this.state.deleting}
-									sourceData={this.props.pageData.source}
+									sourceData={source}
 								/>
 							</div>
 						</PanelRow>

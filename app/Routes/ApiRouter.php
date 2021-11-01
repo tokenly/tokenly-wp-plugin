@@ -128,6 +128,26 @@ class ApiRouter {
 					},
 				),
 			),
+			'promise-update' => array(
+				'path' => '/promise/(?P<promise>[\d]+)',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['promise'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'promise-destroy' => array(
+				'path' => '/promise/(?P<promise>[\d]+)',
+				'args' => array(
+					'methods'             => 'DELETE',
+					'callback'            => array( $this->controllers['promise'], 'destroy' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'source-index' => array(
 				'path' => '/source',
 				'args' => array(

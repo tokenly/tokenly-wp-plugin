@@ -5219,6 +5219,24 @@ let PromiseRepository = class PromiseRepository {
             });
         });
     }
+    update(promiseId, params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.promiseUpdate(promiseId, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    destroy(promiseId) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.promiseDestroy(promiseId).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
 };
 PromiseRepository = __decorate([
     (0, inversify_1.injectable)(),
@@ -5626,6 +5644,24 @@ let AdminApiService = class AdminApiService {
     promiseStore(params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('POST', '/promise', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    promiseUpdate(promiseId, params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', `/promise/${promiseId}`, params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    promiseDestroy(promiseId) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('DELETE', `/promise/${promiseId}`).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);

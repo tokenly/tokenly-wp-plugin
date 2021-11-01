@@ -7,6 +7,8 @@ import {
 	UserIndexParams,
 	TokenMetaData,
 	PromiseStoreParams,
+	PromiseUpdateParams,
+	PromiseData,
 } from "../interfaces";
 
 declare const wpApiSettings: any;
@@ -95,6 +97,26 @@ export class AdminApiService {
 	promiseStore( params: PromiseStoreParams ) {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'POST', '/promise', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	promiseUpdate( promiseId: number, params: PromiseUpdateParams ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', `/promise/${promiseId}`, params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	promiseDestroy( promiseId: number ) {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'DELETE', `/promise/${promiseId}` ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );

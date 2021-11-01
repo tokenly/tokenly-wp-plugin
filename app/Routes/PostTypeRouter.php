@@ -46,9 +46,17 @@ class PostTypeRouter {
 			$args = $route['post_type']->get_args();
 			register_post_type( $name, $args );
 			add_action( 'edit_form_advanced', $route['edit_callback'] );
-			add_action( 'save_post', function( $post_id, $post, $update ) {
-				
-			}, 10,3 );
 		}
+		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
+	}
+
+	public function on_post_save( $post_id, $post, $update ) {
+		$post_type = $post->post_type;
+		$params = $_POST['tokenly_data'] ?? null;
+		if ( $params ) {
+			$params = wp_unslash( $params );
+			$params = json_decode( $params, true );
+		}
+		call_user_func( $this->routes[ $post_type ]['save_callback'], $post_id, $params );
 	}
 }

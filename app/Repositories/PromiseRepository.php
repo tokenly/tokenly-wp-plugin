@@ -16,8 +16,17 @@ class PromiseRepository {
 		$this->user_repository = $user_repository;
 	}
 	public function index() {
-		$response = $this->client->getPromisedTransactionList();
-		return $response;
+		$promises = $this->client->getPromisedTransactionList();
+		return $promises;
+	}
+
+	public function show( $promise_id ) {
+		$promise = $this->client->getPromisedTransaction( $promise_id );
+		return $promise;
+	}
+
+	public function update( $promise_id, $params ) {
+		$response = $this->client->updatePromisedTransaction( $promise_id, $params );
 	}
 	
 	public function store( $promise ) {
@@ -28,7 +37,7 @@ class PromiseRepository {
 				$destination = 'user:' . $tokenpass_user['username'] ?? null;
 			}
 		}
-		$response = $this->client->promiseTransaction(
+		$this->client->promiseTransaction(
 			$promise['source'] ?? null,
 			$destination,
 			$promise['asset'] ?? null,
@@ -42,5 +51,9 @@ class PromiseRepository {
 			true,
 			$promise['note'] ?? null
 		);
+	}
+
+	public function destroy( $promise_id ) {
+		$this->client->deletePromisedTransaction( $promise_id );
 	}
 }

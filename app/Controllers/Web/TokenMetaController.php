@@ -21,7 +21,7 @@ class TokenMetaController extends WebController {
 	
 	public function edit() {
 		$render = $this->token_meta_edit_view->render( array(
-			'props' => $this->token_meta_repository->show( get_the_ID() ),
+			'meta' => $this->token_meta_repository->show( get_the_ID() ),
 		) );
 		echo $render;
 	}

@@ -8,6 +8,7 @@ import VendorPage from './admin/pages/VendorPage';
 import ConnectionPage from './admin/pages/ConnectionPage';
 import WhitelistPage from './admin/pages/WhitelistPage';
 import PromiseStorePage from './admin/pages/PromiseStorePage';
+import PromiseEditPage from './admin/pages/PromiseEditPage';
 import SourceIndexPage from './admin/pages/SourceIndexPage';
 import SourceStorePage from './admin/pages/SourceStorePage';
 import SourceEditPage from './admin/pages/SourceEditPage';
@@ -52,6 +53,7 @@ class AdminApp extends App {
 			'vendor':  VendorPage,
 			'whitelist':  WhitelistPage,
 			'promise-store': PromiseStorePage,
+			'promise-edit': PromiseEditPage,
 			'source-index': SourceIndexPage,
 			'source-store': SourceStorePage,
 			'source-edit' : SourceEditPage,

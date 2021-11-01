@@ -20,6 +20,12 @@ export interface SettingsData {
 export interface SourceItem {
 	address: string;
 	type: string;
+	assets: Array<string>;
+}
+
+export interface SourceItemStore {
+	address: string;
+	type: string;
 	assets: string;
 }
 
@@ -47,10 +53,6 @@ export interface UserSuggestion {
 	name: string;
 }
 
-export interface PromiseData {
-	//
-}
-
 // API Interfaces
 
 export interface UserShowParams {
@@ -68,4 +70,29 @@ export interface PromiseStoreParams {
 	quantity: number;
 	ref: string;
 	note: string;
+}
+
+export interface PromiseUpdateParams {
+	quantity: number;
+	expiration: Date;
+	txid: string;
+	fingerprint: number;
+	ref: string;
+	note: string;
+}
+
+export interface PromiseData {
+	source: string;
+	destination: string;
+	asset: string;
+	quantity: number;
+	ref: string;
+	txid: string;
+	fingerprint: string;
+	expiration: number;
+	created_at: Date;
+	updated_at:	Date;
+	pseudo: boolean;
+	note: string;
+	promise_id: number;
 }

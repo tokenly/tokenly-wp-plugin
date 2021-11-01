@@ -4,13 +4,13 @@ namespace Tokenly\Wp\Views\Admin;
 
 use Tokenly\Wp\Views\View;
 
-class VendorView extends View {
+class PromiseEditView extends View {
 	public function render( $data ) {
 		$html = $this->twig->render( 'admin.twig', array(
-			'view'  => 'vendor',
+			'view'  => 'promise-edit',
 			'props' => array(
-				'promises' => $data['promises'],
-			)
+				'promise' => $data['promise'] ?? null,
+			),
 		) );
 		return $html;
 	}

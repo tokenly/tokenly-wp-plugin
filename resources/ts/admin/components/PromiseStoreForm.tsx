@@ -44,7 +44,11 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 				label: source.address,
 				value: source.address,
 			} as any
-		} )
+		} );
+		const defaultSource: any = this.state.sources[0] ?? null;
+		if ( defaultSource ) {
+			this.state.promise.source = defaultSource?.value ?? null;
+		}
 	}
 	
 	onPromiseSubmit() {

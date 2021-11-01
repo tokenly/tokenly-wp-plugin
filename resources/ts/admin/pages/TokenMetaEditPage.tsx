@@ -16,11 +16,7 @@ import {
 } from '@wordpress/element';
 
 interface TokenMetaEditPageData {
-	//
-}
-
-interface TokenMeta {
-	asset: string,
+	meta: TokenMetaData;
 }
 
 interface TokenMetaEditPageProps {
@@ -29,7 +25,7 @@ interface TokenMetaEditPageProps {
 
 interface TokenMetaEditPageState {
 	storingSource: boolean;
-	tokenMeta: TokenMeta;
+	meta: TokenMetaData;
 	postId: number;
 }
 
@@ -42,32 +38,17 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 
 	state: TokenMetaEditPageState = {
 		storingSource: false,
-		tokenMeta: {
-			asset: '',
-		},
+		meta: {} as any,
 		postId: null,
 	}
 	
 	constructor( props: TokenMetaEditPageProps ) {
 		super( props );
+		console.log(this.props.pageData);
 		const urlParams = new URLSearchParams(window.location.search);
 		const postId = parseInt( urlParams.get( 'post' ) );
 		this.state.postId = postId;
-		console.log(wp);
-	}
-
-	updateAsset( value: any ) {
-		const state = Object.assign( {}, this.state );
-		state.tokenMeta.asset = value;
-		this.setState( state );
-	}
-
-	componentDidMount() {
-		// this.tokenMetaRepository.show( this.state.postId ).then( ( tokenMeta: TokenMetaData ) => {
-		// 	this.setState( {
-		// 		tokenMeta: tokenMeta,
-		// 	} );
-		// } );
+		this.state.meta = Object.assign( this.state.meta, this.props.pageData.meta );
 	}
 
 	render() {
@@ -78,10 +59,12 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 						<PanelRow>
 							<div style={{width: '100%'}}>
 								<TextControl
-									value={this.state.tokenMeta.asset}
+									value={this.state.meta.asset}
 									label="Asset"
 									onChange={( value: any ) => {
-										this.updateAsset( value );
+										const state = Object.assign( {}, this.state.meta );
+										state.asset = value;
+										this.setState( { meta: state } );
 									}}
 									style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
 								/>
@@ -90,7 +73,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.tokenMeta as any ) } />
+				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.meta as any ) } />
 			</Fragment>
 		);
 	}

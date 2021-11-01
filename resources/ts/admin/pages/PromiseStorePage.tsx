@@ -64,6 +64,9 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 		const sources = Object.keys( this.props.pageData.sources ).map( ( key: any ) => this.props.pageData.sources[key] ) as any;
 		return (
 			<Page title={'Create token promise'}>
+				<div style={{marginBottom: '8px'}}>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
+				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>

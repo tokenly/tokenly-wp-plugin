@@ -33,17 +33,19 @@ class SourceRepository {
 		$hash = hash( 'sha256', $client_id );
 		$address = $source['address'] ?? null;
 		$proof =  $address . '_' . $hash;
+		$assets = $source['assets'] ?? null;
+		error_log(print_r( $assets, true ));
 		$result = $this->client->registerProvisionalSource(
 			$source['address'] ?? null,
 			'bitcoin',
 			$proof,
-			$source['assets'] ?? null
+			$assets
 		);
 		return $result;
 	}
 
 	public function update( $address, $params ) {
-		//
+		return $this->store( $params );
 	}
 
 	public function destroy( $address ) {

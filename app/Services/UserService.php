@@ -59,21 +59,36 @@ class UserService {
 	}
 
 	public function embed_token_meta( $balances ) {
-		$balances = array_map( function( $balance ) {
-			$token_meta_post = $this->token_meta_repository->show( array(
-				'name' => $balance['name'] ?? null,
-			) );
-			if ( $token_meta_post ) {
-				$description = get_the_excerpt( $token_meta_post );
-				$image = get_the_post_thumbnail( $token_meta_post, 'full' );
-				$balance['meta'] = array(
-					'description' => $description,
-					'image'       => $image,
-				);
-			}
-			return $balance;
+		$assets = array_map( function( $balance ) {
+			return $balance['name'] ?? null;
 		}, $balances );
-		return $balances;
+		$query_meta = $this->token_meta_repository->index( array(
+			'assets' => $assets,
+		) );
+		$balances_keyed = array();
+		foreach( $balances as $balance ) {
+			$balances_keyed[ $balance['name'] ] = $balance;
+		}
+		$meta = array();
+		while ( $query_meta->have_posts() ) {
+			$query_meta->the_post();
+			$id = get_the_ID();
+			$meta_item = array();
+			$meta_item['name'] = get_the_title();
+			//error_log( $meta_item['name'] );
+			$meta_item['image'] = get_the_post_thumbnail( $id, 'full' );
+			$meta_item['description'] = get_the_excerpt();
+			$asset = get_post_meta( $id, 'tokenly_asset' );
+			if ( $asset ) {
+				$asset = $asset[0] ?? null;
+				$meta_item['asset'] = $asset;
+				if ( $balances_keyed[ $asset ] ?? null ) {
+					$balances_keyed[ $asset ]['meta'] = $meta_item;
+				}
+			}
+		}
+		// error_log( print_r( $assets, true ) );
+		return $balances_keyed;
 	}
 
 	public function get_inventory( $user_id ) {
