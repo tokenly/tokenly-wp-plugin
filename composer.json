@@ -17,14 +17,6 @@
 	"repositories": [
 		{
 			"type": "path",
-			"url": "libs/tokenly/hmac-auth"
-		},
-		{
-			"type": "path",
-			"url": "libs/tokenly/api-client"
-		},
-		{
-			"type": "path",
 			"url": "libs/tokenly/tokenpass-client"
 		}
 	],

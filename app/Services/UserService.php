@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Services;
 
 use Tokenly\TokenpassClient\TokenpassAPI;
 use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
+use Tokenly\Wp\Repositories\WhitelistRepository;
 
 class UserService {
 	public $client;
@@ -11,10 +12,12 @@ class UserService {
 
 	public function __construct(
 		TokenpassAPI $client,
-		TokenMetaRepository $token_meta_repository
+		TokenMetaRepository $token_meta_repository,
+		WhitelistRepository $whitelist_repository
 	) {
 		$this->client = $client;
 		$this->token_meta_repository = $token_meta_repository;
+		$this->whitelist_repository = $whitelist_repository;
 	}
 
 	public function get_by_uuid( $uuid ) {
@@ -37,13 +40,13 @@ class UserService {
 	}
 	
 	public function filter_balances( $balances ) {
-		$settings = get_option( 'tokenpass_whitelist', array() );
-		$use_whitelist = $settings['use_whitelist'] ?? null;
-		if ( $use_whitelist && $use_whitelist === true ) {
-			$whitelist = $settings['whitelist'] ?? null;
+		$whitelist = $this->whitelist_repository->show();
+		$use_whitelist = $whitelist['use_whitelist'] ?? null;
+		if ( $use_whitelist && $use_whitelist == true ) {
+			$whitelist_rules = $whitelist['whitelist'] ?? null;
 			$balances_filtered = array();
-			if ( $whitelist ) {
-				foreach ( $whitelist as $whitelist_rule ) {
+			if ( $whitelist_rules ) {
+				foreach ( $whitelist_rules as $whitelist_rule ) {
 					$address = $whitelist_rule['address'] ?? null;
 					$index = $whitelist_rule['index'] ?? null;
 					$whitelist_rule = implode( ':', array_filter( array( $address, $index ) ) );
@@ -75,7 +78,6 @@ class UserService {
 			$id = get_the_ID();
 			$meta_item = array();
 			$meta_item['name'] = get_the_title();
-			//error_log( $meta_item['name'] );
 			$meta_item['image'] = get_the_post_thumbnail( $id, 'full' );
 			$meta_item['description'] = get_the_excerpt();
 			$asset = get_post_meta( $id, 'tokenly_asset' );
@@ -87,7 +89,6 @@ class UserService {
 				}
 			}
 		}
-		// error_log( print_r( $assets, true ) );
 		return $balances_keyed;
 	}
 

@@ -457,15 +457,17 @@ class TokenpassAPI
             $params['type'] = $chain;
             $params['proof'] = $proof;
             $params['assets'] = $assets;
-            // $valid_extra = array('assign_user', 'assign_user_hash', 'assign_user_label');
-            // foreach($valid_extra as $f){
-            //     if(isset($extra_opts[$f])){
-            //         $params[$f] = $extra_opts[$f];
-            //     }
-            // }
+			error_log(print_r( $params, true ));
+            $valid_extra = array('assign_user', 'assign_user_hash', 'assign_user_label');
+            foreach($valid_extra as $f){
+                if(isset($extra_opts[$f])){
+                    $params[$f] = $extra_opts[$f];
+                }
+            }
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/register', $params);
         }
         catch (TokenpassAPIException $e){
+			error_log($e);
             self::$errors[] = $e->getMessage();
             throw new Exception($e->getMessage());
         }

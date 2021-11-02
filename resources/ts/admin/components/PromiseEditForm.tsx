@@ -15,6 +15,7 @@ interface PromiseEditFormProps {
 	deleting: boolean;
 	onSave: any;
 	onDelete: any;
+	onCancel: any;
 	promise: PromiseData;
 }
 
@@ -30,6 +31,7 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onDelete = this.onDelete.bind( this );
+		this.onCancel = this.onCancel.bind( this );
 		this.state.promise = {
 			quantity: this.props.promise.quantity,
 			expiration: null,
@@ -46,6 +48,10 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 
 	onDelete() {
 		this.props.onDelete();
+	}
+
+	onCancel() {
+		this.props.onCancel();
 	}
 
 	render() {
@@ -113,7 +119,6 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 					<Flex justify="flex-start" style={ { marginTop: '12px' } }>
 						<Button
 							isPrimary
-							isLarge
 							disabled={ this.props.saving }
 							onClick={ () => {
 								this.onSave();
@@ -123,13 +128,21 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 						</Button>
 						<Button
 							isSecondary
-							isLarge
 							disabled={ this.props.deleting }
 							onClick={ () => {
 								this.onDelete();
 							}}
 						>
-							Cancel promise
+							Delete promise
+						</Button>
+						<Button
+							isTertiary
+							disabled={ this.props.deleting }
+							onClick={ () => {
+								this.onCancel();
+							}}
+						>
+							Cancel
 						</Button>
 					</Flex>
 				</div>

@@ -18,7 +18,7 @@ class SourceRepository {
 
 	public function show( $address ) {
 		$sources = $this->index();
-		$source = $sources[$address] ?? null;
+		$source = $sources[ $address ] ?? null;
 		return $source;
 	}
 
@@ -32,15 +32,10 @@ class SourceRepository {
 		$client_id = $settings['client_id'] ?? null;
 		$hash = hash( 'sha256', $client_id );
 		$address = $source['address'] ?? null;
+		$type = $source['type'] ?? null;
 		$proof =  $address . '_' . $hash;
 		$assets = $source['assets'] ?? null;
-		error_log(print_r( $assets, true ));
-		$result = $this->client->registerProvisionalSource(
-			$source['address'] ?? null,
-			'bitcoin',
-			$proof,
-			$assets
-		);
+		$result = $this->client->registerProvisionalSource( $address, $type, $proof, $assets );
 		return $result;
 	}
 

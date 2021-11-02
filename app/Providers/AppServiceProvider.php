@@ -2,8 +2,6 @@
 
 namespace Tokenly\Wp\Providers;
 
-use Tokenly\Wp\Services\AdminService;
-use Tokenly\Wp\Services\FrontendService;
 use Tokenly\Wp\Services\AuthService;
 
 class AppServiceProvider {
@@ -12,12 +10,8 @@ class AppServiceProvider {
 	public $auth_service;
 
 	public function __construct(
-		FrontendService $frontend_service,
-		AdminService $admin_service,
 		AuthService $auth_service
 	) {
-		$this->frontend_service = $frontend_service;
-		$this->admin_service = $admin_service;
 		$this->auth_service = $auth_service;
 	}
 
@@ -25,12 +19,26 @@ class AppServiceProvider {
 		register_activation_hook( __FILE__, array( self::class, 'on_activation' ) );
 		register_uninstall_hook( __FILE__, array( self::class, 'on_uninstall' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this->admin_service, 'enqueue_scripts' ) );
-		add_action( 'login_enqueue_scripts', array( $this->admin_service, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		add_action( 'login_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this->frontend_service, 'enqueue_scripts' ) );
 		add_action( 'login_footer', array( $this->auth_service, 'embed_tokenpass_login' ) );
 	}
 
+	public function enqueue_frontend_scripts() {
+		wp_register_script( 'tokenly-frontend', plugins_url( '../../build/frontend.js', __FILE__ ), array( 'wp-api' ), null, true );
+		wp_enqueue_script( 'tokenly-frontend' );
+		wp_register_style( 'tokenly-frontend', plugins_url( '../../build/frontend.css', __FILE__ ) );
+		wp_enqueue_style( 'tokenly-frontend' );
+	}
+
+	public function enqueue_admin_scripts() {
+		wp_register_script( 'tokenly-admin', plugins_url( '../../build/admin.js', __FILE__ ), array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), null, true );
+		wp_enqueue_script( 'tokenly-admin' );
+		wp_register_style( 'tokenly-admin', plugins_url( '../../build/admin.css', __FILE__ ), array( 'wp-components' ) );
+		wp_enqueue_style( 'tokenly-admin' );
+	}
+	
 	public static function on_activation() {
 		flush_rewrite_rules();
 	}

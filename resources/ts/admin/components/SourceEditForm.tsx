@@ -14,6 +14,7 @@ interface SourceEditFormProps {
 	deleting: boolean;
 	onSave: any;
 	onDelete: any;
+	onCancel: any;
 	sourceData: SourceData;
 }
 
@@ -43,6 +44,10 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 		this.props.onDelete();
 	}
 
+	onCancel() {
+		this.props.onCancel();
+	}
+
 	render() {
 		return <div>
 			<form>
@@ -50,8 +55,7 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 					<div>
 						<TextControl
 							label="Assets"
-							// @ts-ignore
-							hint="Comma-separated values"
+							help="Comma-separated values"
 							value={ this.state.source.assets }
 							onChange={ (value: any) => {
 								const state = Object.assign( {}, this.state.source );
@@ -63,7 +67,6 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 					<Flex justify="flex-start" style={ { marginTop: '12px' } }>
 						<Button
 							isPrimary
-							isLarge
 							disabled={ this.props.saving }
 							onClick={ () => {
 								this.onSave();
@@ -73,13 +76,21 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 						</Button>
 						<Button
 							isSecondary
-							isLarge
 							disabled={ this.props.deleting }
 							onClick={ () => {
 								this.onDelete();
 							}}
 						>
 							Delete address
+						</Button>
+						<Button
+							isTertiary
+							disabled={ this.props.deleting }
+							onClick={ () => {
+								this.onCancel();
+							}}
+						>
+							Cancel
 						</Button>
 					</Flex>
 				</div>

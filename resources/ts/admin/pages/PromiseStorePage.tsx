@@ -42,22 +42,22 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 	constructor( props: PromiseStorePageProps ) {
 		super( props );
-		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
-		
+		this.onSubmit = this.onSubmit.bind( this );
+		this.onCancel = this.onCancel.bind( this );
 	}
 	
-	componentDidMount() {
-		this.promiseRepository.index().then( ( promiseData: Array<PromiseData> ) => {
-			this.setState( {
-				promiseData: promiseData,
-			} );
-		} );
+	return() {
+		window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
 	}
-	
-	onPromiseSubmit( params: PromiseStoreParams ) {
+
+	onSubmit( params: PromiseStoreParams ) {
 		this.promiseRepository.store( params ).then( result => {
-			window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+			this.return();
 		});
+	}
+
+	onCancel() {
+		this.return();
 	}
 	
 	render() {
@@ -71,7 +71,8 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 					<PanelBody>
 						<PanelRow>
 							<PromiseStoreForm
-								onSubmit={ this.onPromiseSubmit }
+								onSubmit={ this.onSubmit }
+								onCancel={ this.onCancel }
 								saving={ this.state.storingPromise }
 								style={ { marginBottom: '12px' } }
 								sources={ sources }

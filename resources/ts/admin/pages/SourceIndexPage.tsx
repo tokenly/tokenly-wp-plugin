@@ -24,14 +24,12 @@ interface SourceIndexPageProps {
 
 interface SourceIndexPageState {
 	sourceData: Array<SourceItem>;
-	isCreatePromiseModalOpen: boolean;
 	storingPromise: boolean;
 }
 
 export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
 	state: SourceIndexPageState = {
 		sourceData: [],
-		isCreatePromiseModalOpen: false,
 		storingPromise: false,
 	}
 	constructor( props: SourceIndexPageProps ) {
@@ -40,7 +38,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	
 	render() {
 		return (
-			<Page title={'Source addresses'}>
+			<Page title={'Sources'}>
 				<div style={{marginBottom: '8px'}}>
 					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
 				</div>
@@ -53,16 +51,16 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 									isLarge
 									href='/wp-admin/admin.php?page=tokenpass-source-store'
 								>
-									Register address
+									Register source
 								</Button>
 							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel header="Registered addresses">
+				<Panel header="Registered sources">
 					<PanelBody>
 						<PanelRow>
-							<SourceList sourceList={this.props.pageData.sources} />
+							<SourceList sourceList={ this.props.pageData.sources } />
 						</PanelRow>
 					</PanelBody>
 				</Panel>

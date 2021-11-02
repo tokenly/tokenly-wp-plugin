@@ -1,17 +1,15 @@
 <?php
 
-namespace Tokenly\Wp\Repositories\General;
-
 /**
- * Helps to prefix all post meta being retrieved and saved by the app.
+ * Helps to prefix all post meta being retrieved and saved by the plugin.
  */
 
-class MetaRepository {
-	public $namespace = 'tokenly';
+namespace Tokenly\Wp\Repositories\General;
 
-	public function namespace_key( $key ) {
-		return $this->namespace . '_' . $key;
-	}
+use Tokenly\Wp\Traits\NamespaceableTrait;
+
+class MetaRepository {
+	use NamespaceableTrait;
 
 	public function index( $post_id, $keys ) {
 		$options = array();

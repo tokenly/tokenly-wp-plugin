@@ -41,6 +41,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onDelete = this.onDelete.bind( this );
+		this.onCancel = this.onCancel.bind( this );
 	}
 
 	return() {
@@ -62,6 +63,10 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 			this.return();
 		});
 	}
+
+	onCancel() {
+		this.return();
+	}
 	
 	render() {
 		const source = Object.assign( {}, this.props.pageData.source ) as any;
@@ -69,10 +74,10 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 			source.assets = source.assets.join( ', ' );
 		}		
 		return (
-			<Page title={'Manage source address'}>
-				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-source-index'>Back to source list</a>
-					<div><span>Address: </span><strong>{this.props.pageData.source.address}</strong></div>
+			<Page title={ 'Manage source address' }>
+				<div style={ { marginBottom: '8px' } }>
+					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenpass-source-index'>Back to source list</a>
+					<div><span>Address: </span><strong>{ this.props.pageData.source.address }</strong></div>
 				</div>
 				<Panel>
 					<PanelBody>
@@ -81,9 +86,10 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 								<SourceEditForm
 									onSave={ this.onSave }
 									onDelete={ this.onDelete }
-									saving={this.state.saving}
-									deleting={this.state.deleting}
-									sourceData={source}
+									onCancel={ this.onCancel }
+									saving={ this.state.saving }
+									deleting={ this.state.deleting }
+									sourceData={ source }
 								/>
 							</div>
 						</PanelRow>

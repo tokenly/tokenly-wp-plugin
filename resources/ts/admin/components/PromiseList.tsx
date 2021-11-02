@@ -14,6 +14,7 @@ import {
 
 interface PromiseListProps {
 	promises: Array<PromiseData>;
+	onDetails: any;
 }
 
 interface PromiseListState {
@@ -24,6 +25,10 @@ export class PromiseList extends Component<PromiseListProps, PromiseListState> {
 
 	constructor( props: PromiseListProps ) {
 		super( props );
+	}
+
+	onDetails( index: number ) {
+		this.props.onDetails( index );
 	}
 
 	render() {
@@ -48,10 +53,11 @@ export class PromiseList extends Component<PromiseListProps, PromiseListState> {
 						<CardFooter>
 							<Flex justify="flex-start">
 								<Button
-									disabled
 									isSecondary
 									isSmall
-									href={ `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${ promiseItem.promise_id }` }
+									onClick={() => {
+										this.onDetails( i );
+									}}
 								>
 									Details
 								</Button>

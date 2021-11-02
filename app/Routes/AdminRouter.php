@@ -12,13 +12,15 @@ use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
 use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
 use Tokenly\Wp\Controllers\Web\Admin\SourceController;
 
+/**
+ * Manages routing for the WordPress admin pages
+ */
 class AdminRouter {
 	public $routes;
 	public $redirects = array();
 
 	public function __construct(
 		AuthService $auth_service,
-		
 		DashboardController $dashboard_controller,
 		VendorController $vendor_controller,
 		WhitelistController $whitelist_controller,
@@ -45,6 +47,10 @@ class AdminRouter {
 		add_action( 'admin_print_scripts', array( $this,  'add_redirects' ) );
 	}
 
+	/**
+	 * Redirects some admin menu pages
+	 * @return void
+	 */
 	public function add_redirects() {
 		$id = get_current_user_id();
 		echo "	

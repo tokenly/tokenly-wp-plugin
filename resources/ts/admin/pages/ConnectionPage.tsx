@@ -3,6 +3,7 @@ import * as React from 'react';
 import Page from './Page';
 import { AuthService } from '../../services/AuthService';
 import { Component } from 'react';
+import { StatusData } from '../../interfaces';
 
 import { 
 	Button,
@@ -12,46 +13,33 @@ import {
 	Flex,
 } from '@wordpress/components';
 
+
+interface ConnectionPageData {
+	status: boolean;
+}
+
 interface ConnectionPageProps {
-	//
+	pageData: ConnectionPageData;
 }
 
 interface ConnectionPageState {
-	status: boolean;
-}
-
-interface StatusResponse {
-	status: boolean;
+	//
 }
 
 export default class ConnectionPage extends Component<ConnectionPageProps, ConnectionPageState> {
 	@resolve
     authService: AuthService;
 	
-	state: ConnectionPageState = {
-		status: false,
-	};
 	constructor( props: ConnectionPageProps ) {
 		super( props );
 	}
 	
-	componentDidMount() {
-		this.authService.getStatus().then( ( data: StatusResponse ) => {
-			this.setState( {
-				status: data?.status,
-			} );
-		} );
-	}
-	
 	getStatusText() {
-		if ( !this.state.status ) {
-			return;
+		let status = 'Not connected';
+		if ( this.props.pageData?.status === true ) {
+			status = 'Connected';
 		}
-		if ( this.state.status === true ) {
-			return 'Connected';
-		} else {
-			return 'Not connected';
-		}
+		return status;
 	}
 
 	render() {
@@ -61,15 +49,14 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<span>Connection status: </span><span><strong>{this.getStatusText()}</strong></span>
+								<span>Status: </span><span><strong>{this.getStatusText()}</strong></span>
 							</div>
 						</PanelRow>
 						<PanelRow>
 							<Flex justify='flex-start'>
 								<Button
 									isPrimary
-									isLarge
-									disabled={ this.state.status }
+									disabled={ this.props.pageData.status }
 									onClick={ () => {
 										this.authService.connect();
 									}}
@@ -78,8 +65,7 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 								</Button>
 								<Button
 									isPrimary
-									isLarge
-									disabled={ !this.state.status }
+									disabled={ !this.props.pageData.status }
 									onClick={ () => {
 										this.authService.disconnect();
 									}}

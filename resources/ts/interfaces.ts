@@ -23,7 +23,7 @@ export interface SourceItem {
 	assets: Array<string>;
 }
 
-export interface SourceItemStore {
+export interface SourceStoreParams {
 	address: string;
 	type: string;
 	assets: string;
@@ -95,4 +95,8 @@ export interface PromiseData {
 	pseudo: boolean;
 	note: string;
 	promise_id: number;
+}
+
+export interface StatusData {
+	status: boolean;
 }

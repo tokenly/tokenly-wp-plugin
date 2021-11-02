@@ -37,12 +37,16 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	}
 	constructor( props: SourceIndexPageProps ) {
 		super( props );
-		this.onSourceSubmit = this.onSourceSubmit.bind( this );
+		this.onSubmit = this.onSubmit.bind( this );
+	}
+
+	return() {
+		window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
 	}
 	
-	onSourceSubmit( promise: SourceData ) {
+	onSubmit( promise: SourceData ) {
 		this.sourceRepository.store( promise ).then( ( result: any ) => {
-			window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+			this.return();
 		});
 	}
 	
@@ -55,15 +59,12 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<div>
-								<div>
-									<SourceStoreForm
-										onSubmit={ this.onSourceSubmit }
-										saving={ this.state.storingSource }
-										style={ { marginBottom: '12px' } }
-									/>
-								</div>
-							</div>
+							<SourceStoreForm
+								onSubmit={ this.onSubmit }
+								onCancel={ this.return }
+								saving={ this.state.storingSource }
+								style={ { marginBottom: '12px' } }
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

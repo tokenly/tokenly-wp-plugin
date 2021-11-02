@@ -8,12 +8,14 @@ import {
 	Spinner,
 	TextControl,
 	TextareaControl,
-	SelectControl
+	SelectControl,
+	Flex,
 } from '@wordpress/components';
 
 interface PromiseStoreFormProps {
 	saving: boolean;
 	onSubmit: any;
+	onCancel: any;
 	style: any;
 	sources: Array<SourceItem>;
 }
@@ -37,7 +39,8 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	};
 	constructor( props: PromiseStoreFormProps ) {
 		super( props );
-		this.onPromiseSubmit = this.onPromiseSubmit.bind( this );
+		this.onSubmit = this.onSubmit.bind( this );
+		this.onCancel = this.onCancel.bind( this );
 		this.onUserChange = this.onUserChange.bind( this );
 		this.state.sources = this.props.sources.map( source => {
 			return {
@@ -51,8 +54,12 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		}
 	}
 	
-	onPromiseSubmit() {
+	onSubmit() {
 		this.props.onSubmit( this.state.promise );
+	}
+
+	onCancel() {
+		this.props.onCancel( this.state.promise );
 	}
 	
 	onUserChange( userId: number ) {
@@ -86,6 +93,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					/>
 					<TextControl
 						label="Asset ID"
+						help="Token to promise"
 						value={ this.state.promise.asset }
 						onChange={ (value: any) => {
 							const state = Object.assign( {}, this.state.promise );
@@ -95,6 +103,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					/>
 					<TextControl
 						label="Quantity"
+						help="Amount, in satoshis"
 						type="number"
 						value={ this.state.promise.quantity }
 						onChange={ (value: any) => {
@@ -105,6 +114,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					/>
 					<TextControl
 						label="Ref"
+						help="Extra reference data"
 						value={ this.state.promise.ref }
 						onChange={ (value: any) => {
 							const state = Object.assign( {}, this.state.promise );
@@ -114,6 +124,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					/>
 					<TextareaControl
 						label="Note"
+						help="Note to display to user"
 						value={ this.state.promise.note }
 						onChange={ (value: any) => {
 							const state = Object.assign( {}, this.state.promise );
@@ -121,20 +132,31 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 							this.setState( { promise: state } );
 						} }
 					/>
-					<Button
-						isPrimary
-						isLarge
-						disabled={ this.props.saving }
-						onClick={ () => {
-							this.onPromiseSubmit();
-						}}
-						style={ { marginTop: '12px' } }
-					>
-						Create transaction
-					</Button>
-					{this.props.saving === true &&
-						<Spinner/>
-					}
+					<Flex justify="flex-start">
+						<Button
+							isPrimary
+							disabled={ this.props.saving }
+							onClick={ () => {
+								this.onSubmit();
+							}}
+							style={ { marginTop: '12px' } }
+						>
+							Create transaction
+						</Button>
+						{this.props.saving === true &&
+							<Spinner/>
+						}
+						<Button
+							isTertiary
+							disabled={ this.props.saving }
+							onClick={ () => {
+								this.onCancel();
+							}}
+							style={ { marginTop: '12px' } }
+						>
+							Cancel
+						</Button>
+					</Flex>
 				</div>
 			</form>
 		);

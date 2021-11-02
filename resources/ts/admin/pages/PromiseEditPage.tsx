@@ -62,6 +62,10 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 			this.return();
 		});
 	}
+
+	onCancel() {
+		this.return();
+	}
 	
 	render() {
 		return (
@@ -77,6 +81,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 								<PromiseEditForm
 									onSave={ this.onSave }
 									onDelete={ this.onDelete }
+									onCancel={ this.onCancel }
 									saving={this.state.saving}
 									deleting={this.state.deleting}
 									promise={this.props.pageData.promise}

@@ -3,14 +3,18 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\Wp\Repositories\General\UserMetaRepository;
 
 class UserRepository {
 	public $client;
+	public $user_meta_repository;
 	
 	public function __construct(
-		TokenpassAPI $client
+		TokenpassAPI $client,
+		UserMetaRepository $user_meta_repository
 	) {
 		$this->client = $client;
+		$this->user_meta_repository = $user_meta_repository;
 	}
 
 	public function index( $params ) {
@@ -51,7 +55,7 @@ class UserRepository {
 	}
 
 	public function show( $user_id ) {
-		$oauth_token = get_user_meta( $user_id, $key = 'tokenly_oauth_token' );
+		$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
 		if ( !$oauth_token ) {
 			return;
 		}

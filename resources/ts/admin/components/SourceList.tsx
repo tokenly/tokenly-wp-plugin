@@ -59,11 +59,15 @@ export class SourceList extends Component<SourceListProps, SourceListState> {
 					</Card>
 				</div>
 			);
-		}
-		);
+		} );
 		return (
-			// @ts-ignore
-			<Flex style={ { width: '100%' } } direction="column">{ listItems }</Flex> 
+			<div style={ { width: '100%' } }>
+				{ listItems.length > 0
+					//@ts-ignore
+					? <Flex direction="column" style={ { width: '100%' } }>{ listItems }</Flex>
+					: <div style={ { opacity: 0.5 } }>There are no registered sources</div>
+				}
+			</div>
 		);
 	}
 }

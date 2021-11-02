@@ -4,9 +4,13 @@ namespace Tokenly\Wp\Services;
 
 use Tokenly\Wp\Services\UserService;
 use Tokenly\Wp\Repositories\SettingsRepository;
+use Tokenly\Wp\Repositories\General\UserMetaRepository;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\TokenpassClient\TokenpassAPI;
 
+/**
+ * Manages connection to Tokenpass (OAuth)
+ */
 class AuthService {
 	public $client;
 	public $user_service;
@@ -17,12 +21,14 @@ class AuthService {
 		TokenpassAPI $client,
 		UserService $user_service,
 		ButtonLoginComponent $button_login_component,
-		SettingsRepository $settings_repository
+		SettingsRepository $settings_repository,
+		UserMetaRepository $user_meta_repository
 	) {
 		$this->client = $client;
 		$this->user_service = $user_service;
 		$this->button_login_component = $button_login_component;
 		$this->settings_repository = $settings_repository;
+		$this->user_meta_repository = $user_meta_repository;
 	}
 
 	/**
@@ -56,6 +62,11 @@ class AuthService {
 		return $valid;
 	}
 
+	/**
+	 * Check if the user is allowed to proceed with login
+	 * @param array $tokenpass_user
+	 * @return boolean
+	 */
 	public function can_social_login( $tokenpass_user ) {
 		$email = $tokenpass_user['email'] ?? null;
 		$email_is_confirmed = $tokenpass_user['email_is_confirmed'] ?? null;
@@ -65,6 +76,11 @@ class AuthService {
 		return true;
 	}
 
+	/**
+	 * Searches for WordPress user using Tokenpass user data
+	 * @param array $tokenpass_user
+	 * @return WP_User
+	 */
 	public function find_existing_user( $tokenpass_user ) {
 		$uuid = $tokenpass_user['id'] ?? null;
 		$email = $tokenpass_user['email'] ?? null;
@@ -78,6 +94,12 @@ class AuthService {
 		return $user;
 	}
 
+	/**
+	 * Generates a new WordPress user using Tokenpass data
+	 * @param array $tokenpass_user
+	 * @return WP_User 
+	 */
+
 	public function create_user_from_tokenpass_user( $tokenpass_user ) {
 		$username = $tokenpass_user['username'] ?? null;
 		$password = wp_generate_password( 12, false );
@@ -90,6 +112,12 @@ class AuthService {
 		return $user;
 	}
 
+	/**
+	 * Handles response from the Tokenpass OAuth service
+	 * @param string $state Unique identifier
+	 * @param string $code Unique identifier
+	 * @return void
+	 */
 	public function authorize_callback( $state, $code ) {
 		$is_valid = $this->validate_state( $state );
 		if ( $is_valid === false ) {
@@ -122,10 +150,18 @@ class AuthService {
 		}
 	}
 
+	/**
+	 * Embeds Tokenpass login button on the WordPress login page
+	 * @return void
+	 */
 	public function embed_tokenpass_login() {
 		echo $this->button_login_component->render();
 	}
 
+	/**
+	 * Validates the Tokenpass login link and returns it to the user
+	 * @return array
+	 */
 	public function authorize_begin() {
 		$this->delete_state();
 		$result = $this->get_tokenpass_login_url();
@@ -151,6 +187,11 @@ class AuthService {
 		}
 	}
 
+	/**
+	 * Checks if the user is currently connected to Tokenpass
+	 * @param $id WordPress user id
+	 * @return boolean
+	 */
 	public function is_connected( $id ) {
 		$uuid = get_user_meta( $id, 'tokenly_uuid' );
 		if ( $uuid && $uuid[0] ?? null && !empty( $uuid[0] ) ) {
@@ -160,6 +201,10 @@ class AuthService {
 		};
 	}
 	
+	/**
+	 * Disconnects the current user from Tokenpass
+	 * @return void
+	 */
 	public function disconnect() {
 		$user = wp_get_current_user();
 		if ( $user ) {
@@ -169,6 +214,10 @@ class AuthService {
 		}
 	}
 
+	/**
+	 * Constructs Tokenpass OAuth login link
+	 * @return array
+	 */
 	public function get_tokenpass_login_url() {
 		$settings = $this->settings_repository->show();
 		$client_id;

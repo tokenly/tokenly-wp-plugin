@@ -8,6 +8,9 @@ class ConnectionView extends View {
 	public function render( $data ) {
 		$html = $this->twig->render( 'admin.twig', array(
 			'view' => 'connection',
+			'props' => array(
+				'status' => $data['status'] ?? null,
+			),
 		) );
 		return $html;
 	}
