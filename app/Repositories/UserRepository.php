@@ -59,7 +59,7 @@ class UserRepository {
 		if ( !$oauth_token ) {
 			return;
 		}
-		$user = $this->client->getUserByToken( $oauth_token[0] );
+		$user = $this->client->getUserByToken( $oauth_token );
 		return $user;
 	}
 }

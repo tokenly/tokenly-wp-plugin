@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { SourceItem } from '../../interfaces';
+import { SourceItem } from '../../Interfaces';
 
 import { 
 	Button,
@@ -53,7 +53,7 @@ export class SourceList extends Component<SourceListProps, SourceListState> {
 								isSmall
 								href={ `/wp-admin/admin.php?page=tokenpass-source-edit&source=${ sourceItem.address }` }
 							>
-								Manage address
+								Manage source
 							</Button>
 						</CardFooter>
 					</Card>

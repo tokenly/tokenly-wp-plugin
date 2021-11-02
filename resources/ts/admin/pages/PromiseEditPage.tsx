@@ -4,7 +4,8 @@ import Page from './Page';
 import { Component } from 'react';
 import { PromiseRepository } from '../../repositories/PromiseRepository';
 import { PromiseEditForm } from '../components/PromiseEditForm';
-import { PromiseData, PromiseUpdateParams } from '../../interfaces';
+import { PromiseData, PromiseUpdateParams } from '../../Interfaces';
+import eventBus from "../../EventBus";
 
 import { 
 	Button,
@@ -41,6 +42,8 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onDelete = this.onDelete.bind( this );
+		this.deletePromise = this.deletePromise.bind( this );
+		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 	}
 
 	return() {
@@ -56,11 +59,37 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	}
 
 	onDelete() {
+		eventBus.dispatch( 'confirmModalShow', {
+			key: 'promiseDelete',
+			title: 'Deleting promise',
+			subtitle: 'Are you sure you want to delete the promise?',
+		});
+	}
+
+	deletePromise() {
 		this.setState( { deleting: true } );
 		this.promiseRepository.destroy( this.props.pageData.promise.promise_id ).then( ( result: any ) => {
 			this.setState( { deleting: false } );
 			this.return();
 		});
+	}
+
+	onConfirmModalChoice( payload: any ) {
+		switch( payload.key ) {
+			case 'promiseDelete':
+				if ( payload.choice == 'accept' ){
+					this.deletePromise();
+				}
+				break;
+		}
+	}
+
+	componentDidMount() {
+		eventBus.on( 'confirmModalChoice', this.onConfirmModalChoice );
+	}
+	
+	componentWillUnmount() {
+		eventBus.remove( 'confirmModalChoice', this.onConfirmModalChoice );
 	}
 
 	onCancel() {

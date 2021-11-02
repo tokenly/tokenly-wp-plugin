@@ -1,8 +1,8 @@
 @use '/resources/scss/variables' as *;
 @use '/resources/scss/Components/CardTokenItemComponent.scss' as *;
-@use '/resources/scss/Components/ListCardTokenItemComponent.scss' as *;
+@use '/resources/scss/Blocks/ListCardTokenItemBlock.scss' as *;
 
-.tokenly-component {
+.tokenly-block {
 	& * {
 		box-sizing: border-box;
 	}

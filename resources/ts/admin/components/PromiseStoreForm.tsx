@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { PromiseStoreParams, SourceItem } from '../../interfaces';
+import { PromiseStoreParams, SourceItem } from '../../Interfaces';
 import { UserSearchField } from './UserSearchField';
 
 import { 

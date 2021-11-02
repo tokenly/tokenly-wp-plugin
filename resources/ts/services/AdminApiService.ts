@@ -1,4 +1,4 @@
-import { injectable } from "inversify";
+import { injectable } from 'inversify';
 import {
 	SettingsData,
 	WhitelistData,
@@ -9,7 +9,7 @@ import {
 	PromiseStoreParams,
 	PromiseUpdateParams,
 	PromiseData,
-} from "../interfaces";
+} from '../Interfaces';
 
 declare const wpApiSettings: any;
 

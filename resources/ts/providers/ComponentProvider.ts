@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { Component, Provider } from '../interfaces';
+import { Component, Provider } from '../Interfaces';
 
 interface ComponentData {
 	name: string,

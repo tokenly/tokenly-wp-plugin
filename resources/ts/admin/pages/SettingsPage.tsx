@@ -3,7 +3,7 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { SavePanel } from '../components/SavePanel';
-import { SettingsData } from '../../interfaces';
+import { SettingsData } from '../../Interfaces';
 import { SettingsRepository } from '../../repositories/SettingsRepository';
 
 import { 

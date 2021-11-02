@@ -37,11 +37,15 @@ class PromiseRepository {
 				$destination = 'user:' . $tokenpass_user['username'] ?? null;
 			}
 		}
+		$quantity = $promise['quantity'] ?? null;
+		if ( $quantity ) {
+			//$quantity = $quantity * 100000000;
+		}
 		$this->client->promiseTransaction(
 			$promise['source'] ?? null,
 			$destination,
 			$promise['asset'] ?? null,
-			$promise['quantity'] ?? null,
+			$quantity,
 			null,
 			null,
 			null,

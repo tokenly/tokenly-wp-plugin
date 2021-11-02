@@ -2,7 +2,8 @@
 
 namespace Tokenly\Wp\Views;
 
-use Tokenly\Wp\Components\ListCardTokenItemComponent;
+use Tokenly\Wp\Blocks\ListCardTokenItemBlock;
+use Tokenly\Wp\Blocks\UserInfoBlock;
 use Tokenly\Wp\Views\View;
 use Twig\Environment;
 
@@ -11,10 +12,12 @@ class UserView extends View {
 
 	public function __construct(
 		Environment $twig,
-		ListCardTokenItemComponent $list_card_token_item_component
+		UserInfoBlock $user_info_block,
+		ListCardTokenItemBlock $list_card_token_item_block
 	) {
 		parent::__construct( $twig );
-		$this->list_card_token_item_component = $list_card_token_item_component;
+		$this->list_card_token_item_block = $list_card_token_item_block;
+		$this->user_info_block = $user_info_block;
 	}
 
 	public function render_header() {
@@ -33,15 +36,21 @@ class UserView extends View {
 		$this->balances = $data['balances'] ?? null;
 		$html_header = $this->render_header();
 		$html_footer = $this->render_footer();
-		$html_block_token_list = $this->list_card_token_item_component->render(
+		$html_list_card_token_item_block = $this->list_card_token_item_block->render(
 			array(
 				'balances' => $this->balances,
 			)
 		);
-		$html = $this->twig->render( 'user.twig', array(
+		$html_user_info_block = $this->user_info_block->render(
+			array(
+				'user' => wp_get_current_user(),
+			)
+		);
+		$html = $this->twig->render( 'User.twig', array(
 			'header' => $html_header,
 			'footer' => $html_footer,
-			'block_token_list' => $html_block_token_list,
+			'list_card_token_block' => $html_list_card_token_item_block,
+			'user_info_block'       => $html_user_info_block,
 		) );
 		return $html;
 	}

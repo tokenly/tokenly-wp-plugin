@@ -4,6 +4,9 @@ namespace Tokenly\Wp\Repositories;
 
 use Tokenly\Wp\Repositories\General\OptionRepository;
 
+/**
+ * Manages plugin settings
+ */
 class SettingsRepository {
 	public $option_repository;
 

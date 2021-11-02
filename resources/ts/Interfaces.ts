@@ -100,3 +100,14 @@ export interface PromiseData {
 export interface StatusData {
 	status: boolean;
 }
+
+export interface Redirect {
+	from: string;
+	to: string;
+} 
+
+export interface ConfirmModalData {
+	key: string,
+	title: string,
+	subtitle: string,
+}

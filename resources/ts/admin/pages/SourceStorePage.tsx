@@ -4,7 +4,7 @@ import Page from './Page';
 import { Component } from 'react';
 import { SourceRepository } from '../../repositories/SourceRepository';
 import { SourceStoreForm } from '../components/SourceStoreForm';
-import { SourceData } from '../../interfaces';
+import { SourceData } from '../../Interfaces';
 
 declare const window: any;
 

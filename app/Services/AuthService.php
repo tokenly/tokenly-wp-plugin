@@ -87,11 +87,17 @@ class AuthService {
 		$user;
 		if ( $uuid ) {
 			$user = $this->user_service->get_by_uuid( $uuid );
+			if ( $user ) {
+				return $user;
+			}
 			
-		} else if ( $email ) {
-			$user = get_user_by( 'email', $email );
 		}
-		return $user;
+		if ( $email ) {
+			$user = get_user_by( 'email', $email );
+			if ( $user ) {
+				return $user;
+			}
+		}
 	}
 
 	/**
@@ -143,9 +149,12 @@ class AuthService {
 			if ( !$user ) {
 				return;
 			}
-			update_user_meta( $user->ID, 'tokenly_uuid', $tokenpass_user['id'] ?? null );
-			update_user_meta( $user->ID, 'tokenly_oauth_token', $access_token );
-			$user->add_cap( 'use_tokenpass');
+			$uuid = $tokenpass_user['id'] ?? null;
+			$this->user_meta_repository->update( $user->ID, array(
+				'uuid'        => $uuid,
+				'oauth_token' => $access_token,
+			) );
+			$user->add_cap( 'use_tokenpass' );
 			wp_set_auth_cookie( $user->ID );
 		}
 	}

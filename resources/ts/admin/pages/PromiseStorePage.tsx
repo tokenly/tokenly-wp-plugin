@@ -4,7 +4,7 @@ import Page from './Page';
 import { Component } from 'react';
 import { PromiseRepository } from '../../repositories/PromiseRepository';
 import { PromiseStoreForm } from '../components/PromiseStoreForm';
-import { PromiseData, PromiseStoreParams, SourceItem } from '../../interfaces';
+import { PromiseData, PromiseStoreParams, SourceItem } from '../../Interfaces';
 
 declare const window: any;
 

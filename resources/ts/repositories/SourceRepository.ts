@@ -1,6 +1,6 @@
-import { injectable, inject } from "inversify";
+import { injectable, inject } from 'inversify';
 import { AdminApiService } from '../services/AdminApiService';
-import { SourceData } from '../interfaces';
+import { SourceData } from '../Interfaces';
 
 @injectable()
 export class SourceRepository {

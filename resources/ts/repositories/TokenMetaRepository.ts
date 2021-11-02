@@ -1,6 +1,6 @@
-import { injectable, inject } from "inversify";
+import { injectable, inject } from 'inversify';
 import { AdminApiService } from '../services/AdminApiService';
-import { TokenMetaData } from '../interfaces';
+import { TokenMetaData } from '../Interfaces';
 
 @injectable()
 export class TokenMetaRepository {

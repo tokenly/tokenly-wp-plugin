@@ -4,7 +4,7 @@ import Page from './Page';
 import { Whitelist } from '../components/Whitelist';
 import { SavePanel } from '../components/SavePanel';
 import { Component } from 'react';
-import { WhitelistData, WhitelistItem } from '../../interfaces';
+import { WhitelistData, WhitelistItem } from '../../Interfaces';
 import { WhitelistRepository } from '../../repositories/WhitelistRepository';
 
 import { 

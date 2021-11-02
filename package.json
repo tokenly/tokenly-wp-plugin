@@ -4,8 +4,8 @@
   "main": "index.js",
   "author": "YOUR NAME HERE",
   "scripts": {
-    "build": "wp-scripts build resources/ts/frontend resources/ts/admin",
-    "start": "wp-scripts start resources/ts/frontend resources/ts/admin",
+    "build": "wp-scripts build resources/ts/Frontend resources/ts/Admin",
+    "start": "wp-scripts start resources/ts/Frontend resources/ts/Admin",
     "test:unit": "wp-scripts test-unit-js"
   },
   "devDependencies": {

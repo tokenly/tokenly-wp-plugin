@@ -26,9 +26,8 @@ class AuthController {
 	}
 
 	public function authorize_callback() {
-		$code = $_GET['code'];
-		$state = $_GET['state'];
-		error_log($code);
+		$code = $_GET['code'] ?? null;
+		$state = $_GET['state'] ?? null;
 		if ( !$code || !$state ) {
 			return;
 		}

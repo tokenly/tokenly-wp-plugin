@@ -1,5 +1,5 @@
 /*!**************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/admin.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/Admin.scss ***!
   \**************************************************************************************************************************************************************************************************************************************************/
 #tokenpass-admin-page-dashboard .api-input-container {
   margin-top: 24px;
@@ -46,7 +46,7 @@ body.login .tokenpass-login-container {
   align-items: center !important;
 }
 /*!*************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/main.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/Main.scss ***!
   \*************************************************************************************************************************************************************************************************************************************************/
 .tokenpass-login-container .button-logo {
   margin-right: 8px;
@@ -67,4 +67,4 @@ body.login .tokenpass-login-container {
   padding: 8px 12px;
 }
 
-/*# sourceMappingURL=admin.css.map*/
+/*# sourceMappingURL=Admin.css.map*/

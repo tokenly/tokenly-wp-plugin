@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { PromiseData, PromiseUpdateParams } from '../../interfaces';
+import { PromiseData, PromiseUpdateParams } from '../../Interfaces';
 
 import { 
 	Button,

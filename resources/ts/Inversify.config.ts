@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { Container, interfaces } from "inversify";
-import { TYPES } from "./types";
-import { Component } from './interfaces';
+import { Container, interfaces } from 'inversify';
+import { TYPES } from './Types';
+import { Component } from './Interfaces';
 import { AuthService } from './services/AuthService';
 import { SettingsRepository } from './repositories/SettingsRepository';
 import { PromiseRepository } from './repositories/PromiseRepository';

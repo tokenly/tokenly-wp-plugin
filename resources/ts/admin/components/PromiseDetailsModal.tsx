@@ -1,7 +1,7 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import { PromiseData } from '../../interfaces';
+import { PromiseData } from '../../Interfaces';
 import * as dayjs from 'dayjs'
 
 import { 

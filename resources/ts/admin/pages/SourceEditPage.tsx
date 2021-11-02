@@ -4,7 +4,8 @@ import Page from './Page';
 import { Component } from 'react';
 import { SourceRepository } from '../../repositories/SourceRepository';
 import { SourceEditForm } from '../components/SourceEditForm';
-import { SourceData } from '../../interfaces';
+import { SourceData } from '../../Interfaces';
+import eventBus from "../../EventBus";
 
 import { 
 	Button,
@@ -42,6 +43,8 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.onSave = this.onSave.bind( this );
 		this.onDelete = this.onDelete.bind( this );
 		this.onCancel = this.onCancel.bind( this );
+		this.deleteSource = this.deleteSource.bind( this );
+		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 	}
 
 	return() {
@@ -57,6 +60,18 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	}
 
 	onDelete() {
+		eventBus.dispatch( 'confirmModalShow', {
+			key: 'sourceDelete',
+			title: 'Deleting source',
+			subtitle: 'Are you sure you want to delete the source?',
+		});
+	}
+
+	onCancel() {
+		this.return();
+	}
+
+	deleteSource() {
 		this.setState( { deleting: true } );
 		this.sourceRepository.destroy( this.props.pageData.source.address ).then( ( result: any ) => {
 			this.setState( { deleting: false } );
@@ -64,8 +79,22 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		});
 	}
 
-	onCancel() {
-		this.return();
+	onConfirmModalChoice( payload: any ) {
+		switch( payload.key ) {
+			case 'sourceDelete':
+				if ( payload.choice == 'accept' ){
+					this.deleteSource();
+				}
+				break;
+		}
+	}
+
+	componentDidMount() {
+		eventBus.on( 'confirmModalChoice', this.onConfirmModalChoice );
+	}
+	
+	componentWillUnmount() {
+		eventBus.remove( 'confirmModalChoice', this.onConfirmModalChoice );
 	}
 	
 	render() {

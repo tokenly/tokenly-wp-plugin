@@ -4,6 +4,9 @@ namespace Tokenly\Wp\Repositories;
 
 use Tokenly\Wp\Repositories\General\OptionRepository;
 
+/**
+ * Manages token whitelist
+ */
 class WhitelistRepository {
 	public $option_repository;
 

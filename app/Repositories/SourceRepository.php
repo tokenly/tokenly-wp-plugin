@@ -5,6 +5,9 @@ namespace Tokenly\Wp\Repositories;
 use Tokenly\TokenpassClient\TokenpassAPI;
 use Tokenly\Wp\Repositories\SettingsRepository;
 
+/**
+ * Manages sources for promise type transactions
+ */
 class SourceRepository {
 	public $client;
 	

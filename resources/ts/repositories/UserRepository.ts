@@ -1,5 +1,5 @@
-import { injectable, inject } from "inversify";
-import { UserIndexParams, UserShowParams } from '../interfaces';
+import { injectable, inject } from 'inversify';
+import { UserIndexParams, UserShowParams } from '../Interfaces';
 import { AdminApiService } from '../services/AdminApiService';
 
 @injectable()

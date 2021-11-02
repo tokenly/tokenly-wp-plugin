@@ -1,5 +1,5 @@
-import { container } from './inversify.config';
-import '/resources/scss/main.scss';
+import { container } from './Inversify.config';
+import '/resources/scss/Main.scss';
 
 import { ComponentProvider } from './providers/ComponentProvider';
 

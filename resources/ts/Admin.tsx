@@ -1,8 +1,9 @@
-import { container } from "./inversify.config";
-import '/resources/scss/admin.scss';
+import { container } from "./Inversify.config";
+import '/resources/scss/Admin.scss';
 import { Provider } from 'inversify-react';
 import * as React from 'react';
-import App from './app';
+import App from './App';
+import AppLayout from './layouts/AppLayout';
 import SettingsPage from './admin/pages/SettingsPage';
 import VendorPage from './admin/pages/VendorPage';
 import ConnectionPage from './admin/pages/ConnectionPage';
@@ -14,6 +15,7 @@ import SourceStorePage from './admin/pages/SourceStorePage';
 import SourceEditPage from './admin/pages/SourceEditPage';
 import DashboardPage from './admin/pages/DashboardPage';
 import TokenMetaEditPage from './admin/pages/TokenMetaEditPage';
+import { Redirect } from './Interfaces';
 
 declare const document: any;
 declare const window: any;
@@ -22,10 +24,7 @@ import {
 	render,
 } from '@wordpress/element';
 
-interface Redirect {
-	from: string;
-	to: string;
-} 
+
 
 class AdminApp extends App {
 	container = container;
@@ -48,17 +47,17 @@ class AdminApp extends App {
 	
 	getViews() {
 		return {
-			'settings':   SettingsPage,
-			'connection': ConnectionPage,
-			'vendor':  VendorPage,
-			'whitelist':  WhitelistPage,
-			'promise-store': PromiseStorePage,
-			'promise-edit': PromiseEditPage,
-			'source-index': SourceIndexPage,
-			'source-store': SourceStorePage,
-			'source-edit' : SourceEditPage,
-			'token-meta-edit': TokenMetaEditPage,
-			'dashboard': DashboardPage,
+			'settings'        : SettingsPage,
+			'connection'      : ConnectionPage,
+			'vendor'          : VendorPage,
+			'whitelist'       : WhitelistPage,
+			'promise-store'   : PromiseStorePage,
+			'promise-edit'    : PromiseEditPage,
+			'source-index'    : SourceIndexPage,
+			'source-store'    : SourceStorePage,
+			'source-edit'     : SourceEditPage,
+			'token-meta-edit' : TokenMetaEditPage,
+			'dashboard'       : DashboardPage,
 		} as any;
 	}
 	
@@ -70,7 +69,9 @@ class AdminApp extends App {
 		this.pageElement.appendChild( pageContainer );
 		render(
 			<Provider container={ this.container }>
-				<ViewComponent pageData={ this.pageData } />
+				<AppLayout>
+					<ViewComponent pageData={ this.pageData } />
+				</AppLayout>
 			</Provider>,
 			pageContainer
 		);

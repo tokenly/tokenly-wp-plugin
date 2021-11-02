@@ -2,7 +2,7 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
 import { TokenMetaRepository } from '../../repositories/TokenMetaRepository';
-import { TokenMetaData } from '../../interfaces';
+import { TokenMetaData } from '../../Interfaces';
 
 import { 
 	TextControl,

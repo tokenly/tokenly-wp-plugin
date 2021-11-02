@@ -1,6 +1,6 @@
-import { injectable, inject } from "inversify";
+import { injectable, inject } from 'inversify';
 import { AdminApiService } from '../services/AdminApiService';
-import { PromiseStoreParams, PromiseUpdateParams, PromiseData } from '../interfaces';
+import { PromiseStoreParams, PromiseUpdateParams, PromiseData } from '../Interfaces';
 
 @injectable()
 export class PromiseRepository {

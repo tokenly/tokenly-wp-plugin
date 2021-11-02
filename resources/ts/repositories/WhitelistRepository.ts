@@ -1,5 +1,5 @@
-import { injectable, inject } from "inversify";
-import { WhitelistData } from '../interfaces';
+import { injectable, inject } from 'inversify';
+import { WhitelistData } from '../Interfaces';
 import { AdminApiService } from '../services/AdminApiService';
 
 @injectable()

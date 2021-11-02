@@ -20,22 +20,22 @@ class AppServiceProvider {
 		register_uninstall_hook( __FILE__, array( self::class, 'on_uninstall' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-		add_action( 'login_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
-		add_action( 'wp_enqueue_scripts', array( $this->frontend_service, 'enqueue_scripts' ) );
+		add_action( 'login_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 		add_action( 'login_footer', array( $this->auth_service, 'embed_tokenpass_login' ) );
 	}
 
 	public function enqueue_frontend_scripts() {
-		wp_register_script( 'tokenly-frontend', plugins_url( '../../build/frontend.js', __FILE__ ), array( 'wp-api' ), null, true );
+		wp_register_script( 'tokenly-frontend', plugins_url( '../../build/Frontend.js', __FILE__ ), array( 'wp-api' ), null, true );
 		wp_enqueue_script( 'tokenly-frontend' );
-		wp_register_style( 'tokenly-frontend', plugins_url( '../../build/frontend.css', __FILE__ ) );
+		wp_register_style( 'tokenly-frontend', plugins_url( '../../build/Frontend.css', __FILE__ ) );
 		wp_enqueue_style( 'tokenly-frontend' );
 	}
 
 	public function enqueue_admin_scripts() {
-		wp_register_script( 'tokenly-admin', plugins_url( '../../build/admin.js', __FILE__ ), array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), null, true );
+		wp_register_script( 'tokenly-admin', plugins_url( '../../build/Admin.js', __FILE__ ), array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), null, true );
 		wp_enqueue_script( 'tokenly-admin' );
-		wp_register_style( 'tokenly-admin', plugins_url( '../../build/admin.css', __FILE__ ), array( 'wp-components' ) );
+		wp_register_style( 'tokenly-admin', plugins_url( '../../build/Admin.css', __FILE__ ), array( 'wp-components' ) );
 		wp_enqueue_style( 'tokenly-admin' );
 	}
 	

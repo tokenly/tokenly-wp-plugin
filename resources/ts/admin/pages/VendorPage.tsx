@@ -3,7 +3,7 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { PromiseRepository } from '../../repositories/PromiseRepository';
-import { PromiseData } from '../../interfaces';
+import { PromiseData } from '../../Interfaces';
 import { PromiseList } from '../components/PromiseList';
 import { PromiseDetailsModal } from '../components/PromiseDetailsModal';
 

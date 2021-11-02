@@ -1,13 +1,12 @@
 <?php
 
-/**
- * Helps to prefix all post meta being retrieved and saved by the plugin.
- */
-
 namespace Tokenly\Wp\Repositories\General;
 
 use Tokenly\Wp\Traits\NamespaceableTrait;
 
+/**
+ * Helps to prefix all post meta being retrieved and saved by the plugin.
+ */
 class MetaRepository {
 	use NamespaceableTrait;
 

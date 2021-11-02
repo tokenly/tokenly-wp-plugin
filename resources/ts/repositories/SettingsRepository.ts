@@ -1,5 +1,5 @@
-import { injectable, inject } from "inversify";
-import { SettingsData } from '../interfaces';
+import { injectable, inject } from 'inversify';
+import { SettingsData } from '../Interfaces';
 import { AdminApiService } from '../services/AdminApiService';
 
 @injectable()

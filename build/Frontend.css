@@ -1,5 +1,5 @@
 /*!*************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/main.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/Main.scss ***!
   \*************************************************************************************************************************************************************************************************************************************************/
 .tokenpass-login-container .button-logo {
   margin-right: 8px;
@@ -20,12 +20,12 @@
   padding: 8px 12px;
 }
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/frontend.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/Frontend.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 .component-card-token-item {
   background-color: white;
   border-radius: 12px;
-  box-shadow: 12px 12px 8px 0px rgba(0, 0, 0, 0.025);
+  box-shadow: 12px 12px 8px 0px rgba(0, 0, 0, 0.04);
   min-height: 150px;
   display: flex;
   flex-direction: column;
@@ -91,17 +91,17 @@
   }
 }
 
-.tokenly-component * {
+.tokenly-block * {
   box-sizing: border-box;
 }
-.tokenly-component .row {
+.tokenly-block .row {
   width: 100%;
   max-width: 1920px;
   padding: 0 10%;
   margin: auto;
 }
 @media (min-width: 1800px) {
-  .tokenly-component .row {
+  .tokenly-block .row {
     padding: 0 14%;
   }
 }
@@ -133,4 +133,4 @@
   }
 }
 
-/*# sourceMappingURL=frontend.css.map*/
+/*# sourceMappingURL=Frontend.css.map*/

@@ -3,7 +3,7 @@ import * as React from 'react';
 import Page from './Page';
 import { AuthService } from '../../services/AuthService';
 import { Component } from 'react';
-import { StatusData } from '../../interfaces';
+import { StatusData } from '../../Interfaces';
 
 import { 
 	Button,
