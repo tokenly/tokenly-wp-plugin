@@ -36,8 +36,8 @@ class AdminApp extends App {
 		super();
 		this.pageElement = document.querySelector( '.tokenpass-admin-page' );
 		if ( this.pageElement ) {
-			this.view = this.pageElement.dataset.view;
-			this.pageData = JSON.parse( this.pageElement.dataset.props );
+			this.view = window.tokenpassView;
+			this.pageData = window.tokenpassProps;
 			const views = this.getViews();
 			const ViewComponent = views[ this.view ];
 			this.render( ViewComponent );

@@ -9,7 +9,7 @@ use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\TokenpassClient\TokenpassAPI;
 
 /**
- * Manages connection to Tokenpass (OAuth)
+ * Handles the Tokenpass authentication flow (OAuth)
  */
 class AuthService {
 	public $client;

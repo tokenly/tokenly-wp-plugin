@@ -7,25 +7,28 @@
 #tokenpass-admin-page-dashboard .dashboard-card-grid {
   display: -ms-grid;
   display: grid;
-  grid-auto-flow: row;
 }
 @media (min-width: 768px) {
   #tokenpass-admin-page-dashboard .dashboard-card-grid {
     -ms-grid-columns: (minmax(0, 1fr))[2];
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-gap: 15px 36px;
+    grid-auto-flow: row;
+    grid-row-gap: 15px;
+    grid-column-gap: 36px;
   }
 }
 @media (min-width: 1280px) {
   #tokenpass-admin-page-dashboard .dashboard-card-grid {
-    grid-gap: 15px 13px;
+    grid-row-gap: 15px;
+    grid-column-gap: 13px;
     -ms-grid-columns: (minmax(0, 1fr))[3];
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 @media (min-width: 1800px) {
   #tokenpass-admin-page-dashboard .dashboard-card-grid {
-    grid-gap: 20px 16px;
+    grid-row-gap: 20px;
+    grid-column-gap: 16px;
   }
 }
 

@@ -5,6 +5,9 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 use Tokenly\Wp\Views\Admin\SettingsView;
 use Tokenly\Wp\Controllers\Web\WebController;
 
+/**
+ * Serves the admin settings view
+ */
 class SettingsController extends WebController {
 	public $settings_view;
 

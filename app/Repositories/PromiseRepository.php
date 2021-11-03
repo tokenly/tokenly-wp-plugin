@@ -7,6 +7,7 @@ use Tokenly\Wp\Repositories\UserRepository;
 
 class PromiseRepository {
 	public $client;
+	public $user_repository;
 	
 	public function __construct(
 		TokenpassAPI $client,
@@ -15,22 +16,43 @@ class PromiseRepository {
 		$this->client = $client;
 		$this->user_repository = $user_repository;
 	}
+
+	/**
+	 * Fetches all currently promised transactions
+	 * @return array $promises
+	 */
 	public function index() {
 		$promises = $this->client->getPromisedTransactionList();
 		return $promises;
 	}
 
+	/**
+	 * Fetches the specific promised transaction
+	 * @param $promise_id Tokenpass promise index
+	 * @return array $promise
+	 */
 	public function show( $promise_id ) {
 		$promise = $this->client->getPromisedTransaction( $promise_id );
 		return $promise;
 	}
 
+	/**
+	 * Updates the existing promised transaction
+	 * @param $promise_id Tokenpass promise index
+	 * @param $params New promise properties
+	 * @return array
+	 */
 	public function update( $promise_id, $params ) {
 		$response = $this->client->updatePromisedTransaction( $promise_id, $params );
 	}
 	
-	public function store( $promise ) {
-		$destination = $promise['destination'] ?? null;
+	/**
+	 * Creates a new promised transaction
+	 * @param array $params New promise properties
+	 * @return void
+	 */
+	public function store( $params ) {
+		$destination = $params['destination'] ?? null;
 		if ( $destination ) {
 			$tokenpass_user = $this->user_repository->show( $destination );
 			if ( $tokenpass_user ) {
@@ -57,6 +79,11 @@ class PromiseRepository {
 		);
 	}
 
+	/**
+	 * Destroys the existing promise
+	 * @param $promise_id Tokenpass promise index
+	 * @return void
+	 */
 	public function destroy( $promise_id ) {
 		$this->client->deletePromisedTransaction( $promise_id );
 	}

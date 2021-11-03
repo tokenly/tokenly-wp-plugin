@@ -14,6 +14,7 @@ class CardTokenItemComponent extends Component {
 		$balance = $data['balance'] ?? null;
 		$meta = $balance['meta'] ?? null;
 		$name = $balance['name'] ?? null;
+		$asset = $balance['asset'] ?? null;
 		$balance = $balance['balance'] ?? null;
 		$description = '';
 		$image = '';
@@ -26,6 +27,7 @@ class CardTokenItemComponent extends Component {
 			$image = $meta['image'] ?? null;
 		} 
 		$html = $this->twig->render( 'components/CardTokenItemComponent.twig', array(
+			'asset'       => $asset,
 			'name'        => $name,
 			'description' => $description,
 			'image'       => $image,

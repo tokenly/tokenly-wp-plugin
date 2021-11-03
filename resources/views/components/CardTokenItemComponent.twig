@@ -1,8 +1,8 @@
 <div class="tokenly-component component-card-token-item">
 	<div class="token-image">{{ image | raw }}</div>
 	<div class="token-info">
-		<div class="token-name">{{ name }}</div>
-		<div class="token-description">{{ description ?? null }}</div>
+		<div class="token-name" title="{{ asset }}">{{ name }}</div>
+		<div class="token-description">{{ description }}</div>
 		<div class="token-balance-container"><span class="token-balance-label">Total: </span><span class="token-balance">{{ balance }}</span></div>
 	</div>
 </div>

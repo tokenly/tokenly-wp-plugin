@@ -6,6 +6,7 @@ import { TokenMetaData } from '../../Interfaces';
 
 import { 
 	TextControl,
+	TextareaControl,
 	Panel,
 	PanelBody,
 	PanelRow,
@@ -61,6 +62,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 								<TextControl
 									value={this.state.meta.asset}
 									label="Asset"
+									help="Is used for pairing meta with an asset"
 									onChange={( value: any ) => {
 										const state = Object.assign( {}, this.state.meta );
 										state.asset = value;
@@ -68,7 +70,17 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 									}}
 									style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
 								/>
-								<div style={{opacity: 0.8}}>Is used for pairing meta with an asset</div>
+								<TextareaControl 
+									value={ JSON.stringify( this.state.meta.extra, null, 2 ) }
+									label="Extra"
+									help="JSON object"
+									rows={ 24 }
+									onChange={ ( value: any ) => {
+										const state = Object.assign( {}, this.state.meta );
+										state.extra = JSON.parse ( value );
+										this.setState( { meta: state } );
+									} }
+								/>
 							</div>
 						</PanelRow>
 					</PanelBody>

@@ -8,6 +8,9 @@ use Tokenly\Wp\Views\Admin\PromiseEditView;;
 use Tokenly\Wp\Repositories\SourceRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
 
+/**
+ * Serves the admin promise views
+ */
 class PromiseController extends WebController {
 	public $promise_store_view;
 	public $promise_edit_view;

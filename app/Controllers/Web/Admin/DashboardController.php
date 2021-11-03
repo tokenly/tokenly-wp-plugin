@@ -5,6 +5,9 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 use Tokenly\Wp\Controllers\Web\WebController;
 use Tokenly\Wp\Views\Admin\DashboardView;
 
+/**
+ * Serves the admin Dashboard view
+ */
 class DashboardController extends WebController {
 	public $dashboard_view;
 

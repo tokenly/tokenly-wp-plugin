@@ -31,14 +31,19 @@ class TokenMetaRepository {
 	}
 	
 	public function show( $post_id ) {
-		return $this->meta_repository->index( $post_id, array(
+		$meta = $this->meta_repository->index( $post_id, array(
 			'asset',
+			'extra',
 		) );
+		$extra = $meta['extra'] ?? null;
+		//error_log( print_r( $meta, true ) );
+		return $meta;
 	}
 	
 	public function update( $post_id, $params ) {
 		$this->meta_repository->update( $post_id, array(
 			'asset' => $params['asset'] ?? null,
+			'extra' => $params['extra'] ?? null,
 		) );
 	}
 }

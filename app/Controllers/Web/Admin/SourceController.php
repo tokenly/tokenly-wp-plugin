@@ -8,6 +8,9 @@ use Tokenly\Wp\Views\Admin\SourceStoreView;
 use Tokenly\Wp\Views\Admin\SourceEditView;
 use Tokenly\Wp\Repositories\SourceRepository;
 
+/**
+ * Serves the admin source views
+ */
 class SourceController extends WebController {
 	public $source_index_view;
 	public $source_store_view;

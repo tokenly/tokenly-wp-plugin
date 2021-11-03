@@ -41,6 +41,9 @@ class AdminRouter {
 		);
 	}
 
+	/**
+	 * Hooks the router to WordPress
+	 */
 	public function register() {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ), 9 );
@@ -69,6 +72,11 @@ class AdminRouter {
 		"; 
 	}
 	
+	/**
+	 * Checks if the current user has enough capabilites
+	 * to view the Tokenpass inventory
+	 * @return boolean
+	 */
 	public function can_view_inventory() {
 		if ( current_user_can( 'read' ) === true && $this->auth_service->is_connected() === true ) {
 			return true;
@@ -77,6 +85,10 @@ class AdminRouter {
 		}
 	}
 
+	/**
+	 * Gets the admin route definitions
+	 * @return array
+	 */
 	public function get_routes() {
 		$routes = array(
 			'tokenpass' => array(
@@ -199,6 +211,11 @@ class AdminRouter {
 		return $routes;
 	}
 
+	/**
+	 * Transforms the submenu slugs to contain parent menu slug
+	 * @param array $routes Admin routes
+	 * @return array
+	 */
 	public function prepare_routes( $routes ) {
 		$routes = array_map( function( $route ) {
 			$subroutes = $route['subroutes'] ?? null;
@@ -220,6 +237,12 @@ class AdminRouter {
 		return $routes;
 	}
 
+	/**
+	 * Prefixes the child route slug with the parent's slug
+	 * @param array $route Parent route
+	 * @param array $subroute Child route
+	 * @return string
+	 */
 	public function get_subroute_slug( $route, $subroute ) {
 		$route_args = $route['args'] ?? null;
 		$subroute_args = $subroute['args'] ?? null;
@@ -232,6 +255,10 @@ class AdminRouter {
 		}
 	}
 	
+	/**
+	 * Registers the admin routes
+	 * @return void
+	 */
 	public function register_routes() {
 		foreach ( $this->routes as $route ) {
 			$args = $route['args'] ?? null;

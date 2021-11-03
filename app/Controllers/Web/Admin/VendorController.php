@@ -6,6 +6,9 @@ use Tokenly\Wp\Views\Admin\VendorView;
 use Tokenly\Wp\Controllers\Web\WebController;
 use Tokenly\Wp\Repositories\PromiseRepository;
 
+/**
+ * Serves the admin Vendor view
+ */
 class VendorController extends WebController {
 	public $vendor_view;
 	public $promise_repository;

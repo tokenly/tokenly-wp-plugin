@@ -5,6 +5,9 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 use Tokenly\Wp\Views\Admin\WhitelistView;
 use Tokenly\Wp\Controllers\Web\WebController;
 
+/**
+ * Serves the admin Whitelist view
+ */
 class WhitelistController extends WebController {
 	public $whitelist_view;
 

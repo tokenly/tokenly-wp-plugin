@@ -6,6 +6,9 @@ use Tokenly\Wp\Views\Admin\ConnectionView;
 use Tokenly\Wp\Controllers\Web\WebController;
 use Tokenly\Wp\Services\AuthService;
 
+/**
+ * Serves the admin Connection view
+ */
 class ConnectionController extends WebController {
 	public $connection_view;
 	public $auth_serivce;

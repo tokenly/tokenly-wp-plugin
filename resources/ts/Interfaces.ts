@@ -46,6 +46,7 @@ export interface SourceData {
 
 export interface TokenMetaData {
 	asset: string;
+	extra: any;
 }
 
 export interface UserSuggestion {
