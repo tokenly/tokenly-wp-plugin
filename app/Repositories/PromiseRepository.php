@@ -59,23 +59,23 @@ class PromiseRepository {
 				$destination = 'user:' . $tokenpass_user['username'] ?? null;
 			}
 		}
-		$quantity = $promise['quantity'] ?? null;
+		$quantity = $params['quantity'] ?? null;
 		if ( $quantity ) {
 			//$quantity = $quantity * 100000000;
 		}
 		$this->client->promiseTransaction(
-			$promise['source'] ?? null,
+			$params['source'] ?? null,
 			$destination,
-			$promise['asset'] ?? null,
+			$params['asset'] ?? null,
 			$quantity,
 			null,
 			null,
 			null,
-			$promise['ref'] ?? null,
+			$params['ref'] ?? null,
 			'bitcoin',
 			'counterparty',
 			true,
-			$promise['note'] ?? null
+			$params['note'] ?? null
 		);
 	}
 

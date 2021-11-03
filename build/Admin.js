@@ -6594,12 +6594,29 @@ class TokenMetaEditPage extends react_1.Component {
             storingSource: false,
             meta: {},
             postId: null,
+            extraTemp: null,
+            extraValid: false,
         };
-        console.log(this.props.pageData);
+        this.validateJSON = this.validateJSON.bind(this);
         const urlParams = new URLSearchParams(window.location.search);
         const postId = parseInt(urlParams.get('post'));
         this.state.postId = postId;
         this.state.meta = Object.assign(this.state.meta, this.props.pageData.meta);
+        this.state.extraTemp = JSON.stringify(this.state.meta.extra, null, 2);
+        this.state.extraValid = this.validateJSON(this.state.extraTemp);
+    }
+    validateJSON(json) {
+        try {
+            JSON.parse(json);
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+    componentDidMount() {
+        const textarea = document.querySelector(`textarea[name="extrameta"]`);
+        textarea.spellcheck = false;
     }
     render() {
         return (React.createElement(element_1.Fragment, null,
@@ -6612,11 +6629,28 @@ class TokenMetaEditPage extends react_1.Component {
                                     state.asset = value;
                                     this.setState({ meta: state });
                                 }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
-                            React.createElement(components_1.TextareaControl, { value: JSON.stringify(this.state.meta.extra, null, 2), label: "Extra", help: "JSON object", rows: 24, onChange: (value) => {
-                                    const state = Object.assign({}, this.state.meta);
-                                    state.extra = JSON.parse(value);
-                                    this.setState({ meta: state });
-                                } }))))),
+                            React.createElement(components_1.TextareaControl, { value: this.state.extraTemp, label: "Extra", help: "JSON object", name: "extrameta", rows: 24, onChange: (json) => {
+                                    var _a;
+                                    const valid = this.validateJSON(json);
+                                    if (valid == true) {
+                                        const state = Object.assign({}, this.state.meta);
+                                        state.extra = (_a = JSON.parse(json)) !== null && _a !== void 0 ? _a : '';
+                                        this.setState({
+                                            meta: state,
+                                            extraValid: true,
+                                            extraTemp: json,
+                                        });
+                                    }
+                                    else {
+                                        this.setState({
+                                            extraTemp: json,
+                                            extraValid: false,
+                                        });
+                                    }
+                                } }),
+                            React.createElement("div", { className: "json-status" },
+                                React.createElement("span", null, "State: "),
+                                React.createElement("span", { style: { color: this.state.extraValid ? 'green' : 'red' } }, this.state.extraValid ? 'Valid' : 'Invalid')))))),
             React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.meta) })));
     }
 }

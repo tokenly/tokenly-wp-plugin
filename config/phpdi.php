@@ -3,6 +3,9 @@
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
+use Psr\Container\ContainerInterface;
+use function DI\factory;
+use Tokenly\Wp\Decorators\UserDecorator;
 
 return array(
 	Environment::class => function () {

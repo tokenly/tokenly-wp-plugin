@@ -76,9 +76,17 @@ class BalanceService {
 			$meta_item['name'] = get_the_title();
 			$meta_item['image'] = get_the_post_thumbnail( $post_id, 'full' );
 			$meta_item['description'] = get_the_excerpt();
-			$asset = $this->meta_repository->show( $post_id, 'asset' );
+			$additional_meta = $this->meta_repository->index( $post_id, array(
+				'asset',
+				'extra',
+			) );
+			$asset = $additional_meta['asset'] ?? null;
+			$extra = $additional_meta['extra'] ?? null;
 			if ( $asset ) {
 				$meta_item['asset'] = $asset;
+				if ( $extra ) {
+					$meta_item['extra'] = $extra;
+				}
 				if ( $balances_keyed[ $asset ] ?? null ) {
 					$balances_keyed[ $asset ]['meta'] = $meta_item;
 				}

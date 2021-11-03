@@ -40,8 +40,8 @@ export interface WhitelistData {
 }
 
 export interface SourceData {
-	address: string,
-	assets: string,
+	address: string;
+	assets: string;
 }
 
 export interface TokenMetaData {
@@ -57,11 +57,11 @@ export interface UserSuggestion {
 // API Interfaces
 
 export interface UserShowParams {
-	id: number,
+	id: number;
 }
 
 export interface UserIndexParams {
-	name: string,
+	name: string;
 }
 
 export interface PromiseStoreParams {
@@ -108,7 +108,12 @@ export interface Redirect {
 } 
 
 export interface ConfirmModalData {
-	key: string,
-	title: string,
-	subtitle: string,
+	key: string;
+	title: string;
+	subtitle: string;
+}
+
+export interface Attribute {
+	key: string;
+	value: string;
 }

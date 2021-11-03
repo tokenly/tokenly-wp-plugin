@@ -54,7 +54,7 @@ class UserRepository {
 		return $suggestions;
 	}
 
-	public function show( $user_id ) {
+	public function show( $user_id = 0 ) {
 		$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
 		if ( !$oauth_token ) {
 			return;
