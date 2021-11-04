@@ -27,9 +27,9 @@ class CardTokenItemComponent extends Component {
 			$description = $meta['description'] ?? null;
 			$image = $meta['image'] ?? null;
 			$extra = $meta['extra'] ?? null;
-			if ( $extra ) {
-				$extra = wp_unslash( json_encode( $extra, JSON_PRETTY_PRINT ) );
-			}
+			// if ( $extra ) {
+			// 	$extra = wp_unslash( json_encode( $extra, JSON_PRETTY_PRINT ) );
+			// }
 		} 
 		$html = $this->twig->render( 'components/CardTokenItemComponent.twig', array(
 			'asset'       => $asset,
@@ -37,7 +37,7 @@ class CardTokenItemComponent extends Component {
 			'description' => $description,
 			'image'       => $image,
 			'balance'     => $balance,
-			'extra'       => $extra,
+			// 'extra'       => $extra,
 		) );
 		return $html;
 	}

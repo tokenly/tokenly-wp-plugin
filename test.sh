@@ -1,2 +1,2 @@
-./vendor/bin/phpcs
+# ./vendor/bin/phpcs
 ./vendor/phpunit/phpunit/phpunit

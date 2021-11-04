@@ -28,8 +28,8 @@ interface TokenMetaEditPageState {
 	storingSource: boolean;
 	meta: TokenMetaData;
 	postId: number;
-	extraTemp: string;
-	extraValid: boolean,
+	// extraTemp: string;
+	// extraValid: boolean,
 }
 
 declare const wp: any;
@@ -43,35 +43,35 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 		storingSource: false,
 		meta: {} as any,
 		postId: null,
-		extraTemp: null,
-		extraValid: false,
+		// extraTemp: null,
+		// extraValid: false,
 	}
 	
 	constructor( props: TokenMetaEditPageProps ) {
 		super( props );
-		this.validateJSON = this.validateJSON.bind( this );
+		// this.validateJSON = this.validateJSON.bind( this );
 		const urlParams = new URLSearchParams(window.location.search);
 		const postId = parseInt( urlParams.get( 'post' ) );
 		this.state.postId = postId;
 		this.state.meta = Object.assign( this.state.meta, this.props.pageData.meta );
-		this.state.extraTemp = JSON.stringify( this.state.meta.extra, null, 2 );
-		this.state.extraValid = this.validateJSON( this.state.extraTemp );
+		// this.state.extraTemp = JSON.stringify( this.state.meta.extra, null, 2 );
+		// this.state.extraValid = this.validateJSON( this.state.extraTemp );
 	
 	}
 
-	validateJSON( json: any ) {
-		try {
-			JSON.parse ( json );
-			return true;
-		} catch (e) {
-			return false;
-		}
-	}
+	// validateJSON( json: any ) {
+	// 	try {
+	// 		JSON.parse ( json );
+	// 		return true;
+	// 	} catch (e) {
+	// 		return false;
+	// 	}
+	// }
 
-	componentDidMount() {
-		const textarea: any = document.querySelector(`textarea[name="extrameta"]`);
-		textarea.spellcheck = false;
-	}
+	// componentDidMount() {
+	// 	const textarea: any = document.querySelector(`textarea[name="extrameta"]`);
+	// 	textarea.spellcheck = false;
+	// }
 
 	render() {
 		return (
@@ -91,7 +91,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 									}}
 									style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
 								/>
-								<TextareaControl 
+								{/* <TextareaControl 
 									value={ this.state.extraTemp }
 									label="Extra"
 									help="JSON object"
@@ -117,7 +117,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 								/>
 								<div className="json-status">
 									<span>State: </span><span style={ { color: this.state.extraValid ? 'green' : 'red' } }>{ this.state.extraValid ? 'Valid' : 'Invalid' }</span>
-								</div>
+								</div> */}
 							</div>
 						</PanelRow>
 					</PanelBody>

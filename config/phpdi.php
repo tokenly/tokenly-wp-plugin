@@ -17,12 +17,12 @@ return array(
 		return $twig;
 	},
 	TokenpassAPI::class => function () {
-		$client_id;
-		$client_secret;
-		$privileged_client_id;
-		$privileged_client_secret;
-		$oauth_client_id;
-		$oauth_client_secret;
+		$client_id = '';
+		$client_secret = '';
+		$privileged_client_id = '';
+		$privileged_client_secret = '';
+		$oauth_client_id = '';
+		$oauth_client_secret = '';
 		$settings = get_option( 'tokenpass_settings' );
 		if ( $settings ) {
 			$client_id = $settings['client_id'] ?? null;
