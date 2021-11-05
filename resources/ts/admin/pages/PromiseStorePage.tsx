@@ -62,6 +62,12 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	
 	render() {
 		const sources = Object.keys( this.props.pageData.sources ).map( ( key: any ) => this.props.pageData.sources[key] ) as any;
+		sources.push( 
+			{
+				label: null,
+				value: null,
+			},
+		);
 		return (
 			<Page title={'Create token promise'}>
 				<div style={{marginBottom: '8px'}}>

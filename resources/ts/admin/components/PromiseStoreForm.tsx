@@ -80,7 +80,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						} }
 					/>
 				</div>
-				<div>
+				<div style={{ marginBottom: '12px' }}>
 					<SelectControl
 						label="Source address"
 						value={ this.state.promise.source }
@@ -90,7 +90,10 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 							state.source = value;
 							this.setState( { promise: state } );
 						} }
+						help="Source address to use"
 					/>
+				</div>
+				<div>
 					<TextControl
 						label="Asset ID"
 						help="Token to promise"

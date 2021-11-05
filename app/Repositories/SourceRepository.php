@@ -53,6 +53,9 @@ class SourceRepository implements SourceRepositoryInterface {
 		$type = $source['type'] ?? null;
 		$proof =  $address . '_' . $hash;
 		$assets = $source['assets'] ?? null;
+		if ( empty( $assets ) ) {
+			$assets = null;
+		}
 		try {
 			$this->client->registerProvisionalSource( $address, $type, $proof, $assets );
 			return true;
