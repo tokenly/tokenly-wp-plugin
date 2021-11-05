@@ -2,13 +2,13 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
-use Tokenly\Wp\Controllers\Web\WebController;
 use Tokenly\Wp\Views\Admin\DashboardView;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 
 /**
  * Serves the admin Dashboard view
  */
-class DashboardController extends WebController {
+class DashboardController implements DashboardControllerInterface {
 	public $dashboard_view;
 
 	public function __construct(

@@ -2,17 +2,21 @@
 
 namespace Tokenly\Wp\Routes;
 
+use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\PostTypes\TokenMetaPostType;
-use Tokenly\Wp\Controllers\Web\TokenMetaController;
-use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
+use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 
-class PostTypeRouter {
+/**
+ * Manages routing for the post type views
+ */
+class PostTypeRouter implements PostTypeRouterInterface {
 	public $routes;
 
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
-		TokenMetaController $token_meta_controller,
-		TokenMetaRepository $token_meta_repository
+		TokenMetaControllerInterface $token_meta_controller,
+		TokenMetaRepositoryInterface $token_meta_repository
 	) {
 		$this->post_types = array(
 			'token-meta' => array(

@@ -2,11 +2,12 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
-use Tokenly\Wp\Repositories\SourceRepository;
+use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 
-class SourceController {
+class SourceController implements SourceControllerInterface {
 	public function __construct(
-		SourceRepository $source_repository
+		SourceRepositoryInterface $source_repository
 	) {
 		$this->source_repository = $source_repository;
 	}
@@ -23,14 +24,14 @@ class SourceController {
 	}
 
 	public function update( $request ) {
-		$address = (string) $request['address'];
+		$address = ( string ) $request['address'];
 		$params = $request->get_params();
 		$source = $this->source_repository->update( $address, $params );
 		return $source;
 	}
 
 	public function destroy( $request ) {
-		$address = (string) $request['address'];
+		$address = ( string ) $request['address'];
 		$this->source_repository->destroy( $address );
 		return array(
 			'status' => "Address successfully destroyed!",

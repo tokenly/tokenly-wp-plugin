@@ -2,32 +2,32 @@
 
 namespace Tokenly\Wp\Routes;
 
-use Tokenly\Wp\Services\AuthService;
-
-use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
-use Tokenly\Wp\Controllers\Web\Admin\VendorController;
-use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
-use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
-use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
-use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
-use Tokenly\Wp\Controllers\Web\Admin\SourceController;
+use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
+use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
 
 /**
  * Manages routing for the WordPress admin pages
  */
-class AdminRouter {
+class AdminRouter implements AdminRouterInterface {
 	public $routes;
 	public $redirects = array();
 
 	public function __construct(
-		AuthService $auth_service,
-		DashboardController $dashboard_controller,
-		VendorController $vendor_controller,
-		WhitelistController $whitelist_controller,
-		ConnectionController $connection_controller,
-		SettingsController $settings_controller,
-		PromiseController $promise_controller,
-		SourceController $source_controller
+		AuthServiceInterface $auth_service,
+		DashboardControllerInterface $dashboard_controller,
+		VendorControllerInterface $vendor_controller,
+		WhitelistControllerInterface $whitelist_controller,
+		ConnectionControllerInterface $connection_controller,
+		SettingsControllerInterface $settings_controller,
+		PromiseControllerInterface $promise_controller,
+		SourceControllerInterface $source_controller
 	) {
 		$this->auth_service =$auth_service;
 		$this->controllers = array(

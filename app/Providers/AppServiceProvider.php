@@ -2,15 +2,17 @@
 
 namespace Tokenly\Wp\Providers;
 
-use Tokenly\Wp\Services\AuthService;
+use Tokenly\Wp\Providers\ServiceProvider;
+use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
+use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 
-class AppServiceProvider {
+class AppServiceProvider extends ServiceProvider implements AppServiceProviderInterface {
 	public $frontend_service;
 	public $admin_service;
 	public $auth_service;
 
 	public function __construct(
-		AuthService $auth_service
+		AuthServiceInterface $auth_service
 	) {
 		$this->auth_service = $auth_service;
 	}

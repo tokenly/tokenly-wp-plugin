@@ -3,9 +3,9 @@
 namespace Tokenly\Wp\Shortcodes;
 
 use Tokenly\Wp\Components\ButtonLoginComponent;
+use Tokenly\Wp\Shortcodes\Shortcode;
 
-class LoginButtonShortcode {
-	public $name = 'tokenpass_login';
+class LoginButtonShortcode extends Shortcode {
 	public $button_login_component;
 
 	public function __construct(

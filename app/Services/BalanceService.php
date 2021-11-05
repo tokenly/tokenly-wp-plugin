@@ -2,22 +2,23 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\Wp\Repositories\General\MetaRepository;
-use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
-use Tokenly\Wp\Repositories\WhitelistRepository;
+use Tokenly\Wp\Interfaces\Services\BalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 
 /**
  * Handles the token whitelist operations
  */
-class BalanceService {
+class BalanceService implements BalanceServiceInterface {
 	public $token_meta_repository;
 	public $meta_repository;
 	public $whitelist_repository;
 
 	public function __construct(
-		MetaRepository $meta_repository,
-		TokenMetaRepository $token_meta_repository,
-		WhitelistRepository $whitelist_repository
+		MetaRepositoryInterface $meta_repository,
+		TokenMetaRepositoryInterface $token_meta_repository,
+		WhitelistRepositoryInterface $whitelist_repository
 	) {
 		$this->token_meta_repository = $token_meta_repository;
 		$this->meta_repository = $meta_repository;

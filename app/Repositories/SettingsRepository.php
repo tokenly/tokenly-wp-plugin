@@ -2,16 +2,17 @@
 
 namespace Tokenly\Wp\Repositories;
 
-use Tokenly\Wp\Repositories\General\OptionRepository;
+use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
 
 /**
  * Manages plugin settings
  */
-class SettingsRepository {
+class SettingsRepository implements SettingsRepositoryInterface {
 	public $option_repository;
 
 	public function __construct(
-		OptionRepository $option_repository
+		OptionRepositoryInterface $option_repository
 	) {
 		$this->option_repository = $option_repository;
 	}

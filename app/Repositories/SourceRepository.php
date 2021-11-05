@@ -3,28 +3,38 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Repositories\SettingsRepository;
+use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 
 /**
  * Manages sources for promise type transactions
  */
-class SourceRepository {
+class SourceRepository implements SourceRepositoryInterface {
 	public $client;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		SettingsRepository $settings_repository
+		SettingsRepositoryInterface $settings_repository
 	) {
 		$this->client = $client;
 		$this->settings_repository = $settings_repository;
 	}
 
+	/**
+	 * Gets the source data by address
+	 * @param string $address Source address
+	 * @return array
+	 */
 	public function show( $address ) {
 		$sources = $this->index();
 		$source = $sources[ $address ] ?? null;
 		return $source;
 	}
 
+	/**
+	 * Gets the list of registered source addresses
+	 * @return array
+	 */
 	public function index() {
 		$sources = $this->client->getProvisionalSourceList();
 		return $sources;
@@ -52,10 +62,21 @@ class SourceRepository {
 		}
 	}
 
+	/**
+	 * Updates the exisiting source by address
+	 * @param string $address Address of source
+	 * @param array $params New source data
+	 * @return boolean
+	 */
 	public function update( $address, $params ) {
 		return $this->store( $params );
 	}
 
+	/**
+	 * Destroys the existing source by address
+	 * @param string $address
+	 * @return void
+	 */
 	public function destroy( $address ) {
 		$this->client->deleteProvisionalSource( $address );
 	}

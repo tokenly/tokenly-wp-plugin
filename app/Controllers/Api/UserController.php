@@ -2,11 +2,12 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
-use Tokenly\Wp\Repositories\UserRepository;
+use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
-class UserController {
+class UserController implements UserControllerInterface {
 	public function __construct(
-		UserRepository $user_repository
+		UserRepositoryInterface $user_repository
 	) {
 		$this->user_repository = $user_repository;
 	}

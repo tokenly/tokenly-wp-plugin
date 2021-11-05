@@ -2,13 +2,13 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Views\Admin\WhitelistView;
-use Tokenly\Wp\Controllers\Web\WebController;
 
 /**
  * Serves the admin Whitelist view
  */
-class WhitelistController extends WebController {
+class WhitelistController implements WhitelistControllerInterface {
 	public $whitelist_view;
 
 	public function __construct( WhitelistView $whitelist_view ) {

@@ -3,20 +3,21 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Repositories\General\UserMetaRepository;
-use Tokenly\Wp\Services\BalanceService;
+use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\BalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 /**
  * Manages token balance
  */
-class BalanceRepository {
+class BalanceRepository implements BalanceRepositoryInterface {
 	public $client;
 	public $user_meta_repository;
 	public $balance_service;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		UserMetaRepository $user_meta_repository,
-		BalanceService $balance_service
+		UserMetaRepositoryInterface $user_meta_repository,
+		BalanceServiceInterface $balance_service
 	) {
 		$this->client = $client;
 		$this->user_meta_repository = $user_meta_repository;

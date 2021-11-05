@@ -2,16 +2,16 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
-use Tokenly\Wp\Controllers\Web\WebController;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
 use Tokenly\Wp\Views\Admin\PromiseStoreView;
 use Tokenly\Wp\Views\Admin\PromiseEditView;;
-use Tokenly\Wp\Repositories\SourceRepository;
-use Tokenly\Wp\Repositories\PromiseRepository;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
 /**
  * Serves the admin promise views
  */
-class PromiseController extends WebController {
+class PromiseController implements PromiseControllerInterface {
 	public $promise_store_view;
 	public $promise_edit_view;
 	public $promise_repository;
@@ -20,8 +20,8 @@ class PromiseController extends WebController {
 	public function __construct(
 		PromiseStoreView $promise_store_view,
 		PromiseEditView $promise_edit_view,
-		SourceRepository $source_repository,
-		PromiseRepository $promise_repository
+		SourceRepositoryInterface $source_repository,
+		PromiseRepositoryInterface $promise_repository
 	) {
 		$this->promise_store_view = $promise_store_view;
 		$this->promise_edit_view = $promise_edit_view;

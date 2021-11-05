@@ -2,8 +2,6 @@
 
 namespace Tokenly\Wp\Decorators;
 
-use Encore\Product_Badges\Badge;
-
 class UserDecorator {
 
 	protected $_instance;

@@ -2,16 +2,16 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
-use Tokenly\Wp\Controllers\Web\WebController;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Views\Admin\SourceIndexView;
 use Tokenly\Wp\Views\Admin\SourceStoreView;
 use Tokenly\Wp\Views\Admin\SourceEditView;
-use Tokenly\Wp\Repositories\SourceRepository;
 
 /**
  * Serves the admin source views
  */
-class SourceController extends WebController {
+class SourceController implements SourceControllerInterface {
 	public $source_index_view;
 	public $source_store_view;
 	public $source_edit_view;
@@ -21,7 +21,7 @@ class SourceController extends WebController {
 		SourceIndexView $source_index_view,
 		SourceStoreView $source_store_view,
 		SourceEditView $source_edit_view,
-		SourceRepository $source_repository
+		SourceRepositoryInterface $source_repository
 	) {
 		$this->source_index_view = $source_index_view;
 		$this->source_store_view = $source_store_view;

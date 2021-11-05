@@ -2,10 +2,9 @@
 
 namespace Tokenly\Wp;
 
-use Tokenly\Wp\Providers\AppServiceProvider;
-use Tokenly\Wp\Providers\RouteServiceProvider;
-use Tokenly\Wp\Providers\ShortcodeServiceProvider;
-
+use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
+use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
+use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 
 class Bootstrap {
 	private $container;
@@ -18,9 +17,9 @@ class Bootstrap {
 
 	public function get_providers() {
 		return array(
-			AppServiceProvider::class,
-			RouteServiceProvider::class,
-			ShortcodeServiceProvider::class
+			AppServiceProviderInterface::class,
+			RouteServiceProviderInterface::class,
+			ShortcodeServiceProviderInterface::class
 		);
 	}
 

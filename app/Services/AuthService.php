@@ -2,16 +2,17 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\Wp\Services\UserService;
-use Tokenly\Wp\Repositories\SettingsRepository;
-use Tokenly\Wp\Repositories\General\UserMetaRepository;
+use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**
  * Handles the Tokenpass authentication flow (OAuth)
  */
-class AuthService {
+class AuthService implements AuthServiceInterface {
 	public $client;
 	public $user_service;
 	public $button_login_component;
@@ -19,10 +20,10 @@ class AuthService {
 
 	public function __construct(
 		TokenpassAPIInterface $client,
-		UserService $user_service,
-		ButtonLoginComponent $button_login_component,
-		SettingsRepository $settings_repository,
-		UserMetaRepository $user_meta_repository
+		UserServiceInterface $user_service,
+		SettingsRepositoryInterface $settings_repository,
+		UserMetaRepositoryInterface $user_meta_repository,
+		ButtonLoginComponent $button_login_component
 	) {
 		$this->client = $client;
 		$this->user_service = $user_service;

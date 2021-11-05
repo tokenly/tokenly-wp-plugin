@@ -3,19 +3,19 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Views\Admin\ConnectionView;
-use Tokenly\Wp\Controllers\Web\WebController;
-use Tokenly\Wp\Services\AuthService;
+use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 
 /**
  * Serves the admin Connection view
  */
-class ConnectionController extends WebController {
+class ConnectionController implements ConnectionControllerInterface {
 	public $connection_view;
 	public $auth_serivce;
 
 	public function __construct(
 		ConnectionView $connection_view,
-		AuthService $auth_serivce
+		AuthServiceInterface $auth_serivce
 	) {
 		$this->connection_view = $connection_view;
 		$this->auth_service = $auth_serivce;

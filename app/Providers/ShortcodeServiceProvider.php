@@ -2,10 +2,12 @@
 
 namespace Tokenly\Wp\Providers;
 
+use Tokenly\Wp\Providers\ServiceProvider;
+use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
 
-class ShortcodeServiceProvider {
+class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServiceProviderInterface {
 	public $shortcodes;
 
 	public function __construct(

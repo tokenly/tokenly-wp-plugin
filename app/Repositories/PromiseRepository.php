@@ -3,15 +3,16 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Repositories\UserRepository;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
-class PromiseRepository {
+class PromiseRepository implements PromiseRepositoryInterface {
 	public $client;
 	public $user_repository;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		UserRepository $user_repository
+		UserRepositoryInterface $user_repository
 	) {
 		$this->client = $client;
 		$this->user_repository = $user_repository;

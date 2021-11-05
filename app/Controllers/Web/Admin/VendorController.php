@@ -2,20 +2,20 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Views\Admin\VendorView;
-use Tokenly\Wp\Controllers\Web\WebController;
-use Tokenly\Wp\Repositories\PromiseRepository;
+use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
 /**
  * Serves the admin Vendor view
  */
-class VendorController extends WebController {
+class VendorController implements VendorControllerInterface {
 	public $vendor_view;
 	public $promise_repository;
 
 	public function __construct(
 		VendorView $vendor_view,
-		PromiseRepository $promise_repository
+		PromiseRepositoryInterface $promise_repository
 	) {
 		$this->vendor_view = $vendor_view;
 		$this->promise_repository = $promise_repository;

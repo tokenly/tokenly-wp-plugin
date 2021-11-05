@@ -2,21 +2,22 @@
 
 namespace Tokenly\Wp\Services;
 
+use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
-use Tokenly\Wp\Repositories\WhitelistRepository;
 
 /**
  * Handles the WordPress user operations
  */
-class UserService {
+class UserService implements UserServiceInterface {
 	public $client;
 	public $token_meta_repository;
 
 	public function __construct(
 		TokenpassAPIInterface $client,
-		TokenMetaRepository $token_meta_repository,
-		WhitelistRepository $whitelist_repository
+		TokenMetaRepositoryInterface $token_meta_repository,
+		WhitelistRepositoryInterface $whitelist_repository
 	) {
 		$this->client = $client;
 		$this->token_meta_repository = $token_meta_repository;

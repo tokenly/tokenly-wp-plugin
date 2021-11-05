@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Interfaces\Services;
+namespace Tokenly\Wp\Interfaces\Repositories;
 
 interface SourceRepositoryInterface {
 	public function show( $address );

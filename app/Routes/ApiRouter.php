@@ -2,24 +2,28 @@
 
 namespace Tokenly\Wp\Routes;
 
-use Tokenly\Wp\Controllers\Api\AuthController;
-use Tokenly\Wp\Controllers\Api\SettingsController;
-use Tokenly\Wp\Controllers\Api\WhitelistController;
-use Tokenly\Wp\Controllers\Api\PromiseController;
-use Tokenly\Wp\Controllers\Api\UserController;
-use Tokenly\Wp\Controllers\Api\SourceController;
+use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
 
-class ApiRouter {
+/**
+ * Manages routing for the REST API endpoints
+ */
+class ApiRouter implements ApiRouterInterface {
 	public $namespace = 'tokenly/v1';
 	public $controllers = array();
 
 	public function __construct(
-		AuthController $auth_controller,
-		SettingsController $settings_controller,
-		WhitelistController $whitelist_controller,
-		PromiseController $promise_controller,
-		SourceController $source_controller,
-		UserController $user_controller
+		AuthControllerInterface $auth_controller,
+		SettingsControllerInterface $settings_controller,
+		WhitelistControllerInterface $whitelist_controller,
+		PromiseControllerInterface $promise_controller,
+		SourceControllerInterface $source_controller,
+		UserControllerInterface $user_controller
 	) {
 		$this->controllers = array(
 			'auth'       => $auth_controller,
@@ -33,12 +37,20 @@ class ApiRouter {
 		$tokenly_routes['api'] = $this->get_route_urls();
 	}
 
+	/**
+	 * Registers the router
+	 * @return void
+	 */
 	public function register() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
+	/**
+	 * Gets all route definitions
+	 * @return array
+	 */
 	public function get_routes() {
-		return [
+		return array(
 			'authorize-status' => array(
 				'path' => '/authorize',
 				'args' => array(
@@ -208,10 +220,13 @@ class ApiRouter {
 					},
 				),
 			),
-		];
+		);
 	}
 	
-
+	/**
+	 * Get all route urls
+	 * @return array
+	 */
 	public function get_route_urls() {
 		$routes = $this->get_routes();
 		$urls = array();
@@ -222,6 +237,10 @@ class ApiRouter {
 		return $urls;
 	}
 	
+	/**
+	 * Registers all routes
+	 * @return void
+	 */
 	public function register_routes() {
 		$routes = $this->get_routes();
 		foreach ( $routes as $route ) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Interfaces\Services;
+namespace Tokenly\Wp\Interfaces\Repositories;
 
 interface WhitelistRepositoryInterface {
 	public function show();

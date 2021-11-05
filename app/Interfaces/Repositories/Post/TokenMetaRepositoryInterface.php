@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Interfaces\Services\Post;
+namespace Tokenly\Wp\Interfaces\Repositories\Post;
 
 interface TokenMetaRepositoryInterface {
 	public function index( $params );

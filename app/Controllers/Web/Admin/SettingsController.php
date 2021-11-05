@@ -2,13 +2,13 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
 use Tokenly\Wp\Views\Admin\SettingsView;
-use Tokenly\Wp\Controllers\Web\WebController;
 
 /**
  * Serves the admin settings view
  */
-class SettingsController extends WebController {
+class SettingsController implements SettingsControllerInterface {
 	public $settings_view;
 
 	public function __construct( SettingsView $settings_view ) {

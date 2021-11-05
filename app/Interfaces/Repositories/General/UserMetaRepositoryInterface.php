@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Interfaces\Services\General;
+namespace Tokenly\Wp\Interfaces\Repositories\General;
 
 interface UserMetaRepositoryInterface {
 	public function index( $user_id, $keys );

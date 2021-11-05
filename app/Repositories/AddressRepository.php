@@ -3,11 +3,12 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
+use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 
 /**
  * Manages blockchain addresses
  */
-class AddressRepository {
+class AddressRepository implements AddressRepositoryInterface {
 	public $client;
 	
 	public function __construct(

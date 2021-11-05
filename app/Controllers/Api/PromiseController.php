@@ -2,11 +2,15 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
-use Tokenly\Wp\Repositories\PromiseRepository;
+use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
-class PromiseController {
+/**
+ * Defines promise-related endpoints
+ */
+class PromiseController implements PromiseControllerInterface {
 	public function __construct(
-		PromiseRepository $promise_repository
+		PromiseRepositoryInterface $promise_repository
 	) {
 		$this->promise_repository = $promise_repository;
 	}

@@ -2,10 +2,14 @@
 
 namespace Tokenly\Wp\Routes;
 
-use Tokenly\Wp\Controllers\Web\UserController;
-use Tokenly\Wp\Controllers\Api\AuthController;
+use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
 
-class WebRouter {
+/**
+ * Manages routing for the public views
+ */
+class WebRouter implements WebRouterInterface {
 	public $rules = array();
 	public $vars = array();
 	public $routes = array();
@@ -14,8 +18,8 @@ class WebRouter {
 	public $auth_controller;
 
 	public function __construct(
-		UserController $user_controller,
-		AuthController $auth_controller
+		UserControllerInterface $user_controller,
+		AuthControllerInterface $auth_controller
 	) {
 		$this->auth_controller = $auth_controller;
 		$this->controllers = array(
@@ -24,10 +28,18 @@ class WebRouter {
 		);
 	}
 
+	/**
+	 * Register route service
+	 * @return void
+	 */
 	public function register() {
 		$this->register_routes();
 	}
 
+	/**
+	 * Get all web route definitions
+	 * @return array
+	 */
 	public function get_routes() {
 		return array(
 			'tokenly-user' => array(
@@ -60,6 +72,11 @@ class WebRouter {
 		);
 	}
 
+	/**
+	 * Merges the web route rewrite rules with the rest
+	 * of WordPress rewrite rules
+	 * @return void
+	 */
 	public function merge_rewrite_rules( $wp_rewrite ) {
 		$wp_rewrite->rules = array_merge(
 			$this->rules,
@@ -67,11 +84,21 @@ class WebRouter {
 		);
 	}
 
+	/**
+	 * Merges the web route query vars with the rest
+	 * of WordPress query vars
+	 * @return array
+	 */
 	public function merge_query_vars( $query_vars ) {
 		$query_vars = array_merge( $query_vars, $this->vars );
 		return $query_vars;
 	}
 
+	/**
+	 * Gets the template callback for
+	 * the current route
+	 * @return callable
+	 */
 	public function find_template( $template ) {
 		foreach ( $this->routes as $route ) {
 			$query_vars = $route['vars'] ?? null;
@@ -90,6 +117,10 @@ class WebRouter {
 		return $template;
 	}
 
+	/**
+	 * Registers all web routes
+	 * @return void
+	 */
 	public function register_routes() {
 		$this->routes = $this->get_routes();
 		foreach ( $this->routes as $route ) {

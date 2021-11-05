@@ -2,14 +2,15 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
-use Tokenly\Wp\Repositories\SettingsRepository;
+use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
 
-class SettingsController {
+class SettingsController implements SettingsControllerInterface {
 	public $update_schema;
 	public $settings_repository;
 	
 	public function __construct(
-		SettingsRepository $settings_repository
+		SettingsRepositoryInterface $settings_repository
 	) {
 		$this->settings_repository = $settings_repository;
 	}
@@ -27,22 +28,22 @@ class SettingsController {
 	}
 	
 	public function update_get_schema() {
-        if ( $this->update_schema ) {
-            return $this->update_schema;
-        }
-        $this->update_schema = array(
-            '$schema'              => 'http://json-schema.org/draft-04/schema#',
-            'title'                => 'settings-update',
-            'type'                 => 'object',
-            'properties'           => array(
-                'client_id' => array(
-                    'type'         => 'string',
-                ),
-                'client_secret' => array(
-                    'type'         => 'string',
-                ),
-            ),
-        );
-        return $this->update_schema;
-    }
+		if ( $this->update_schema ) {
+			return $this->update_schema;
+		}
+		$this->update_schema = array(
+			'$schema'              => 'http://json-schema.org/draft-04/schema#',
+			'title'                => 'settings-update',
+			'type'                 => 'object',
+			'properties'           => array(
+				'client_id' => array(
+					'type'         => 'string',
+				),
+				'client_secret' => array(
+					'type'         => 'string',
+				),
+			),
+		);
+		return $this->update_schema;
+	}
 }
