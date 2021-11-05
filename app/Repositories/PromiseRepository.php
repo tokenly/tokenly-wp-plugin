@@ -2,7 +2,7 @@
 
 namespace Tokenly\Wp\Repositories;
 
-use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Repositories\UserRepository;
 
 class PromiseRepository {
@@ -10,7 +10,7 @@ class PromiseRepository {
 	public $user_repository;
 	
 	public function __construct(
-		TokenpassAPI $client,
+		TokenpassAPIInterface $client,
 		UserRepository $user_repository
 	) {
 		$this->client = $client;

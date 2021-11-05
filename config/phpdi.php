@@ -3,6 +3,7 @@
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Psr\Container\ContainerInterface;
 use function DI\factory;
 use Tokenly\Wp\Decorators\UserDecorator;
@@ -16,7 +17,7 @@ return array(
 		) );
 		return $twig;
 	},
-	TokenpassAPI::class => function () {
+	TokenpassAPI::class => function ( ContainerInterface $c ) {
 		$client_id = '';
 		$client_secret = '';
 		$privileged_client_id = '';
@@ -34,7 +35,7 @@ return array(
 		}
 		$tokenpass_url = 'https://tokenpass.tokenly.com';
 		$redirect_uri = TOKENLY_PLUGIN_AUTH_REDIRECT_URI;
-		return new TokenpassAPI( 
+		$client = new TokenpassAPI( 
 			$client_id,
 			$client_secret,
 			$privileged_client_id,
@@ -44,5 +45,7 @@ return array(
 			$oauth_client_id,
 			$oauth_client_secret
 		);
+		return $client;
 	},
+	TokenpassAPIInterface::class => DI\get( TokenpassAPI::class ),
 );

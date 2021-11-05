@@ -2,7 +2,7 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
 use Tokenly\Wp\Repositories\WhitelistRepository;
 
@@ -14,7 +14,7 @@ class UserService {
 	public $token_meta_repository;
 
 	public function __construct(
-		TokenpassAPI $client,
+		TokenpassAPIInterface $client,
 		TokenMetaRepository $token_meta_repository,
 		WhitelistRepository $whitelist_repository
 	) {

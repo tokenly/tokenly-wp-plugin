@@ -2,7 +2,7 @@
 
 namespace Tokenly\Wp\Repositories;
 
-use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Repositories\General\UserMetaRepository;
 
 class UserRepository {
@@ -10,7 +10,7 @@ class UserRepository {
 	public $user_meta_repository;
 	
 	public function __construct(
-		TokenpassAPI $client,
+		TokenpassAPIInterface $client,
 		UserMetaRepository $user_meta_repository
 	) {
 		$this->client = $client;

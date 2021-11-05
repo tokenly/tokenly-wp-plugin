@@ -2,7 +2,7 @@
 
 namespace Tokenly\Wp\Repositories;
 
-use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Repositories\SettingsRepository;
 
 /**
@@ -12,7 +12,7 @@ class SourceRepository {
 	public $client;
 	
 	public function __construct(
-		TokenpassAPI $client,
+		TokenpassAPIInterface $client,
 		SettingsRepository $settings_repository
 	) {
 		$this->client = $client;
@@ -30,6 +30,11 @@ class SourceRepository {
 		return $sources;
 	}
 	
+	/**
+	 * Registers the source address for the current integration
+	 * @param array $source New source address data
+	 * @return boolean
+	 */
 	public function store( $source ) {
 		$settings = $this->settings_repository->show();
 		$client_id = $settings['client_id'] ?? null;
@@ -38,8 +43,13 @@ class SourceRepository {
 		$type = $source['type'] ?? null;
 		$proof =  $address . '_' . $hash;
 		$assets = $source['assets'] ?? null;
-		$result = $this->client->registerProvisionalSource( $address, $type, $proof, $assets );
-		return $result;
+		try {
+			$this->client->registerProvisionalSource( $address, $type, $proof, $assets );
+			return true;
+		}
+		catch ( exception $e ) {
+			return false;
+		}
 	}
 
 	public function update( $address, $params ) {

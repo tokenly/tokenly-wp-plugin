@@ -6,7 +6,7 @@ use Tokenly\Wp\Services\UserService;
 use Tokenly\Wp\Repositories\SettingsRepository;
 use Tokenly\Wp\Repositories\General\UserMetaRepository;
 use Tokenly\Wp\Components\ButtonLoginComponent;
-use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**
  * Handles the Tokenpass authentication flow (OAuth)
@@ -18,7 +18,7 @@ class AuthService {
 	public $settings_repository;
 
 	public function __construct(
-		TokenpassAPI $client,
+		TokenpassAPIInterface $client,
 		UserService $user_service,
 		ButtonLoginComponent $button_login_component,
 		SettingsRepository $settings_repository,

@@ -5,8 +5,9 @@ use Exception;
 use Requests;
 use GuzzleHttp\Client as HttpClient;
 use Tokenly\TokenpassClient\Exception\TokenpassAPIException;
+use Tokenly\TokenpassClient\TokenpassAPIInterfaceInterface;
 
-class TokenpassAPI
+class TokenpassAPI implements TokenpassAPIInterface
 {
     public $redirect_uri  = false;
     public static $errors = array();
@@ -457,7 +458,6 @@ class TokenpassAPI
             $params['type'] = $chain;
             $params['proof'] = $proof;
             $params['assets'] = $assets;
-			error_log(print_r( $params, true ));
             $valid_extra = array('assign_user', 'assign_user_hash', 'assign_user_label');
             foreach($valid_extra as $f){
                 if(isset($extra_opts[$f])){
@@ -467,7 +467,6 @@ class TokenpassAPI
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/register', $params);
         }
         catch (TokenpassAPIException $e){
-			error_log($e);
             self::$errors[] = $e->getMessage();
             throw new Exception($e->getMessage());
         }
@@ -1194,5 +1193,4 @@ class TokenpassAPI
       //return output
       return $json;
     }
-
 }

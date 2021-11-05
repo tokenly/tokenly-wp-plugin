@@ -2,7 +2,7 @@
 
 namespace Tokenly\Wp\Repositories;
 
-use Tokenly\TokenpassClient\TokenpassAPI;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Repositories\General\UserMetaRepository;
 use Tokenly\Wp\Services\BalanceService;
 /**
@@ -14,7 +14,7 @@ class BalanceRepository {
 	public $balance_service;
 	
 	public function __construct(
-		TokenpassAPI $client,
+		TokenpassAPIInterface $client,
 		UserMetaRepository $user_meta_repository,
 		BalanceService $balance_service
 	) {
