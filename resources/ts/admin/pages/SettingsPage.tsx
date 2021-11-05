@@ -16,6 +16,7 @@ import {
 interface SettingsPageData {
 	app_homepage_url: string;
 	client_auth_url: string;
+	settings_data: SettingsData;
 }
 
 interface SettingsPageProps {
@@ -41,6 +42,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	constructor( props: SettingsPageProps ) {
 		super( props );
 		this.onSave = this.onSave.bind( this );
+		this.state.settingsData = Object.assign( this.state.settingsData, this.props.pageData.settings_data );
 	}
 	
 	setClientId( value: string ) {
@@ -53,14 +55,6 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		let state = Object.assign( {}, this.state );
 		state.settingsData.client_secret = value;
 		this.setState( state );
-	}
-	
-	componentDidMount() {
-		this.settingsRepository.show().then( ( settingsData: SettingsData ) => {
-			this.setState( {
-				settingsData: settingsData,
-			} );
-		} );
 	}
 	
 	onSave() {
@@ -95,7 +89,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 							<div style={{flex: '1', maxWidth: '468px', marginTop: '12px'}}>
 								<TextControl
 									label="Client ID"
-									value={ this.state.settingsData.client_id }
+									value={ this.state.settingsData.client_id ?? '' }
 									onChange={ ( value: string ) => {
 										this.setClientId( value );
 										}
@@ -103,7 +97,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 								/>
 								<TextControl
 									label="Client Secret"
-									value={ this.state.settingsData.client_secret }
+									value={ this.state.settingsData.client_secret ?? '' }
 									onChange={ ( value: string ) => {
 											this.setClientSecret( value );
 										}

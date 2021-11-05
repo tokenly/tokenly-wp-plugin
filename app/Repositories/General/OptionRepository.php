@@ -31,7 +31,7 @@ class OptionRepository implements OptionRepositoryInterface {
 	 */
 	public function show( $key ) {
 		$key_namespaced = $this->namespace_key( $key );
-		$option = get_option( $key_namespaced );
+		$option = get_option( $key_namespaced, null );
 		return $option;
 	}
 

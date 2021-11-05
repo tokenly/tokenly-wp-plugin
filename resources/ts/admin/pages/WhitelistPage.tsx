@@ -14,8 +14,12 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
+interface WhitelistPageData {
+	whitelist: WhitelistData;
+}
+
 interface WhitelistPageProps {
-	//
+	pageData: WhitelistPageData; 
 }
 
 interface WhitelistPageState {
@@ -45,14 +49,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 		this.onSave = this.onSave.bind( this );
 		this.onWhitelistChange = this.onWhitelistChange.bind( this );
 		this.setUseWhitelist = this.setUseWhitelist.bind( this );
-	}
-	
-	componentDidMount() {
-		this.whitelistRepository.show().then( ( whitelistData: WhitelistData ) => {
-			this.setState( {
-				whitelistData: whitelistData,
-			} );
-		} );
+		this.state.whitelistData = Object.assign( this.state.whitelistData, this.props.pageData.whitelist );
 	}
 	
 	onWhitelistChange( newWhitelist: Array<WhitelistItem> ) {
