@@ -1,20 +1,20 @@
 import { container } from "./Inversify.config";
-import '/resources/scss/Admin.scss';
+import './../scss/Admin.scss';
 import { Provider } from 'inversify-react';
 import * as React from 'react';
 import App from './App';
-import AppLayout from './layouts/AppLayout';
-import SettingsPage from './admin/pages/SettingsPage';
-import VendorPage from './admin/pages/VendorPage';
-import ConnectionPage from './admin/pages/ConnectionPage';
-import WhitelistPage from './admin/pages/WhitelistPage';
-import PromiseStorePage from './admin/pages/PromiseStorePage';
-import PromiseEditPage from './admin/pages/PromiseEditPage';
-import SourceIndexPage from './admin/pages/SourceIndexPage';
-import SourceStorePage from './admin/pages/SourceStorePage';
-import SourceEditPage from './admin/pages/SourceEditPage';
-import DashboardPage from './admin/pages/DashboardPage';
-import TokenMetaEditPage from './admin/pages/TokenMetaEditPage';
+import AppLayout from './Layouts/AppLayout';
+import SettingsPage from './Admin/Pages/SettingsPage';
+import VendorPage from './Admin/Pages/VendorPage';
+import ConnectionPage from './Admin/Pages/ConnectionPage';
+import WhitelistPage from './Admin/Pages/WhitelistPage';
+import PromiseStorePage from './Admin/Pages/PromiseStorePage';
+import PromiseEditPage from './Admin/Pages/PromiseEditPage';
+import SourceIndexPage from './Admin/Pages/SourceIndexPage';
+import SourceStorePage from './Admin/Pages/SourceStorePage';
+import SourceEditPage from './Admin/Pages/SourceEditPage';
+import DashboardPage from './Admin/Pages/DashboardPage';
+import TokenMetaEditPage from './Admin/Pages/TokenMetaEditPage';
 import { Redirect } from './Interfaces';
 
 declare const document: any;
@@ -23,8 +23,6 @@ declare const window: any;
 import { 
 	render,
 } from '@wordpress/element';
-
-
 
 class AdminApp extends App {
 	container = container;

@@ -1,5 +1,5 @@
 import App from "./App";
-import '/resources/scss/Frontend.scss';
+import './../scss/Frontend.scss';
 
 class FrontendApp extends App {
 	constructor() {

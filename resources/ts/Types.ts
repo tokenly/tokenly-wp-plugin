@@ -1,9 +1,14 @@
 const TYPES = {
-	AuthService: Symbol.for("AuthService"),
-    SettingsService: Symbol.for("SettingsService"),
-	WhitelistService: Symbol.for("WhitelistService"),
-    ButtonLoginComponent: Symbol.for("ButtonLoginComponent"),
-	ComponentProvider: Symbol.for("ComponentProvider"),
+	AuthServiceInterface               : Symbol.for( 'AuthServiceInterface' ),
+	AdminApiServiceInterface           : Symbol.for( 'AdminApiServiceInterface' ),
+	PromiseRepositoryInterface         : Symbol.for( 'PromiseRepositoryInterface' ),
+	SettingsRepositoryInterface        : Symbol.for( 'SettingsRepositoryInterface' ),
+	SourceRepositoryInterface          : Symbol.for( 'SourceRepositoryInterface' ),
+	TokenMetaRepositoryInterface       : Symbol.for( 'TokenMetaRepositoryInterface' ),
+	UserRepositoryInterface            : Symbol.for( 'UserRepositoryInterface' ),
+	WhitelistRepositoryInterface       : Symbol.for( 'WhitelistRepositoryInterface' ),
+	ComponentServiceProviderInterface  : Symbol.for( 'ComponentServiceProviderInterface' ),
+	ButtonLoginComponentInterface      : Symbol.for( 'ButtonLoginComponentInterface' ),
 };
 
 export { TYPES };

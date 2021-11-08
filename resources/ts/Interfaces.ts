@@ -1,7 +1,3 @@
-export interface Provider {
-	register(): void;
-}
-
 export interface Redirect {
 	from: string;
 	to: string;
@@ -53,8 +49,6 @@ export interface UserSuggestion {
 	id: number;
 	name: string;
 }
-
-// API Interfaces
 
 export interface UserShowParams {
 	id: number;
@@ -116,4 +110,13 @@ export interface ConfirmModalData {
 export interface Attribute {
 	key: string;
 	value: string;
+}
+
+export interface AuthData {
+	status: boolean,
+}
+
+export interface ComponentData {
+	name: string,
+	selector: string,
 }

@@ -1,24 +1,25 @@
 import { container } from './Inversify.config';
 import '/resources/scss/Main.scss';
+import { TYPES } from './Types'; 
 
-import { ComponentProvider } from './providers/ComponentProvider';
+import { ServiceProviderInterface } from './Interfaces/Providers/ServiceProviderInterface';
 
 export default class App {
 	container = container;
 	constructor() {
-		const componentProvider = this.container.get( ComponentProvider );
-		componentProvider.register();
+		this.registerProviders();
 	}
 	
 	get providers() {
 		return [
-			ComponentProvider,
+			TYPES.ComponentServiceProviderInterface,
 		] as Array<any>;
 	}
 	
 	registerProviders() {
 		this.providers.forEach( provider => {
-			provider.register();
+			const providerInstance = this.container.get( provider ) as ServiceProviderInterface;
+			providerInstance.register();
 		} )
 	}
 }
