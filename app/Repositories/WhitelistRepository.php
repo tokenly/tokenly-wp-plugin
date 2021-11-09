@@ -9,7 +9,7 @@ use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
  * Manages token whitelist
  */
 class WhitelistRepository implements WhitelistRepositoryInterface {
-	public $option_repository;
+	protected $option_repository;
 
 	public function __construct(
 		OptionRepositoryInterface $option_repository

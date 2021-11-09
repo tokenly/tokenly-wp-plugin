@@ -557,12 +557,10 @@ class TokenpassAPI implements TokenpassAPIInterface
                 $params['fingerprint'] = $fingerprint;
             }
             $params['ref'] = $ref;
-			error_log(print_r( $params, true ));
             $call = $this->fetchFromTokenpassAPI('POST', 'tca/provisional/tx', $params);
         }
         catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
-			error_log( $e );
             return false;
         }
         if(!isset($call['result'])){
@@ -683,7 +681,6 @@ class TokenpassAPI implements TokenpassAPIInterface
             $response = $this->fetchFromTokenpassAPI('GET', 'tca/public/balances', $params, $oauth_token);
         } catch (TokenpassAPIException $e) {
             self::$errors[] = $e->getMessage();
-			error_log($e->getMessage());
             return false;
         }
         return $response;

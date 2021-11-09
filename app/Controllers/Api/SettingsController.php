@@ -5,6 +5,9 @@ namespace Tokenly\Wp\Controllers\Api;
 use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
 
+/**
+ * Handles the settings REST API endpoints
+ */
 class SettingsController implements SettingsControllerInterface {
 	public $update_schema;
 	public $settings_repository;
@@ -36,7 +39,7 @@ class SettingsController implements SettingsControllerInterface {
 			'title'                => 'settings-update',
 			'type'                 => 'object',
 			'properties'           => array(
-				'client_id' => array(
+				'client_id'     => array(
 					'type'         => 'string',
 				),
 				'client_secret' => array(

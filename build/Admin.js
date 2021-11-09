@@ -5662,6 +5662,7 @@ class UserSearchField extends react_1.Component {
         }
         this.setState({ keywords: keywords });
         this.userRepository.index({
+            suggestions: true,
             name: keywords,
         }).then((results) => {
             if (results.length <= 0) {
@@ -6002,6 +6003,7 @@ class PromiseEditPage extends react_1.Component {
         this.onDelete = this.onDelete.bind(this);
         this.deletePromise = this.deletePromise.bind(this);
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
+        this.onCancel = this.onCancel.bind(this);
     }
     return() {
         window.location = '/wp-admin/admin.php?page=tokenpass-vendor';

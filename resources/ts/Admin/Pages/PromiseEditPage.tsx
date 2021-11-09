@@ -45,6 +45,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 		this.onDelete = this.onDelete.bind( this );
 		this.deletePromise = this.deletePromise.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
+		this.onCancel = this.onCancel.bind( this );
 	}
 
 	return() {

@@ -10,9 +10,9 @@ use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
  * Manages token balance
  */
 class BalanceRepository implements BalanceRepositoryInterface {
-	public $client;
-	public $user_meta_repository;
-	public $balance_service;
+	protected $client;
+	protected $user_meta_repository;
+	protected $balance_service;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -39,6 +39,7 @@ class BalanceRepository implements BalanceRepositoryInterface {
 			return;
 		}
 		$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+		error_log(print_r( $balances, true ));
 		if ( $whitelist == true ) {
 			$balances = $this->balance_service->apply_whitelist( $balances );
 		}

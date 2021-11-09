@@ -5,41 +5,56 @@ namespace Tokenly\Wp\Repositories;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Factories\PromiseFactoryInterface;
 
 class PromiseRepository implements PromiseRepositoryInterface {
-	public $client;
-	public $user_repository;
+	protected $client;
+	protected $user_repository;
+	protected $promise_factory;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		UserRepositoryInterface $user_repository
+		UserRepositoryInterface $user_repository,
+		PromiseFactoryInterface $promise_factory
 	) {
 		$this->client = $client;
 		$this->user_repository = $user_repository;
+		$this->promise_factory = $promise_factory;
 	}
 
 	/**
 	 * Fetches all currently promised transactions
-	 * @return array $promises
+	 * @return PromiseInterface[] Promises found
 	 */
 	public function index() {
 		$promises = $this->client->getPromisedTransactionList();
+		if ( !$promises ) {
+			return;
+		}
+		$promises = array_map( function( $promise ) {
+			return $this->promise_factory->create( $promise );
+		}, $promises );
 		return $promises;
 	}
 
 	/**
 	 * Fetches the specific promised transaction
-	 * @param $promise_id Tokenpass promise index
-	 * @return array $promise
+	 * @param integer $promise_id Tokenpass promise index
+	 * @return PromiseInterface Promise found
 	 */
 	public function show( $promise_id ) {
 		$promise = $this->client->getPromisedTransaction( $promise_id );
+		if ( !$promise ) {
+			return;
+		}
+		$promise = $this->promise_factory->create( $promise );
 		return $promise;
 	}
 
 	/**
 	 * Updates the existing promised transaction
-	 * @param $promise_id Tokenpass promise index
+	 * @param integer $promise_id Tokenpass promise index
 	 * @param $params New promise properties
 	 * @return array
 	 */
@@ -82,7 +97,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 
 	/**
 	 * Destroys the existing promise
-	 * @param $promise_id Tokenpass promise index
+	 * @param integer $promise_id Tokenpass promise index
 	 * @return void
 	 */
 	public function destroy( $promise_id ) {

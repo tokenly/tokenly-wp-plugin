@@ -6,21 +6,24 @@ use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
 use Tokenly\Wp\Views\UserView;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Serves the public user views
  */
 class UserController implements UserControllerInterface {
-	public $balance_repository;
-	public $user_service;
-	public $user_view;
+	protected $balance_repository;
+	protected $user_repository;
+	protected $user_service;
+	protected $user_view;
 
 	public function __construct(
 		BalanceRepositoryInterface $balance_repository,
+		UserRepositoryInterface $user_repository,
 		UserServiceInterface $user_service,
 		UserView $user_view
 	) {
-		$this->balance_repository = $balance_repository;
+		$this->user_repository = $user_repository;
 		$this->user_service = $user_service;
 		$this->user_view = $user_view;
 	}
@@ -34,7 +37,13 @@ class UserController implements UserControllerInterface {
 		if ( !$user_id ) {
 			return;
 		}
-		$balances = $this->balance_repository->index( $user_id, true, true ) ?? array();
+		$user = $this->user_repository->show( array(
+			'id' => $user_id,
+		) );
+		if ( !$user ) {
+			return;
+		}
+		$balances = $user->get_balances();
 		$render = $this->user_view->render( array(
 			'balances' => $balances,
 		) );

@@ -3,5 +3,5 @@
 namespace Tokenly\Wp\Interfaces\Repositories;
 
 interface BalanceRepositoryInterface {
-	public function index( $user_id, $whitelist = true, $meta = true );
+	public function index( $user_id, $whitelist, $meta );
 }

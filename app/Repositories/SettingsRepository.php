@@ -9,7 +9,7 @@ use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
  * Manages plugin settings
  */
 class SettingsRepository implements SettingsRepositoryInterface {
-	public $option_repository;
+	protected $option_repository;
 
 	public function __construct(
 		OptionRepositoryInterface $option_repository

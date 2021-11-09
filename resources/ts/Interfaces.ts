@@ -55,6 +55,7 @@ export interface UserShowParams {
 }
 
 export interface UserIndexParams {
+	suggestions: boolean;
 	name: string;
 }
 

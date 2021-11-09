@@ -190,7 +190,6 @@ class AuthService implements AuthServiceInterface {
 				return;
 			}
 			$this->set_state( $state );
-			error_log($url);
 			return array(
 				'url' => $url,
 			);

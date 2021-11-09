@@ -50,6 +50,7 @@ export class UserSearchField extends Component<UserSearchFieldProps, UserSearchF
 		}
 		this.setState( { keywords: keywords } );
 		this.userRepository.index({
+			suggestions: true,
 			name: keywords,
 		}).then( ( results: Array<UserSuggestion> ) => {
 			if ( results.length <= 0 ) {

@@ -1,6 +1,5 @@
 <?php
 use Psr\Container\ContainerInterface;
-use Tokenly\Wp\Decorators\UserDecorator;
 use Tokenly\Wp\Providers\AppServiceProvider;
 use Tokenly\Wp\Providers\RouteServiceProvider;
 use Tokenly\Wp\Providers\ShortcodeServiceProvider;
@@ -37,6 +36,12 @@ use Tokenly\Wp\Controllers\Api\SettingsController as SettingsApiController;
 use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\WhitelistController as WhitelistApiController;
+use Tokenly\Wp\Decorators\UserDecorator;
+use Tokenly\Wp\Models\Source;
+use Tokenly\Wp\Models\Promise;
+use Tokenly\Wp\Factories\UserFactory;
+use Tokenly\Wp\Factories\SourceFactory;
+use Tokenly\Wp\Factories\PromiseFactory;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
@@ -73,6 +78,12 @@ use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface as Setting
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as WhitelistApiControllerInterface;
+use Tokenly\Wp\Interfaces\Factories\UserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\PromiseFactoryInterface;
+use Tokenly\Wp\Interfaces\Decorators\UserDecoratorInterface;
+use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
@@ -121,29 +132,48 @@ return array(
 	ApiRouterInterface::class                 => \DI\autowire( ApiRouter::class ),
 	PostTypeRouterInterface::class            => \DI\autowire( PostTypeRouter::class ),
 	WebRouterInterface::class                 => \DI\autowire( WebRouter::class ),
+	//Decorators
+	UserDecoratorInterface::class             => \DI\autowire( UserDecorator::class ),
+	//Models
+	BalanceInterface::class                   => \DI\autowire( Balance::class ), 
+	SourceInterface::class                    => \DI\autowire( Source::class ), 
+	PromiseInterface::class                   => \DI\autowire( Promise::class ),
+	//Factories - abstract
+	BalanceFactoryInterface::class            => \DI\autowire( BalanceFactory::class )
+		->constructorParameter( 'factory', Di\get( PromiseFactoryConcrete::class ) ),
+	PromiseFactoryInterface::class            => \DI\autowire( PromiseFactory::class )
+		->constructorParameter( 'factory', Di\get( BalanceFactoryConcrete::class ) ),
+	SourceFactoryInterface::class             => \DI\autowire( SourceFactory::class )
+		->constructorParameter( 'factory', Di\get( SourceFactoryConcrete::class ) ),
+	UserFactoryInterface::class               => \DI\autowire( UserFactory::class )
+		->constructorParameter( 'factory', Di\get( UserFactoryConcrete::class ) ),
+	//Factories - concrete
+	BalanceFactoryConcrete::class             => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', BalanceInterface::class ),
+	PromiseFactoryConcrete::class             => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', PromiseInterface::class ),
+	SourceFactoryConcrete::class              => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', SourceInterface::class ),
+	UserFactoryConcrete::class                => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', UserDecoratorInterface::class ),
 	//Third-party
-	TokenpassAPI::class => function ( 
+	TokenpassAPI::class                       => function ( 
 		ContainerInterface $container,
 		SettingsRepositoryInterface $settings_repository
 	) {
-		$client_id = '';
-		$client_secret = '';
-		$privileged_client_id = '';
-		$privileged_client_secret = '';
-		$oauth_client_id = '';
-		$oauth_client_secret = '';
 		$settings = $settings_repository->show();
-		if ( $settings ) {
-			$client_id = $settings['client_id'] ?? null;
-			$client_secret = $settings['client_secret'] ?? null;
-			$privileged_client_id = $client_id;
-			$privileged_client_secret = $client_secret;
-			$oauth_client_id = $client_id;
-			$oauth_client_secret = $client_secret;
+		if ( !$settings ) {
+			return;
 		}
+		$client_id = $settings['client_id'] ?? null;
+		$client_secret = $settings['client_secret'] ?? null;
+		$privileged_client_id = $client_id;
+		$privileged_client_secret = $client_secret;
+		$oauth_client_id = $client_id;
+		$oauth_client_secret = $client_secret;
 		$tokenpass_url = 'https://tokenpass.tokenly.com';
 		$redirect_uri = TOKENLY_PLUGIN_AUTH_REDIRECT_URI;
-		$client = new TokenpassAPI( 
+		return new TokenpassAPI( 
 			$client_id,
 			$client_secret,
 			$privileged_client_id,
@@ -153,7 +183,6 @@ return array(
 			$oauth_client_id,
 			$oauth_client_secret
 		);
-		return $client;
 	},
 	TokenpassAPIInterface::class => DI\get( TokenpassAPI::class ),
 	Environment::class => function () {
@@ -165,3 +194,17 @@ return array(
 		return $twig;
 	},
 );
+
+class RootFactory {
+	protected $container;
+	protected $class;
+
+	public function __construct( ContainerInterface $container, $class ) {
+		$this->container = $container;
+		$this->class = $class;
+	}
+
+	public function create( $params ) {
+		return $this->container->make( $this->class, $params );
+	}
+}
