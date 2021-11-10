@@ -12,10 +12,10 @@ class CardTokenItemComponent extends Component {
 
 	public function render( $data ) {
 		$balance = $data['balance'] ?? null;
-		$meta = $balance['meta'] ?? null;
-		$name = $balance['name'] ?? null;
-		$asset = $balance['asset'] ?? null;
-		$balance = $balance['balance'] ?? null;
+		$meta = $balance->meta ?? null;
+		$name = $balance->name;
+		$asset = $balance->asset;
+		$balance = $balance->balance;
 		$description = '';
 		$extra = '';
 		$image = '';

@@ -23,15 +23,36 @@ class UserRepository implements UserRepositoryInterface {
 	}
 
 	public function index( $params ) {
-		$args = $this->get_base_query_args();
-		$name = $params['name'] ?? null;
-		if ( $name ) {
-			$args = array_merge( $args, $this->get_name_query_args( $name ) );
+		$args = array(
+			'orderby'    => 'ID',
+			'order'      => 'ASC',
+			'meta_query' => array(),
+		);
+		if ( isset( $params['uuid'] ) ) {
+			$args['meta_query'][] = array(
+				'key'     => $this->user_meta_repository->namespace_key( 'uuid' ),
+				'compare' => 'EXISTS',
+			);
+		}
+		if ( isset( $params['name'] ) ) {
+			$args = array_merge( $args, array(
+				'search' => '*'.esc_attr( $params['name'] ).'*',
+				'search_columns' => array(
+					'user_login',
+				),
+			) );
+		}
+		if ( isset( $params['email'] ) ) {
+			$args = array_merge( $args, array(
+				'search' => '*'.esc_attr( $params['email'] ).'*',
+				'search_columns' => array(
+					'user_email',
+				),
+			) );
 		}
 		$query = new \WP_User_Query( $args );
 		$users = $query->get_results();
-		$use_suggestions = $params['suggestions'] ?? null;
-		if ( $use_suggestions == true ) {
+		if ( isset( $params['suggestions'] ) ) {
 			$suggestions = $this->make_suggestions( $users );
 			return $suggestions;
 		}
@@ -39,51 +60,14 @@ class UserRepository implements UserRepositoryInterface {
 		return $users;
 	}
 
-	public function show( $params = array() ) {
-		$value = $params['id'] ?? null;
-		$field;
-		if ( $value ) {
-			$field = 'id';
-			if ( $value == 'me' ) {
-				$value = get_current_user_id();
-			}
-		} elseif ( true ) {
-			//
-		}
-		if ( !$field || !$value ) {
-			return;
-		}
-		$user = get_user_by( $field, $value );
-		if ( !$user ) {
-			return;
-		}
-		$user = $this->decorate_user( $user );
-		return $user;
-	}
-
-	protected function get_base_query_args() {
-		return array(
-			'orderby'    => 'ID',
-			'order'      => 'ASC',
-			'meta_query' => array(
-				array(
-					'key'     => $this->user_meta_repository->namespace_key( 'uuid' ),
-					'compare' => 'EXISTS',
-				),
-			),
-		);
+	public function show( $params ) {
+		$users = $this->index( $params );
+		return $users[0] ?? null;
 	}
 
 	protected function decorate_user( $user ) {
-		$user_id = $user->ID;
-		$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
-		if ( !$oauth_token ) {
-			return;
-		}
-		$tokenpass_user = $this->client->getUserByToken( $oauth_token );
 		return $this->user_factory->create( array(
-			'user'           => $user,
-			'tokenpass_user' => $tokenpass_user,
+			'user' => $user,
 		) );
 	}
 
@@ -91,18 +75,6 @@ class UserRepository implements UserRepositoryInterface {
 		return array_map ( function( $user ) {
 			return $this->decorate_user( $user );
 		}, $users );
-	}
-
-	protected function get_name_query_args( $name ) {
-		return array( 
-			'search'         => '*'.esc_attr( $name ).'*',
-			'search_columns' => array(
-				'user_login',
-				'user_nicename',
-				'user_email',
-				'user_url',
-			),
-		);
 	}
 
 	protected function make_suggestions( $users ) {

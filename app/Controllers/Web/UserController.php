@@ -3,7 +3,6 @@
 namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
-use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
 use Tokenly\Wp\Views\UserView;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
@@ -20,11 +19,9 @@ class UserController implements UserControllerInterface {
 	public function __construct(
 		BalanceRepositoryInterface $balance_repository,
 		UserRepositoryInterface $user_repository,
-		UserServiceInterface $user_service,
 		UserView $user_view
 	) {
 		$this->user_repository = $user_repository;
-		$this->user_service = $user_service;
 		$this->user_view = $user_view;
 	}
 	

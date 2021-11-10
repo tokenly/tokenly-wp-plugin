@@ -3,11 +3,11 @@
 namespace Tokenly\Wp\Services;
 
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
-use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Handles the Tokenpass authentication flow (OAuth)
@@ -20,16 +20,16 @@ class AuthService implements AuthServiceInterface {
 
 	public function __construct(
 		TokenpassAPIInterface $client,
-		UserServiceInterface $user_service,
+		UserRepositoryInterface $user_repository,
 		SettingsInterface $settings,
 		UserMetaRepositoryInterface $user_meta_repository,
 		ButtonLoginComponent $button_login_component
 	) {
 		$this->client = $client;
-		$this->user_service = $user_service;
 		$this->button_login_component = $button_login_component;
 		$this->settings = $settings;
 		$this->user_meta_repository = $user_meta_repository;
+		$this->user_repository = $user_repository;
 	}
 
 	/**
@@ -87,14 +87,17 @@ class AuthService implements AuthServiceInterface {
 		$email = $tokenpass_user['email'] ?? null;
 		$user;
 		if ( $uuid ) {
-			$user = $this->user_service->get_by_uuid( $uuid );
+			$user = $this->user_repository->show( array(
+				'uuid' => $uuid,
+			) );
 			if ( $user ) {
 				return $user;
 			}
-			
 		}
 		if ( $email ) {
-			$user = get_user_by( 'email', $email );
+			$user = $this->user_repository->show( array(
+				'email' => $email,
+			) );
 			if ( $user ) {
 				return $user;
 			}

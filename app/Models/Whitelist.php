@@ -7,8 +7,8 @@ use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\WhitelistItemFactoryInterface;
 
 class Whitelist implements WhitelistInterface {
-	public $enabled;
-	public $items;
+	public $enabled = false;
+	public $items = array();
 	protected $whitelist_repository;
 	protected $whitelist_item_factory;
 	
@@ -33,29 +33,25 @@ class Whitelist implements WhitelistInterface {
 	}
 
 	public function from_array( $whitelist_data ) {
-		$enabled = $whitelist_data['enabled'] ?? null;
-		if ( isset( $enabled ) ) {
-			$this->enabled = $enabled;
+		if ( isset( $whitelist_data['enabled'] ) ) {
+			$this->enabled = $whitelist_data['enabled'];
 		}
-		$items = $whitelist_data['items'] ?? null;
-		if ( isset( $items ) ) {
+		if ( isset( $whitelist_data['items'] ) ) {
 			$items = array_map( function( $item_data ) {
 				$item = $this->whitelist_item_factory->create( $item_data );
 				return $item;
-			}, $items );
+			}, $whitelist_data['items'] );
 			$this->items = $items;
 		}
 		return $this;
 	}
 
 	public function to_array() {
-		$array = array();
-		if ( $this->enabled ) {
-			$array['enabled'] = $this->enabled;
-		}
-		if ( $this->items ) {
-			$array['items'] = $this->items;
-		}
-		return $array;
+		return array(
+			'enabled' => $this->enabled,
+			'items'   => array_map( function( $item ) {
+				return $item->to_array();
+			}, $this->items ),
+		);
 	}
 }

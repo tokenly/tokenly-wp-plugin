@@ -1,10 +1,14 @@
 <?php
 
-namespace Tokenly\Wp\Decorators;
+/**
+ * WP_Post decorator
+ */
 
-use Tokenly\Wp\Interfaces\Decorators\TokenMetaPostDecoratorInterface;
+namespace Tokenly\Wp\Models;
 
-class TokenMetaPostDecorator implements TokenMetaPostDecoratorInterface {
+use Tokenly\Wp\Interfaces\Models\TokenMetaPostInterface;
+
+class TokenMetaPost implements TokenMetaPostInterface {
 	protected $_instance;
 
 	public function __construct(

@@ -28,6 +28,11 @@ class Promise implements PromiseInterface {
 		$promise_data = array(),
 		PromiseRepositoryInterface $promise_repository
 	) {
+		$this->promise_repository = $promise_repository;
+		$this->from_array( $promise_data );
+	}
+
+	public function from_array( $promise_data ) {
 		$this->source = $promise_data['source'] ?? null;
 		$this->destination = $promise_data['destination'] ?? null;
 		$this->asset = $promise_data['asset'] ?? null;
@@ -44,7 +49,6 @@ class Promise implements PromiseInterface {
 		$this->chain = $promise_data['chain'] ?? null;
 		$this->promise_id = $promise_data['promise_id'] ?? null;
 		$this->precision = $promise_data['precision'] ?? null;
-		$this->promise_repository = $promise_repository;
 	}
 
 	public function update( $params = array() ) {

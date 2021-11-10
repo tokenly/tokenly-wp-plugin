@@ -6,8 +6,8 @@ use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
 
 class Settings implements SettingsInterface {
-	public $client_id;
-	public $client_secret;
+	public $client_id = '';
+	public $client_secret = '';
 	protected $settings_repository;
 	
 	public function __construct(
@@ -37,25 +37,19 @@ class Settings implements SettingsInterface {
 	}
 
 	public function from_array( $settings_data ) {
-		$client_id = $settings_data['client_id'] ?? null;
-		if ( $client_id ) {
-			$this->client_id = $client_id;
+		if ( isset( $settings_data['client_id'] ) ) {
+			$this->client_id = $settings_data['client_id'];
 		}
-		$client_secret = $settings_data['client_secret'] ?? null;
-		if ( $client_secret ) {
-			$this->client_secret = $client_secret;
+		if ( isset( $settings_data['client_secret'] ) ) {
+			$this->client_secret = $settings_data['client_secret'];
 		}
 		return $this;
 	}
 
 	public function to_array() {
-		$array = array();
-		if ( $this->client_id ) {
-			$array['client_id'] = $this->client_id;
-		}
-		if ( $this->client_secret ) {
-			$array['client_secret'] = $this->client_secret;
-		}
-		return $array;
+		return array(
+			'client_id'     => $this->client_id,
+			'client_secret' => $this->client_secret,
+		);
 	}
 }

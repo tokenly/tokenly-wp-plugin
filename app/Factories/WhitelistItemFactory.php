@@ -13,7 +13,9 @@ class WhitelistItemFactory extends Factory implements WhitelistItemFactoryInterf
 	 * @return WhitelistItemInterface
 	 */
 	public function create( $params ) {
-		$instance = $this->factory->create( $params );
+		$instance = $this->factory->create( array(
+			'whitelist_item_data' => $params,
+		) );
 		return $instance;
 	}
 }
