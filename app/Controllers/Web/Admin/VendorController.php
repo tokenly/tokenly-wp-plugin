@@ -10,8 +10,8 @@ use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
  * Serves the admin Vendor view
  */
 class VendorController implements VendorControllerInterface {
-	public $vendor_view;
-	public $promise_repository;
+	protected $vendor_view;
+	protected $promise_repository;
 
 	public function __construct(
 		VendorView $vendor_view,

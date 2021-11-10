@@ -11,7 +11,7 @@ class Balance implements BalanceInterface {
 	public $balance_sat;
 
 	public function __construct( 
-		$balance_data
+		$balance_data = array()
 	) {
 		$this->asset = $balance_data['asset'] ?? null;
 		$this->name = $balance_data['name'] ?? null;

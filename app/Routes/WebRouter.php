@@ -10,12 +10,12 @@ use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
  * Manages routing for the public views
  */
 class WebRouter implements WebRouterInterface {
-	public $rules = array();
-	public $vars = array();
-	public $routes = array();
-	public $callbacks = array();
-	public $controllers = array();
-	public $auth_controller;
+	protected $rules = array();
+	protected $vars = array();
+	protected $routes = array();
+	protected $callbacks = array();
+	protected $controllers = array();
+	protected $auth_controller;
 
 	public function __construct(
 		UserControllerInterface $user_controller,
@@ -40,7 +40,7 @@ class WebRouter implements WebRouterInterface {
 	 * Get all web route definitions
 	 * @return array
 	 */
-	public function get_routes() {
+	protected function get_routes() {
 		return array(
 			'tokenly-user' => array(
 				'rules'     => array(
@@ -75,6 +75,7 @@ class WebRouter implements WebRouterInterface {
 	/**
 	 * Merges the web route rewrite rules with the rest
 	 * of WordPress rewrite rules
+	 * @wp-hook generate_rewrite_rules
 	 * @return void
 	 */
 	public function merge_rewrite_rules( $wp_rewrite ) {
@@ -87,6 +88,7 @@ class WebRouter implements WebRouterInterface {
 	/**
 	 * Merges the web route query vars with the rest
 	 * of WordPress query vars
+	 * @wp-hook query_vars
 	 * @return array
 	 */
 	public function merge_query_vars( $query_vars ) {
@@ -97,6 +99,7 @@ class WebRouter implements WebRouterInterface {
 	/**
 	 * Gets the template callback for
 	 * the current route
+	 * @wp-hook template_include
 	 * @return callable
 	 */
 	public function find_template( $template ) {
@@ -121,7 +124,7 @@ class WebRouter implements WebRouterInterface {
 	 * Registers all web routes
 	 * @return void
 	 */
-	public function register_routes() {
+	protected function register_routes() {
 		$this->routes = $this->get_routes();
 		foreach ( $this->routes as $route ) {
 			$this->rules = array_merge( $this->rules, $route['rules'] ?? null );

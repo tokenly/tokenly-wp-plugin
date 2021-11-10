@@ -5760,11 +5760,11 @@ class Whitelist extends react_1.Component {
                         this.onRemove(i);
                     } },
                     React.createElement(components_1.Dashicon, { icon: "no" })))));
-        return React.createElement("div", null,
+        return (React.createElement("div", null,
             React.createElement("ul", null, listItems),
             React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: () => {
                     this.onAdd();
-                } }, "Add Token"));
+                } }, "Add Token")));
     }
 }
 exports.Whitelist = Whitelist;
@@ -6643,8 +6643,8 @@ class WhitelistPage extends react_1.Component {
         super(props);
         this.state = {
             whitelistData: {
-                use_whitelist: false,
-                whitelist: [
+                enabled: false,
+                items: [
                     {
                         address: '',
                         index: '',
@@ -6660,15 +6660,15 @@ class WhitelistPage extends react_1.Component {
     }
     onWhitelistChange(newWhitelist) {
         let newState = Object.assign({}, this.state);
-        newState.whitelistData.whitelist = Object.assign([], newWhitelist);
-        newState.whitelistData.whitelist = newState.whitelistData.whitelist.filter(function (whitelistItem) {
+        newState.whitelistData.items = Object.assign([], newWhitelist);
+        newState.whitelistData.items = newState.whitelistData.items.filter(function (whitelistItem) {
             return whitelistItem != null;
         });
         this.setState(Object.assign({}, newState));
     }
     setUseWhitelist(value) {
         let newState = Object.assign({}, this.state);
-        newState.whitelistData.use_whitelist = value;
+        newState.whitelistData.enabled = value;
         this.setState(newState);
     }
     onSave() {
@@ -6686,16 +6686,16 @@ class WhitelistPage extends react_1.Component {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("p", null, "Whitelist allows to control which token assets to display on the Inventory screen.")),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.ToggleControl, { label: "Use whitelist", help: this.state.whitelistData.use_whitelist
+                        React.createElement(components_1.ToggleControl, { label: "Use whitelist", help: this.state.whitelistData.enabled
                                 ? 'Whitelist enabled.'
-                                : 'Whitelist disabled.', checked: this.state.whitelistData.use_whitelist, onChange: (value) => {
+                                : 'Whitelist disabled.', checked: this.state.whitelistData.enabled, onChange: (value) => {
                                 this.setUseWhitelist(value);
                             } })))),
-            this.state.whitelistData.use_whitelist == true &&
+            this.state.whitelistData.enabled == true &&
                 React.createElement(components_1.Panel, { header: "Token Whitelist Editor" },
                     React.createElement(components_1.PanelBody, null,
                         React.createElement(components_1.PanelRow, null,
-                            React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.whitelist })))),
+                            React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.items })))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
     }
 }

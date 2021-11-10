@@ -11,8 +11,8 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
  * Handles the WordPress user operations
  */
 class UserService implements UserServiceInterface {
-	public $client;
-	public $token_meta_repository;
+	protected $client;
+	protected $token_meta_repository;
 
 	public function __construct(
 		TokenpassAPIInterface $client,

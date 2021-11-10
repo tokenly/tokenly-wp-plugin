@@ -33,8 +33,8 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	
 	state: WhitelistPageState = {
 		whitelistData: {
-			use_whitelist: false,
-			whitelist: [
+			enabled: false,
+			items: [
 				{
 					address: '',
 					index: '',
@@ -54,8 +54,8 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	
 	onWhitelistChange( newWhitelist: Array<WhitelistItem> ) {
 		let newState = Object.assign( {}, this.state );
-		newState.whitelistData.whitelist = Object.assign( [], newWhitelist );
-		newState.whitelistData.whitelist = newState.whitelistData.whitelist.filter( function ( whitelistItem: WhitelistItem ) {
+		newState.whitelistData.items = Object.assign( [], newWhitelist );
+		newState.whitelistData.items = newState.whitelistData.items.filter( function ( whitelistItem: WhitelistItem ) {
 			return whitelistItem != null;
 		} );
 		this.setState( { ...newState } );
@@ -63,7 +63,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	
 	setUseWhitelist( value: boolean ) {
 		let newState = Object.assign( {}, this.state );
-		newState.whitelistData.use_whitelist = value;
+		newState.whitelistData.enabled = value;
 		this.setState( newState );
 	}
 	
@@ -88,11 +88,11 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 							<ToggleControl
 								label="Use whitelist"
 								help={
-									this.state.whitelistData.use_whitelist
+									this.state.whitelistData.enabled
 										? 'Whitelist enabled.'
 										: 'Whitelist disabled.'
 								}
-								checked={ this.state.whitelistData.use_whitelist }
+								checked={ this.state.whitelistData.enabled }
 								onChange={ ( value: boolean ) => {
 									this.setUseWhitelist( value );
 								} }
@@ -100,11 +100,11 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				{ this.state.whitelistData.use_whitelist == true &&
+				{ this.state.whitelistData.enabled == true &&
 					<Panel header="Token Whitelist Editor">
 						<PanelBody>
 							<PanelRow>
-								<Whitelist onUpdate={ this.onWhitelistChange } whitelist={ this.state.whitelistData.whitelist } />		
+								<Whitelist onUpdate={ this.onWhitelistChange } whitelist={ this.state.whitelistData.items } />		
 							</PanelRow>
 						</PanelBody>
 					</Panel>

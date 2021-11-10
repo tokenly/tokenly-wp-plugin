@@ -2,6 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Factories;
 
-interface BalanceFactoryInterface {
+interface WhitelistItemFactoryInterface {
 	//
 }

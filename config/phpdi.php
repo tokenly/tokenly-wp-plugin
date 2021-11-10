@@ -37,11 +37,18 @@ use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\WhitelistController as WhitelistApiController;
 use Tokenly\Wp\Decorators\UserDecorator;
-use Tokenly\Wp\Models\Source;
+use Tokenly\Wp\Decorators\TokenMetaPostDecorator;
+use Tokenly\Wp\Models\Balance;
 use Tokenly\Wp\Models\Promise;
-use Tokenly\Wp\Factories\UserFactory;
-use Tokenly\Wp\Factories\SourceFactory;
+use Tokenly\Wp\Models\Settings;
+use Tokenly\Wp\Models\Source;
+use Tokenly\Wp\Models\Whitelist;
+use Tokenly\Wp\Models\WhitelistItem;
+use Tokenly\Wp\Factories\BalanceFactory;
 use Tokenly\Wp\Factories\PromiseFactory;
+use Tokenly\Wp\Factories\SourceFactory;
+use Tokenly\Wp\Factories\UserFactory;
+use Tokenly\Wp\Factories\WhitelistItemFactory;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
@@ -78,12 +85,18 @@ use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface as Setting
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as WhitelistApiControllerInterface;
-use Tokenly\Wp\Interfaces\Factories\UserFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\PromiseFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\UserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\WhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Decorators\UserDecoratorInterface;
-use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Decorators\TokenMetaPostDecoratorInterface;
+use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Models\SettingsInterface;
+use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
+use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
@@ -138,15 +151,27 @@ return array(
 	BalanceInterface::class                   => \DI\autowire( Balance::class ), 
 	SourceInterface::class                    => \DI\autowire( Source::class ), 
 	PromiseInterface::class                   => \DI\autowire( Promise::class ),
-	//Factories - abstract
-	BalanceFactoryInterface::class            => \DI\autowire( BalanceFactory::class )
-		->constructorParameter( 'factory', Di\get( PromiseFactoryConcrete::class ) ),
-	PromiseFactoryInterface::class            => \DI\autowire( PromiseFactory::class )
-		->constructorParameter( 'factory', Di\get( BalanceFactoryConcrete::class ) ),
-	SourceFactoryInterface::class             => \DI\autowire( SourceFactory::class )
-		->constructorParameter( 'factory', Di\get( SourceFactoryConcrete::class ) ),
-	UserFactoryInterface::class               => \DI\autowire( UserFactory::class )
-		->constructorParameter( 'factory', Di\get( UserFactoryConcrete::class ) ),
+	//Models - single instance
+	SettingsInterface::class                  => function ( 
+		ContainerInterface $container,
+		SettingsRepositoryInterface $settings_repository
+	) {
+		$settings_data = $settings_repository->show();
+		$settings = $container->make( Settings::class, array(
+			'settings_data' => $settings_data,
+		) );
+		return $settings;
+	},
+	WhitelistInterface::class                  => function ( 
+		ContainerInterface $container,
+		WhitelistRepositoryInterface $whitelist_repository
+	) {
+		$whitelist_data = $whitelist_repository->show();
+		$whitelist = $container->make( Whitelist::class, array(
+			'whitelist_data' => $whitelist_data,
+		) );
+		return $whitelist;
+	},
 	//Factories - concrete
 	BalanceFactoryConcrete::class             => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', BalanceInterface::class ),
@@ -156,17 +181,26 @@ return array(
 		->constructorParameter( 'class', SourceInterface::class ),
 	UserFactoryConcrete::class                => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', UserDecoratorInterface::class ),
+	WhitelistItemFactoryConcrete::class       => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', WhitelistItemInterface::class ),
+	//Factories - abstract
+	BalanceFactoryInterface::class            => \DI\autowire( BalanceFactory::class )
+		->constructorParameter( 'factory', Di\get( BalanceFactoryConcrete::class ) ),
+	PromiseFactoryInterface::class            => \DI\autowire( PromiseFactory::class )
+		->constructorParameter( 'factory', Di\get( PromiseFactoryConcrete::class ) ),
+	SourceFactoryInterface::class             => \DI\autowire( SourceFactory::class )
+		->constructorParameter( 'factory', Di\get( SourceFactoryConcrete::class ) ),
+	UserFactoryInterface::class               => \DI\autowire( UserFactory::class )
+		->constructorParameter( 'factory', Di\get( UserFactoryConcrete::class ) ),
+	WhitelistItemFactoryInterface::class      => \DI\autowire( WhitelistItemFactory::class )
+		->constructorParameter( 'factory', Di\get( WhitelistItemFactoryConcrete::class ) ),
 	//Third-party
 	TokenpassAPI::class                       => function ( 
 		ContainerInterface $container,
-		SettingsRepositoryInterface $settings_repository
+		SettingsInterface $settings
 	) {
-		$settings = $settings_repository->show();
-		if ( !$settings ) {
-			return;
-		}
-		$client_id = $settings['client_id'] ?? null;
-		$client_secret = $settings['client_secret'] ?? null;
+		$client_id = $settings->client_id ?? null;
+		$client_secret = $settings->client_secret ?? null;
 		$privileged_client_id = $client_id;
 		$privileged_client_secret = $client_secret;
 		$oauth_client_id = $client_id;

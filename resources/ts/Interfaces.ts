@@ -31,8 +31,8 @@ export interface WhitelistItem {
 }
 
 export interface WhitelistData {
-	use_whitelist: boolean;
-	whitelist: Array<WhitelistItem>;
+	enabled: boolean;
+	items: Array<WhitelistItem>;
 }
 
 export interface SourceData {

@@ -7,8 +7,11 @@ use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
 
+/**
+ * Registers shortcodes
+ */
 class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServiceProviderInterface {
-	public $shortcodes;
+	protected $shortcodes;
 
 	public function __construct(
 		LoginButtonShortcode $login_button_shortcode,
@@ -26,10 +29,19 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 		);
 	}
 
+	/**
+	 * Registers the service provider
+	 * @return void
+	 */
 	public function register() {
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 	}
 
+	/**
+	 * Registers all shortcodes
+	 * @wp-hook init
+	 * @return void
+	 */
 	public function register_shortcodes() {
 		foreach ( $this->shortcodes as $shortcode ) {
 			add_shortcode( $shortcode['name'], array( $shortcode['instance'], 'shortcode_callback' ) );

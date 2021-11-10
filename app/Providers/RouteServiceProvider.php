@@ -9,8 +9,11 @@ use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 
+/**
+ * Registers routers
+ */
 class RouteServiceProvider extends ServiceProvider implements RouteServiceProviderInterface{
-	public $routers;
+	protected $routers;
 
 	public function __construct(
 		AdminRouterInterface $admin_router,
@@ -25,10 +28,20 @@ class RouteServiceProvider extends ServiceProvider implements RouteServiceProvid
 			'post'	=> $post_type_router,
 		);
 	}
+
+	/**
+	 * Registers the service provider
+	 * @return void
+	 */
 	public function register() {
 		add_action( 'init', array( $this, 'register_routers' ) );
 	}
 
+	/**
+	 * Registers all routers
+	 * @wp-hook init
+	 * @return void
+	 */
 	public function register_routers() {
 		foreach ( $this->routers as $router ) {
 			$router->register();

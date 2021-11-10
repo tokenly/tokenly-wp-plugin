@@ -4,25 +4,25 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Views\Admin\WhitelistView;
-use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 
 /**
  * Serves the admin Whitelist view
  */
 class WhitelistController implements WhitelistControllerInterface {
 	public $whitelist_view;
-	public $whitelist_repository;
+	public $whitelist;
 
 	public function __construct(
 		WhitelistView $whitelist_view,
-		WhitelistRepositoryInterface $whitelist_repository
+		WhitelistInterface $whitelist
 	) {
 		$this->whitelist_view = $whitelist_view;
-		$this->whitelist_repository = $whitelist_repository;
+		$this->whitelist = $whitelist;
 	}
 
 	public function show() {
-		$whitelist = $this->whitelist_repository->show();
+		$whitelist = $this->whitelist->to_array();
 		$render = $this->whitelist_view->render( array(
 			'whitelist' => $whitelist,
 		) );

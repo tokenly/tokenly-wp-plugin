@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
 
@@ -15,11 +15,11 @@ class SourceRepository implements SourceRepositoryInterface {
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		SettingsRepositoryInterface $settings_repository,
+		SettingsInterface $settings,
 		SourceFactoryInterface $source_factory
 	) {
 		$this->client = $client;
-		$this->settings_repository = $settings_repository;
+		$this->settings = $settings;
 		$this->source_factory = $source_factory;
 	}
 
@@ -52,8 +52,7 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return boolean
 	 */
 	public function store( $source ) {
-		$settings = $this->settings_repository->show();
-		$client_id = $settings['client_id'] ?? null;
+		$client_id = $this->settings->client_id ?? null;
 		$hash = hash( 'sha256', $client_id );
 		$address = $source['address'] ?? null;
 		$type = $source['type'] ?? null;

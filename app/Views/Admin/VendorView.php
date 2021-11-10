@@ -9,7 +9,7 @@ class VendorView extends View {
 		$html = $this->twig->render( 'Admin.twig', array(
 			'view'  => 'vendor',
 			'props' => array(
-				'promises' => $data['promises'],
+				'promises' => $data['promises'] ?? null,
 			)
 		) );
 		return $html;

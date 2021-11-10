@@ -8,7 +8,7 @@ use Tokenly\Wp\Views\View;
 use Twig\Environment;
 
 class UserView extends View {
-	public $balances = array();
+	protected $balances = array();
 
 	public function __construct(
 		Environment $twig,
@@ -18,18 +18,6 @@ class UserView extends View {
 		parent::__construct( $twig );
 		$this->list_card_token_item_block = $list_card_token_item_block;
 		$this->user_info_block = $user_info_block;
-	}
-
-	public function render_header() {
-		ob_start();
-			get_header();
-		return ob_get_clean();
-	}
-
-	public function render_footer() {
-		ob_start();
-			get_footer();
-		return ob_get_clean();
 	}
 
 	public function render( $data ) {
@@ -53,5 +41,17 @@ class UserView extends View {
 			'user_info_block'       => $html_user_info_block,
 		) );
 		return $html;
+	}
+
+	protected function render_header() {
+		ob_start();
+			get_header();
+		return ob_get_clean();
+	}
+
+	protected function render_footer() {
+		ob_start();
+			get_footer();
+		return ob_get_clean();
 	}
 }

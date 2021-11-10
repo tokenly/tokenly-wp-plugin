@@ -16,8 +16,8 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
  * Manages routing for the WordPress admin pages
  */
 class AdminRouter implements AdminRouterInterface {
-	public $routes;
-	public $redirects = array();
+	protected $routes;
+	protected $redirects = array();
 
 	public function __construct(
 		AuthServiceInterface $auth_service,
@@ -47,7 +47,17 @@ class AdminRouter implements AdminRouterInterface {
 	public function register() {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ), 9 );
-		add_action( 'admin_print_scripts', array( $this,  'add_redirects' ) );
+		add_action( 'admin_print_scripts', array( $this, 'add_redirects' ) );
+	}
+
+	/**
+	 * Registers the admin routes
+	 * @return void
+	 */
+	public function register_routes() {
+		foreach ( $this->routes as $route ) {
+			$this->register_route( $route );
+		}
 	}
 
 	/**
@@ -77,7 +87,7 @@ class AdminRouter implements AdminRouterInterface {
 	 * to view the Tokenpass inventory
 	 * @return boolean
 	 */
-	public function can_view_inventory() {
+	protected function can_view_inventory() {
 		if ( current_user_can( 'read' ) === true && $this->auth_service->is_connected() === true ) {
 			return true;
 		} else {
@@ -89,7 +99,7 @@ class AdminRouter implements AdminRouterInterface {
 	 * Gets the admin route definitions
 	 * @return array
 	 */
-	public function get_routes() {
+	protected function get_routes() {
 		$routes = array(
 			'tokenpass' => array(
 				'args'    => array(
@@ -216,7 +226,7 @@ class AdminRouter implements AdminRouterInterface {
 	 * @param array $routes Admin routes
 	 * @return array
 	 */
-	public function prepare_routes( $routes ) {
+	protected function prepare_routes( $routes ) {
 		$routes = array_map( function( $route ) {
 			$subroutes = $route['subroutes'] ?? null;
 			if ( $subroutes ) {
@@ -243,7 +253,7 @@ class AdminRouter implements AdminRouterInterface {
 	 * @param array $subroute Child route
 	 * @return string
 	 */
-	public function get_subroute_slug( $route, $subroute ) {
+	protected function get_subroute_slug( $route, $subroute ) {
 		$route_args = $route['args'] ?? null;
 		$subroute_args = $subroute['args'] ?? null;
 		if ( $route_args && $subroute_args ) {
@@ -254,46 +264,55 @@ class AdminRouter implements AdminRouterInterface {
 			}
 		}
 	}
-	
+
 	/**
-	 * Registers the admin routes
+	 * Registers admin route
+	 * @param array $route Route data
 	 * @return void
 	 */
-	public function register_routes() {
-		foreach ( $this->routes as $route ) {
-			$args = $route['args'] ?? null;
-			if ( $args ) {
-				add_menu_page(
-					$args['page_title'] ?? null,
-					$args['menu_title'] ?? null,
-					$args['capability'] ?? null,
-					$args['menu_slug'] ?? null,
-					$args['callable'] ?? null,
-					$args['icon_url'] ?? null,
-					$args['position'] ?? null,
-				);
+	protected function register_route( $route ) {
+		$args = $route['args'] ?? null;
+		if ( $args ) {
+			add_menu_page(
+				$args['page_title'] ?? null,
+				$args['menu_title'] ?? null,
+				$args['capability'] ?? null,
+				$args['menu_slug'] ?? null,
+				$args['callable'] ?? null,
+				$args['icon_url'] ?? null,
+				$args['position'] ?? null,
+			);
+		}
+		$subroutes = $route['subroutes'] ?? null;
+		if ( $subroutes ) {
+			foreach ( $subroutes as $subroute ) {
+				$this->register_subroute( $subroute, $args );
 			}
-			$subroutes = $route['subroutes'] ?? null;
-			if ( $subroutes ) {
-				foreach ( $subroutes as $subroute ) {
-					$subroute_args = $subroute['args'] ?? null;
-					if ( $subroute_args ) {
-						if ( array_key_exists( 'parent_slug', $subroute_args ) === false ) {
-							$subroute_args['parent_slug'] = $args['menu_slug'] ?? null;
-						}
-						add_submenu_page(
-							$subroute_args['parent_slug'] ?? null,
-							$subroute_args['page_title'] ?? null,
-							$subroute_args['menu_title'] ?? null,
-							$subroute_args['capability'] ?? null,
-							$subroute_args['menu_slug'] ?? null,
-							$subroute_args['callable'] ?? null,
-							$subroute_args['icon_url'] ?? null,
-							$subroute_args['position'] ?? null,
-						);
-					}
-				}
+		}
+	}
+
+	/**
+	 * Registers admin subroute
+	 * @param array $subroute Subroute data
+	 * @param array $args Parent route data
+	 * @return void
+	 */
+	protected function register_subroute( $subroute, $args ) {
+		$subroute_args = $subroute['args'] ?? null;
+		if ( $subroute_args ) {
+			if ( array_key_exists( 'parent_slug', $subroute_args ) === false ) {
+				$subroute_args['parent_slug'] = $args['menu_slug'] ?? null;
 			}
+			add_submenu_page(
+				$subroute_args['parent_slug'] ?? null,
+				$subroute_args['page_title'] ?? null,
+				$subroute_args['menu_title'] ?? null,
+				$subroute_args['capability'] ?? null,
+				$subroute_args['menu_slug'] ?? null,
+				$subroute_args['callable'] ?? null,
+				$subroute_args['icon_url'] ?? null,
+				$subroute_args['position'] ?? null,
+			);
 		}
 	}
 }

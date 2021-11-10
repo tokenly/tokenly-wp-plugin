@@ -6,8 +6,8 @@ use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 
 class TokenMetaRepository implements TokenMetaRepositoryInterface {
-	public $client;
-	public $meta_repository;
+	protected $client;
+	protected $meta_repository;
 	
 	public function __construct(
 		MetaRepositoryInterface $meta_repository

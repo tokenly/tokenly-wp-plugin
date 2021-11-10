@@ -11,9 +11,9 @@ use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
  * Handles the token whitelist operations
  */
 class BalanceService implements BalanceServiceInterface {
-	public $token_meta_repository;
-	public $meta_repository;
-	public $whitelist_repository;
+	protected $token_meta_repository;
+	protected $meta_repository;
+	protected $whitelist_repository;
 
 	public function __construct(
 		MetaRepositoryInterface $meta_repository,

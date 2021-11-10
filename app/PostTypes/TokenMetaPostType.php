@@ -3,10 +3,6 @@
 namespace Tokenly\Wp\PostTypes;
 
 class TokenMetaPostType {
-	public function __construct() {
-		//
-	}
-	
 	public function get_args() {
 		$labels = array(
 			'name'                  => _x( 'Token Meta', 'Post type general name', 'tokenly-wp-plugin' ),

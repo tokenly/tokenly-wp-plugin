@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Services;
 
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
@@ -13,22 +13,22 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
  * Handles the Tokenpass authentication flow (OAuth)
  */
 class AuthService implements AuthServiceInterface {
-	public $client;
-	public $user_service;
-	public $button_login_component;
-	public $settings_repository;
+	protected $client;
+	protected $user_service;
+	protected $button_login_component;
+	protected $settings;
 
 	public function __construct(
 		TokenpassAPIInterface $client,
 		UserServiceInterface $user_service,
-		SettingsRepositoryInterface $settings_repository,
+		SettingsInterface $settings,
 		UserMetaRepositoryInterface $user_meta_repository,
 		ButtonLoginComponent $button_login_component
 	) {
 		$this->client = $client;
 		$this->user_service = $user_service;
 		$this->button_login_component = $button_login_component;
-		$this->settings_repository = $settings_repository;
+		$this->settings = $settings;
 		$this->user_meta_repository = $user_meta_repository;
 	}
 
@@ -228,12 +228,7 @@ class AuthService implements AuthServiceInterface {
 	 * @return array
 	 */
 	public function get_tokenpass_login_url() {
-		$settings = $this->settings_repository->show();
-		$client_id;
-		if ( $settings ) {
-			$client_id = $settings['client_id'] ?? null;
-		}
-
+		$client_id = $this->settings->client_id ?? null;
 		$state = wp_generate_password( 12, false );
 		$args = array(
 			'client_id'     => $client_id,

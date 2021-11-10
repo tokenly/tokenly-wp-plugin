@@ -4,21 +4,21 @@ namespace Tokenly\Wp\Components;
 
 use Tokenly\Wp\Components\Component;
 use Twig\Environment;
-use Tokenly\Wp\Repositories\SettingsRepository;
+use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 
 class ButtonLoginComponent extends Component {
-	public $settings_repository;
+	public $settings;
 	
 	public function __construct(
 		Environment $twig,
-		SettingsRepository $settings_repository
+		SettingsInterface $settings
 	) {
 		parent::__construct( $twig );
-		$this->settings_repository = $settings_repository;
+		$this->settings = $settings;
 	}
 
 	public function render() {
-		if ( $this->settings_repository->is_configured() === false ) {
+		if ( $this->settings->is_configured() === false ) {
 			return;
 		}
 		if ( is_user_logged_in() === true ) {

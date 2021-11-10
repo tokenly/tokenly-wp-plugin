@@ -3,33 +3,47 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 
 /**
  * Handles the settings REST API endpoints
  */
 class SettingsController implements SettingsControllerInterface {
-	public $update_schema;
-	public $settings_repository;
+	protected $update_schema;
+	protected $settings;
 	
 	public function __construct(
-		SettingsRepositoryInterface $settings_repository
+		SettingsInterface $settings
 	) {
-		$this->settings_repository = $settings_repository;
+		$this->settings = $settings;
 	}
 	
+	/**
+	 * Responds with the settings
+	 * @param WP_REST_Request $request Request data
+	 * @return array
+	 */
 	public function show( $request ) {
-		return $this->settings_repository->show(); 
+		return $this->settings->to_array(); 
 	}
 
+	/**
+	 * Updates the settings
+	 * @param WP_REST_Request $request Request data
+	 * @return array
+	 */
 	public function update( $request ) {
 		$params = $request->get_params();
-		$this->settings_repository->update( $params );
+		$this->settings->update( $params );
 		return array(
 			'status' => 'Settings were updated successfully.',
 		);
 	}
 	
+	/**
+	 * Sets the update route schema
+	 * @return array
+	 */
 	public function update_get_schema() {
 		if ( $this->update_schema ) {
 			return $this->update_schema;

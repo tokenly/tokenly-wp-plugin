@@ -3,22 +3,22 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 
 class WhitelistController implements WhitelistControllerInterface {
 	public function __construct(
-		WhitelistRepositoryInterface $whitelist_repository
+		WhitelistInterface $whitelist
 	) {
-		$this->whitelist_repository = $whitelist_repository;
+		$this->whitelist = $whitelist;
 	}
 
 	public function show( $request ) {
-		return $this->whitelist_repository->show();
+		return $this->whitelist->to_array();
 	}
 
 	public function update( $request ) {
 		$params = $request->get_params();
-		$this->whitelist_repository->update( $params );
+		$this->whitelist->update( $params );
 		return array(
 			'status' => 'Whitelist was updated successfully.',
 		);

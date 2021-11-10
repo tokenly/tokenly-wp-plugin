@@ -3,30 +3,29 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
 use Tokenly\Wp\Views\Admin\SettingsView;
+use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 
 /**
  * Serves the admin settings view
  */
 class SettingsController implements SettingsControllerInterface {
 	public $settings_view;
-	public $settings_repository;
+	public $settings;
 
 	public function __construct(
-		SettingsRepositoryInterface $settings_repository,
-		SettingsView $settings_view
+		SettingsView $settings_view,
+		SettingsInterface $settings
 	) {
-		$this->settings_repository = $settings_repository;
 		$this->settings_view = $settings_view;
+		$this->settings = $settings;
 	}
 
 	public function show() {
-		$settings_data = $this->settings_repository->show();
 		$render = $this->settings_view->render( array(
 			'app_homepage_url' => get_site_url(),
 			'client_auth_url'  => TOKENLY_PLUGIN_AUTH_REDIRECT_URI,
-			'settings_data'    => $settings_data,
+			'settings_data'    => $this->settings,
 		) );
 		echo $render;
 	}

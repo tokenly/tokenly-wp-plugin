@@ -31,13 +31,4 @@ class SettingsRepository implements SettingsRepositoryInterface {
 			'client_secret' => $settings['client_secret'] ?? null,
 		) );
 	}
-
-	public function is_configured() {
-		$settings = $this->show();
-		if ( !empty( $settings['client_id'] ?? null ) && !empty( $settings['client_secret'] ?? null ) ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

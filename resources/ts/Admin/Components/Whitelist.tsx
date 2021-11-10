@@ -87,7 +87,8 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 				</Flex>
 			</div>
 		);
-		return <div>
+		return (
+			<div>
 				<ul>{listItems}</ul>
 				<Button
 					isSecondary
@@ -99,5 +100,6 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 					Add Token
 				</Button>
 			</div>
+		);
 	}
 }

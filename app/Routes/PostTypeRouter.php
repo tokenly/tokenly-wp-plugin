@@ -11,7 +11,7 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
  * Manages routing for the post type views
  */
 class PostTypeRouter implements PostTypeRouterInterface {
-	public $routes;
+	protected $routes;
 
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
@@ -32,7 +32,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 		$this->register_routes();
 	}
 
-	public function get_routes() {
+	protected function get_routes() {
 		$routes = array(
 			'token-meta' => array(
 				'name'          => 'token-meta',
@@ -44,7 +44,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 		return $routes;
 	}
 	
-	public function register_routes() {
+	protected function register_routes() {
 		foreach ( $this->routes as $route ) {
 			$name = $route['name'];
 			$args = $route['post_type']->get_args();
@@ -54,7 +54,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
 	}
 
-	public function on_post_save( $post_id, $post, $update ) {
+	protected function on_post_save( $post_id, $post, $update ) {
 		$post_type = $post->post_type;
 		$params = $_POST['tokenly_data'] ?? null;
 		if ( $params ) {
