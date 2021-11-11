@@ -10,14 +10,13 @@ import { TYPES } from '../../Types';
 declare const window: any;
 
 import { 
-	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
 } from '@wordpress/components';
 
 interface SourceIndexPageData {
-	//
+	addresses: Array<any>;
 }
 
 interface SourceIndexPageProps {
@@ -65,6 +64,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 								onCancel={ this.return }
 								saving={ this.state.storingSource }
 								style={ { marginBottom: '12px' } }
+								addresses={ this.props.pageData.addresses }
 							/>
 						</PanelRow>
 					</PanelBody>

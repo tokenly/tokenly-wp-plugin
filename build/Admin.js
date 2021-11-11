@@ -5557,53 +5557,58 @@ class SourceStoreForm extends react_1.Component {
     constructor(props) {
         super(props);
         this.state = {
-            source: {
-                address: null,
-                assets: null,
-                type: null,
-            },
+            address: null,
+            assets: null,
+            addressOptions: [],
         };
         this.onSubmit = this.onSubmit.bind(this);
+        this.state.addressOptions = this.props.addresses.map((address) => {
+            return {
+                'label': address.label,
+                'value': address.address,
+            };
+        });
+        console.log(this.props.addresses);
+    }
+    componentDidMount() {
+        if (this.state.addressOptions[0]) {
+            this.setState({ address: this.state.addressOptions[0].value });
+        }
+        console.log(this.state);
     }
     onSubmit() {
-        this.props.onSubmit(this.state.source);
+        const selectedAddress = this.props.addresses.find(address => {
+            return address.address === this.state.address;
+        });
+        if (!selectedAddress) {
+            return;
+        }
+        const source = {
+            address: selectedAddress.address,
+            type: selectedAddress.type,
+            assets: this.state.assets,
+        };
+        this.props.onSubmit(source);
     }
     onCancel() {
         this.props.onCancel();
     }
-    isSubmitDisabled() {
-        if (this.state.source.type != null &&
-            this.state.source.address != '') {
-            return false;
-        }
-        return true;
-    }
     render() {
+        var _a, _b;
         return (React.createElement("form", { style: { width: '100%', maxWidth: "320px" } },
             React.createElement("div", null,
-                React.createElement(components_1.SelectControl, { label: "Type", value: this.state.source.type, style: { width: '100%' }, options: [
-                        { label: null, value: null },
-                        { label: 'Bitcoin', value: 'bitcoin' },
-                        { label: 'Ethereum', value: 'ethereum' },
-                    ], help: "Source blockchain type", onChange: (value) => {
-                        const state = Object.assign({}, this.state.source);
-                        state.type = value;
-                        this.setState({ source: state });
+                React.createElement(components_1.SelectControl, { label: "Address", value: this.state.address, style: { width: '100%' }, options: this.state.addressOptions, help: "Address for registration", onChange: (value) => {
+                        this.setState({ address: value });
                     } }),
-                this.state.source.type &&
+                ((_a = this.state) === null || _a === void 0 ? void 0 : _a.address) &&
                     React.createElement("div", null,
-                        React.createElement(components_1.TextControl, { label: "Address", value: this.state.source.address, help: "Wallet address", onChange: (value) => {
-                                const state = Object.assign({}, this.state.source);
-                                state.address = value;
-                                this.setState({ source: state });
-                            } }),
-                        React.createElement(components_1.TextControl, { label: "Assets", help: "Comma-separated values", value: this.state.source.assets, onChange: (value) => {
-                                const state = Object.assign({}, this.state.source);
-                                state.assets = value;
-                                this.setState({ source: state });
+                        React.createElement(components_1.TextControl, { label: "Assets", help: "Comma-separated values", value: this.state.assets, onChange: (value) => {
+                                // const state = Object.assign( {}, this.state.source );
+                                // state.assets = value;
+                                // this.setState( { source: state } );
                             } })),
                 React.createElement(components_1.Flex, { style: { marginTop: '12px' }, justify: "flex-start" },
-                    React.createElement(components_1.Button, { isPrimary: true, disabled: this.isSubmitDisabled(), onClick: () => {
+                    React.createElement(components_1.Button, { isPrimary: true, disabled: !((_b = this.state) === null || _b === void 0 ? void 0 : _b.address), onClick: () => {
                             this.onSubmit();
                         } }, "Register source"),
                     this.props.saving === true &&
@@ -6448,7 +6453,7 @@ class SourceIndexPage extends react_1.Component {
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(SourceStoreForm_1.SourceStoreForm, { onSubmit: this.onSubmit, onCancel: this.return, saving: this.state.storingSource, style: { marginBottom: '12px' } }))))));
+                        React.createElement(SourceStoreForm_1.SourceStoreForm, { onSubmit: this.onSubmit, onCancel: this.return, saving: this.state.storingSource, style: { marginBottom: '12px' }, addresses: this.props.pageData.addresses }))))));
     }
 }
 __decorate([

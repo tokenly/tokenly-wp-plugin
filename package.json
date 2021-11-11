@@ -1,8 +1,8 @@
 {
   "name": "tokenly-wp-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "index.js",
-  "author": "YOUR NAME HERE",
+  "author": "Tokenly",
   "scripts": {
     "build": "wp-scripts build resources/ts/Frontend resources/ts/Admin",
     "start": "wp-scripts start resources/ts/Frontend resources/ts/Admin",

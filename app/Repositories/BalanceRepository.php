@@ -34,18 +34,12 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	 * @param array $params Index parameters
 	 * @return array $balances
 	 */
-	public function index( $oauth_token, $whitelist = true, $meta = true ) {
+	public function index( $oauth_token, $use_whitelist = true, $add_meta = true ) {
 		$balances = $this->client->getCombinedPublicBalances( $oauth_token );
 		$balances = array_map( function( $balance_data ) {
 			return $this->balance_factory->create( $balance_data );
 		}, $balances );
-		$balances = $this->balance_collection_factory->create( $balances );
-		if ( $whitelist == true ) {
-			//$balances = $this->balance_service->apply_whitelist( $balances );
-		}
-		if ( $meta == true ) {
-			//$balances = $this->balance_service->embed_token_meta( $balances );
-		}
+		$balances = $this->balance_collection_factory->create( $balances, $add_meta, $use_whitelist );
 		return $balances;
 	}
 }

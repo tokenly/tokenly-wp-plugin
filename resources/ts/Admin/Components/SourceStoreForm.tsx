@@ -15,42 +15,59 @@ interface SourceStoreFormProps {
 	onSubmit: any;
 	onCancel: any;
 	style: any;
+	addresses: Array<any>,
 }
 
 interface SourceStoreFormState {
-	source: SourceStoreParams;
+	address: string;
+	assets: string;
+	addressOptions: Array<any>;
+	
 }
 
 export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStoreFormState> {
 	state: SourceStoreFormState = {
-		source: {
-			address: null,
-			assets: null,
-			type: null,
-		},
+		address: null,
+		assets: null,
+		addressOptions: [],
 	};
 	
 	constructor( props: SourceStoreFormProps ) {
 		super( props );
 		this.onSubmit = this.onSubmit.bind( this );
+		this.state.addressOptions = this.props.addresses.map( ( address ) => {
+			return {
+				'label': address.label,
+				'value': address.address,
+			}
+		} );
+		console.log(this.props.addresses);
+	}
+
+	componentDidMount() {
+		if ( this.state.addressOptions[0] ) {
+			this.setState( { address: this.state.addressOptions[0].value } );
+		}
+		console.log(this.state);
 	}
 	
 	onSubmit() {
-		this.props.onSubmit( this.state.source );
+		const selectedAddress = this.props.addresses.find( address => {
+			return address.address === this.state.address;
+		} )
+		if ( !selectedAddress ) {
+			return;
+		}
+		const source = {
+			address: selectedAddress.address,
+			type: selectedAddress.type,
+			assets: this.state.assets,
+		}		
+		this.props.onSubmit( source );
 	}
 
 	onCancel() {
 		this.props.onCancel();
-	}
-
-	isSubmitDisabled() {
-		if (
-			this.state.source.type != null &&
-			this.state.source.address != ''
-		) {
-			return false;
-		}
-		return true;
 	}
 
 	render() {
@@ -58,41 +75,25 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 			<form style={ { width: '100%', maxWidth: "320px" } }>
 				<div>
 					<SelectControl
-						label="Type"
-						value={ this.state.source.type }
+						label="Address"
+						value={ this.state.address }
 						style={{width: '100%'}}
-						options={ [
-							{ label: null, value: null },
-							{ label: 'Bitcoin', value: 'bitcoin' },
-							{ label: 'Ethereum', value: 'ethereum' },
-						] }
-						help="Source blockchain type"
-						onChange={ ( value: string ) => {
-							const state = Object.assign( {}, this.state.source );
-							state.type = value;
-							this.setState( { source: state } );
+						options={ this.state.addressOptions }
+						help="Address for registration"
+						onChange={ ( value: any ) => {
+							this.setState( { address: value } );
 						} }
 					/>
-					{ this.state.source.type &&
+					{ this.state?.address &&
 						<div>
-							<TextControl
-								label="Address"
-								value={ this.state.source.address }
-								help="Wallet address"
-								onChange={ (value: any) => {
-									const state = Object.assign( {}, this.state.source );
-									state.address = value;
-									this.setState( { source: state } );
-								} }
-							/>
 							<TextControl
 								label="Assets"
 								help="Comma-separated values"
-								value={ this.state.source.assets }
+								value={ this.state.assets }
 								onChange={ ( value: any ) => {
-									const state = Object.assign( {}, this.state.source );
-									state.assets = value;
-									this.setState( { source: state } );
+									// const state = Object.assign( {}, this.state.source );
+									// state.assets = value;
+									// this.setState( { source: state } );
 								} }
 							/>
 						</div>
@@ -103,7 +104,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 					>
 						<Button
 							isPrimary
-							disabled={ this.isSubmitDisabled() }
+							disabled={ !this.state?.address }
 							onClick={ () => {
 								this.onSubmit();
 							}}

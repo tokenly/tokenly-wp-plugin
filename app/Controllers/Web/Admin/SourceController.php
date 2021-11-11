@@ -47,7 +47,7 @@ class SourceController implements SourceControllerInterface {
 		) );
 		$addresses = $user->get_addresses();
 		$render = $this->source_store_view->render( array(
-			//
+			'addresses' => $addresses,
 		) );
 		echo $render;
 	}

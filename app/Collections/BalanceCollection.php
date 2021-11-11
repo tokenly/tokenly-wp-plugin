@@ -24,45 +24,41 @@ class BalanceCollection extends \ArrayObject implements BalanceCollectionInterfa
 
 	/**
 	 * Applies the whitelist to the balances
-	 * @param array $balances Token balances
 	 * @return array
 	 */
-	public function apply_whitelist( $balances ) {
+	public function apply_whitelist() {
 		if ( $this->whitelist->enabled == true ) {
 			$items = $this->whitelist->items ?? null;
 			$balances_filtered = array();
 			if ( $items ) {
 				foreach ( $items as $item ) {
 					$whitelist_rule = implode( ':', array_filter( array( $item->address, $item->index ) ) );
-					$search = array_search( $whitelist_rule, array_column( $balances, 'asset' ) );
+					$assets = array_column( (array) $this, 'asset' );
+					$search = array_search( $whitelist_rule, $assets );
 					if ( $search !== false ) {
-						$balances_filtered[] = $balances[ $search ];
+						$balances_filtered[] = $this[ $search ];
 					}
 				}
 			}
-			return $balances_filtered;
+			$this->exchangeArray( $balances_filtered );
 		}
-		return $balances;
 	}
 
 	/**
 	 * Embeds the WordPress token meta post data into the balance objects
-	 * to provide additional information about the tokens
-	 * @param array $balances Token balances
 	 * @return array
 	 */
-	public function embed_token_meta( $balances ) {
+	public function embed_meta() {
 		$assets = array_map( function( $balance ) {
 			return $balance->name;
-		}, $balances );
+		}, ( array ) $this );
 		$query_meta = $this->token_meta_repository->index( array(
 			'assets' => $assets,
 		) );
 		$balances_keyed = array();
-		foreach( $balances as $balance ) {
+		foreach( ( array ) $this as $balance ) {
 			$balances_keyed[ $balance->name ] = $balance;
 		}
-		$meta = array();
 		while ( $query_meta->have_posts() ) {
 			$query_meta->the_post();
 			$post_id = get_the_ID();
@@ -72,20 +68,14 @@ class BalanceCollection extends \ArrayObject implements BalanceCollectionInterfa
 			$meta_item['description'] = get_the_excerpt();
 			$additional_meta = $this->meta_repository->index( $post_id, array(
 				'asset',
-				'extra',
 			) );
 			$asset = $additional_meta['asset'] ?? null;
-			$extra = $additional_meta['extra'] ?? null;
 			if ( $asset ) {
 				$meta_item['asset'] = $asset;
-				if ( $extra ) {
-					$meta_item['extra'] = $extra;
-				}
 				if ( $balances_keyed[ $asset ] ?? null ) {
 					$balances_keyed[ $asset ]->meta = $meta_item;
 				}
 			}
 		}
-		return $balances_keyed;
 	}
 }

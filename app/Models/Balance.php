@@ -5,17 +5,25 @@ namespace Tokenly\Wp\Models;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 
 class Balance implements BalanceInterface {
-	public $asset;
 	public $name;
 	public $balance;
-	public $balance_sat;
+	public $precision;
 
 	public function __construct( 
 		$balance_data = array()
 	) {
-		$this->asset = $balance_data['asset'] ?? null;
-		$this->name = $balance_data['name'] ?? null;
-		$this->balance = $balance_data['balance'] ?? null;
-		$this->balance_sat = $balance_data['balanceSat'] ?? null;
+		$this->from_array( $balance_data );
+	}
+
+	public function from_array( $balance_data ) {
+		if ( isset( $balance_data['name'] ) ) {
+			$this->name = $balance_data['name'] ?? null;
+		}
+		if ( isset( $balance_data['balance'] ) ) {
+			$this->balance = $balance_data['balance'] ?? null;
+		}
+		if ( isset( $balance_data['precision'] ) ) {
+			$this->precision = $balance_data['precision'] ?? null;
+		}
 	}
 }
