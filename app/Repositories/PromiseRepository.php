@@ -6,7 +6,7 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
-use Tokenly\Wp\Interfaces\Factories\PromiseFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 
 class PromiseRepository implements PromiseRepositoryInterface {
 	protected $client;

@@ -35,8 +35,11 @@ use Tokenly\Wp\Controllers\Api\SettingsController as SettingsApiController;
 use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\WhitelistController as WhitelistApiController;
+use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\AddressCollection;
 use Tokenly\Wp\Collections\BalanceCollection;
+use Tokenly\Wp\Collections\PromiseCollection;
+use Tokenly\Wp\Collections\SourceCollection;
 use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
 use Tokenly\Wp\Models\OauthUser;
@@ -47,15 +50,16 @@ use Tokenly\Wp\Models\TokenMetaPost;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Models\Whitelist;
 use Tokenly\Wp\Models\WhitelistItem;
-use Tokenly\Wp\Factories\AddressFactory;
-use Tokenly\Wp\Factories\AddressCollectionFactory;
-use Tokenly\Wp\Factories\BalanceFactory;
-use Tokenly\Wp\Factories\BalanceCollectionFactory;
-use Tokenly\Wp\Factories\OauthUserFactory;
-use Tokenly\Wp\Factories\PromiseFactory;
-use Tokenly\Wp\Factories\SourceFactory;
-use Tokenly\Wp\Factories\UserFactory;
-use Tokenly\Wp\Factories\WhitelistItemFactory;
+use Tokenly\Wp\Factories\Models\AddressFactory;
+use Tokenly\Wp\Factories\Models\BalanceFactory;
+use Tokenly\Wp\Factories\Models\OauthUserFactory;
+use Tokenly\Wp\Factories\Models\PromiseFactory;
+use Tokenly\Wp\Factories\Models\SourceFactory;
+use Tokenly\Wp\Factories\Models\UserFactory;
+use Tokenly\Wp\Factories\Models\WhitelistItemFactory;
+use Tokenly\Wp\Factories\Collections\AddressCollectionFactory;
+use Tokenly\Wp\Factories\Collections\BalanceCollectionFactory;
+use Tokenly\Wp\Factories\Collections\SourceCollectionFactory;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
@@ -91,17 +95,22 @@ use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface as Setting
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as WhitelistApiControllerInterface;
-use Tokenly\Wp\Interfaces\Factories\AddressFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\AddressCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\BalanceFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\BalanceCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\OauthUserFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\PromiseFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\UserFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\WhitelistItemFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
@@ -159,8 +168,11 @@ return array(
 	PostTypeRouterInterface::class            => \DI\autowire( PostTypeRouter::class ),
 	WebRouterInterface::class                 => \DI\autowire( WebRouter::class ),
 	//Collections
+	CollectionInterface::class                => \DI\autowire( Collection::class ),
 	AddressCollectionInterface::class         => \DI\autowire( AddressCollection::class ),
 	BalanceCollectionInterface::class         => \DI\autowire( BalanceCollection::class ),
+	PromiseCollectionInterface::class         => \DI\autowire( PromiseCollection::class ),
+	SourceCollectionInterface::class          => \DI\autowire( SourceCollection::class ),
 	//Models
 	AddressInterface::class                   => \DI\autowire( Address::class ),
 	BalanceInterface::class                   => \DI\autowire( Balance::class ),
@@ -190,15 +202,11 @@ return array(
 		) );
 		return $whitelist;
 	},
-	//Factories - concrete
+	//Factories - concrete - models
 	AddressFactoryConcrete::class             => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', AddressInterface::class ),
-	AddressCollectionFactoryConcrete::class   => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', AddressCollectionInterface::class ),
 	BalanceFactoryConcrete::class             => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', BalanceInterface::class ),
-	BalanceCollectionFactoryConcrete::class   => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', BalanceCollectionInterface::class ),
 	OauthUserFactoryConcrete::class           => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', OauthUserInterface::class ),
 	PromiseFactoryConcrete::class             => \DI\autowire( RootFactory::class )
@@ -209,15 +217,20 @@ return array(
 		->constructorParameter( 'class', UserInterface::class ),
 	WhitelistItemFactoryConcrete::class       => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', WhitelistItemInterface::class ),
-	//Factories - abstract
+	//Factories - concrete - collections
+	AddressCollectionFactoryConcrete::class   => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', AddressCollectionInterface::class ),
+	BalanceCollectionFactoryConcrete::class   => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', BalanceCollectionInterface::class ),
+	PromiseCollectionFactoryConcrete::class   => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', PromiseCollectionInterface::class ),
+	SourceCollectionFactoryConcrete::class    => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', SourceCollectionInterface::class ),
+	//Factories - abstract - models
 	AddressFactoryInterface::class            => \DI\autowire( AddressFactory::class )
 		->constructorParameter( 'factory', Di\get( AddressFactoryConcrete::class ) ),
-	AddressCollectionFactoryInterface::class  => \DI\autowire( AddressCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( AddressCollectionFactoryConcrete::class ) ),
 	BalanceFactoryInterface::class            => \DI\autowire( BalanceFactory::class )
 		->constructorParameter( 'factory', Di\get( BalanceFactoryConcrete::class ) ),
-	BalanceCollectionFactoryInterface::class  => \DI\autowire( BalanceCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( BalanceCollectionFactoryConcrete::class ) ),
 	OauthUserFactoryInterface::class          => \DI\autowire( OauthUserFactory::class )
 		->constructorParameter( 'factory', Di\get( OauthUserFactoryConcrete::class ) ),
 	PromiseFactoryInterface::class            => \DI\autowire( PromiseFactory::class )
@@ -228,6 +241,15 @@ return array(
 		->constructorParameter( 'factory', Di\get( UserFactoryConcrete::class ) ),
 	WhitelistItemFactoryInterface::class      => \DI\autowire( WhitelistItemFactory::class )
 		->constructorParameter( 'factory', Di\get( WhitelistItemFactoryConcrete::class ) ),
+	//Factories - abstract - collections
+	AddressCollectionFactoryInterface::class  => \DI\autowire( AddressCollectionFactory::class )
+		->constructorParameter( 'factory', Di\get( AddressCollectionFactoryConcrete::class ) ),
+	BalanceCollectionFactoryInterface::class  => \DI\autowire( BalanceCollectionFactory::class )
+		->constructorParameter( 'factory', Di\get( BalanceCollectionFactoryConcrete::class ) ),
+	PromiseCollectionFactoryInterface::class  => \DI\autowire( PromiseCollectionFactory::class )
+		->constructorParameter( 'factory', Di\get( PromiseCollectionFactoryConcrete::class ) ),
+	SourceCollectionFactoryInterface::class   => \DI\autowire( SourceCollectionFactory::class )
+		->constructorParameter( 'factory', Di\get( SourceCollectionFactoryConcrete::class ) ),
 	//Third-party
 	TokenpassAPI::class                       => function ( 
 		ContainerInterface $container,

@@ -11,54 +11,31 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
-use Tokenly\Wp\Interfaces\Factories\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
+use Tokenly\Wp\Collections\Collection;
 
-class BalanceCollection extends \ArrayObject implements BalanceCollectionInterface {
+class BalanceCollection extends Collection implements BalanceCollectionInterface {
+	protected $item_type = BalanceInterface::class;
+
 	public function __construct(
-		array $balances,
-		bool $use_whitelist,
-		bool $use_meta,
 		MetaRepositoryInterface $meta_repository,
 		TokenMetaRepositoryInterface $token_meta_repository,
 		WhitelistInterface $whitelist,
-		BalanceFactoryInterface $balance_factory
+		BalanceFactoryInterface $balance_factory,
+		array $items
 	) {
+		parent::__construct( $items );
 		$this->token_meta_repository = $token_meta_repository;
 		$this->meta_repository = $meta_repository;
 		$this->whitelist = $whitelist;
 		$this->balance_factory = $balance_factory;
-		$this->from_array( $balances, $use_whitelist, $use_meta );
-	}
-
-	protected function from_array( $balances, $use_whitelist, $use_meta ) {
-		$balances = array_map( function( $balance_data ) {
-			if ( is_a( $balance_data, BalanceInterface::class ) === false ) {
-				return $this->balance_factory->create( $balance_data );
-			} else {
-				return $balance_data;
-			}
-		}, $balances );
-		$this->exchangeArray( $balances );
-		if ( $use_whitelist == true ) {
-			$this->apply_whitelist();
-		}
-		if ( $use_meta == true ) {
-			$this->embed_meta();
-		}
-	}
-
-	public function to_array() {
-		$array = array_map( function( $balance ) {
-			return $balance->to_array();
-		}, ( array ) $this );
-		return $array;
 	}
 
 	/**
 	 * Applies the whitelist to the balances
 	 * @return array
 	 */
-	protected function apply_whitelist() {
+	public function apply_whitelist() {
 		if ( $this->whitelist->enabled == true ) {
 			$items = $this->whitelist->items ?? null;
 			
@@ -82,7 +59,7 @@ class BalanceCollection extends \ArrayObject implements BalanceCollectionInterfa
 	 * Embeds the WordPress token meta post data into the balance objects
 	 * @return array
 	 */
-	protected function embed_meta() {
+	public function with_meta() {
 		$assets = array_map( function( $balance ) {
 			return $balance->name;
 		}, ( array ) $this );

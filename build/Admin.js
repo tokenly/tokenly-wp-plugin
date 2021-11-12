@@ -5617,7 +5617,7 @@ class SourceStoreForm extends react_1.Component {
     render() {
         return (React.createElement("form", { style: { width: '100%', maxWidth: "400px" } },
             React.createElement("div", null,
-                React.createElement(components_1.SelectControl, { label: "Address", value: this.state.address, style: { width: '100%' }, options: this.state.addressOptions, help: "Address for registration", onChange: (value) => {
+                React.createElement(components_1.SelectControl, { label: "Address", value: this.state.address, style: { width: '100%' }, options: this.state.addressOptions, help: " Blockchain wallet address", onChange: (value) => {
                         this.setState({ address: value });
                     } }),
                 this.state.address != null &&
@@ -5633,7 +5633,7 @@ class SourceStoreForm extends react_1.Component {
                             React.createElement("div", null,
                                 React.createElement("strong", null, "Assets: "),
                                 React.createElement("span", null, this.getCurrentAddressAssets()))),
-                        React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted.", value: this.state.assets, onChange: (value) => {
+                        React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised.", value: this.state.assets, onChange: (value) => {
                                 this.setState({ assets: value });
                             } })),
                 React.createElement(components_1.Flex, { style: { marginTop: '12px' }, justify: "flex-start" },
@@ -6413,6 +6413,7 @@ class SourceIndexPage extends react_1.Component {
             sourceData: [],
             storingPromise: false,
         };
+        console.log(this.props.pageData.sources);
     }
     render() {
         return (React.createElement(Page_1.default, { title: 'Sources' },

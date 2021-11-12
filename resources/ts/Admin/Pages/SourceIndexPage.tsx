@@ -34,6 +34,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	}
 	constructor( props: SourceIndexPageProps ) {
 		super( props );
+		console.log(this.props.pageData.sources);
 	}
 	
 	render() {

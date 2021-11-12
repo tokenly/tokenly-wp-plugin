@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Interfaces\Factories;
+namespace Tokenly\Wp\Interfaces\Factories\Models;
 
 interface PromiseFactoryInterface {
 	//

@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\AddressCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 
 /**

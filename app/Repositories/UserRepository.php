@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Repositories;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\UserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 
 class UserRepository implements UserRepositoryInterface {
 	protected $client;

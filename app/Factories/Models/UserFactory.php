@@ -1,8 +1,8 @@
 <?php
 
-namespace Tokenly\Wp\Factories;
+namespace Tokenly\Wp\Factories\Models;
 
-use Tokenly\Wp\Interfaces\Factories\UserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Factories\Factory;
 
@@ -12,9 +12,9 @@ class UserFactory extends Factory implements UserFactoryInterface {
 	 * @param \WP_User $user WordPress user
 	 * @return UserInterface
 	 */
-	public function create( $user_data ) {
+	public function create( $data, $args = array() ) {
 		$user = $this->factory->create( array(
-			'user' => $user_data['user'] ?? null,
+			'user' => $data['user'] ?? null,
 		) );
 		return $user;
 	}

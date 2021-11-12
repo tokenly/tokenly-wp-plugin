@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 
 class Source implements SourceInterface {
 	public $address;
+	public $address_data;
 	public $assets;
 	public $type;
 	protected $source_repository;
@@ -36,5 +37,18 @@ class Source implements SourceInterface {
 	 */
 	public function destroy() {
 		$this->source_repository->destroy( $this->address );
+	}
+
+	/**
+	 * Converts the source to array
+	 */
+	public function to_array() {
+		$array = array(
+			'address' => $this->address,
+			'address_data' => $this->address_data,
+			'assets'  => $this->assets,
+			'type'    => $this->type,
+		);
+		return $array;
 	}
 }

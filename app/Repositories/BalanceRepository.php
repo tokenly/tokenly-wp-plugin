@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\BalanceCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
 
 /**
  * Manages token balance
@@ -30,7 +30,10 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	 */
 	public function index( $oauth_token, $use_whitelist = true, $use_meta = true ) {
 		$balances = $this->client->getCombinedPublicBalances( $oauth_token );
-		$balances = $this->balance_collection_factory->create( $balances, $use_whitelist, $use_meta );
+		$balances = $this->balance_collection_factory->create( $balances, array(
+			'use_whitelist' => $use_whitelist,
+			'use_meta'      => $use_meta,
+		) );
 		return $balances;
 	}
 }

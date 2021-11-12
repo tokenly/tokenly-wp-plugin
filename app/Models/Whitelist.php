@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\WhitelistItemFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
 
 class Whitelist implements WhitelistInterface {
 	public $enabled = false;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tokenly\Wp\Interfaces\Factories;
+namespace Tokenly\Wp\Interfaces\Factories\Collections;
 
 interface AddressCollectionFactoryInterface {
 	//

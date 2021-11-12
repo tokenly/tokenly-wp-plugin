@@ -101,7 +101,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 						value={ this.state.address }
 						style={{width: '100%'}}
 						options={ this.state.addressOptions }
-						help="Address for registration"
+						help=" Blockchain wallet address"
 						onChange={ ( value: any ) => {
 							this.setState( { address: value } );
 						} }
@@ -116,7 +116,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 							</div>
 							<TextareaControl
 								label="Whitelisted assets"
-								help="Comma-separated values. Leaving empty will make all assets whitelisted."
+								help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
 								value={ this.state.assets }
 								onChange={ ( value: any ) => {
 									this.setState( { assets: value } );

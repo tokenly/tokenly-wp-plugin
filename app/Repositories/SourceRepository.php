@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Repositories;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 
 /**
  * Manages sources for promise type transactions
@@ -16,11 +16,11 @@ class SourceRepository implements SourceRepositoryInterface {
 	public function __construct(
 		TokenpassAPIInterface $client,
 		SettingsInterface $settings,
-		SourceFactoryInterface $source_factory
+		SourceCollectionFactoryInterface $source_collection_factory
 	) {
 		$this->client = $client;
 		$this->settings = $settings;
-		$this->source_factory = $source_factory;
+		$this->source_collection_factory = $source_collection_factory;
 	}
 
 	/**
@@ -40,9 +40,7 @@ class SourceRepository implements SourceRepositoryInterface {
 	 */
 	public function index() {
 		$sources = $this->client->getProvisionalSourceList();
-		$sources = array_map( function( $source ) {
-			return $this->source_factory->create( $source );
-		}, $sources );
+		$sources = $this->source_collection_factory->create( $sources );
 		return $sources;
 	}
 	

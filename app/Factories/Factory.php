@@ -11,7 +11,7 @@ class Factory implements FactoryInterface {
 		$this->factory = $factory;
 	}
 
-	public function create( $params ) {
+	public function create( $data, $args = array() ) {
 		//
 	} 
 }
