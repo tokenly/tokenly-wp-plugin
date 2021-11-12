@@ -5562,24 +5562,21 @@ class SourceStoreForm extends react_1.Component {
             addressOptions: [],
         };
         this.onSubmit = this.onSubmit.bind(this);
-        this.state.addressOptions = this.props.addresses.map((address) => {
+        this.getCurrentAddressType = this.getCurrentAddressType.bind(this);
+        this.getCurrentAddressAssets = this.getCurrentAddressAssets.bind(this);
+        const options = this.props.addresses.map((address, index) => {
             return {
-                'label': address.label,
-                'value': address.address,
+                label: address.label,
+                value: index,
             };
         });
-        console.log(this.props.addresses);
-    }
-    componentDidMount() {
-        if (this.state.addressOptions[0]) {
-            this.setState({ address: this.state.addressOptions[0].value });
+        this.state.addressOptions = options;
+        if (this.state.addressOptions.length > 0) {
+            this.state.address = this.state.addressOptions[0].value;
         }
-        console.log(this.state);
     }
     onSubmit() {
-        const selectedAddress = this.props.addresses.find(address => {
-            return address.address === this.state.address;
-        });
+        const selectedAddress = this.props.addresses[this.state.address];
         if (!selectedAddress) {
             return;
         }
@@ -5593,22 +5590,54 @@ class SourceStoreForm extends react_1.Component {
     onCancel() {
         this.props.onCancel();
     }
+    getCurrentAddressType() {
+        var _a;
+        if (this.state.address != null) {
+            return (_a = this.props.addresses[this.state.address]) === null || _a === void 0 ? void 0 : _a.type;
+        }
+    }
+    getCurrentAddressAssets() {
+        if (this.state.address != null) {
+            const balances = this.props.addresses[this.state.address].balances;
+            const assets = balances.map((balance) => {
+                return balance.name;
+            });
+            if ((assets === null || assets === void 0 ? void 0 : assets.length) == 0) {
+                return 'none';
+            }
+            return assets.join(', ');
+        }
+    }
+    getCurrentAddress() {
+        var _a;
+        if (this.state.address != null) {
+            return (_a = this.props.addresses[this.state.address]) === null || _a === void 0 ? void 0 : _a.address;
+        }
+    }
     render() {
-        var _a, _b;
-        return (React.createElement("form", { style: { width: '100%', maxWidth: "320px" } },
+        return (React.createElement("form", { style: { width: '100%', maxWidth: "400px" } },
             React.createElement("div", null,
                 React.createElement(components_1.SelectControl, { label: "Address", value: this.state.address, style: { width: '100%' }, options: this.state.addressOptions, help: "Address for registration", onChange: (value) => {
                         this.setState({ address: value });
                     } }),
-                ((_a = this.state) === null || _a === void 0 ? void 0 : _a.address) &&
+                this.state.address != null &&
                     React.createElement("div", null,
-                        React.createElement(components_1.TextControl, { label: "Assets", help: "Comma-separated values", value: this.state.assets, onChange: (value) => {
-                                // const state = Object.assign( {}, this.state.source );
-                                // state.assets = value;
-                                // this.setState( { source: state } );
+                        React.createElement("div", { style: { margin: '10px 0' } },
+                            React.createElement("div", null, "Address info:"),
+                            React.createElement("div", null,
+                                React.createElement("strong", null, "Type: "),
+                                React.createElement("span", null, this.getCurrentAddressType())),
+                            React.createElement("div", null,
+                                React.createElement("strong", null, "Address: "),
+                                React.createElement("span", null, this.getCurrentAddress())),
+                            React.createElement("div", null,
+                                React.createElement("strong", null, "Assets: "),
+                                React.createElement("span", null, this.getCurrentAddressAssets()))),
+                        React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted.", value: this.state.assets, onChange: (value) => {
+                                this.setState({ assets: value });
                             } })),
                 React.createElement(components_1.Flex, { style: { marginTop: '12px' }, justify: "flex-start" },
-                    React.createElement(components_1.Button, { isPrimary: true, disabled: !((_b = this.state) === null || _b === void 0 ? void 0 : _b.address), onClick: () => {
+                    React.createElement(components_1.Button, { isPrimary: true, disabled: this.state.address === null, onClick: () => {
                             this.onSubmit();
                         } }, "Register source"),
                     this.props.saving === true &&
@@ -6436,6 +6465,7 @@ class SourceIndexPage extends react_1.Component {
         this.state = {
             storingSource: false,
         };
+        console.log(this.props.pageData);
         this.onSubmit = this.onSubmit.bind(this);
     }
     return() {
@@ -6685,7 +6715,7 @@ class WhitelistPage extends react_1.Component {
         });
     }
     render() {
-        return (React.createElement(Page_1.default, { title: 'Token Whitelist 123' },
+        return (React.createElement(Page_1.default, { title: 'Token Whitelist' },
             React.createElement(components_1.Panel, { header: "Token Whitelist Settings" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,

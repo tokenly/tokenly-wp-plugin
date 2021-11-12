@@ -2,6 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Collections;
 
-interface BalanceCollectionInterface {
+interface AddressCollectionInterface {
 	public function to_array();
 }

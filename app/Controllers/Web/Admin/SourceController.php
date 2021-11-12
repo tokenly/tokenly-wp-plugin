@@ -35,6 +35,7 @@ class SourceController implements SourceControllerInterface {
 
 	public function index() {
 		$sources = $this->source_repository->index();
+		$sources = $sources->to_array();
 		$render = $this->source_index_view->render( array(
 			'sources' => $sources,
 		) );
@@ -46,6 +47,7 @@ class SourceController implements SourceControllerInterface {
 			'id' => get_current_user_id(),
 		) );
 		$addresses = $user->get_addresses();
+		$addresses = $addresses->to_array();
 		$render = $this->source_store_view->render( array(
 			'addresses' => $addresses,
 		) );

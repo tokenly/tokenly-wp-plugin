@@ -78,7 +78,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 
 	render() {
 		return (
-			<Page title={'Token Whitelist 123'} >
+			<Page title={'Token Whitelist'} >
 				<Panel header="Token Whitelist Settings">
 					<PanelBody>
 						<PanelRow>

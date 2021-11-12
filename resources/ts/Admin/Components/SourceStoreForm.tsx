@@ -8,6 +8,7 @@ import {
 	TextControl,
 	SelectControl,
 	Flex,
+	TextareaControl,
 } from '@wordpress/components';
 
 interface SourceStoreFormProps {
@@ -19,7 +20,7 @@ interface SourceStoreFormProps {
 }
 
 interface SourceStoreFormState {
-	address: string;
+	address: number;
 	assets: string;
 	addressOptions: Array<any>;
 	
@@ -35,26 +36,22 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 	constructor( props: SourceStoreFormProps ) {
 		super( props );
 		this.onSubmit = this.onSubmit.bind( this );
-		this.state.addressOptions = this.props.addresses.map( ( address ) => {
+		this.getCurrentAddressType = this.getCurrentAddressType.bind( this );
+		this.getCurrentAddressAssets = this.getCurrentAddressAssets.bind( this );
+		const options = this.props.addresses.map( ( address, index ) => {
 			return {
-				'label': address.label,
-				'value': address.address,
+				label: address.label,
+				value: index,
 			}
 		} );
-		console.log(this.props.addresses);
-	}
-
-	componentDidMount() {
-		if ( this.state.addressOptions[0] ) {
-			this.setState( { address: this.state.addressOptions[0].value } );
+		this.state.addressOptions = options;
+		if ( this.state.addressOptions.length > 0 ) {
+			this.state.address = this.state.addressOptions[0].value;
 		}
-		console.log(this.state);
 	}
 	
 	onSubmit() {
-		const selectedAddress = this.props.addresses.find( address => {
-			return address.address === this.state.address;
-		} )
+		const selectedAddress = this.props.addresses[this.state.address];
 		if ( !selectedAddress ) {
 			return;
 		}
@@ -70,9 +67,34 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 		this.props.onCancel();
 	}
 
+	getCurrentAddressType() {
+		if ( this.state.address != null ) {
+			return this.props.addresses[this.state.address]?.type;
+		}
+	}
+
+	getCurrentAddressAssets() {
+		if ( this.state.address != null ) {
+			const balances = this.props.addresses[this.state.address].balances;
+			const assets = balances.map( ( balance: any ) => {
+				return balance.name;
+			} );
+			if ( assets?.length == 0 ) {
+				return 'none';
+			}
+			return assets.join(', ');
+		}
+	}
+
+	getCurrentAddress() {
+		if ( this.state.address != null ) {
+			return this.props.addresses[this.state.address]?.address;
+		}
+	}
+
 	render() {
 		return (
-			<form style={ { width: '100%', maxWidth: "320px" } }>
+			<form style={ { width: '100%', maxWidth: "400px" } }>
 				<div>
 					<SelectControl
 						label="Address"
@@ -84,18 +106,23 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 							this.setState( { address: value } );
 						} }
 					/>
-					{ this.state?.address &&
+					{ this.state.address != null &&
 						<div>
-							<TextControl
-								label="Assets"
-								help="Comma-separated values"
+							<div style={{margin: '10px 0'}}>
+								<div>Address info:</div>
+								<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
+								<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
+								<div><strong>Assets: </strong><span>{ this.getCurrentAddressAssets() }</span></div>
+							</div>
+							<TextareaControl
+								label="Whitelisted assets"
+								help="Comma-separated values. Leaving empty will make all assets whitelisted."
 								value={ this.state.assets }
 								onChange={ ( value: any ) => {
-									// const state = Object.assign( {}, this.state.source );
-									// state.assets = value;
-									// this.setState( { source: state } );
+									this.setState( { assets: value } );
 								} }
 							/>
+
 						</div>
 					}
 					<Flex
@@ -104,7 +131,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 					>
 						<Button
 							isPrimary
-							disabled={ !this.state?.address }
+							disabled={ this.state.address === null }
 							onClick={ () => {
 								this.onSubmit();
 							}}

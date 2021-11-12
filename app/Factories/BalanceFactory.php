@@ -18,7 +18,8 @@ class BalanceFactory extends Factory implements BalanceFactoryInterface {
 				'asset'       => $params['asset'] ?? null,
 				'name'        => $params['name'] ?? null,
 				'balance'     => $params['balance'] ?? null,
-				'balanceSat'  => $params['balanceSat'] ?? null,
+				'balance_sat' => $params['balanceSat'] ?? null,
+				'precision'   => $params['precision'] ?? null,
 			),
 		) );
 		return $balance;

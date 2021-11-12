@@ -6,22 +6,14 @@
 
 namespace Tokenly\Wp\Collections;
 
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\BalanceInterface;
-use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
-use Tokenly\Wp\Interfaces\Factories\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Factories\SourceFactoryInterface;
 
-class BalanceCollection extends \ArrayObject implements BalanceCollectionInterface {
+class SourceCollection extends \ArrayObject implements SourceCollectionInterface {
 	public function __construct(
-		array $balances,
-		bool $use_whitelist,
-		bool $use_meta,
-		MetaRepositoryInterface $meta_repository,
-		TokenMetaRepositoryInterface $token_meta_repository,
-		WhitelistInterface $whitelist,
-		BalanceFactoryInterface $balance_factory
+		array $sources,
+		SourceFactoryInterface $source_factory
 	) {
 		$this->token_meta_repository = $token_meta_repository;
 		$this->meta_repository = $meta_repository;
