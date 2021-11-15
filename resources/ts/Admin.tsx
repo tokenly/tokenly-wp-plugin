@@ -11,6 +11,7 @@ import WhitelistPage from './Admin/Pages/WhitelistPage';
 import PromiseStorePage from './Admin/Pages/PromiseStorePage';
 import PromiseEditPage from './Admin/Pages/PromiseEditPage';
 import SourceIndexPage from './Admin/Pages/SourceIndexPage';
+import SourceShowPage from './Admin/Pages/SourceShowPage';
 import SourceStorePage from './Admin/Pages/SourceStorePage';
 import SourceEditPage from './Admin/Pages/SourceEditPage';
 import DashboardPage from './Admin/Pages/DashboardPage';
@@ -52,6 +53,7 @@ class AdminApp extends App {
 			'promise-store'   : PromiseStorePage,
 			'promise-edit'    : PromiseEditPage,
 			'source-index'    : SourceIndexPage,
+			'source-show'     : SourceShowPage,
 			'source-store'    : SourceStorePage,
 			'source-edit'     : SourceEditPage,
 			'token-meta-edit' : TokenMetaEditPage,

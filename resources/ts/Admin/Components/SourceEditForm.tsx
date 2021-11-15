@@ -5,7 +5,7 @@ import { SourceData } from '../../Interfaces';
 import { 
 	Button,
 	Spinner,
-	TextControl,
+	TextareaControl,
 	Flex,
 } from '@wordpress/components';
 
@@ -53,9 +53,9 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 			<form>
 				<div style={{maxWidth: "320px"}}>
 					<div>
-						<TextControl
-							label="Assets"
-							help="Comma-separated values"
+						<TextareaControl
+							label="Whitelisted assets"
+							help="Comma-separated values. Assets which are allowed for promises."
 							value={ this.state.source.assets }
 							onChange={ (value: any) => {
 								const state = Object.assign( {}, this.state.source );
@@ -72,7 +72,7 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 								this.onSave();
 							}}
 						>
-							Save address
+							Save source
 						</Button>
 						<Button
 							isSecondary
@@ -81,7 +81,7 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 								this.onDelete();
 							}}
 						>
-							Delete address
+							Delete source
 						</Button>
 						<Button
 							isTertiary

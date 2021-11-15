@@ -4,10 +4,15 @@ namespace Tokenly\Wp\Components;
 
 use Tokenly\Wp\Components\Component;
 use Twig\Environment;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 class CardTokenItemComponent extends Component {	
-	public function __construct( Environment $twig ) {
+	public function __construct(
+		Environment $twig,
+		MetaRepositoryInterface $meta_repository
+	) {
 		parent::__construct( $twig );
+		$this->meta_repository = $meta_repository;
 	}
 
 	public function render( $data ) {
@@ -20,16 +25,20 @@ class CardTokenItemComponent extends Component {
 		$extra = '';
 		$image = '';
 		if ( $meta ) {
-			$name_meta = $meta['name'];
-			if ( $name_meta ) {
-				$name = $name_meta;
+			$post_id = $meta->ID;
+			$name = get_the_title( $post_id );
+			$image = get_the_post_thumbnail( $post_id, 'full' );
+			$description = get_the_excerpt( $post_id );
+			$additional_meta = $this->meta_repository->index( $post_id, array(
+				'asset',
+			) );
+			$asset = $additional_meta['asset'] ?? null;
+			if ( $asset ) {
+				$meta_item['asset'] = $asset;
+				if ( $balances_keyed[ $asset ] ?? null ) {
+					$balances_keyed[ $asset ]->meta = $meta_item;
+				}
 			}
-			$description = $meta['description'] ?? null;
-			$image = $meta['image'] ?? null;
-			$extra = $meta['extra'] ?? null;
-			// if ( $extra ) {
-			// 	$extra = wp_unslash( json_encode( $extra, JSON_PRETTY_PRINT ) );
-			// }
 		} 
 		$html = $this->twig->render( 'components/CardTokenItemComponent.twig', array(
 			'asset'       => $asset,

@@ -15,6 +15,7 @@ export interface SettingsData {
 
 export interface SourceItem {
 	address: string;
+	address_data: any;
 	type: string;
 	assets: Array<string>;
 }

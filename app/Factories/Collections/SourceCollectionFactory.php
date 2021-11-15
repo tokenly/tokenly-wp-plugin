@@ -35,7 +35,6 @@ class SourceCollectionFactory extends Factory implements SourceCollectionFactory
 		$collection = $this->factory->create( array(
 			'items' => $items,
 		) );
-		$collection->with_address();
 		return $collection;
 	}
 }

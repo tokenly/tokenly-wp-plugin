@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import { PromiseStoreParams, SourceItem } from '../../Interfaces';
 import { UserSearchField } from './UserSearchField';
+import { AssetSearchField } from './AssetSearchField';
 
 import { 
 	Button,
@@ -22,6 +23,7 @@ interface PromiseStoreFormProps {
 
 interface PromiseStoreFormState {
 	promise: PromiseStoreParams;
+	source: any;
 	sources: Array<string>;
 }
 
@@ -31,10 +33,11 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 			source: null,
 			destination: null,
 			asset: null,
-			quantity: 1,
+			quantity: 0,
 			ref: null,
 			note: null,
 		},
+		source: null,
 		sources: [],
 	};
 	constructor( props: PromiseStoreFormProps ) {
@@ -42,15 +45,15 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		this.onSubmit = this.onSubmit.bind( this );
 		this.onCancel = this.onCancel.bind( this );
 		this.onUserChange = this.onUserChange.bind( this );
-		this.state.sources = this.props.sources.map( source => {
-			return {
-				label: source.address,
-				value: source.address,
-			} as any
-		} );
-		const defaultSource: any = this.state.sources[0] ?? null;
-		if ( defaultSource ) {
-			this.state.promise.source = defaultSource?.value ?? null;
+		this.onSourceChange = this.onSourceChange.bind( this );
+		this.getSourceOptions = this.getSourceOptions.bind( this );
+		this.getAssetOptions = this.getAssetOptions.bind( this );
+		this.getCurrentAsset = this.getCurrentAsset.bind( this );
+		this.getMaxCount = this.getMaxCount.bind( this );
+		if ( Object.keys( this.props.sources ).length > 0 ) {
+			const key = Object.keys( this.props.sources )[0] as any;
+			this.state.source = Object.assign( {}, this.props.sources[ key ] ?? null );
+			this.state.promise.source = this.state.source.address;
 		}
 	}
 	
@@ -61,6 +64,18 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	onCancel() {
 		this.props.onCancel( this.state.promise );
 	}
+
+	onSourceChange( value: any ) {
+		const state = Object.assign( {}, this.state.promise );
+		state.source = value;
+		state.asset = null;
+		state.quantity = 0;
+		const source = Object.assign( {}, this.props.sources[ value ] ?? null );
+		this.setState( {
+			promise: state,
+			source: source ?? null,
+		} );
+	}
 	
 	onUserChange( userId: number ) {
 		const promise = Object.assign( {}, this.state.promise );
@@ -68,99 +83,149 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		this.setState( { promise: promise } );
 	}
 
+	getSourceOptions() {
+		const options = [] as any;
+		Object.keys( this.props.sources ).forEach( ( key: any ) => {
+			options.push( {
+				label: this.props.sources[ key ].address_data.label ?? this.props.sources[ key ].address ?? null,
+				value: this.props.sources[ key ].address ?? null,
+			} );
+		});
+		return options;
+	}
+
+	getAssetOptions() {
+		const options = [] as any;
+		if ( !this.state.source ) {
+			return [];
+		}
+		const balances = this.state.source?.address_data?.balances;
+		if ( !balances ) {
+			return [];
+		}
+		Object.keys( balances ).forEach( ( key: any ) => {
+			options.push( balances[ key ].asset );
+		} );
+		return options;
+	}
+
+	getCurrentAsset() {
+		let balances = this.state.source.address_data.balances;
+		balances = Object.values( balances );
+		balances = balances.filter( ( balance: any ) => {
+			return balance.asset === this.state.promise.asset;
+		})
+		if ( balances.length > 0 ) {
+			return balances[0];
+		}
+		return null;
+	}
+
+	getMaxCount() {
+		const asset = this.getCurrentAsset();
+		console.log(asset);
+		if ( !asset ) {
+			return null;
+		}
+		return asset.balance;
+	}
+
 	render() {
 		return (
-			<form style={{width: '100%', maxWidth: '320px'}}>
+			<form style={ { width: '100%', maxWidth: '320px' } }>
+				<div style={ { marginBottom: '12px' } }>
+					<SelectControl
+						label="Source"
+						value={ this.state.promise.source }
+						options={ this.getSourceOptions() }
+						onChange={ ( value: any ) => {
+							this.onSourceChange( value );
+						} }
+						help="Source address to use."
+					/>
+				</div>
 				<div>
 					<UserSearchField
-						onChange={ (value: any) => {
+						onChange={ ( value: any ) => {
 							const state = Object.assign( {}, this.state.promise );
 							state.destination = value;
 							this.setState( { promise: state } );
 						} }
 					/>
 				</div>
-				<div style={{ marginBottom: '12px' }}>
-					<SelectControl
-						label="Source address"
-						value={ this.state.promise.source }
-						options={ this.state.sources as any }
-						onChange={ (value: any) => {
-							const state = Object.assign( {}, this.state.promise );
-							state.source = value;
-							this.setState( { promise: state } );
-						} }
-						help="Source address to use"
-					/>
-				</div>
 				<div>
-					<TextControl
-						label="Asset ID"
-						help="Token to promise"
-						value={ this.state.promise.asset }
-						onChange={ (value: any) => {
+					<AssetSearchField
+						onChange={ ( value: any ) => {
 							const state = Object.assign( {}, this.state.promise );
 							state.asset = value;
 							this.setState( { promise: state } );
 						} }
+						assets={ this.getAssetOptions() }
 					/>
-					<TextControl
-						label="Quantity"
-						help="Amount, in satoshis"
-						type="number"
-						value={ this.state.promise.quantity }
-						onChange={ (value: any) => {
-							const state = Object.assign( {}, this.state.promise );
-							state.quantity = value;
-							this.setState( { promise: state } );
-						} }
-					/>
-					<TextControl
-						label="Ref"
-						help="Extra reference data"
-						value={ this.state.promise.ref }
-						onChange={ (value: any) => {
-							const state = Object.assign( {}, this.state.promise );
-							state.ref = value;
-							this.setState( { promise: state } );
-						} }
-					/>
-					<TextareaControl
-						label="Note"
-						help="Note to display to user"
-						value={ this.state.promise.note }
-						onChange={ (value: any) => {
-							const state = Object.assign( {}, this.state.promise );
-							state.note = value;
-							this.setState( { promise: state } );
-						} }
-					/>
-					<Flex justify="flex-start">
-						<Button
-							isPrimary
-							disabled={ this.props.saving }
-							onClick={ () => {
-								this.onSubmit();
-							}}
-							style={ { marginTop: '12px' } }
-						>
-							Create transaction
-						</Button>
-						{this.props.saving === true &&
-							<Spinner/>
-						}
-						<Button
-							isTertiary
-							disabled={ this.props.saving }
-							onClick={ () => {
-								this.onCancel();
-							}}
-							style={ { marginTop: '12px' } }
-						>
-							Cancel
-						</Button>
-					</Flex>
 				</div>
+				{ this.state.promise.asset &&
+					<div>
+						<Flex justify="flex-start" align="center">
+							<TextControl
+								label="Quantity"
+								type="number"
+								value={ this.state.promise.quantity }
+								style={ { maxWidth: '100px' } }
+								onChange={ (value: any) => {
+									const state = Object.assign( {}, this.state.promise );
+									state.quantity = value;
+									this.setState( { promise: state } );
+								} }
+							/>
+							<span><span>of / </span><span><strong>{ this.getMaxCount() }</strong></span></span>
+						</Flex>
+						<TextControl
+							label="Ref"
+							help="Extra reference data"
+							value={ this.state.promise.ref }
+							onChange={ (value: any) => {
+								const state = Object.assign( {}, this.state.promise );
+								state.ref = value;
+								this.setState( { promise: state } );
+							} }
+						/>
+						<TextareaControl
+							label="Note"
+							help="Note to display to user"
+							value={ this.state.promise.note }
+							onChange={ (value: any) => {
+								const state = Object.assign( {}, this.state.promise );
+								state.note = value;
+								this.setState( { promise: state } );
+							} }
+						/>
+					</div>
+				}
+				<Flex justify="flex-start">
+					<Button
+						isPrimary
+						disabled={ this.props.saving }
+						onClick={ () => {
+							this.onSubmit();
+						}}
+						style={ { marginTop: '12px' } }
+					>
+						Create transaction
+					</Button>
+					{this.props.saving === true &&
+						<Spinner/>
+					}
+					<Button
+						isTertiary
+						disabled={ this.props.saving }
+						onClick={ () => {
+							this.onCancel();
+						}}
+						style={ { marginTop: '12px' } }
+					>
+						Cancel
+					</Button>
+				</Flex>
 			</form>
 		);
 	}

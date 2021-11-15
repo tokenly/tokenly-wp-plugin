@@ -6,15 +6,15 @@
 
 namespace Tokenly\Wp\Models;
 
-use Tokenly\Wp\Interfaces\Models\TokenMetaPostInterface;
+use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 
-class TokenMetaPost implements TokenMetaPostInterface {
+class TokenMeta implements TokenMetaInterface {
 	protected $_instance;
 
 	public function __construct(
-		$token_meta_post
+		\WP_Post $post
 	) {
-		$this->_instance = $token_meta_post;
+		$this->_instance = $post;
 	}
 
 	public function __call( $method, $args ) {

@@ -4,15 +4,16 @@ namespace Tokenly\Wp\Views\Admin;
 
 use Tokenly\Wp\Views\View;
 
-class ConnectionView extends View {
+class SourceShowView extends View {
 	public function render( $data ) {
 		$html = $this->twig->render( 'Admin.twig', array(
-			'view' => 'connection',
+			'view'  => 'source-show',
 			'props' => array(
-				'status' => $data['status'] ?? null,
-				'user'   => $data['user'] ?? null,
+				'source' => $data['source'] ?? null,
 			),
 		) );
 		return $html;
 	}
 }
+
+

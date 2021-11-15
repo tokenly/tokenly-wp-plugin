@@ -43,13 +43,12 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 				<div style={{marginBottom: '8px'}}>
 					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
 				</div>
-				<Panel header="Source actions">
+				<Panel>
 					<PanelBody>
 						<PanelRow>
 							<Flex style={{width: '100%'}}>
 								<Button
 									isPrimary
-									isLarge
 									href='/wp-admin/admin.php?page=tokenpass-source-store'
 								>
 									Register source

@@ -11,7 +11,8 @@ use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\AddressInterface;
+use Tokenly\Wp\Interfaces\Collection\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collection\AddressCollectionInterface;
 
 class User implements UserInterface {
 	protected $_instance;
@@ -50,28 +51,42 @@ class User implements UserInterface {
 
 	/**
 	 * Gets all addresses
-	 * @return AddressInterface[] Found addresses
+	 * @param array $params Address search parameters
+	 * @return AddressCollectionInterface Found addresses
 	 */
-	public function get_addresses() {
+	public function get_addresses( array $params = array() ) {
 		$oauth_user = $this->get_oauth_user();
 		if ( !$oauth_user ) {
 			return;
 		}
 		$username = $oauth_user->username;
-		$addresses = $this->address_repository->index( array(
-			'username' => $username,
-		) );
+		$params['username'] = $username;
+		$addresses = $this->address_repository->index( $params );
 		return $addresses;
 	}
 
 	/**
 	 * Gets all balances
-	 * @return BalanceInterface[] Found balances
+	 * @param array $params Balance search parameters
+	 * @return BalanceCollectionInterface Found balances
 	 */
-	public function get_balances() {
+	public function get_balances( array $params = array() ) {
 		$oauth_token = $this->get_oauth_token();
-		$balance = $this->balance_repository->index( $oauth_token );
+		$balance = $this->balance_repository->index( $oauth_token, $params );
 		return $balance;
+	}
+
+	/**
+	 * Checks if the user is currently connected to Tokenpass
+	 * @return bool
+	 */
+	public function is_connected() {
+		$oauth_user = $this->get_oauth_user();
+		if ( $oauth_user ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -89,8 +104,8 @@ class User implements UserInterface {
 	 * Retrieves oauth user from the API
 	 * @return OauthUserInterface
 	 */
-	protected function get_oauth_user() {
-		if ( !$this->oauth_user ) {
+	public function get_oauth_user() {
+		if ( !isset( $this->oauth_user ) ) {
 			$oauth_user = $this->oauth_user_repository->show( $this->ID );
 			$this->oauth_user = $oauth_user;
 		}

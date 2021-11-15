@@ -37,9 +37,6 @@ class BalanceCollectionFactory extends Factory implements BalanceCollectionFacto
 		if ( $args['use_whitelist'] ?? true == true ) {
 			$collection->apply_whitelist();
 		}
-		if ( $args['use_meta'] ?? true == true ) {
-			$collection->with_meta();
-		}
 		return $collection;
 	}
 }

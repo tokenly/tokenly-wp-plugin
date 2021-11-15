@@ -5014,6 +5014,82 @@ var Reflect;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/AssetSearchField.tsx":
+/*!************************************************************!*\
+  !*** ./resources/ts/Admin/Components/AssetSearchField.tsx ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AssetSearchField = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class AssetSearchField extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            keywords: null,
+            asset: null,
+            assets: [],
+        };
+        this.onKeywordsChange = this.onKeywordsChange.bind(this);
+        this.onAssetChange = this.onAssetChange.bind(this);
+        this.getAssetsAvailable = this.getAssetsAvailable.bind(this);
+    }
+    onKeywordsChange(keywords) {
+        var _a;
+        if (keywords == '') {
+            return;
+        }
+        let results = this.props.assets.filter((value) => {
+            return value.toLowerCase().indexOf(keywords.toLowerCase()) >= 0;
+        });
+        results = results.map((result) => {
+            return {
+                label: result,
+                value: result,
+            };
+        });
+        this.setState({
+            keywords: keywords,
+            assets: [(_a = results[0]) !== null && _a !== void 0 ? _a : { value: null, label: null }],
+        });
+    }
+    onAssetChange(id) {
+        this.setState({ asset: id });
+        this.props.onChange(id);
+    }
+    getAssetsAvailable() {
+        var _a;
+        if (((_a = this.props.assets) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+            return this.props.assets.join(', ');
+        }
+        else {
+            return 'none';
+        }
+    }
+    render() {
+        return (React.createElement("div", { style: { marginBottom: '12px' } },
+            React.createElement("div", { style: { height: '90px' } },
+                React.createElement(components_1.ComboboxControl, { label: "Asset", value: this.state.asset, onChange: (value) => {
+                        this.onAssetChange(value);
+                    }, options: this.state.assets, onFilterValueChange: (keywords) => {
+                        this.onKeywordsChange(keywords);
+                    } })),
+            React.createElement("div", null,
+                React.createElement("span", null, "Available: "),
+                React.createElement("span", null,
+                    React.createElement("strong", null, this.getAssetsAvailable())))));
+    }
+}
+exports.AssetSearchField = AssetSearchField;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/ConfirmModal.tsx":
 /*!********************************************************!*\
   !*** ./resources/ts/Admin/Components/ConfirmModal.tsx ***!
@@ -5299,34 +5375,36 @@ exports.PromiseStoreForm = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
 const UserSearchField_1 = __webpack_require__(/*! ./UserSearchField */ "./resources/ts/Admin/Components/UserSearchField.tsx");
+const AssetSearchField_1 = __webpack_require__(/*! ./AssetSearchField */ "./resources/ts/Admin/Components/AssetSearchField.tsx");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class PromiseStoreForm extends react_1.Component {
     constructor(props) {
-        var _a, _b;
+        var _a;
         super(props);
         this.state = {
             promise: {
                 source: null,
                 destination: null,
                 asset: null,
-                quantity: 1,
+                quantity: 0,
                 ref: null,
                 note: null,
             },
+            source: null,
             sources: [],
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onUserChange = this.onUserChange.bind(this);
-        this.state.sources = this.props.sources.map(source => {
-            return {
-                label: source.address,
-                value: source.address,
-            };
-        });
-        const defaultSource = (_a = this.state.sources[0]) !== null && _a !== void 0 ? _a : null;
-        if (defaultSource) {
-            this.state.promise.source = (_b = defaultSource === null || defaultSource === void 0 ? void 0 : defaultSource.value) !== null && _b !== void 0 ? _b : null;
+        this.onSourceChange = this.onSourceChange.bind(this);
+        this.getSourceOptions = this.getSourceOptions.bind(this);
+        this.getAssetOptions = this.getAssetOptions.bind(this);
+        this.getCurrentAsset = this.getCurrentAsset.bind(this);
+        this.getMaxCount = this.getMaxCount.bind(this);
+        if (Object.keys(this.props.sources).length > 0) {
+            const key = Object.keys(this.props.sources)[0];
+            this.state.source = Object.assign({}, (_a = this.props.sources[key]) !== null && _a !== void 0 ? _a : null);
+            this.state.promise.source = this.state.source.address;
         }
     }
     onSubmit() {
@@ -5335,55 +5413,117 @@ class PromiseStoreForm extends react_1.Component {
     onCancel() {
         this.props.onCancel(this.state.promise);
     }
+    onSourceChange(value) {
+        var _a;
+        const state = Object.assign({}, this.state.promise);
+        state.source = value;
+        state.asset = null;
+        state.quantity = 0;
+        const source = Object.assign({}, (_a = this.props.sources[value]) !== null && _a !== void 0 ? _a : null);
+        this.setState({
+            promise: state,
+            source: source !== null && source !== void 0 ? source : null,
+        });
+    }
     onUserChange(userId) {
         const promise = Object.assign({}, this.state.promise);
         promise.destination = userId;
         this.setState({ promise: promise });
     }
+    getSourceOptions() {
+        const options = [];
+        Object.keys(this.props.sources).forEach((key) => {
+            var _a, _b, _c;
+            options.push({
+                label: (_b = (_a = this.props.sources[key].address_data.label) !== null && _a !== void 0 ? _a : this.props.sources[key].address) !== null && _b !== void 0 ? _b : null,
+                value: (_c = this.props.sources[key].address) !== null && _c !== void 0 ? _c : null,
+            });
+        });
+        return options;
+    }
+    getAssetOptions() {
+        var _a, _b;
+        const options = [];
+        if (!this.state.source) {
+            return [];
+        }
+        const balances = (_b = (_a = this.state.source) === null || _a === void 0 ? void 0 : _a.address_data) === null || _b === void 0 ? void 0 : _b.balances;
+        if (!balances) {
+            return [];
+        }
+        Object.keys(balances).forEach((key) => {
+            options.push(balances[key].asset);
+        });
+        return options;
+    }
+    getCurrentAsset() {
+        let balances = this.state.source.address_data.balances;
+        balances = Object.values(balances);
+        balances = balances.filter((balance) => {
+            return balance.asset === this.state.promise.asset;
+        });
+        if (balances.length > 0) {
+            return balances[0];
+        }
+        return null;
+    }
+    getMaxCount() {
+        const asset = this.getCurrentAsset();
+        console.log(asset);
+        if (!asset) {
+            return null;
+        }
+        return asset.balance;
+    }
     render() {
         return (React.createElement("form", { style: { width: '100%', maxWidth: '320px' } },
+            React.createElement("div", { style: { marginBottom: '12px' } },
+                React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source, options: this.getSourceOptions(), onChange: (value) => {
+                        this.onSourceChange(value);
+                    }, help: "Source address to use." })),
             React.createElement("div", null,
                 React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
                         const state = Object.assign({}, this.state.promise);
                         state.destination = value;
                         this.setState({ promise: state });
                     } })),
-            React.createElement("div", { style: { marginBottom: '12px' } },
-                React.createElement(components_1.SelectControl, { label: "Source address", value: this.state.promise.source, options: this.state.sources, onChange: (value) => {
-                        const state = Object.assign({}, this.state.promise);
-                        state.source = value;
-                        this.setState({ promise: state });
-                    }, help: "Source address to use" })),
             React.createElement("div", null,
-                React.createElement(components_1.TextControl, { label: "Asset ID", help: "Token to promise", value: this.state.promise.asset, onChange: (value) => {
+                React.createElement(AssetSearchField_1.AssetSearchField, { onChange: (value) => {
                         const state = Object.assign({}, this.state.promise);
                         state.asset = value;
                         this.setState({ promise: state });
-                    } }),
-                React.createElement(components_1.TextControl, { label: "Quantity", help: "Amount, in satoshis", type: "number", value: this.state.promise.quantity, onChange: (value) => {
-                        const state = Object.assign({}, this.state.promise);
-                        state.quantity = value;
-                        this.setState({ promise: state });
-                    } }),
-                React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
-                        const state = Object.assign({}, this.state.promise);
-                        state.ref = value;
-                        this.setState({ promise: state });
-                    } }),
-                React.createElement(components_1.TextareaControl, { label: "Note", help: "Note to display to user", value: this.state.promise.note, onChange: (value) => {
-                        const state = Object.assign({}, this.state.promise);
-                        state.note = value;
-                        this.setState({ promise: state });
-                    } }),
-                React.createElement(components_1.Flex, { justify: "flex-start" },
-                    React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
-                            this.onSubmit();
-                        }, style: { marginTop: '12px' } }, "Create transaction"),
-                    this.props.saving === true &&
-                        React.createElement(components_1.Spinner, null),
-                    React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
-                            this.onCancel();
-                        }, style: { marginTop: '12px' } }, "Cancel")))));
+                    }, assets: this.getAssetOptions() })),
+            this.state.promise.asset &&
+                React.createElement("div", null,
+                    React.createElement(components_1.Flex, { justify: "flex-start", align: "center" },
+                        React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.quantity = value;
+                                this.setState({ promise: state });
+                            } }),
+                        React.createElement("span", null,
+                            React.createElement("span", null, "of / "),
+                            React.createElement("span", null,
+                                React.createElement("strong", null, this.getMaxCount())))),
+                    React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
+                            state.ref = value;
+                            this.setState({ promise: state });
+                        } }),
+                    React.createElement(components_1.TextareaControl, { label: "Note", help: "Note to display to user", value: this.state.promise.note, onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
+                            state.note = value;
+                            this.setState({ promise: state });
+                        } })),
+            React.createElement(components_1.Flex, { justify: "flex-start" },
+                React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
+                        this.onSubmit();
+                    }, style: { marginTop: '12px' } }, "Create transaction"),
+                this.props.saving === true &&
+                    React.createElement(components_1.Spinner, null),
+                React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
+                        this.onCancel();
+                    }, style: { marginTop: '12px' } }, "Cancel"))));
     }
 }
 exports.PromiseStoreForm = PromiseStoreForm;
@@ -5464,7 +5604,7 @@ class SourceEditForm extends react_1.Component {
             React.createElement("form", null,
                 React.createElement("div", { style: { maxWidth: "320px" } },
                     React.createElement("div", null,
-                        React.createElement(components_1.TextControl, { label: "Assets", help: "Comma-separated values", value: this.state.source.assets, onChange: (value) => {
+                        React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Assets which are allowed for promises.", value: this.state.source.assets, onChange: (value) => {
                                 const state = Object.assign({}, this.state.source);
                                 state.assets = value;
                                 this.setState({ source: state });
@@ -5472,10 +5612,10 @@ class SourceEditForm extends react_1.Component {
                     React.createElement(components_1.Flex, { justify: "flex-start", style: { marginTop: '12px' } },
                         React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
                                 this.onSave();
-                            } }, "Save address"),
+                            } }, "Save source"),
                         React.createElement(components_1.Button, { isSecondary: true, disabled: this.props.deleting, onClick: () => {
                                 this.onDelete();
-                            } }, "Delete address"),
+                            } }, "Delete source"),
                         React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.deleting, onClick: () => {
                                 this.onCancel();
                             } }, "Cancel")))));
@@ -5506,7 +5646,7 @@ class SourceList extends react_1.Component {
     render() {
         let listItems = Object.keys(this.props.sourceList).map((key) => this.props.sourceList[key]);
         listItems = listItems.map((sourceItem, i) => {
-            var _a, _b;
+            var _a, _b, _c;
             let assets = 'all';
             if ((_a = sourceItem === null || sourceItem === void 0 ? void 0 : sourceItem.assets) === null || _a === void 0 ? void 0 : _a.length) {
                 assets = (_b = sourceItem === null || sourceItem === void 0 ? void 0 : sourceItem.assets) === null || _b === void 0 ? void 0 : _b.join(', ');
@@ -5514,20 +5654,18 @@ class SourceList extends react_1.Component {
             return (React.createElement("div", { style: { width: '100%' } },
                 React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
                     React.createElement(components_1.CardHeader, null,
-                        React.createElement("div", null,
-                            React.createElement("strong", null, sourceItem.address))),
+                        React.createElement("div", { title: sourceItem.address },
+                            React.createElement("strong", null, (_c = sourceItem.address_data) === null || _c === void 0 ? void 0 : _c.label))),
                     React.createElement(components_1.CardBody, { style: { width: '100%' } },
                         React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement("div", null,
-                                    React.createElement("span", null, "Type: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, sourceItem.type))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Assets: "),
+                                    React.createElement("span", null, "Assets (whitelisted): "),
                                     React.createElement("strong", null, assets))))),
                     React.createElement(components_1.CardFooter, null,
-                        React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${sourceItem.address}` }, "Manage source")))));
+                        React.createElement(components_1.Flex, { justify: "flex-start" },
+                            React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${sourceItem.address}` }, "Details"),
+                            React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${sourceItem.address}` }, "Manage source"))))));
         });
         return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
             //@ts-ignore
@@ -5719,7 +5857,7 @@ class UserSearchField extends react_1.Component {
     }
     render() {
         return React.createElement("div", { style: { height: '90px' } },
-            React.createElement(components_1.ComboboxControl, { label: "User", value: this.state.user, onChange: (value) => {
+            React.createElement(components_1.ComboboxControl, { label: "Destination user", value: this.state.user, onChange: (value) => {
                     this.onUserChange(value);
                 }, options: this.state.users, onFilterValueChange: (keywords) => {
                     this.onKeywordsChange(keywords);
@@ -5833,6 +5971,7 @@ const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpres
 class ConnectionPage extends react_1.Component {
     constructor(props) {
         super(props);
+        console.log(this.props.pageData);
     }
     getStatusText() {
         var _a;
@@ -5843,14 +5982,21 @@ class ConnectionPage extends react_1.Component {
         return status;
     }
     render() {
+        var _a, _b, _c, _d;
         return (React.createElement(Page_1.default, { title: 'Connection' },
             React.createElement(components_1.Panel, { header: "Connection Status" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
-                            React.createElement("span", null, "Status: "),
-                            React.createElement("span", null,
-                                React.createElement("strong", null, this.getStatusText())))),
+                            React.createElement("div", null,
+                                React.createElement("span", null, "Status: "),
+                                React.createElement("span", null,
+                                    React.createElement("strong", { style: { color: this.props.pageData.status ? 'green' : 'grey' } }, this.getStatusText()))),
+                            this.props.pageData.status == true &&
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Connected as: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, `${(_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.name} (${(_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.username})`))))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: 'flex-start' },
                             React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, onClick: () => {
@@ -6152,18 +6298,13 @@ class PromiseStorePage extends react_1.Component {
         this.return();
     }
     render() {
-        const sources = Object.keys(this.props.pageData.sources).map((key) => this.props.pageData.sources[key]);
-        sources.push({
-            label: null,
-            value: null,
-        });
-        return (React.createElement(Page_1.default, { title: 'Create token promise' },
+        return (React.createElement(Page_1.default, { title: 'Create a token promise' },
             React.createElement("div", { style: { marginBottom: '8px' } },
                 React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onSubmit, onCancel: this.onCancel, saving: this.state.storingPromise, style: { marginBottom: '12px' }, sources: sources }))))));
+                        React.createElement(PromiseStoreForm_1.PromiseStoreForm, { onSubmit: this.onSubmit, onCancel: this.onCancel, saving: this.state.storingPromise, style: { marginBottom: '12px' }, sources: this.props.pageData.sources }))))));
     }
 }
 __decorate([
@@ -6365,22 +6506,24 @@ class SourceEditPage extends react_1.Component {
         EventBus_1.default.remove('confirmModalChoice', this.onConfirmModalChoice);
     }
     render() {
-        var _a;
+        var _a, _b;
         const source = Object.assign({}, this.props.pageData.source);
         if ((_a = source === null || source === void 0 ? void 0 : source.assets) === null || _a === void 0 ? void 0 : _a.length) {
             source.assets = source.assets.join(', ');
         }
-        return (React.createElement(Page_1.default, { title: 'Manage source address' },
+        return (React.createElement(Page_1.default, { title: 'Manage source' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source list"),
-                React.createElement("div", null,
-                    React.createElement("span", null, "Address: "),
-                    React.createElement("strong", null, this.props.pageData.source.address))),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
-                            React.createElement(SourceEditForm_1.SourceEditForm, { onSave: this.onSave, onDelete: this.onDelete, onCancel: this.onCancel, saving: this.state.saving, deleting: this.state.deleting, sourceData: source })))))));
+                            React.createElement("div", null,
+                                React.createElement("span", null, "Source: "),
+                                React.createElement("strong", null,
+                                    React.createElement("a", { style: { display: 'inline-block', marginBottom: '12px' }, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${source.address}` }, (_b = source === null || source === void 0 ? void 0 : source.address_data) === null || _b === void 0 ? void 0 : _b.label))),
+                            React.createElement("div", null,
+                                React.createElement(SourceEditForm_1.SourceEditForm, { onSave: this.onSave, onDelete: this.onDelete, onCancel: this.onCancel, saving: this.state.saving, deleting: this.state.deleting, sourceData: source }))))))));
     }
 }
 __decorate([
@@ -6419,11 +6562,11 @@ class SourceIndexPage extends react_1.Component {
         return (React.createElement(Page_1.default, { title: 'Sources' },
             React.createElement("div", { style: { marginBottom: '8px' } },
                 React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
-            React.createElement(components_1.Panel, { header: "Source actions" },
+            React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source"))))),
+                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source"))))),
             React.createElement(components_1.Panel, { header: "Registered sources" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -6431,6 +6574,75 @@ class SourceIndexPage extends react_1.Component {
     }
 }
 exports["default"] = SourceIndexPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/SourceShowPage.tsx":
+/*!*****************************************************!*\
+  !*** ./resources/ts/Admin/Pages/SourceShowPage.tsx ***!
+  \*****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceShowPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+        this.getAssetNames = this.getAssetNames.bind(this);
+        console.log(this.props.pageData);
+    }
+    getAssetNames() {
+        var _a, _b, _c;
+        let balances = (_c = (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.source) === null || _b === void 0 ? void 0 : _b.address_data) === null || _c === void 0 ? void 0 : _c.balances;
+        if (!balances) {
+            return;
+        }
+        let assets = [];
+        Object.keys(balances).map((key, index) => {
+            assets.push(balances[key].asset);
+        });
+        assets = assets.join(', ');
+        return assets;
+    }
+    render() {
+        var _a, _b;
+        return (React.createElement(Page_1.default, { title: 'Source details' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+            React.createElement(components_1.Panel, { header: this.props.pageData.source.address_data.label },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Type: "),
+                                    React.createElement("strong", null, this.props.pageData.source.type)),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Address: "),
+                                    React.createElement("strong", null, this.props.pageData.source.address)),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Assets: "),
+                                    React.createElement("strong", null, (_a = this.getAssetNames()) !== null && _a !== void 0 ? _a : 'none')),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Assets (whitelisted): "),
+                                    React.createElement("strong", null, (_b = this.props.pageData.source.assets) !== null && _b !== void 0 ? _b : 'all'))))))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.pageData.source.address}` }, "Manage source")))))));
+    }
+}
+exports["default"] = SourceShowPage;
 
 
 /***/ }),
@@ -6623,6 +6835,7 @@ class VendorPage extends react_1.Component {
         });
     }
     render() {
+        var _a, _b;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Vendor' },
             this.state.isPromiseDetailsModalOpen &&
                 React.createElement(PromiseDetailsModal_1.PromiseDetailsModal, { onRequestClose: this.onDetailsModalRequestClose, promise: this.props.pageData.promises[this.state.currentPromise] }),
@@ -6634,7 +6847,7 @@ class VendorPage extends react_1.Component {
                             React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses"))))),
             React.createElement(components_1.Panel, { header: "Current promises" },
                 React.createElement(components_1.PanelBody, null,
-                    React.createElement(components_1.PanelRow, null, this.props.pageData.promises.length > 0
+                    React.createElement(components_1.PanelRow, null, ((_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.promises) === null || _b === void 0 ? void 0 : _b.length) > 0
                         ? React.createElement(PromiseList_1.PromiseList, { promises: this.props.pageData.promises, onDetails: this.onDetails })
                         : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered promises"))))));
     }
@@ -7908,6 +8121,7 @@ const WhitelistPage_1 = __webpack_require__(/*! ./Admin/Pages/WhitelistPage */ "
 const PromiseStorePage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseStorePage */ "./resources/ts/Admin/Pages/PromiseStorePage.tsx");
 const PromiseEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseEditPage */ "./resources/ts/Admin/Pages/PromiseEditPage.tsx");
 const SourceIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceIndexPage */ "./resources/ts/Admin/Pages/SourceIndexPage.tsx");
+const SourceShowPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceShowPage */ "./resources/ts/Admin/Pages/SourceShowPage.tsx");
 const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage */ "./resources/ts/Admin/Pages/SourceStorePage.tsx");
 const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */ "./resources/ts/Admin/Pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
@@ -7936,6 +8150,7 @@ class AdminApp extends App_1.default {
             'promise-store': PromiseStorePage_1.default,
             'promise-edit': PromiseEditPage_1.default,
             'source-index': SourceIndexPage_1.default,
+            'source-show': SourceShowPage_1.default,
             'source-store': SourceStorePage_1.default,
             'source-edit': SourceEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,

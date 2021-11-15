@@ -68,7 +68,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				{this.state.isPromiseDetailsModalOpen &&
 					<PromiseDetailsModal
 						onRequestClose={this.onDetailsModalRequestClose}
-						promise={this.props.pageData.promises[this.state.currentPromise]}
+						promise={this.props.pageData.promises[ this.state.currentPromise ]}
 					/>
 				}
 				<Panel header="Vendor actions">
@@ -97,7 +97,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				<Panel header="Current promises">
 					<PanelBody>
 						<PanelRow>
-							{ this.props.pageData.promises.length > 0
+							{ this.props.pageData?.promises?.length > 0
 								? <PromiseList
 									promises={ this.props.pageData.promises }
 									onDetails={ this.onDetails }

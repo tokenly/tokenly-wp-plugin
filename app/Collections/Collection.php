@@ -36,7 +36,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	public function key_by_field( string $field ) {
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
-			$keyed[ $item->address ] = $item;
+			$keyed[ $item->$field ] = $item;
 		}
 		$this->exchangeArray( $keyed );
 		return $this;

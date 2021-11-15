@@ -104,23 +104,27 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 			source.assets = source.assets.join( ', ' );
 		}		
 		return (
-			<Page title={ 'Manage source address' }>
+			<Page title={ 'Manage source' }>
 				<div style={ { marginBottom: '8px' } }>
 					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenpass-source-index'>Back to source list</a>
-					<div><span>Address: </span><strong>{ this.props.pageData.source.address }</strong></div>
 				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<SourceEditForm
-									onSave={ this.onSave }
-									onDelete={ this.onDelete }
-									onCancel={ this.onCancel }
-									saving={ this.state.saving }
-									deleting={ this.state.deleting }
-									sourceData={ source }
-								/>
+								<div><span>Source: </span><strong>
+									<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenpass-source-show&source=${ source.address }` }>{ source?.address_data?.label }</a>
+								</strong></div>
+								<div>
+									<SourceEditForm
+										onSave={ this.onSave }
+										onDelete={ this.onDelete }
+										onCancel={ this.onCancel }
+										saving={ this.state.saving }
+										deleting={ this.state.deleting }
+										sourceData={ source }
+									/>
+								</div>
 							</div>
 						</PanelRow>
 					</PanelBody>

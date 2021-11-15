@@ -34,6 +34,12 @@ class UserRepository implements UserRepositoryInterface {
 				'compare' => 'EXISTS',
 			);
 		}
+		if ( isset( $params['id'] ) ) {
+			$args = array_merge( $args, array(
+				'search'         => $params['id'],
+				'search_columns' => array( 'ID' )
+			) );
+		}
 		if ( isset( $params['name'] ) ) {
 			$args = array_merge( $args, array(
 				'search' => '*'.esc_attr( $params['name'] ).'*',

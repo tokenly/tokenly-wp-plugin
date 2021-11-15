@@ -76,7 +76,7 @@ export class UserSearchField extends Component<UserSearchFieldProps, UserSearchF
 	render() {
 		return <div style={{height: '90px'}}>
 			<ComboboxControl
-				label="User"
+				label="Destination user"
 				value={ this.state.user }
 				onChange={ (value: any) => {
 					this.onUserChange( value );

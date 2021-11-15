@@ -30,12 +30,15 @@ class PromiseController implements PromiseControllerInterface {
 	}
 
 	public function index() {
-		$promises = $this->promise_repository->index();
-		//
+		$promises = $this->promise_repository->index( array(
+			'with'    => array( 'address' ),
+		) );
 	}
 
 	public function store() {
-		$sources = $this->source_repository->index();
+		$sources = $this->source_repository->index( array(
+			'with'    => array( 'address' ),
+		) );
 		$render = $this->promise_store_view->render( array(
 			'sources' => $sources,
 		) );

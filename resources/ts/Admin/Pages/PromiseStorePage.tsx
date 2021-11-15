@@ -62,17 +62,10 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 	
 	render() {
-		const sources = Object.keys( this.props.pageData.sources ).map( ( key: any ) => this.props.pageData.sources[key] ) as any;
-		sources.push( 
-			{
-				label: null,
-				value: null,
-			},
-		);
 		return (
-			<Page title={'Create token promise'}>
-				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
+			<Page title={'Create a token promise'}>
+				<div style={ { marginBottom: '8px' } }>
+					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
 				</div>
 				<Panel>
 					<PanelBody>
@@ -82,7 +75,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 								onCancel={ this.onCancel }
 								saving={ this.state.storingPromise }
 								style={ { marginBottom: '12px' } }
-								sources={ sources }
+								sources={ this.props.pageData.sources }
 							/>
 						</PanelRow>
 					</PanelBody>

@@ -40,7 +40,9 @@ class UserController implements UserControllerInterface {
 		if ( !$user ) {
 			return;
 		}
-		$balances = $user->get_balances();
+		$balances = $user->get_balances( array(
+			'with' => array( 'meta' ),
+		) );
 		$render = $this->user_view->render( array(
 			'balances' => $balances,
 		) );

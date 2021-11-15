@@ -5,15 +5,21 @@ namespace Tokenly\Wp\Controllers\Api;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Defines promise-related endpoints
  */
 class PromiseController implements PromiseControllerInterface {
+	protected $promise_repository;
+	protected $user_repository;
+
 	public function __construct(
-		PromiseRepositoryInterface $promise_repository
+		PromiseRepositoryInterface $promise_repository,
+		UserRepositoryInterface $user_repository
 	) {
 		$this->promise_repository = $promise_repository;
+		$this->user_repository = $user_repository;
 	}
 	
 	/**

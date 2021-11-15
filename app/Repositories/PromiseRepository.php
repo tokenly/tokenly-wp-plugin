@@ -68,13 +68,21 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @return void
 	 */
 	public function store( $params ) {
-		$destination = $params['destination'] ?? null;
-		if ( $destination ) {
-			$tokenpass_user = $this->user_repository->show( $destination );
-			if ( $tokenpass_user ) {
-				$destination = 'user:' . $tokenpass_user['username'] ?? null;
-			}
+		$user_id = $params['destination'] ?? null;
+		if ( !$user_id ) {
+			return;
 		}
+		$user = $this->user_repository->show( array( 
+			'id' => $user_id,
+		) );
+		if ( !$user ) {
+			return;
+		}
+		$profile = $user->get_oauth_user();
+		if ( !$profile ) {
+			return;
+		}
+		$destination = 'user:' . $profile->username ?? null;
 		$quantity = $params['quantity'] ?? null;
 		if ( $quantity ) {
 			//$quantity = $quantity * 100000000;

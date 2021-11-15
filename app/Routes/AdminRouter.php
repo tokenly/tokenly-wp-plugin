@@ -176,6 +176,16 @@ class AdminRouter implements AdminRouterInterface {
 							'capability'  => 'manage_options',
 						),
 					),
+					'source-show' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'Show source address details',
+							'menu_title'  => 'Source details',
+							'menu_slug'   => 'source-show',
+							'callable'    => array( $this->controllers['source'], 'show' ),
+							'capability'  => 'manage_options',
+						),
+					),
 					'source-store' => array(
 						'args'      => array(
 							'parent_slug' => null,

@@ -37,24 +37,32 @@ export class SourceList extends Component<SourceListProps, SourceListState> {
 				<div style={ { width: '100%' } }>
 					<Card size="extraSmall" style={ { width: '100%' } }>
 						<CardHeader>
-							<div><strong>{ sourceItem.address }</strong></div>
+							<div title={ sourceItem.address }><strong>{ sourceItem.address_data?.label }</strong></div>
 						</CardHeader>
 						<CardBody style={ { width: '100%' } }>
 							<Flex style={ { width: '100%', alignItems: 'center' } }>
 								<div style={ { flex: 1 } }>
-									<div><span>Type: </span><span><strong>{ sourceItem.type }</strong></span></div>
-									<div><span>Assets: </span><strong>{ assets }</strong></div>
+									<div><span>Assets (whitelisted): </span><strong>{ assets }</strong></div>
 								</div>
 							</Flex>
 						</CardBody>
 						<CardFooter>
-							<Button
-								isSecondary
-								isSmall
-								href={ `/wp-admin/admin.php?page=tokenpass-source-edit&source=${ sourceItem.address }` }
-							>
-								Manage source
-							</Button>
+							<Flex justify="flex-start">
+								<Button
+									isSecondary
+									isSmall
+									href={ `/wp-admin/admin.php?page=tokenpass-source-show&source=${ sourceItem.address }` }
+								>
+									Details
+								</Button>
+								<Button
+									isSecondary
+									isSmall
+									href={ `/wp-admin/admin.php?page=tokenpass-source-edit&source=${ sourceItem.address }` }
+								>
+									Manage source
+								</Button>
+							</Flex>
 						</CardFooter>
 					</Card>
 				</div>

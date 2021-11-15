@@ -17,6 +17,7 @@ import {
 
 interface ConnectionPageData {
 	status: boolean;
+	user: any;
 }
 
 interface ConnectionPageProps {
@@ -33,6 +34,7 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 	
 	constructor( props: ConnectionPageProps ) {
 		super( props );
+		console.log(this.props.pageData);
 	}
 	
 	getStatusText() {
@@ -50,7 +52,20 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<span>Status: </span><span><strong>{this.getStatusText()}</strong></span>
+								<div>
+									<span>Status: </span>
+									<span>
+										<strong style={{color: this.props.pageData.status ? 'green' : 'grey'}}>{this.getStatusText()}</strong>
+									</span>
+								</div>
+								{ this.props.pageData.status == true &&
+									<div>
+										<span>Connected as: </span>
+										<span>
+											<strong>{`${this.props.pageData?.user?.name} (${this.props.pageData?.user?.username})` }</strong>
+										</span>
+									</div>
+								}
 							</div>
 						</PanelRow>
 						<PanelRow>
