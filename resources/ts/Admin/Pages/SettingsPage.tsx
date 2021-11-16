@@ -12,6 +12,7 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
+	Flex,
 } from '@wordpress/components';
 
 interface SettingsPageData {
@@ -74,8 +75,8 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 					<PanelBody>
 						<PanelRow>
 							<ul className="tk_steps">
-								<li>1. Create App on <a href="https://tokenpass.tokenly.com/auth/apps" target="_blank">Tokenpass Developers</a></li>
-								<li>2. Use below details to create App</li>
+								<li>1. Add a new application on <a href="https://tokenpass.tokenly.com/auth/apps" target="_blank">Tokenpass Developers</a></li>
+								<li>2. Use the details bellow to add the app.</li>
 							</ul>
 						</PanelRow>
 						<PanelRow>
@@ -87,7 +88,11 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 							</div>
 						</PanelRow>
 						<PanelRow>
-							<div style={{flex: '1', maxWidth: '468px', marginTop: '12px'}}>
+							<Flex
+								//@ts-ignore
+								direction="column"
+								style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+							> 
 								<TextControl
 									label="Client ID"
 									value={ this.state.settingsData.client_id ?? '' }
@@ -104,7 +109,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 										}
 									}
 								/>
-							</div>
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

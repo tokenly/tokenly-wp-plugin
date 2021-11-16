@@ -27,7 +27,8 @@ class PromiseCollectionFactory extends Factory implements PromiseCollectionFacto
 	public function create( $data, $args = array() ) {
 		$items = array_map( function( $item_data ) {
 			if ( is_a( $item_data, PromiseInterface::class ) === false ) {
-				return $this->promise_factory->create( $item_data );
+				$promise = $this->promise_factory->create( $item_data );
+				return $promise;
 			} else {
 				return $item_data;
 			}

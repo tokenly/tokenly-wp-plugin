@@ -22,6 +22,7 @@ class Promise implements PromiseInterface {
 	public $chain;
 	public $promise_id;
 	public $precision;
+	public $promise_meta;
 	protected $promise_repository;
 
 	public function __construct(
@@ -49,6 +50,28 @@ class Promise implements PromiseInterface {
 		$this->chain = $promise_data['chain'] ?? null;
 		$this->promise_id = $promise_data['promise_id'] ?? null;
 		$this->precision = $promise_data['precision'] ?? null;
+		$this->promise_meta = $promise_data['promise_meta'] ?? null;
+	}
+	
+	public function to_array() {
+		return array(
+			'source'      => $this->source,
+			'destination' => $this->destination,
+			'asset'       => $this->asset,
+			'quantity'    => $this->quantity,
+			'fingerprint' => $this->fingerprint,
+			'txid'        => $this->txid,
+			'created_at'  => $this->created_at,
+			'updated_at'  => $this->updated_at,
+			'expiration'  => $this->expiration,
+			'ref'         => $this->ref,
+			'pseudo'      => $this->pseudo,
+			'note'        => $this->note,
+			'protocol'    => $this->protocol,
+			'chain'       => $this->chain,
+			'promise_id'  => $this->promise_id,
+			'precision'   => $this->precision,
+		);
 	}
 
 	public function update( $params = array() ) {

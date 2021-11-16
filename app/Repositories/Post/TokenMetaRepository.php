@@ -8,8 +8,10 @@ use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterf
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 
+/**
+ * Manages token meta data
+ */
 class TokenMetaRepository implements TokenMetaRepositoryInterface {
-	protected $client;
 	protected $meta_repository;
 	protected $token_meta_collection_factory;
 	
@@ -44,19 +46,17 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		error_log( print_r( $posts, true ));
 		$posts = $this->token_meta_collection_factory->create( $posts );
 		return $posts;
 	}
 	
 	/**
-	 * Retrieves the token-meta post by post ID
-	 * @param integer $post_id Post index
+	 * Retrieves a single token meta post
+	 * @param array $params Post search params
 	 * @return TokenMetaInterface
 	 */
 	public function show( $params = array() ) {
-		$meta = $this->meta_repository->index( $params );
-		// $extra = $meta['extra'] ?? null;
+		$meta = $this->index( $params );
 		return $meta[0] ?? null;
 	}
 	

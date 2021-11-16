@@ -26,7 +26,9 @@ class VendorController implements VendorControllerInterface {
 	}
 
 	public function show() {
-		$promises = $this->promise_repository->index();
+		$promises = $this->promise_repository->index( array(
+			'with' => array( 'meta' ),
+		) );
 		$sources = $this->source_repository->index();
 		$render = $this->vendor_view->render( array(
 			'promises' => $promises,

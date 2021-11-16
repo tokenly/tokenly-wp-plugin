@@ -59,7 +59,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 								<div style={ { flex: 1 } }>
 									<div><span>Type: </span><strong>{ this.props.pageData.source.type }</strong></div>
 									<div><span>Address: </span><strong>{ this.props.pageData.source.address }</strong></div>
-									<div><span>Assets: </span><strong>{ this.getAssetNames() ?? 'none' }</strong></div>
+									{/* <div><span>Assets: </span><strong>{ this.getAssetNames() ?? 'none' }</strong></div> */}
 									<div><span>Assets (whitelisted): </span><strong>{ this.props.pageData.source.assets ?? 'all' }</strong></div>
 								</div>
 							</Flex>

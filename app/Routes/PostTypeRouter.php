@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\PostTypes\TokenMetaPostType;
+use Tokenly\Wp\PostTypes\PromiseMetaPostType;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 
@@ -16,6 +17,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
+		PromiseMetaPostType $promise_meta_post_type,
 		TokenMetaControllerInterface $token_meta_controller,
 		TokenMetaRepositoryInterface $token_meta_repository,
 		$namespace
@@ -27,6 +29,9 @@ class PostTypeRouter implements PostTypeRouterInterface {
 				'controller' => $token_meta_controller,
 				'repository' => $token_meta_repository,
 			),
+			'promise_meta'    => array(
+				'post_type'  => $promise_meta_post_type,
+			)
 		);
 	}
 
@@ -51,7 +56,9 @@ class PostTypeRouter implements PostTypeRouterInterface {
 			$params = wp_unslash( $params );
 			$params = json_decode( $params, true );
 		}
-		call_user_func( $this->routes[ $post_type_key ]['save_callback'], $post_id, $params );
+		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['save_callback'] ) ) {
+			call_user_func( $this->routes[ $post_type_key ]['save_callback'], $post_id, $params );
+		}
 	}
 
 	protected function get_routes() {
@@ -63,6 +70,11 @@ class PostTypeRouter implements PostTypeRouterInterface {
 				'edit_callback' => array( $this->post_types['token_meta']['controller'], 'edit' ),
 				'save_callback' => array( $this->post_types['token_meta']['repository'], 'update' ),
 			),
+			'promise_meta'   => array(
+				'name'          => 'promise_meta',
+				'slug'          => 'promise-meta',
+				'post_type'     => $this->post_types['promise_meta']['post_type'],
+			)
 		);
 		return $routes;
 	}
@@ -72,11 +84,13 @@ class PostTypeRouter implements PostTypeRouterInterface {
 			$name = $route['name'];
 			$name = "{$this->namespace}_{$name}";
 			$slug = $route['slug'];
-			$args = $route['post_type']->get_args();
 			$slug = "{$this->namespace}-{$slug}";
+			$args = $route['post_type']->get_args();
 			$args['rewrite'] = array( 'slug' => $slug );
 			register_post_type( $name, $args );
-			add_action( 'edit_form_advanced', $route['edit_callback'] );
+			if ( isset( $route['edit_callbakc'] ) ) {
+				add_action( 'edit_form_advanced', $route['edit_callback'] );
+			}
 		}
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
 	}

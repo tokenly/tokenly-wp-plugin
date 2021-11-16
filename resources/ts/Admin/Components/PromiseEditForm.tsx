@@ -57,8 +57,11 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 	render() {
 		return <div>
 			<form>
-				<div style={{maxWidth: "320px"}}>
-					<div>
+				<div style={ { maxWidth: "320px" } }>
+					<Flex
+						//@ts-ignore
+						direction="column"
+					> 
 						<TextControl
 							label="Quantity"
 							// @ts-ignore
@@ -115,7 +118,7 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 								this.setState( { promise: state } );
 							} }
 						/>
-					</div>
+					</Flex>
 					<Flex justify="flex-start" style={ { marginTop: '12px' } }>
 						<Button
 							isPrimary

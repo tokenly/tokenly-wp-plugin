@@ -7,25 +7,27 @@ use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Manages sources for promise type transactions
  */
 class SourceRepository implements SourceRepositoryInterface {
 	protected $client;
-	protected $user_repository;
+	protected $settings;
+	protected $source_collection_factory;
+	protected $current_user;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		SettingsInterface $settings,
 		SourceCollectionFactoryInterface $source_collection_factory,
-		UserRepositoryInterface $user_repository
+		CurrentUserInterface $current_user
 	) {
 		$this->client = $client;
 		$this->settings = $settings;
 		$this->source_collection_factory = $source_collection_factory;
-		$this->user_repository = $user_repository;
+		$this->current_user = $current_user;
 	}
 
 	/**
@@ -124,15 +126,15 @@ class SourceRepository implements SourceRepositoryInterface {
 	}
 
 	/**
-	 * Appends Address objects to the queries sources (part of 'with' handler)
+	 * Appends Address objects to the queried sources (part of 'with' handler)
 	 * @param SourceCollectionInterface $sources Queried sources
 	 * @return SourceCollectionInterface Modified sources
 	 */
 	protected function handle_with_address( SourceCollectionInterface $sources, $with_rule ) {
-		$user = $this->user_repository->show( array(
-			'id' => get_current_user_id(),
-		) );
-		$addresses = $user->get_addresses( array(
+		if ( !isset( $this->current_user ) ) {
+			return $sources;
+		}
+		$addresses = $this->current_user->get_addresses( array(
 			'with' => $with_rule,
 		) );
 		$addresses->key_by_field( 'address' );

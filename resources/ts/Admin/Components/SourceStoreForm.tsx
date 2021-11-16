@@ -112,7 +112,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 								<div>Address info:</div>
 								<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
 								<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
-								<div><strong>Assets: </strong><span>{ this.getCurrentAddressAssets() }</span></div>
+								{/* <div><strong>Assets: </strong><span>{ this.getCurrentAddressAssets() }</span></div> */}
 							</div>
 							<TextareaControl
 								label="Whitelisted assets"

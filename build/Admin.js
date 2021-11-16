@@ -5246,7 +5246,11 @@ class PromiseEditForm extends react_1.Component {
         return React.createElement("div", null,
             React.createElement("form", null,
                 React.createElement("div", { style: { maxWidth: "320px" } },
-                    React.createElement("div", null,
+                    React.createElement(components_1.Flex
+                    //@ts-ignore
+                    , { 
+                        //@ts-ignore
+                        direction: "column" },
                         React.createElement(components_1.TextControl, { label: "Quantity", 
                             // @ts-ignore
                             hint: "Amount, in satoshis", type: "number", value: this.state.promise.quantity, onChange: (value) => {
@@ -5793,10 +5797,7 @@ class SourceStoreForm extends react_1.Component {
                                 React.createElement("span", null, this.getCurrentAddressType())),
                             React.createElement("div", null,
                                 React.createElement("strong", null, "Address: "),
-                                React.createElement("span", null, this.getCurrentAddress())),
-                            React.createElement("div", null,
-                                React.createElement("strong", null, "Assets: "),
-                                React.createElement("span", null, this.getCurrentAddressAssets()))),
+                                React.createElement("span", null, this.getCurrentAddress()))),
                         React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised.", value: this.state.assets, onChange: (value) => {
                                 this.setState({ assets: value });
                             } })),
@@ -6406,9 +6407,9 @@ class SettingsPage extends react_1.Component {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("ul", { className: "tk_steps" },
                             React.createElement("li", null,
-                                "1. Create App on ",
+                                "1. Add a new application on ",
                                 React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers")),
-                            React.createElement("li", null, "2. Use below details to create App"))),
+                            React.createElement("li", null, "2. Use the details bellow to add the app."))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", { className: "tk_app_details" },
                             React.createElement("h3", null, "Register Client Application"),
@@ -6431,7 +6432,11 @@ class SettingsPage extends react_1.Component {
                                 React.createElement("a", { href: this.props.pageData.client_auth_url, target: "_blank" }, this.props.pageData.client_auth_url),
                                 " "))),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement("div", { style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
+                        React.createElement(components_1.Flex
+                        //@ts-ignore
+                        , { 
+                            //@ts-ignore
+                            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
                             React.createElement(components_1.TextControl, { label: "Client ID", value: (_a = this.state.settingsData.client_id) !== null && _a !== void 0 ? _a : '', onChange: (value) => {
                                     this.setClientId(value);
                                 } }),
@@ -6640,7 +6645,7 @@ class SourceShowPage extends react_1.Component {
         return assets;
     }
     render() {
-        var _a, _b;
+        var _a;
         return (React.createElement(Page_1.default, { title: 'Source details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
                 React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
@@ -6656,11 +6661,8 @@ class SourceShowPage extends react_1.Component {
                                     React.createElement("span", null, "Address: "),
                                     React.createElement("strong", null, this.props.pageData.source.address)),
                                 React.createElement("div", null,
-                                    React.createElement("span", null, "Assets: "),
-                                    React.createElement("strong", null, (_a = this.getAssetNames()) !== null && _a !== void 0 ? _a : 'none')),
-                                React.createElement("div", null,
                                     React.createElement("span", null, "Assets (whitelisted): "),
-                                    React.createElement("strong", null, (_b = this.props.pageData.source.assets) !== null && _b !== void 0 ? _b : 'all'))))))),
+                                    React.createElement("strong", null, (_a = this.props.pageData.source.assets) !== null && _a !== void 0 ? _a : 'all'))))))),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
