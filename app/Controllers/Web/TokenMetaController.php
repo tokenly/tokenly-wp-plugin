@@ -27,7 +27,7 @@ class TokenMetaController implements TokenMetaControllerInterface {
 	 */
 	public function edit() {
 		$render = $this->token_meta_edit_view->render( array(
-			'meta' => $this->token_meta_repository->show( get_the_ID() ),
+			'meta' => $this->token_meta_repository->show( array( 'id' => get_the_ID() ) ),
 		) );
 		echo $render;
 	}

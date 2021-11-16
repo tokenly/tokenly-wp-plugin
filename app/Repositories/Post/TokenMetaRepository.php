@@ -26,21 +26,25 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	 * @param array $params Search params
 	 * @return TokenMetaCollectionInterface
 	 */
-	public function index( $params ) {
+	public function index( array $params = array() ) {
 		$query_args = array(
-			'post_type'   => 'token-meta',
+			'post_type'   => 'tokenly_token_meta',
 			'meta_query'  => array(),
 		);
 		$assets = $params['assets'] ?? null;
-		if ( $assets ) {
+		if ( isset( $params['id'] ) ) {
+			$query_args['p'] = $params['id'];
+		}
+		if ( isset( $params['assets'] ) ) {
 			$query_args['meta_query'][] = array(
-				'key'     => 'tokenly_asset',
+				'key'     => $this->meta_repository->namespace_key( 'asset' ),
 				'value'   => $params['assets'] ?? null,
 				'compare' => 'IN',
 			);
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
+		error_log( print_r( $posts, true ));
 		$posts = $this->token_meta_collection_factory->create( $posts );
 		return $posts;
 	}
@@ -50,11 +54,8 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	 * @param integer $post_id Post index
 	 * @return TokenMetaInterface
 	 */
-	public function show( $post_id ) {
-		$meta = $this->meta_repository->index( $post_id, array(
-			'asset',
-			// 'extra',
-		) );
+	public function show( $params = array() ) {
+		$meta = $this->meta_repository->index( $params );
 		// $extra = $meta['extra'] ?? null;
 		return $meta[0] ?? null;
 	}
@@ -64,10 +65,9 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	 * @param array $params New post data
 	 * @return void
 	 */
-	public function update( $post_id, $params ) {
+	public function update( int $post_id, array $params = array() ) {
 		$this->meta_repository->update( $post_id, array(
 			'asset' => $params['asset'] ?? null,
-			// 'extra' => $params['extra'] ?? null,
 		) );
 	}
 }

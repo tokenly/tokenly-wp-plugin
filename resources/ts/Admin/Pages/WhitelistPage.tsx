@@ -82,7 +82,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 				<Panel header="Token Whitelist Settings">
 					<PanelBody>
 						<PanelRow>
-							<p>Whitelist allows to control which token assets to display on the Inventory screen.</p>
+							<p>Whitelist allows to control which assets to display on the Inventory screen.</p>
 						</PanelRow>
 						<PanelRow>
 							<ToggleControl

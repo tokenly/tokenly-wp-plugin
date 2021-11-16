@@ -34,4 +34,18 @@ class OauthUser implements OauthUserInterface {
 			$this->email_is_confirmed = $oauth_user_data['email_is_confirmed'];
 		}
 	}
+
+	/**
+	 * Check if the user is allowed to proceed with login
+	 * @param array $tokenpass_user
+	 * @return bool
+	 */
+	public function can_social_login() {
+		$email = $this->email ?? null;
+		$email_is_confirmed = $this->email_is_confirmed ?? null;
+		if ( !$email || $email_is_confirmed == false ) {
+			return false;	
+		}
+		return true;
+	}
 }

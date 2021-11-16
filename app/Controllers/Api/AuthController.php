@@ -4,25 +4,31 @@ namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Defines OAuth-related endpoints
  */
 class AuthController implements AuthControllerInterface {
-	public $auth_service;
+	protected $auth_service;
+	protected $current_user;
 
 	public function __construct(
-		AuthServiceInterface $auth_service
+		AuthServiceInterface $auth_service,
+		CurrentUserInterface $current_user
 	) {
 		$this->auth_service = $auth_service;
+		$this->current_user = $current_user;
 	}
 
 	/** Responds with Tokenpass connection status */
 	public function status() {
-		$id = get_current_user_id();
-		$connected = $this->auth_service->is_connected( $id );
+		if ( !isset( $this->current_user ) ) {
+			return;
+		}
+		$status = $this->current_user->is_connected();
 		return array(
-			'status' => $connected
+			'status' => $connected,
 		);
 	}
 
@@ -48,7 +54,10 @@ class AuthController implements AuthControllerInterface {
 	}
 	
 	public function disconnect() {
-		$result = $this->auth_service->disconnect();
+		if ( !isset( $this->current_user ) ) {
+			return;
+		}
+		$this->current_user->disconnect();
 		return array(
 			'status' => 'Successfully disconnected!'
 		);

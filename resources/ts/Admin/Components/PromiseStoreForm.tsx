@@ -11,6 +11,8 @@ import {
 	TextareaControl,
 	SelectControl,
 	Flex,
+	// @ts-ignore
+	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 
 interface PromiseStoreFormProps {
@@ -50,6 +52,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		this.getAssetOptions = this.getAssetOptions.bind( this );
 		this.getCurrentAsset = this.getCurrentAsset.bind( this );
 		this.getMaxCount = this.getMaxCount.bind( this );
+		this.isAssetValid = this.isAssetValid.bind( this );
 		if ( Object.keys( this.props.sources ).length > 0 ) {
 			const key = Object.keys( this.props.sources )[0] as any;
 			this.state.source = Object.assign( {}, this.props.sources[ key ] ?? null );
@@ -86,8 +89,9 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	getSourceOptions() {
 		const options = [] as any;
 		Object.keys( this.props.sources ).forEach( ( key: any ) => {
+			const label = this.props.sources[ key ].address_data.label ?? this.props.sources[ key ].address ?? null;
 			options.push( {
-				label: this.props.sources[ key ].address_data.label ?? this.props.sources[ key ].address ?? null,
+				label: label,
 				value: this.props.sources[ key ].address ?? null,
 			} );
 		});
@@ -104,21 +108,30 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 			return [];
 		}
 		Object.keys( balances ).forEach( ( key: any ) => {
-			options.push( balances[ key ].asset );
+			let asset = balances[ key ].asset;
+			options.push( asset );
 		} );
 		return options;
 	}
 
 	getCurrentAsset() {
+		if ( !this.state.promise?.asset ) {
+			return null;
+		}
+		const asset = this.state.promise.asset;
+		if ( asset == '' ) {
+			return null;
+		}
 		let balances = this.state.source.address_data.balances;
 		balances = Object.values( balances );
 		balances = balances.filter( ( balance: any ) => {
 			return balance.asset === this.state.promise.asset;
-		})
-		if ( balances.length > 0 ) {
-			return balances[0];
+		} );
+		if ( balances.length == 0 ) {
+			return null;
 		}
-		return null;
+		return balances[0];
+		
 	}
 
 	getMaxCount() {
@@ -128,6 +141,14 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 			return null;
 		}
 		return asset.balance;
+	}
+
+	isAssetValid() {
+		const asset = this.getCurrentAsset();
+		if ( asset ) {
+			return true;
+		}
+		return false;
 	}
 
 	render() {
@@ -145,40 +166,54 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					/>
 				</div>
 				<div>
-					<UserSearchField
-						onChange={ ( value: any ) => {
-							const state = Object.assign( {}, this.state.promise );
-							state.destination = value;
-							this.setState( { promise: state } );
-						} }
-					/>
+					<label>Destination
+						<div style={{opacity:0.8, marginBottom: '12px'}}>WordPress username. The user who will receive the asset.</div>
+						<UserSearchField
+							onChange={ ( value: any ) => {
+								const state = Object.assign( {}, this.state.promise );
+								state.destination = value;
+								this.setState( { promise: state } );
+							} }
+						/>
+					</label>
 				</div>
 				<div>
-					<AssetSearchField
-						onChange={ ( value: any ) => {
-							const state = Object.assign( {}, this.state.promise );
-							state.asset = value;
-							this.setState( { promise: state } );
-						} }
-						assets={ this.getAssetOptions() }
-					/>
+					<label>Asset
+						<div style={{opacity:0.8, marginBottom: '12px'}}>Name of the asset that will be promised.</div>
+						<AssetSearchField
+							assets={ this.getAssetOptions() }
+							onChange={ ( value: any ) => {
+								const state = Object.assign( {}, this.state.promise );
+								state.asset = value;
+								this.setState( { promise: state } );
+							} }
+						/>
+					</label>
 				</div>
-				{ this.state.promise.asset &&
+				{ this.isAssetValid() &&
 					<div>
-						<Flex justify="flex-start" align="center">
-							<TextControl
-								label="Quantity"
-								type="number"
-								value={ this.state.promise.quantity }
-								style={ { maxWidth: '100px' } }
-								onChange={ (value: any) => {
-									const state = Object.assign( {}, this.state.promise );
-									state.quantity = value;
-									this.setState( { promise: state } );
-								} }
-							/>
-							<span><span>of / </span><span><strong>{ this.getMaxCount() }</strong></span></span>
-						</Flex>
+						<label>
+							Quantity
+							<Flex justify="flex-start" align="center" style={{paddingTop: '12px'}}>
+								<NumberControl
+									type="number"
+									value={ this.state.promise.quantity }
+									
+									style={ { maxWidth: '100px' } }
+									onChange={ (value: any) => {
+										const state = Object.assign( {}, this.state.promise );
+										state.quantity = value;
+										this.setState( { promise: state } );
+									} }
+								/>
+								<span>
+									<span>of / </span>
+									<span title={ this.getMaxCount() }>
+										<strong>{ parseFloat( this.getMaxCount().toFixed( 4 ) ) }</strong>
+									</span>
+								</span>
+							</Flex>
+						</label>
 						<TextControl
 							label="Ref"
 							help="Extra reference data"

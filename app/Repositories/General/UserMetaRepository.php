@@ -17,7 +17,7 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 * @param array $keys User meta keys
 	 * @return array
 	 */
-	public function index( $user_id, $keys ) {
+	public function index( int $user_id, string ...$keys ) {
 		$options = array();
 		foreach ( $keys as $key ) {
 			$options[ $key ] = $this->show( $user_id, $key );
@@ -31,7 +31,7 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 * @param string $key User meta key
 	 * @return string
 	 */
-	public function show( $user_id, $key ) {
+	public function show( int $user_id, string $key ) {
 		$key_namespaced = $this->namespace_key( $key );
 		$option = get_user_meta( $user_id, $key_namespaced, true );
 		return $option;
@@ -43,10 +43,23 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 * @param array $payload Key-value pair (meta key and value)
 	 * @return void
 	 */
-	public function update( $user_id, $payload ) {
+	public function update( int $user_id, array $payload ) {
 		foreach ( $payload as $key => $value ) {
 			$key_namespaced = $this->namespace_key( $key );
 			update_user_meta( $user_id, $key_namespaced, $value );
+		}
+	}
+
+	/**
+	 * Deletes user meta
+	 * @param int $user_id ID of user whos meta will be deleted
+	 * @param array $keys Meta keys to delete
+	 * @return void
+	 */
+	public function destroy( int $user_id, ...$keys ) {
+		foreach ( $keys as $key ) {
+			$key_namespaced = $this->namespace_key( $key );
+			delete_user_meta( $user_id, $key_namespaced );
 		}
 	}
 }

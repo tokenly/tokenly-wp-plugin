@@ -5040,27 +5040,31 @@ class AssetSearchField extends react_1.Component {
         this.getAssetsAvailable = this.getAssetsAvailable.bind(this);
     }
     onKeywordsChange(keywords) {
-        var _a;
         if (keywords == '') {
             return;
         }
         let results = this.props.assets.filter((value) => {
             return value.toLowerCase().indexOf(keywords.toLowerCase()) >= 0;
         });
-        results = results.map((result) => {
-            return {
-                label: result,
-                value: result,
-            };
-        });
-        this.setState({
-            keywords: keywords,
-            assets: [(_a = results[0]) !== null && _a !== void 0 ? _a : { value: null, label: null }],
-        });
+        if ((results === null || results === void 0 ? void 0 : results.length) > 0) {
+            results = results.map((result) => {
+                return {
+                    label: result,
+                    value: result,
+                };
+            });
+            this.setState({
+                assets: [results[0]],
+            });
+        }
+        this.onAssetChange(keywords);
     }
-    onAssetChange(id) {
-        this.setState({ asset: id });
-        this.props.onChange(id);
+    onAssetChange(assetName) {
+        this.setState({
+            asset: assetName,
+            keywords: assetName,
+        });
+        this.props.onChange(assetName);
     }
     getAssetsAvailable() {
         var _a;
@@ -5073,16 +5077,12 @@ class AssetSearchField extends react_1.Component {
     }
     render() {
         return (React.createElement("div", { style: { marginBottom: '12px' } },
-            React.createElement("div", { style: { height: '90px' } },
-                React.createElement(components_1.ComboboxControl, { label: "Asset", value: this.state.asset, onChange: (value) => {
+            React.createElement("div", { style: { height: '40px' } },
+                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.state.keywords, onChange: (value) => {
                         this.onAssetChange(value);
                     }, options: this.state.assets, onFilterValueChange: (keywords) => {
                         this.onKeywordsChange(keywords);
-                    } })),
-            React.createElement("div", null,
-                React.createElement("span", null, "Available: "),
-                React.createElement("span", null,
-                    React.createElement("strong", null, this.getAssetsAvailable())))));
+                    } }))));
     }
 }
 exports.AssetSearchField = AssetSearchField;
@@ -5401,6 +5401,7 @@ class PromiseStoreForm extends react_1.Component {
         this.getAssetOptions = this.getAssetOptions.bind(this);
         this.getCurrentAsset = this.getCurrentAsset.bind(this);
         this.getMaxCount = this.getMaxCount.bind(this);
+        this.isAssetValid = this.isAssetValid.bind(this);
         if (Object.keys(this.props.sources).length > 0) {
             const key = Object.keys(this.props.sources)[0];
             this.state.source = Object.assign({}, (_a = this.props.sources[key]) !== null && _a !== void 0 ? _a : null);
@@ -5434,8 +5435,9 @@ class PromiseStoreForm extends react_1.Component {
         const options = [];
         Object.keys(this.props.sources).forEach((key) => {
             var _a, _b, _c;
+            const label = (_b = (_a = this.props.sources[key].address_data.label) !== null && _a !== void 0 ? _a : this.props.sources[key].address) !== null && _b !== void 0 ? _b : null;
             options.push({
-                label: (_b = (_a = this.props.sources[key].address_data.label) !== null && _a !== void 0 ? _a : this.props.sources[key].address) !== null && _b !== void 0 ? _b : null,
+                label: label,
                 value: (_c = this.props.sources[key].address) !== null && _c !== void 0 ? _c : null,
             });
         });
@@ -5452,20 +5454,29 @@ class PromiseStoreForm extends react_1.Component {
             return [];
         }
         Object.keys(balances).forEach((key) => {
-            options.push(balances[key].asset);
+            let asset = balances[key].asset;
+            options.push(asset);
         });
         return options;
     }
     getCurrentAsset() {
+        var _a;
+        if (!((_a = this.state.promise) === null || _a === void 0 ? void 0 : _a.asset)) {
+            return null;
+        }
+        const asset = this.state.promise.asset;
+        if (asset == '') {
+            return null;
+        }
         let balances = this.state.source.address_data.balances;
         balances = Object.values(balances);
         balances = balances.filter((balance) => {
             return balance.asset === this.state.promise.asset;
         });
-        if (balances.length > 0) {
-            return balances[0];
+        if (balances.length == 0) {
+            return null;
         }
-        return null;
+        return balances[0];
     }
     getMaxCount() {
         const asset = this.getCurrentAsset();
@@ -5475,6 +5486,13 @@ class PromiseStoreForm extends react_1.Component {
         }
         return asset.balance;
     }
+    isAssetValid() {
+        const asset = this.getCurrentAsset();
+        if (asset) {
+            return true;
+        }
+        return false;
+    }
     render() {
         return (React.createElement("form", { style: { width: '100%', maxWidth: '320px' } },
             React.createElement("div", { style: { marginBottom: '12px' } },
@@ -5482,29 +5500,37 @@ class PromiseStoreForm extends react_1.Component {
                         this.onSourceChange(value);
                     }, help: "Source address to use." })),
             React.createElement("div", null,
-                React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
-                        const state = Object.assign({}, this.state.promise);
-                        state.destination = value;
-                        this.setState({ promise: state });
-                    } })),
+                React.createElement("label", null,
+                    "Destination",
+                    React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. The user who will receive the asset."),
+                    React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
+                            state.destination = value;
+                            this.setState({ promise: state });
+                        } }))),
             React.createElement("div", null,
-                React.createElement(AssetSearchField_1.AssetSearchField, { onChange: (value) => {
-                        const state = Object.assign({}, this.state.promise);
-                        state.asset = value;
-                        this.setState({ promise: state });
-                    }, assets: this.getAssetOptions() })),
-            this.state.promise.asset &&
+                React.createElement("label", null,
+                    "Asset",
+                    React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
+                    React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), onChange: (value) => {
+                            const state = Object.assign({}, this.state.promise);
+                            state.asset = value;
+                            this.setState({ promise: state });
+                        } }))),
+            this.isAssetValid() &&
                 React.createElement("div", null,
-                    React.createElement(components_1.Flex, { justify: "flex-start", align: "center" },
-                        React.createElement(components_1.TextControl, { label: "Quantity", type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
-                                const state = Object.assign({}, this.state.promise);
-                                state.quantity = value;
-                                this.setState({ promise: state });
-                            } }),
-                        React.createElement("span", null,
-                            React.createElement("span", null, "of / "),
+                    React.createElement("label", null,
+                        "Quantity",
+                        React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
+                            React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
+                                    const state = Object.assign({}, this.state.promise);
+                                    state.quantity = value;
+                                    this.setState({ promise: state });
+                                } }),
                             React.createElement("span", null,
-                                React.createElement("strong", null, this.getMaxCount())))),
+                                React.createElement("span", null, "of / "),
+                                React.createElement("span", { title: this.getMaxCount() },
+                                    React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
                     React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
                             const state = Object.assign({}, this.state.promise);
                             state.ref = value;
@@ -5856,8 +5882,8 @@ class UserSearchField extends react_1.Component {
         this.props.onChange(id);
     }
     render() {
-        return React.createElement("div", { style: { height: '90px' } },
-            React.createElement(components_1.ComboboxControl, { label: "Destination user", value: this.state.user, onChange: (value) => {
+        return React.createElement("div", { style: { height: '40px' } },
+            React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.state.user, onChange: (value) => {
                     this.onUserChange(value);
                 }, options: this.state.users, onFilterValueChange: (keywords) => {
                     this.onKeywordsChange(keywords);
@@ -6933,7 +6959,7 @@ class WhitelistPage extends react_1.Component {
             React.createElement(components_1.Panel, { header: "Token Whitelist Settings" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement("p", null, "Whitelist allows to control which token assets to display on the Inventory screen.")),
+                        React.createElement("p", null, "Whitelist allows to control which assets to display on the Inventory screen.")),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.ToggleControl, { label: "Use whitelist", help: this.state.whitelistData.enabled
                                 ? 'Whitelist enabled.'

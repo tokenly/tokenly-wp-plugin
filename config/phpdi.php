@@ -120,6 +120,7 @@ use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
@@ -133,6 +134,8 @@ use Tokenly\TokenpassClient\TokenpassAPI;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
+	//Variables
+	'general.namespace'     => 'tokenly',
 	//Providers
 	AppServiceProviderInterface::class         => \DI\autowire( AppServiceProvider::class ),
 	RouteServiceProviderInterface::class       => \DI\autowire( RouteServiceProvider::class ),
@@ -172,7 +175,8 @@ return array(
 	//Routes
 	AdminRouterInterface::class                => \DI\autowire( AdminRouter::class ),
 	ApiRouterInterface::class                  => \DI\autowire( ApiRouter::class ),
-	PostTypeRouterInterface::class             => \DI\autowire( PostTypeRouter::class ),
+	PostTypeRouterInterface::class             => \DI\autowire( PostTypeRouter::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	WebRouterInterface::class                  => \DI\autowire( WebRouter::class ),
 	//Collections
 	CollectionInterface::class                 => \DI\autowire( Collection::class ),
@@ -191,6 +195,16 @@ return array(
 	UserInterface::class                       => \DI\autowire( User::class ),
 	WhitelistItemInterface::class              => \DI\autowire( WhitelistItem::class ),
 	//Models - single instance
+	CurrentUserInterface::class                => function (
+		ContainerInterface $container,
+		UserRepositoryInterface $user_repository
+	) {
+		$user_id = get_current_user_id();
+		$user = $user_repository->show( array(
+			'id' => $user_id,
+		) );
+		return $user;
+	},
 	SettingsInterface::class                   => function ( 
 		ContainerInterface $container,
 		SettingsRepositoryInterface $settings_repository

@@ -11,10 +11,12 @@ use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Collection\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collection\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
-class User implements UserInterface {
+class User implements UserInterface, CurrentUserInterface {
 	protected $_instance;
 	protected $oauth_user;
 	protected $oauth_token;
@@ -87,6 +89,23 @@ class User implements UserInterface {
 		} else {
 			return false;
 		}
+	}
+
+	public function connect( OauthUserInterface $oauth_user, string $access_token ) {
+		$this->user_meta_repository->update( $this->ID, array(
+			'uuid'        => $oauth_user->id,
+			'oauth_token' => $access_token,
+		) );
+		$this->add_cap( 'use_tokenpass' );
+	}
+
+	/**
+	 * Disconnects the user from Tokenpass
+	 * @return void
+	 */
+	public function disconnect() {
+		$this->user_meta_repository->destroy( $this->ID, ...array( 'uuid', 'oauth_token' ) );
+		$this->remove_cap( 'use_tokenpass');
 	}
 
 	/**

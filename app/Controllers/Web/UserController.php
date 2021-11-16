@@ -6,6 +6,7 @@ use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Views\UserView;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Serves the public user views
@@ -15,28 +16,36 @@ class UserController implements UserControllerInterface {
 	protected $user_repository;
 	protected $user_service;
 	protected $user_view;
+	protected $current_user;
 
 	public function __construct(
 		BalanceRepositoryInterface $balance_repository,
 		UserRepositoryInterface $user_repository,
+		CurrentUserInterface $current_user,
 		UserView $user_view
 	) {
 		$this->user_repository = $user_repository;
+		$this->current_user = $current_user;
 		$this->user_view = $user_view;
 	}
 	
 	/**
 	 * Shows the local public Tokenpass user page with
 	 * the user information and token inventory
+	 * @return void
 	 */
 	public function show() {
 		$user_id = get_query_var( 'tokenpass_user_id' );
 		if ( !$user_id ) {
 			return;
 		}
-		$user = $this->user_repository->show( array(
-			'id' => $user_id,
-		) );
+		if ( $user_id == 'me' ) {
+			$user = $this->current_user;
+		} else {
+			$user = $this->user_repository->show( array(
+				'id' => $user_id,
+			) );
+		}
 		if ( !$user ) {
 			return;
 		}

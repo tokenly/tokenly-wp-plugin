@@ -48,6 +48,11 @@ body.login .tokenpass-login-container {
   justify-content: flex-start !important;
   align-items: center !important;
 }
+
+.components-form-token-field__suggestions-list li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 /*!*************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./resources/scss/Main.scss ***!
   \*************************************************************************************************************************************************************************************************************************************************/

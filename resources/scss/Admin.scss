@@ -18,3 +18,8 @@ body.login {
 		align-items: center !important;
 	}
 }
+
+.components-form-token-field__suggestions-list li {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

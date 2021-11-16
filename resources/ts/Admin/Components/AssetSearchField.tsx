@@ -11,11 +11,13 @@ import {
 interface AssetSearchFieldProps {
 	onChange: any;
 	assets: any;
+	label?: string;
+	help?: string;
 }
 
 interface AssetSearchFieldState {
 	keywords: string;
-	asset: number;
+	asset: string;
 	assets: Array<ComboboxOption>;
 }
 
@@ -44,21 +46,26 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 		let results = this.props.assets.filter( ( value: string ) => {
 			return value.toLowerCase().indexOf( keywords.toLowerCase() ) >= 0;
 		} );
-		results = results.map( ( result: string ) => {
-			return {
-				label: result,
-				value: result,
-			}
-		} );
-		this.setState( {
-			keywords : keywords,
-			assets   : [ results[0] ?? { value: null, label: null } ],
-		} );
+		if ( results?.length > 0 ) {
+			results = results.map( ( result: string ) => {
+				return {
+					label: result,
+					value: result,
+				}
+			} );
+			this.setState( {
+				assets : [ results[0] ],
+			} );
+		}
+		this.onAssetChange( keywords );
 	}
 	
-	onAssetChange( id: number ) {
-		this.setState( { asset: id } );
-		this.props.onChange( id );
+	onAssetChange( assetName: string ) {
+		this.setState( { 
+			asset    : assetName,
+			keywords : assetName,
+		} );
+		this.props.onChange( assetName );
 	}
 
 	getAssetsAvailable() {
@@ -72,10 +79,11 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 	render() {
 		return (
 			<div style={ { marginBottom: '12px' } }>
-				<div style={ { height: '90px' } }>
+				<div style={ { height: '40px' } }>
 					<ComboboxControl
-						label="Asset"
-						value={ this.state.asset }
+						label={ this.props.label }
+						help={ this.props.help }
+						value={ this.state.keywords }
 						onChange={ ( value: any ) => {
 							this.onAssetChange( value );
 						} }
@@ -85,9 +93,9 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 						} }
 					/>
 				</div>
-				<div>
+				{/* <div>
 					<span>Available: </span><span><strong>{ this.getAssetsAvailable() }</strong></span>
-				</div>
+				</div> */}
 			</div>
 		)
 	}

@@ -16,6 +16,8 @@ import {
 
 interface UserSearchFieldProps {
 	onChange: any;
+	label?: string;
+	help?: string;
 }
 
 interface UserSearchFieldState {
@@ -74,9 +76,10 @@ export class UserSearchField extends Component<UserSearchFieldProps, UserSearchF
 	}
 
 	render() {
-		return <div style={{height: '90px'}}>
+		return <div style={{height: '40px'}}>
 			<ComboboxControl
-				label="Destination user"
+				label={ this.props.label }
+				help={ this.props.help }
 				value={ this.state.user }
 				onChange={ (value: any) => {
 					this.onUserChange( value );

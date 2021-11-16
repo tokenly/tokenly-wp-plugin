@@ -3,7 +3,8 @@
 namespace Tokenly\Wp\Interfaces\Repositories\General;
 
 interface UserMetaRepositoryInterface {
-	public function index( $user_id, $keys );
-	public function show( $user_id, $key );
-	public function update( $user_id, $payload );
+	public function index( int $user_id, string ...$keys );
+	public function show( int $user_id, string $key );
+	public function update( int $user_id, array $payload );
+	public function destroy( int $user_id, ...$keys );
 }

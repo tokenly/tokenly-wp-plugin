@@ -9,6 +9,7 @@ use Tokenly\Wp\Views\Admin\SourceIndexView;
 use Tokenly\Wp\Views\Admin\SourceShowView;
 use Tokenly\Wp\Views\Admin\SourceStoreView;
 use Tokenly\Wp\Views\Admin\SourceEditView;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Serves the admin source views
@@ -20,6 +21,7 @@ class SourceController implements SourceControllerInterface {
 	protected $source_edit_view;
 	protected $source_repository;
 	protected $user_repository;
+	protected $current_user;
 
 	public function __construct(
 		SourceIndexView $source_index_view,
@@ -27,14 +29,14 @@ class SourceController implements SourceControllerInterface {
 		SourceStoreView $source_store_view,
 		SourceEditView $source_edit_view,
 		SourceRepositoryInterface $source_repository,
-		UserRepositoryInterface $user_repository
+		CurrentUserInterface $current_user
 	) {
 		$this->source_index_view = $source_index_view;
 		$this->source_show_view = $source_show_view;
 		$this->source_store_view = $source_store_view;
 		$this->source_edit_view = $source_edit_view;
 		$this->source_repository = $source_repository;
-		$this->user_repository = $user_repository;
+		$this->current_user = $current_user;
 	}
 
 	public function index() {
@@ -66,10 +68,10 @@ class SourceController implements SourceControllerInterface {
 	}
 
 	public function store() {
-		$user = $this->user_repository->show( array(
-			'id' => get_current_user_id(),
-		) );
-		$addresses = $user->get_addresses();
+		if ( !isset( $this->current_user ) ) {
+			return;
+		}
+		$addresses = $this->current_user->get_addresses();
 		$addresses = $addresses->to_array();
 		$render = $this->source_store_view->render( array(
 			'addresses' => $addresses,
