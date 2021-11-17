@@ -4,6 +4,7 @@ import { Component } from 'react';
 import { TokenMetaRepositoryInterface } from '../../Interfaces/Repositories/TokenMetaRepositoryInterface';
 import { TokenMetaData } from '../../Interfaces';
 import { TYPES } from '../../Types';
+import { AttributeRepeater } from '../Components/AttributeRepeater';
 
 import { 
 	TextControl,
@@ -19,6 +20,7 @@ import {
 
 interface TokenMetaEditPageData {
 	meta: TokenMetaData;
+	extra: any;
 }
 
 interface TokenMetaEditPageProps {
@@ -29,12 +31,7 @@ interface TokenMetaEditPageState {
 	storingSource: boolean;
 	meta: TokenMetaData;
 	postId: number;
-	// extraTemp: string;
-	// extraValid: boolean,
 }
-
-declare const wp: any;
-
 
 export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps, TokenMetaEditPageState> {
 	@resolve( TYPES.TokenMetaRepositoryInterface )
@@ -44,35 +41,26 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 		storingSource: false,
 		meta: {} as any,
 		postId: null,
-		// extraTemp: null,
-		// extraValid: false,
 	}
 	
 	constructor( props: TokenMetaEditPageProps ) {
 		super( props );
-		// this.validateJSON = this.validateJSON.bind( this );
 		const urlParams = new URLSearchParams(window.location.search);
 		const postId = parseInt( urlParams.get( 'post' ) );
 		this.state.postId = postId;
 		this.state.meta = Object.assign( this.state.meta, this.props.pageData.meta );
-		// this.state.extraTemp = JSON.stringify( this.state.meta.extra, null, 2 );
-		// this.state.extraValid = this.validateJSON( this.state.extraTemp );
-	
+		this.onExtraUpdated = this.onExtraUpdated.bind( this );
+		console.log(this.props.pageData);
 	}
-
-	// validateJSON( json: any ) {
-	// 	try {
-	// 		JSON.parse ( json );
-	// 		return true;
-	// 	} catch (e) {
-	// 		return false;
-	// 	}
-	// }
-
-	// componentDidMount() {
-	// 	const textarea: any = document.querySelector(`textarea[name="extrameta"]`);
-	// 	textarea.spellcheck = false;
-	// }
+	
+	onExtraUpdated( newExtra: any ) {
+		let newState = Object.assign( {}, this.state );
+		newState.meta.extra = Object.assign( [], newExtra );
+		newState.meta.extra = newState.meta.extra.filter( function ( attribute: any ) {
+			return attribute != null;
+		} );
+		this.setState( { ...newState } );
+	}
 
 	render() {
 		return (
@@ -92,33 +80,12 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 									}}
 									style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
 								/>
-								{/* <TextareaControl 
-									value={ this.state.extraTemp }
-									label="Extra"
-									help="JSON object"
-									name="extrameta"
-									rows={ 24 }
-									onChange={ ( json: any ) => {
-										const valid = this.validateJSON( json );
-										if ( valid == true ) {
-											const state = Object.assign( {}, this.state.meta );
-											state.extra = JSON.parse ( json ) ?? '';
-											this.setState( {
-												meta: state,
-												extraValid: true,
-												extraTemp: json,
-											} );
-										} else {
-											this.setState( {
-												extraTemp: json,
-												extraValid: false,
-											} );
-										}
-									} }
+								<AttributeRepeater
+									label="Extra attributes"
+									help="Additional key-value asset meta attributes. They are displayed in the more info sections."
+									attributes={ this.props.pageData?.meta?.extra }
+									onUpdate={ this.onExtraUpdated }
 								/>
-								<div className="json-status">
-									<span>State: </span><span style={ { color: this.state.extraValid ? 'green' : 'red' } }>{ this.state.extraValid ? 'Valid' : 'Invalid' }</span>
-								</div> */}
 							</div>
 						</PanelRow>
 					</PanelBody>
