@@ -83,19 +83,6 @@ class AdminRouter implements AdminRouterInterface {
 	}
 	
 	/**
-	 * Checks if the current user has enough capabilites
-	 * to view the Tokenpass inventory
-	 * @return boolean
-	 */
-	protected function can_view_inventory() {
-		if ( current_user_can( 'read' ) === true && $this->auth_service->is_connected() === true ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	 * Gets the admin route definitions
 	 * @return array
 	 */
