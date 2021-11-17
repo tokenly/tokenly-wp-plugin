@@ -131,7 +131,7 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return SourceCollectionInterface Modified sources
 	 */
 	protected function handle_with_address( SourceCollectionInterface $sources, $with_rule ) {
-		if ( !isset( $this->current_user ) ) {
+		if ( $this->current_user->is_guest() === true ) {
 			return $sources;
 		}
 		$addresses = $this->current_user->get_addresses( array(

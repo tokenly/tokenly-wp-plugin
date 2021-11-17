@@ -28,7 +28,7 @@ class Source implements SourceInterface {
 	 * @return void
 	 */
 	public function update( $params ) {
-		$this->source_repository->update( $this->address, $params );
+		return $this->source_repository->update( $this->address, $params );
 	}
 
 	/**

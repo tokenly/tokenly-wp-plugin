@@ -66,6 +66,8 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	 * @return void
 	 */
 	public function update( int $post_id, array $params = array() ) {
+		error_log( $post_id );
+		error_log(print_r( $params, true ));
 		$this->meta_repository->update( $post_id, array(
 			'asset' => $params['asset'] ?? null,
 		) );

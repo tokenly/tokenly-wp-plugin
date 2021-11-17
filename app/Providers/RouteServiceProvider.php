@@ -34,7 +34,7 @@ class RouteServiceProvider extends ServiceProvider implements RouteServiceProvid
 	 * @return void
 	 */
 	public function register() {
-		add_action( 'init', array( $this, 'register_routers' ) );
+		$this->register_routers();
 	}
 
 	/**

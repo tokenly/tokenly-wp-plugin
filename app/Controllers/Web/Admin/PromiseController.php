@@ -48,6 +48,9 @@ class PromiseController implements PromiseControllerInterface {
 	public function edit() {
 		$promise_id = $_GET['promise'] ?? null;
 		$promise = $this->promise_repository->show( $promise_id );
+		if ( $promise ) {
+			$promise = $promise->to_array();
+		}
 		$render = $this->promise_edit_view->render( array(
 			'promise' => $promise,
 		) );

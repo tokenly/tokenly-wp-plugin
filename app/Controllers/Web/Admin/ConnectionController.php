@@ -30,7 +30,7 @@ class ConnectionController implements ConnectionControllerInterface {
 	}
 
 	public function show() {
-		if ( !isset( $this->current_user ) ) {
+		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
 		$status = $this->current_user->is_connected();

@@ -130,4 +130,15 @@ class User implements UserInterface, CurrentUserInterface {
 		}
 		return $this->oauth_user;
 	}
+	
+	public function is_guest() {
+		return false;
+	}
+	
+	public function to_array() {
+		return array(
+			'id'   => $this->ID,
+			'name' => $this->user_nicename,
+		);
+	}
 }

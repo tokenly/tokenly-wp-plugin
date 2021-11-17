@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
 class Promise implements PromiseInterface {
@@ -10,6 +11,7 @@ class Promise implements PromiseInterface {
 	public $destination;
 	public $asset;
 	public $quantity;
+	public $quantity_sat;
 	public $fingerprint;
 	public $txid;
 	public $created_at;
@@ -38,6 +40,7 @@ class Promise implements PromiseInterface {
 		$this->destination = $promise_data['destination'] ?? null;
 		$this->asset = $promise_data['asset'] ?? null;
 		$this->quantity = $promise_data['quantity'] ?? null;
+		$this->quantity_sat = $promise_data['quantity_sat'] ?? null;
 		$this->fingerprint = $promise_data['fingerprint'] ?? null;
 		$this->txid = $promise_data['txid'] ?? null;
 		$this->created_at = $promise_data['created_at'] ?? null;
@@ -54,24 +57,28 @@ class Promise implements PromiseInterface {
 	}
 	
 	public function to_array() {
-		return array(
-			'source'      => $this->source,
-			'destination' => $this->destination,
-			'asset'       => $this->asset,
-			'quantity'    => $this->quantity,
-			'fingerprint' => $this->fingerprint,
-			'txid'        => $this->txid,
-			'created_at'  => $this->created_at,
-			'updated_at'  => $this->updated_at,
-			'expiration'  => $this->expiration,
-			'ref'         => $this->ref,
-			'pseudo'      => $this->pseudo,
-			'note'        => $this->note,
-			'protocol'    => $this->protocol,
-			'chain'       => $this->chain,
-			'promise_id'  => $this->promise_id,
-			'precision'   => $this->precision,
+		$array = array(
+			'source'       => $this->source,
+			'destination'  => $this->destination,
+			'asset'        => $this->asset,
+			'quantity'     => $this->quantity,
+			'fingerprint'  => $this->fingerprint,
+			'txid'         => $this->txid,
+			'created_at'   => $this->created_at,
+			'updated_at'   => $this->updated_at,
+			'expiration'   => $this->expiration,
+			'ref'          => $this->ref,
+			'pseudo'       => $this->pseudo,
+			'note'         => $this->note,
+			'protocol'     => $this->protocol,
+			'chain'        => $this->chain,
+			'promise_id'   => $this->promise_id,
+			'precision'    => $this->precision, 
 		);
+		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
+			$array['promise_meta'] = $this->promise_meta->to_array();
+		}
+		return $array;
 	}
 
 	public function update( $params = array() ) {
@@ -79,6 +86,9 @@ class Promise implements PromiseInterface {
 	}
 
 	public function destroy() {
+		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
+			$this->promise_meta->destroy();	
+		}
 		$this->promise_repository->destroy( $this->promise_id );
 	}
 }

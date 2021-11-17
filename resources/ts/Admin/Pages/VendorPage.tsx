@@ -19,6 +19,7 @@ import {
 
 interface VendorPageData {
 	promises: Array<PromiseData>;
+	sources: any;
 }
 
 interface VendorPageProps {
@@ -47,6 +48,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		super( props );
 		this.onDetails = this.onDetails.bind( this );
 		this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind( this );
+		console.log(this.props.pageData);
 	}
 
 	onDetailsModalRequestClose() {
@@ -101,6 +103,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 								? <PromiseList
 									promises={ this.props.pageData.promises }
 									onDetails={ this.onDetails }
+									sources={ this.props.pageData.sources }
 								/>
 								: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
 							}

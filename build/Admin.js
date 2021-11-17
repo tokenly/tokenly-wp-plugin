@@ -5319,13 +5319,35 @@ const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpres
 class PromiseList extends react_1.Component {
     constructor(props) {
         super(props);
+        this.getPromiseSource = this.getPromiseSource.bind(this);
+        this.sourceExists = this.sourceExists.bind(this);
     }
     onDetails(index) {
         this.props.onDetails(index);
     }
+    getPromiseSource(promiseItem) {
+        var _a, _b;
+        let address = promiseItem.source;
+        const source = (_a = this.props.sources[promiseItem.source]) !== null && _a !== void 0 ? _a : null;
+        if (source) {
+            address = (_b = source === null || source === void 0 ? void 0 : source.address_data) === null || _b === void 0 ? void 0 : _b.label;
+        }
+        return address;
+    }
+    sourceExists(promiseItem) {
+        var _a;
+        const source = (_a = this.props.sources[promiseItem.source]) !== null && _a !== void 0 ? _a : null;
+        if (source) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     render() {
         let listItems = Object.keys(this.props.promises).map((key) => this.props.promises[key]);
         listItems = listItems.map((promiseItem, i) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h;
             return (React.createElement("div", { style: { width: '100%' } },
                 React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
                     React.createElement(components_1.CardHeader, null,
@@ -5338,11 +5360,21 @@ class PromiseList extends react_1.Component {
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement("div", null,
                                     React.createElement("span", null, "Source: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, promiseItem.source))),
+                                    this.sourceExists(promiseItem)
+                                        ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${promiseItem.source}` },
+                                            React.createElement("strong", null, this.getPromiseSource(promiseItem)))
+                                        : React.createElement("span", null,
+                                            React.createElement("strong", null, promiseItem.source))),
                                 React.createElement("div", null,
-                                    React.createElement("span", null, "Destination: "),
-                                    React.createElement("strong", null, promiseItem.destination)),
+                                    React.createElement(components_1.Flex, { gap: 0, align: "center", justify: "flex-start" },
+                                        React.createElement("span", null, "Participants: "),
+                                        React.createElement(components_1.Dashicon, { icon: "admin-users" }),
+                                        React.createElement("strong", null,
+                                            React.createElement("a", { href: `/tokenpass-user/${(_b = (_a = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _a === void 0 ? void 0 : _a.source_user) === null || _b === void 0 ? void 0 : _b.id}` }, (_d = (_c = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _c === void 0 ? void 0 : _c.source_user) === null || _d === void 0 ? void 0 : _d.name)),
+                                        React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
+                                        React.createElement(components_1.Dashicon, { icon: "admin-users" }),
+                                        React.createElement("strong", null,
+                                            React.createElement("a", { href: `/tokenpass-user/${(_f = (_e = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _e === void 0 ? void 0 : _e.destination_user) === null || _f === void 0 ? void 0 : _f.id}` }, (_h = (_g = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _g === void 0 ? void 0 : _g.destination_user) === null || _h === void 0 ? void 0 : _h.name)))),
                                 React.createElement("div", null,
                                     React.createElement("span", null, "Asset: "),
                                     React.createElement("strong", null, promiseItem.asset)),
@@ -6850,6 +6882,7 @@ class VendorPage extends react_1.Component {
         };
         this.onDetails = this.onDetails.bind(this);
         this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind(this);
+        console.log(this.props.pageData);
     }
     onDetailsModalRequestClose() {
         this.setState({
@@ -6876,7 +6909,7 @@ class VendorPage extends react_1.Component {
             React.createElement(components_1.Panel, { header: "Current promises" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null, ((_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.promises) === null || _b === void 0 ? void 0 : _b.length) > 0
-                        ? React.createElement(PromiseList_1.PromiseList, { promises: this.props.pageData.promises, onDetails: this.onDetails })
+                        ? React.createElement(PromiseList_1.PromiseList, { promises: this.props.pageData.promises, onDetails: this.onDetails, sources: this.props.pageData.sources })
                         : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered promises"))))));
     }
 }

@@ -3,9 +3,9 @@
 namespace Tokenly\Wp\Interfaces\Repositories;
 
 interface PromiseRepositoryInterface {
-	public function index();
-	public function show( $promise_id );
-	public function update( $promise_id, $params );
-	public function store( $params );
-	public function destroy( $promise_id );
+	public function index( array $params = array() );
+	public function show( int $promise_id, array $params = array() );
+	public function update( int $promise_id, array $params = array() );
+	public function store( array $params = array() );
+	public function destroy( int $promise_id );
 }

@@ -23,7 +23,7 @@ class AuthController implements AuthControllerInterface {
 
 	/** Responds with Tokenpass connection status */
 	public function status() {
-		if ( !isset( $this->current_user ) ) {
+		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
 		$status = $this->current_user->is_connected();
@@ -54,7 +54,7 @@ class AuthController implements AuthControllerInterface {
 	}
 	
 	public function disconnect() {
-		if ( !isset( $this->current_user ) ) {
+		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
 		$this->current_user->disconnect();

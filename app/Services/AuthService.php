@@ -58,7 +58,7 @@ class AuthService implements AuthServiceInterface {
 			return;
 		}
 		$oauth_user = $this->oauth_user_factory->create( $oauth_user_data );
-		if ( isset( $this->current_user ) ) {
+		if ( $this->current_user->is_guest() === false ) {
 			$user = $this->current_user;
 		} else {
 			$can_login = $oauth_user->can_social_login();

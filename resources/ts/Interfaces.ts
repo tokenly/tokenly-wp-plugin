@@ -92,6 +92,7 @@ export interface PromiseData {
 	pseudo: boolean;
 	note: string;
 	promise_id: number;
+	promise_meta: any;
 }
 
 export interface StatusData {

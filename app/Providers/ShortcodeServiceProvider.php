@@ -34,7 +34,7 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	 * @return void
 	 */
 	public function register() {
-		add_action( 'init', array( $this, 'register_shortcodes' ) );
+		$this->register_shortcodes();
 	}
 
 	/**

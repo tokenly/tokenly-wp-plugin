@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class PromiseRepository implements PromiseRepositoryInterface {
@@ -18,6 +19,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	protected $promise_factory;
 	protected $promise_collection_factory;
 	protected $promise_meta_repository;
+	protected $source_repository;
 	protected $current_user;
 	
 	public function __construct(
@@ -26,6 +28,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 		PromiseFactoryInterface $promise_factory,
 		PromiseCollectionFactoryInterface $promise_collection_factory,
 		PromiseMetaRepositoryInterface $promise_meta_repository,
+		SourceRepositoryInterface $source_repository,
 		CurrentUserInterface $current_user
 	) {
 		$this->client = $client;
@@ -33,6 +36,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 		$this->promise_factory = $promise_factory;
 		$this->promise_collection_factory = $promise_collection_factory;
 		$this->promise_meta_repository = $promise_meta_repository;
+		$this->source_repository = $source_repository;
 		$this->current_user = $current_user;
 	}
 
@@ -41,15 +45,11 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @return PromiseInterface[] Promises found
 	 */
 	public function index( array $params = array() ) {
-		$promises = $this->client->getPromisedTransactionList();
-		if ( !$promises ) {
-			return;
-		}
+		$promises = $this->client->getPromisedTransactionList() ?? array();
 		$collection = $this->promise_collection_factory->create( $promises );
 		if ( isset( $params['with'] ) ) {
 			$collection = $this->handle_with( $collection, $params['with'] );
 		}
-		
 		return $collection;
 	}
 
@@ -58,10 +58,11 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return PromiseInterface Promise found
 	 */
-	public function show( $promise_id ) {
-		$promises = $this->index();
-		//$promise = $this->promise_factory->create( $promise );
-		//return $promise;
+	public function show( int $promise_id, array $params = array() ) {
+		$promises = $this->index( $params );
+		$promises->key_by_field( 'promise_id' );
+		$promise = $promises[ $promise_id ] ?? null;
+		return $promise;
 	}
 
 	/**
@@ -70,7 +71,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @param $params New promise properties
 	 * @return array
 	 */
-	public function update( $promise_id, $params ) {
+	public function update( int $promise_id, array $params = array() ) {
 		$response = $this->client->updatePromisedTransaction( $promise_id, $params );
 	}
 	
@@ -79,7 +80,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @param array $params New promise properties
 	 * @return void
 	 */
-	public function store( $params ) {
+	public function store( array $params = array() ) {
 		$user_id = $params['destination'] ?? null;
 		if ( !$user_id ) {
 			return;
@@ -95,9 +96,29 @@ class PromiseRepository implements PromiseRepositoryInterface {
 			return;
 		}
 		$destination = 'user:' . $profile->username ?? null;
-		$quantity = $params['quantity'] ?? null;
-		if ( $quantity ) {
-			//$quantity = $quantity * 100000000;
+		if ( isset( $params['source'] ) ) {
+			$source = $this->source_repository->show( array(
+				'address' => $params['source'],
+				'with'    => array( 'address' ),
+			) );
+			if ( $source ) {
+				$address_data = $source->address_data;
+				if ( $address_data ) {
+					$balances = $address_data->balances;
+					if ( $balances ) {
+						$balances = $balances->key_by_field( 'asset' );
+						$balance = $balances[ $params['asset'] ] ?? null;
+						if ( $balance ) {
+							$precision = $balance->precision ?? 0;
+							$quantity = $params['quantity'] ?? null;
+							if ( $precision > 0 ) {
+								$multiplier = intval( 1 . str_repeat( 0, $precision ) );
+								$quantity = $quantity * $multiplier;
+							}
+						}
+					}
+				}
+			}
 		}
 		$promise_data = $this->client->promiseTransaction(
 			$params['source'] ?? null,
@@ -130,7 +151,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return void
 	 */
-	public function destroy( $promise_id ) {
+	public function destroy( int $promise_id ) {
 		$this->client->deletePromisedTransaction( $promise_id );
 	}
 	
@@ -148,11 +169,11 @@ class PromiseRepository implements PromiseRepositoryInterface {
 						unset( $with_rule[0] );
 						$with_rule = implode( '.', $with_rule );
 					}
-					$sources = $this->handle_with_meta( $promises, array( $with_rule ) );
+					$promises = $this->handle_with_meta( $promises, array( $with_rule ) );
 					break;
 			}
 		}
-		return $sources;
+		return $promises;
 	}
 
 	/**
@@ -169,14 +190,10 @@ class PromiseRepository implements PromiseRepositoryInterface {
 			'promise_ids' => $promise_ids, 
 		) );
 		$promise_meta->key_by_promise_id();
-		// error_log(print_r($promise_meta));
-		// $with_address = array_map( function( $source ) use ( $addresses ) {
-		// 	$address_data = $addresses[ $source->address ] ?? null;
-		// 	if ( $address_data ) {
-		// 		$source->address_data = $address_data;
-		// 	}
-		// 	return $source;
-		// }, ( array ) $sources );
+		foreach ( ( array )$promises as &$promise ) {
+			$promise_id = $promise->promise_id;
+			$promise->promise_meta = $promise_meta[ $promise_id ] ?? array();
+		}
 		return $promises;
 	}
 }

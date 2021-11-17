@@ -65,26 +65,35 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		if ( !isset( $params['promise_id'] ) ) {
 			return;
 		}
+		$meta = array(
+			'promise_id'          => $params['promise_id'],
+			'source_user_id'      => $params['source_user_id'] ?? null,
+			'destination_user_id' => $params['destination_user_id'] ?? null,
+		);
+		$meta_namespaced = array();
+		foreach ( $meta as $key => $value ) {
+			$key = $this->meta_repository->namespace_key( $key );
+			$meta_namespaced[ $key ] = $value;
+		}
 		$common_params = array(
-			'meta_input' => array(
-				'promise_id'          => $params['promise_id'],
-				'source_user_id'      => $params['source_user_id'] ?? null,
-				'destination_user_id' => $params['destination_user_id'] ?? null,
-			),
+			'meta_input' => $meta_namespaced,
 		);
 		$post = $this->show( array(
-			'promise_id' => $params['promise_id'],
+			'promise_ids' => array( $params['promise_id'] ),
 		) );
 		if ( $post ) {
 			$update_params = array_merge( array(
 				'ID' => $post->ID,
 			), $common_params );
-			$this->update( $update_params );
+			$post = $this->update( $update_params );
+		} else {
+			$store_params = array_merge( array(
+				'post_type'  => 'tokenly_promise_meta',
+			), $common_params );
+			error_log(print_r( $store_params, true ));
+			$post = wp_insert_post( $store_params );
+			error_log(print_r( $post, true ));
 		}
-		$store_params = array_merge( array(
-			'post_type'  => 'tokenly_promise_meta',
-		), $common_params );
-		$post = wp_insert_post( $store_params );
 		return $post;
 	}
 	
@@ -100,5 +109,14 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		);
 		$update_params = array_merge( $update_params, $params );
 		$post = wp_update_post( $update_params );
+	}
+	
+	/**
+	 * Deletes the existing promise meta post
+	 * @param int $post_id Post index
+	 * @return void 
+	 */
+	public function destroy( int $post_id ) {
+		wp_update_post( $post_id );
 	}
 }

@@ -6,18 +6,22 @@ use Tokenly\Wp\Blocks\ListCardTokenItemBlock;
 use Tokenly\Wp\Blocks\UserInfoBlock;
 use Tokenly\Wp\Views\View;
 use Twig\Environment;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 class UserView extends View {
 	protected $balances = array();
+	protected $user_repository;
 
 	public function __construct(
 		Environment $twig,
 		UserInfoBlock $user_info_block,
-		ListCardTokenItemBlock $list_card_token_item_block
+		ListCardTokenItemBlock $list_card_token_item_block,
+		UserRepositoryInterface $user_repository
 	) {
 		parent::__construct( $twig );
 		$this->list_card_token_item_block = $list_card_token_item_block;
 		$this->user_info_block = $user_info_block;
+		$this->user_repository = $user_repository;
 	}
 
 	public function render( $data ) {
@@ -29,9 +33,12 @@ class UserView extends View {
 				'balances' => $this->balances,
 			)
 		);
+		$user = $this->user_repository->show( array(
+			'id' => get_query_var( 'tokenpass_user_id' ),
+		) );
 		$html_user_info_block = $this->user_info_block->render(
 			array(
-				'user' => wp_get_current_user(),
+				'user' => $user,
 			)
 		);
 		$html = $this->twig->render( 'User.twig', array(

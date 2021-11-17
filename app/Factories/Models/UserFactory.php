@@ -14,7 +14,7 @@ class UserFactory extends Factory implements UserFactoryInterface {
 	 */
 	public function create( $data, $args = array() ) {
 		$user = $this->factory->create( array(
-			'user' => $data['user'] ?? null,
+			'user' => $data,
 		) );
 		return $user;
 	}

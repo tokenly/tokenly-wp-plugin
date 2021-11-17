@@ -13,12 +13,22 @@ class PromiseFactory extends Factory implements PromiseFactoryInterface {
 	 * @return PromiseInterface
 	 */
 	public function create( $data, $args = array() ) {
+		$quantity = $data['quantity'] ?? null;
+		error_log( print_r( $data, true ) );
+		if ( $quantity ) {
+			$precision = $data['precision'] ?? null;
+			if ( $precision ) {
+				$divisor = intval( 1 . str_repeat( 0, $precision ) );
+				$quantity = $quantity / $divisor;
+			}
+		}
 		$promise = $this->factory->create( array(
 			'promise_data' => array(
 				'source'       => $data['source']       ?? null,
 				'destination'  => $data['destination']  ?? null,
 				'asset'        => $data['asset']        ?? null,
-				'quantity'     => $data['quantity']     ?? null,
+				'quantity'     => $quantity,
+				'quantity_sat' => $data['quantity']     ?? null,
 				'fingerprint'  => $data['fingerprint']  ?? null,
 				'txid'         => $data['txid']         ?? null,
 				'created_at'   => $data['created_at']   ?? null,

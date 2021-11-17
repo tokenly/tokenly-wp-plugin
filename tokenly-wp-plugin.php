@@ -27,4 +27,6 @@ require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 use Tokenly\Wp\Bootstrap;
 
-$bootstrap = new Bootstrap();
+add_action( 'init', function() {
+	$bootstrap = new Bootstrap();
+} );

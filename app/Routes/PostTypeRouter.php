@@ -51,7 +51,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 	public function on_post_save( int $post_id, \WP_Post $post, bool $update ) {
 		$post_type = $post->post_type;
 		$post_type_key = str_replace( "{$this->namespace}_", '', $post_type );
-		$params = $_POST['tokenly_data'] ?? null;
+		$params = $_POST['tokenly_data'] ?? array();
 		if ( $params ) {
 			$params = wp_unslash( $params );
 			$params = json_decode( $params, true );
@@ -88,7 +88,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 			$args = $route['post_type']->get_args();
 			$args['rewrite'] = array( 'slug' => $slug );
 			register_post_type( $name, $args );
-			if ( isset( $route['edit_callbakc'] ) ) {
+			if ( isset( $route['edit_callback'] ) ) {
 				add_action( 'edit_form_advanced', $route['edit_callback'] );
 			}
 		}

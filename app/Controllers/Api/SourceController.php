@@ -49,7 +49,7 @@ class SourceController implements SourceControllerInterface {
 				'status' => "Not updated. No address supplied.",
 			);
 		}
-		$source = $this->source_repository->show( $address );
+		$source = $this->source_repository->show( array( 'address' => $address ) );
 		if ( !$source ) {
 			return array(
 				'status' => "Not updated. Source not found.",
@@ -71,7 +71,7 @@ class SourceController implements SourceControllerInterface {
 				'status' => "Not destroyed. No address supplied.",
 			);
 		}
-		$source = $this->source_repository->show( $address );
+		$source = $this->source_repository->show( array( 'address' => $address ) );
 		if ( !$source ) {
 			return array(
 				'status' => "Not destroyed. Address not found.",

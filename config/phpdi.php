@@ -43,6 +43,7 @@ use Tokenly\Wp\Collections\PromiseCollection;
 use Tokenly\Wp\Collections\PromiseMetaCollection;
 use Tokenly\Wp\Collections\SourceCollection;
 use Tokenly\Wp\Collections\TokenMetaCollection;
+use Tokenly\Wp\Collections\UserCollection;
 use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
 use Tokenly\Wp\Models\OauthUser;
@@ -52,6 +53,7 @@ use Tokenly\Wp\Models\Settings;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
 use Tokenly\Wp\Models\User;
+use Tokenly\Wp\Models\GuestUser;
 use Tokenly\Wp\Models\Whitelist;
 use Tokenly\Wp\Models\WhitelistItem;
 use Tokenly\Wp\Factories\Models\AddressFactory;
@@ -69,6 +71,7 @@ use Tokenly\Wp\Factories\Collections\PromiseCollectionFactory;
 use Tokenly\Wp\Factories\Collections\PromiseMetaCollectionFactory;
 use Tokenly\Wp\Factories\Collections\SourceCollectionFactory;
 use Tokenly\Wp\Factories\Collections\TokenMetaCollectionFactory;
+use Tokenly\Wp\Factories\Collections\UserCollectionFactory;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
@@ -120,6 +123,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterfac
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
@@ -127,6 +131,7 @@ use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
@@ -197,6 +202,7 @@ return array(
 	PromiseMetaCollectionInterface::class      => \DI\autowire( PromiseMetaCollection::class ),
 	SourceCollectionInterface::class           => \DI\autowire( SourceCollection::class ),
 	TokenMetaCollectionInterface::class        => \DI\autowire( TokenMetaCollection::class ),
+	UserCollectionInterface::class             => \DI\autowire( UserCollection::class ),
 	//Models
 	AddressInterface::class                    => \DI\autowire( Address::class ),
 	BalanceInterface::class                    => \DI\autowire( Balance::class ),
@@ -213,9 +219,14 @@ return array(
 		UserRepositoryInterface $user_repository
 	) {
 		$user_id = get_current_user_id();
-		$user = $user_repository->show( array(
-			'id' => $user_id,
-		) );
+		if ( $user_id == 0 ) {
+			$user = $container->make( GuestUser::class );
+		} else {
+			$user = $user_repository->show( array(
+				'id' => $user_id,
+			) );
+		}
+
 		return $user;
 	},
 	SettingsInterface::class                   => function ( 
@@ -270,6 +281,8 @@ return array(
 		->constructorParameter( 'class', SourceCollectionInterface::class ),
 	TokenMetaCollectionFactoryConcrete::class    => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', TokenMetaCollectionInterface::class ),
+	UserCollectionFactoryConcrete::class         => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', UserCollectionInterface::class ),
 	//Factories - abstract - models
 	AddressFactoryInterface::class               => \DI\autowire( AddressFactory::class )
 		->constructorParameter( 'factory', Di\get( AddressFactoryConcrete::class ) ),
@@ -297,11 +310,13 @@ return array(
 	PromiseCollectionFactoryInterface::class     => \DI\autowire( PromiseCollectionFactory::class )
 		->constructorParameter( 'factory', Di\get( PromiseCollectionFactoryConcrete::class ) ),
 	PromiseMetaCollectionFactoryInterface::class => \DI\autowire( PromiseMetaCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', Di\get( PromiseMetaCollectionFactoryConcrete::class ) ),
 	SourceCollectionFactoryInterface::class      => \DI\autowire( SourceCollectionFactory::class )
 		->constructorParameter( 'factory', Di\get( SourceCollectionFactoryConcrete::class ) ),
 	TokenMetaCollectionFactoryInterface::class   => \DI\autowire( TokenMetaCollectionFactory::class )
 		->constructorParameter( 'factory', Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
+	UserCollectionFactoryInterface::class        => \DI\autowire( UserCollectionFactory::class )
+		->constructorParameter( 'factory', Di\get( UserCollectionFactoryConcrete::class ) ),
 	//Third-party
 	TokenpassAPI::class => function ( 
 		ContainerInterface $container,
