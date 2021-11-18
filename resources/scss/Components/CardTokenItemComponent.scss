@@ -7,13 +7,39 @@
 	min-height: 150px;
 	display: flex;
 	flex-direction: column;
+	position: relative;
+	overflow: hidden;
+	.overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10;
+		background-color: rgba(0,0,0,0.4);
+		transition: opacity 0.3s;
+		opacity: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		pointer-events: none;
+		div {
+			color: white;
+			font-weight: 500;
+			font-size: 1.125rem;
+		}
+	}
 	.token-image {
 		height: 210px;
-		img {
-			width: 100%;
-			height: 100% !important;
-			object-fit: cover;
-			border-radius: 12px 12px 0 0;
+		position: relative;
+		.image-container {
+			height: 100%;
+			img {
+				width: 100%;
+				height: 100% !important;
+				object-fit: cover;
+				border-radius: 12px 12px 0 0;
+			}
 		}
 	}
 	.token-info {
@@ -42,11 +68,42 @@
 			}
 		}
 	}
+	.extra-container {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: white;
+		z-index: 10;
+		transition: transform 0.3s;
+	}
 
 	@include md {
 
 	}
 	@include lg {
-
+		cursor: pointer;
+		&:hover {
+			.overlay {
+				opacity: 1;
+			}
+			.extra-container {
+				&.shown {
+					transform: translateY(-100%)
+				}
+				
+			}
+		}
+		&.extra-shown {
+			&:hover {
+				.overlay {
+					opacity: 0;
+				}
+			}
+			.extra-container {
+				transform: translateY(-100%);
+			}
+		}
 	}
 }

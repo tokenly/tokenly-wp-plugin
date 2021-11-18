@@ -36,6 +36,7 @@ class TokenMeta implements TokenMetaInterface {
 	public function to_array() {
 		$meta = $this->meta_repository->index( $this->ID, array(
 			'asset',
+			'extra',
 		) );
 		return $meta;
 	}

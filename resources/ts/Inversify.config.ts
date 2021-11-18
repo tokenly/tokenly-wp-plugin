@@ -11,6 +11,7 @@ import { WhitelistRepository } from './Repositories/WhitelistRepository';
 import { TokenMetaRepository } from './Repositories/TokenMetaRepository';
 import { ComponentServiceProvider } from './Providers/ComponentServiceProvider';
 import { ButtonLoginComponent } from './Components/ButtonLoginComponent';
+import { CardTokenItemComponent } from './Components/CardTokenItemComponent';
 import { AdminApiService } from './Services/AdminApiService';
 import { AuthServiceInterface } from './Interfaces/Services/AuthServiceInterface';
 import { AdminApiServiceInterface } from './Interfaces/Services/AdminApiServiceInterface';
@@ -22,6 +23,7 @@ import { UserRepositoryInterface } from './Interfaces/Repositories/UserRepositor
 import { WhitelistRepositoryInterface } from './Interfaces/Repositories/WhitelistRepositoryInterface';
 import { ComponentServiceProviderInterface } from './Interfaces/Providers/ComponentServiceProviderInterface';
 import { ButtonLoginComponentInterface } from './Interfaces/Components/ButtonLoginComponentInterface';
+import { CardTokenItemComponentInterface } from './Interfaces/Components/CardTokenItemComponentInterface';
 
 const container = new Container();
 
@@ -35,8 +37,10 @@ container.bind<UserRepositoryInterface>( TYPES.UserRepositoryInterface ).to( Use
 container.bind<WhitelistRepositoryInterface>( TYPES.WhitelistRepositoryInterface ).to( WhitelistRepository );
 container.bind<ComponentServiceProviderInterface>( TYPES.ComponentServiceProviderInterface ).to( ComponentServiceProvider );
 container.bind<ButtonLoginComponentInterface>( TYPES.ButtonLoginComponentInterface ).to( ButtonLoginComponent );
+container.bind<CardTokenItemComponentInterface>( TYPES.CardTokenItemComponentInterface ).to( CardTokenItemComponent );
 
 container.bind<Component>( 'Component' ).to( ButtonLoginComponent ).whenTargetNamed( 'buttonLoginComponent' );
+container.bind<Component>( 'Component' ).to( CardTokenItemComponent ).whenTargetNamed( 'cardTokenItemComponent' );
 container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
 		.toAutoNamedFactory<Component>( 'Component' );
 		
