@@ -90,9 +90,7 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 			$store_params = array_merge( array(
 				'post_type'  => 'tokenly_promise_meta',
 			), $common_params );
-			error_log(print_r( $store_params, true ));
 			$post = wp_insert_post( $store_params );
-			error_log(print_r( $post, true ));
 		}
 		return $post;
 	}
