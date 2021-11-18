@@ -32,91 +32,138 @@
   position: relative;
   overflow: hidden;
 }
-.component-card-token-item .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.4);
-  transition: opacity 0.3s;
-  opacity: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-}
-.component-card-token-item .overlay div {
-  color: white;
-  font-weight: 500;
-  font-size: 1.125rem;
-}
-.component-card-token-item .token-image {
+.component-card-token-item .image-container {
   height: 210px;
   position: relative;
 }
-.component-card-token-item .token-image .image-container {
+.component-card-token-item .image-container .image {
   height: 100%;
 }
-.component-card-token-item .token-image .image-container img {
+.component-card-token-item .image-container .image img {
   width: 100%;
   height: 100% !important;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 12px 12px 0 0;
 }
-.component-card-token-item .token-info {
+.component-card-token-item .info-container {
   display: flex;
   flex-direction: column;
   padding: 18px;
   flex: 1;
 }
-.component-card-token-item .token-info .token-name {
+.component-card-token-item .info-container .name {
   font-size: 1.125rem;
   word-wrap: break-word;
   font-weight: 700;
   flex: 1;
 }
-.component-card-token-item .token-info .token-description {
+.component-card-token-item .info-container .description {
   font-size: 0.875rem;
   word-wrap: break-word;
   font-weight: 300;
-  height: 40px;
+  height: 50px;
   overflow: hidden;
 }
-.component-card-token-item .token-info .token-balance-container {
+.component-card-token-item .info-container .balance-container {
   margin-top: 12px;
 }
-.component-card-token-item .token-info .token-balance-container .token-balance-label {
+.component-card-token-item .info-container .balance-container .label {
   font-weight: 300;
   font-size: 0.875rem;
 }
+.component-card-token-item .info-container .extra-button-container {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+.component-card-token-item .info-container .extra-button-container .extra-button {
+  color: #635BFF;
+  border: 2px solid #635BFF;
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
 .component-card-token-item .extra-container {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 100%;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: #635BFF;
+  color: white;
   z-index: 10;
   transition: transform 0.3s;
+  padding: 16px 16px 16px 16px;
+}
+.component-card-token-item .extra-container header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.component-card-token-item .extra-container header .title {
+  color: white;
+  font-size: 1.75rem;
+  font-weight: 300;
+}
+.component-card-token-item .extra-container header .close-button {
+  position: relative;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.component-card-token-item .extra-container header .close-button div {
+  width: 3px;
+  height: 36px;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.component-card-token-item .extra-container header .close-button div:nth-child(1) {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.component-card-token-item .extra-container header .close-button div:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(315deg);
+}
+.component-card-token-item .extra-container .name {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  word-wrap: break-word;
+}
+.component-card-token-item .extra-container .attributes-container {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+.component-card-token-item .extra-container .attributes-container table, .component-card-token-item .extra-container .attributes-container th, .component-card-token-item .extra-container .attributes-container td {
+  border: 1px solid white;
+}
+.component-card-token-item .extra-container .attributes-container table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.component-card-token-item.extra-shown .extra-container {
+  transform: translateY(-100%);
 }
 @media (min-width: 1280px) {
-  .component-card-token-item {
-    cursor: pointer;
+  .component-card-token-item .info-container .extra-button-container .extra-button {
+    transition-property: background-color, color;
+    transition-duration: 0.2s;
   }
-  .component-card-token-item:hover .overlay {
-    opacity: 1;
+  .component-card-token-item .info-container .extra-button-container .extra-button:hover {
+    background-color: #635BFF;
+    color: white;
   }
-  .component-card-token-item:hover .extra-container.shown {
-    transform: translateY(-100%);
+  .component-card-token-item .extra-container .close-button:hover {
+    background-color: white;
   }
-  .component-card-token-item.extra-shown:hover .overlay {
-    opacity: 0;
-  }
-  .component-card-token-item.extra-shown .extra-container {
-    transform: translateY(-100%);
+  .component-card-token-item .extra-container .close-button:hover div {
+    background-color: #635BFF;
   }
 }
 

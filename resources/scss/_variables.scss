@@ -9,6 +9,8 @@ $screen-lg-min: 1280px;
 // Large tablets and desktops
 $screen-xl-min: 1800px;
 
+$color-primary: #635BFF;
+
 // Small devices
 @mixin sm {
    @media (min-width: #{$screen-sm-min}) {

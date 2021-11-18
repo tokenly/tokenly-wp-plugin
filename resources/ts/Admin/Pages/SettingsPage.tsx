@@ -71,12 +71,12 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	render() {
 		return (
 			<Page title={'Tokenpass Settings'}>
-				<Panel header="How to Setup">
+				<Panel header="Integration settings">
 					<PanelBody>
 						<PanelRow>
 							<ul className="tk_steps">
 								<li>1. Add a new application on <a href="https://tokenpass.tokenly.com/auth/apps" target="_blank">Tokenpass Developers</a></li>
-								<li>2. Use the details bellow to add the app.</li>
+								<li>2. Enter the app credentials below.</li>
 							</ul>
 						</PanelRow>
 						<PanelRow>

@@ -25,15 +25,17 @@ class CardTokenItemComponent extends Component {
 		$name = $balance->name;
 		$asset = $balance->asset;
 		$amount = $balance->balance;
-		$description = '';
+		$description = 'No description.';
 		$image = '';
 		$extra = array();
 		if ( isset( $balance->meta ) ) {
-			error_log( 123 );
 			$post_id = $balance->meta->ID;
 			$name = get_the_title( $post_id );
 			$image = get_the_post_thumbnail( $post_id, 'full' );
-			$description = get_the_excerpt( $post_id );
+			$excerpt = get_the_excerpt( $post_id );
+			if ( !empty( $description ) ) {
+				$description = $excerpt;
+			}
 			$additional_meta = $this->meta_repository->index( $post_id, array(
 				'asset',
 				'extra',

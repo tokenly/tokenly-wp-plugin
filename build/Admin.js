@@ -6509,14 +6509,14 @@ class SettingsPage extends react_1.Component {
     render() {
         var _a, _b;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
-            React.createElement(components_1.Panel, { header: "How to Setup" },
+            React.createElement(components_1.Panel, { header: "Integration settings" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("ul", { className: "tk_steps" },
                             React.createElement("li", null,
                                 "1. Add a new application on ",
                                 React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers")),
-                            React.createElement("li", null, "2. Use the details bellow to add the app."))),
+                            React.createElement("li", null, "2. Enter the app credentials below."))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", { className: "tk_app_details" },
                             React.createElement("h3", null, "Register Client Application"),
@@ -7195,8 +7195,13 @@ let CardTokenItemComponent = class CardTokenItemComponent extends Component_1.Co
         super();
     }
     register(selector) {
-        this.element.addEventListener('click', () => {
+        const extraButton = this.element.querySelector('.extra-button');
+        extraButton.addEventListener('click', () => {
             this.element.classList.add('extra-shown');
+        });
+        const closeButton = this.element.querySelector('.close-button');
+        closeButton.addEventListener('click', () => {
+            this.element.classList.remove('extra-shown');
         });
     }
 };
