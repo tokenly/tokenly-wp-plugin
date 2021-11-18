@@ -1,0 +1,40 @@
+{
+  "name": "tokenly-wp-plugin",
+  "version": "0.2.0",
+  "main": "index.js",
+  "author": "Tokenly",
+  "scripts": {
+    "build": "wp-scripts build resources/ts/Frontend resources/ts/Admin",
+    "start": "wp-scripts start resources/ts/Frontend resources/ts/Admin",
+    "test:unit": "wp-scripts test-unit-js"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^18.1.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4"
+  },
+  "description": "Tokenpass WordPress integration",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/encore-by-dev/tokenly-wp-plugin.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/encore-by-dev/tokenly-wp-plugin/issues"
+  },
+  "homepage": "https://github.com/encore-by-dev/tokenly-wp-plugin#readme",
+  "dependencies": {
+    "@types/react": "^17.0.31",
+    "@types/wordpress__components": "^14.0.4",
+    "@wordpress/components": "^19.0.0",
+    "@wordpress/data": "^6.1.2",
+    "dayjs": "^1.10.7",
+    "inversify": "^6.0.1",
+    "inversify-react": "^1.0.0",
+    "reflect-metadata": "^0.1.13"
+  }
+}

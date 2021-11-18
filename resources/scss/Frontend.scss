@@ -1,0 +1,48 @@
+@use '/resources/scss/variables' as *;
+@use '/resources/scss/Components/CardTokenItemComponent.scss' as *;
+@use '/resources/scss/Blocks/ListCardTokenItemBlock.scss' as *;
+
+.tokenly-block {
+	& * {
+		box-sizing: border-box;
+	}
+	.row {
+		width: 100%;
+		max-width: 1920px;
+		padding: 0 10%;
+		margin: auto;
+		@include xl {
+			padding: 0 14%;
+		}
+	}
+}
+
+.tokenly-component.spacer {
+	&.sm {
+		margin: 12px;
+	}
+	&.md {
+		margin: 24px;
+	}
+	&.lg {
+		margin: 48px;
+	}
+	&.xl {
+		margin: 64px;
+	}
+	@include lg {
+		&.sm {
+			margin: 16px;
+		}
+		&.md {
+			margin: 32px;
+		}
+		&.lg {
+			margin: 64px;
+		}
+		&.xl {
+			margin: 86px;
+		}	
+	}
+}
+

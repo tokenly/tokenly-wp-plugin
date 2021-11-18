@@ -1,0 +1,25 @@
+@use '/resources/scss/Pages/DashboardPage.scss' as *;
+@use '/resources/scss/Pages/SettingsPage.scss' as *;
+@use '/resources/scss/Pages/WhitelistPage.scss' as *;
+
+body.login {
+	.tokenpass-login-container {
+		display: flex;
+		justify-content: center;
+		margin-top: 24px;
+	}
+}
+
+.tokenpass-admin-page {
+	.save-button-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start !important;
+		align-items: center !important;
+	}
+}
+
+.components-form-token-field__suggestions-list li {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
