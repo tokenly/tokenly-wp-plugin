@@ -5926,6 +5926,40 @@ exports.SourceStoreForm = SourceStoreForm;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/StatusIndicator.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Components/StatusIndicator.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.StatusIndicator = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class StatusIndicator extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var _a, _b;
+        return (React.createElement(components_1.Flex, { justify: "flex-start", align: "baseline", gap: 0, style: { marginBottom: '8px' } },
+            React.createElement("span", null, "Status: "),
+            React.createElement("span", { style: { marginLeft: '5px' } },
+                React.createElement("strong", null, ((_a = this.props) === null || _a === void 0 ? void 0 : _a.status) ? 'Connected' : 'Not connected')),
+            React.createElement("span", { className: "tokenpass status-indicator", style: {
+                    marginLeft: '10px',
+                    backgroundColor: ((_b = this.props) === null || _b === void 0 ? void 0 : _b.status) ? 'rgb(135 211 82)' : '#d84315',
+                } })));
+    }
+}
+exports.StatusIndicator = StatusIndicator;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/UserSearchField.tsx":
 /*!***********************************************************!*\
   !*** ./resources/ts/Admin/Components/UserSearchField.tsx ***!
@@ -6100,6 +6134,7 @@ const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_mod
 const React = __webpack_require__(/*! react */ "react");
 const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
 const react_1 = __webpack_require__(/*! react */ "react");
+const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class ConnectionPage extends react_1.Component {
@@ -6116,21 +6151,18 @@ class ConnectionPage extends react_1.Component {
         return status;
     }
     render() {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return (React.createElement(Page_1.default, { title: 'Connection' },
             React.createElement(components_1.Panel, { header: "Connection Status" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", null,
-                            React.createElement("div", null,
-                                React.createElement("span", null, "Status: "),
-                                React.createElement("span", null,
-                                    React.createElement("strong", { style: { color: this.props.pageData.status ? 'green' : 'grey' } }, this.getStatusText()))),
+                            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.status }),
                             this.props.pageData.status == true &&
                                 React.createElement("div", null,
                                     React.createElement("span", null, "Connected as: "),
                                     React.createElement("span", null,
-                                        React.createElement("strong", null, `${(_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.name} (${(_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.username})`))))),
+                                        React.createElement("strong", null, `${(_c = (_b = this.props.pageData) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.name} (${(_e = (_d = this.props.pageData) === null || _d === void 0 ? void 0 : _d.user) === null || _e === void 0 ? void 0 : _e.username})`))))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: 'flex-start' },
                             React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, onClick: () => {
@@ -6167,72 +6199,90 @@ class DashboardPage extends react_1.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cards: [
-                {
+            cards: {
+                dashboard: {
                     title: 'Main Dashboard',
                     description: 'Tokenpass main dashboard (external).',
                     icon: 'dashboard',
                     url: 'https://tokenpass.tokenly.com/dashboard',
-                    admin: false,
                 },
-                {
+                inventory: {
                     title: 'Inventory',
                     description: 'View the list of currently owned token assets.',
                     icon: 'money',
                     url: '/tokenpass-user/me',
-                    admin: false,
                 },
-                {
+                connection: {
                     title: 'Connection',
                     description: 'Connect or disconnect to Tokenpass network.',
                     icon: 'admin-plugins',
                     url: '/wp-admin/admin.php?page=tokenpass-connection',
-                    admin: false,
                 },
-                {
+                vendor: {
                     title: 'Vendor',
                     description: 'Manage token promises.',
                     icon: 'share',
                     url: '/wp-admin/admin.php?page=tokenpass-vendor',
-                    admin: true,
                 },
-                {
+                whitelist: {
                     title: 'Whitelist',
                     description: 'Configure a filter for tokens displayed on the inventory pages.',
                     icon: 'forms',
                     url: '/wp-admin/admin.php?page=tokenpass-whitelist',
-                    admin: true,
                 },
-                {
+                meta: {
                     title: 'Token Meta',
                     description: 'Manage additional information for tokens, displayed on the Inventory page.',
                     icon: 'media-default',
-                    url: '/wp-admin/edit.php?post_type=token-meta',
-                    admin: true,
+                    url: '/wp-admin/edit.php?post_type=tokenly_token_meta',
                 },
-                {
+                settings: {
                     title: 'Settings',
                     description: 'Manage plugin settings.',
                     icon: 'admin-settings',
                     url: '/wp-admin/admin.php?page=tokenpass-settings',
-                    admin: true,
                 },
+            },
+            offlineRoutesUser: [
+                'connection'
+            ],
+            offlineRoutesIntegration: [
+                'settings',
+            ],
+            adminRoutes: [
+                'vendor',
+                'meta',
+                'settings',
+                'whitelist',
             ],
         };
         this.canView = this.canView.bind(this);
     }
-    canView(cardItem) {
-        if (this.props.pageData.is_admin === true || cardItem.admin === false) {
-            return true;
+    canView(key) {
+        var _a, _b, _c, _d;
+        let canView = false;
+        if ((_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_can_connect) !== null && _b !== void 0 ? _b : false) {
+            if ((_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.user_can_connect) !== null && _d !== void 0 ? _d : false) {
+                canView = true;
+            }
+            else if (this.state.offlineRoutesUser.includes(key)) {
+                canView = true;
+            }
         }
-        else {
-            false;
+        if (this.state.offlineRoutesIntegration.includes(key)) {
+            canView = true;
         }
+        if (this.state.adminRoutes.includes(key) && this.props.pageData.is_admin === false) {
+            canView = false;
+        }
+        return canView;
     }
     render() {
-        const cards = this.state.cards.map((cardItem, i) => {
-            if (this.canView(cardItem) === true) {
-                return (React.createElement(components_1.Card, null,
+        let cards = [];
+        Object.keys(this.state.cards).map((key, index) => {
+            const cardItem = this.state.cards[key];
+            if (this.canView(key)) {
+                cards.push(React.createElement(components_1.Card, null,
                     React.createElement(components_1.CardHeader, { style: { display: 'flex', justifyContent: 'flex-start', } },
                         React.createElement(components_1.Dashicon, { icon: cardItem.icon }),
                         React.createElement("h3", null, cardItem.title)),
@@ -6473,81 +6523,82 @@ const React = __webpack_require__(/*! react */ "react");
 const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
 const react_1 = __webpack_require__(/*! react */ "react");
 const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resources/ts/Admin/Components/SavePanel.tsx");
+const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {
     constructor(props) {
         super(props);
         this.state = {
-            settingsData: {
+            integrationSettings: {
                 client_id: '',
                 client_secret: '',
             },
             saving: false,
         };
         this.onSave = this.onSave.bind(this);
-        this.state.settingsData = Object.assign(this.state.settingsData, this.props.pageData.settings_data);
+        this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);
-        state.settingsData.client_id = value;
+        state.integrationSettings.client_id = value;
         this.setState(state);
     }
     setClientSecret(value) {
         let state = Object.assign({}, this.state);
-        state.settingsData.client_secret = value;
+        state.integrationSettings.client_secret = value;
         this.setState(state);
     }
     onSave() {
         this.setState({ saving: true });
-        this.settingsRepository.update(this.state.settingsData).then(result => {
+        this.settingsRepository.update(this.state.integrationSettings).then(result => {
             this.setState({ saving: false });
+            window.location.reload();
         }).catch(error => {
             console.log(error);
         });
     }
     render() {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
             React.createElement(components_1.Panel, { header: "Integration settings" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("ul", { className: "tk_steps" },
                             React.createElement("li", null,
-                                "1. Add a new application on ",
-                                React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers")),
-                            React.createElement("li", null, "2. Enter the app credentials below."))),
+                                React.createElement("span", null, "1. Add a new application on "),
+                                React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
+                                "."),
+                            React.createElement("li", null, "2. Enter the received app credentials below."),
+                            React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features."))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement("div", { className: "tk_app_details" },
                             React.createElement("h3", null, "Register Client Application"),
                             React.createElement("span", null,
-                                " ",
-                                React.createElement("b", null, "CLIENT NAME: "),
-                                " Random Input "),
+                                React.createElement("span", null,
+                                    React.createElement("b", null, "CLIENT NAME: ")),
+                                React.createElement("span", null, "Random Input")),
                             React.createElement("br", null),
                             React.createElement("span", null,
-                                " ",
-                                React.createElement("b", null, "APP HOMEPAGE URL: "),
-                                " ",
-                                React.createElement("a", { href: this.props.pageData.app_homepage_url, target: "_blank" }, this.props.pageData.app_homepage_url),
-                                " "),
+                                React.createElement("span", null,
+                                    React.createElement("b", null, "APP HOMEPAGE URL: ")),
+                                React.createElement("a", { href: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, target: "_blank" }, (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.app_homepage_url)),
                             React.createElement("br", null),
                             React.createElement("span", null,
-                                " ",
-                                React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: "),
-                                " ",
-                                React.createElement("a", { href: this.props.pageData.client_auth_url, target: "_blank" }, this.props.pageData.client_auth_url),
-                                " "))),
+                                React.createElement("span", null,
+                                    React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
+                                React.createElement("a", { href: (_f = (_e = this.props.pageData) === null || _e === void 0 ? void 0 : _e.integration_data) === null || _f === void 0 ? void 0 : _f.client_auth_url, target: "_blank" }, (_h = (_g = this.props.pageData) === null || _g === void 0 ? void 0 : _g.integration_data) === null || _h === void 0 ? void 0 : _h.client_auth_url)))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex
                         //@ts-ignore
                         , { 
                             //@ts-ignore
                             direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
-                            React.createElement(components_1.TextControl, { label: "Client ID", value: (_a = this.state.settingsData.client_id) !== null && _a !== void 0 ? _a : '', onChange: (value) => {
+                            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_l = (_k = (_j = this.props.pageData) === null || _j === void 0 ? void 0 : _j.integration_data) === null || _k === void 0 ? void 0 : _k.status) !== null && _l !== void 0 ? _l : false }),
+                            React.createElement(components_1.TextControl, { label: "Client ID", value: (_m = this.state.integrationSettings.client_id) !== null && _m !== void 0 ? _m : '', onChange: (value) => {
                                     this.setClientId(value);
                                 } }),
-                            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_b = this.state.settingsData.client_secret) !== null && _b !== void 0 ? _b : '', onChange: (value) => {
+                            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_o = this.state.integrationSettings.client_secret) !== null && _o !== void 0 ? _o : '', onChange: (value) => {
                                     this.setClientSecret(value);
                                 } }))))),
             React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));

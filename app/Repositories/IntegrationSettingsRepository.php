@@ -3,12 +3,12 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\IntegrationSettingsRepositoryInterface;
 
 /**
- * Manages plugin settings
+ * Manages integration settings
  */
-class SettingsRepository implements SettingsRepositoryInterface {
+class IntegrationSettingsRepository implements IntegrationSettingsRepositoryInterface {
 	protected $option_repository;
 
 	public function __construct(

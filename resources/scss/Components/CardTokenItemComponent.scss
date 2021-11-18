@@ -147,6 +147,10 @@
 		}
 		.extra-container {
 			.close-button {
+				transition: background-color 0.2s;
+				div {
+					transition: background-color 0.2s;
+				}
 				&:hover {
 					background-color: white;
 					div {

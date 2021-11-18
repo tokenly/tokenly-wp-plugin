@@ -7,6 +7,8 @@ use Tokenly\Wp\PostTypes\TokenMetaPostType;
 use Tokenly\Wp\PostTypes\PromiseMetaPostType;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Manages routing for the post type views
@@ -14,14 +16,21 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 class PostTypeRouter implements PostTypeRouterInterface {
 	protected $routes;
 	protected $namespace;
-
+	protected $integration;
+	protected $post_types;
+	protected $current_user;
+	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
 		PromiseMetaPostType $promise_meta_post_type,
 		TokenMetaControllerInterface $token_meta_controller,
 		TokenMetaRepositoryInterface $token_meta_repository,
-		$namespace
+		IntegrationInterface $integration,
+		CurrentUserInterface $current_user,
+		string $namespace
 	) {
+		$this->integration = $integration;
+		$this->current_user = $current_user;
 		$this->namespace = $namespace;
 		$this->post_types = array(
 			'token_meta' => array(
@@ -60,6 +69,14 @@ class PostTypeRouter implements PostTypeRouterInterface {
 			call_user_func( $this->routes[ $post_type_key ]['save_callback'], $post_id, $params );
 		}
 	}
+	
+	protected function can_register( string $key ) {
+		if ( $this->integration->can_connect() && $this->current_user->can_connect() ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	protected function get_routes() {
 		$routes = array(
@@ -80,16 +97,18 @@ class PostTypeRouter implements PostTypeRouterInterface {
 	}
 	
 	protected function register_routes() {
-		foreach ( $this->routes as $route ) {
+		foreach ( $this->routes as $key => $route ) {
 			$name = $route['name'];
 			$name = "{$this->namespace}_{$name}";
 			$slug = $route['slug'];
 			$slug = "{$this->namespace}-{$slug}";
 			$args = $route['post_type']->get_args();
 			$args['rewrite'] = array( 'slug' => $slug );
-			register_post_type( $name, $args );
-			if ( isset( $route['edit_callback'] ) ) {
-				add_action( 'edit_form_advanced', $route['edit_callback'] );
+			if ( $this->can_register( $key ) ) {
+				register_post_type( $name, $args );
+				if ( isset( $route['edit_callback'] ) ) {
+					add_action( 'edit_form_advanced', $route['edit_callback'] );
+				}
 			}
 		}
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );

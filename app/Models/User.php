@@ -82,7 +82,7 @@ class User implements UserInterface, CurrentUserInterface {
 	 * Checks if the user is currently connected to Tokenpass
 	 * @return bool
 	 */
-	public function is_connected() {
+	public function can_connect() {
 		$oauth_user = $this->get_oauth_user();
 		if ( $oauth_user ) {
 			return true;

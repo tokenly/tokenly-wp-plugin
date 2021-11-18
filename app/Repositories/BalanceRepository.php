@@ -14,6 +14,7 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 class BalanceRepository implements BalanceRepositoryInterface {
 	protected $client;
 	protected $balance_collection_factory;
+	protected $balances_cache = array();
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -33,7 +34,12 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	 * @return BalanceCollectionFactoryInterface $balances
 	 */
 	public function index( $oauth_token, array $params = array() ) {
-		$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+		if ( isset( $this->balances_cache[ $oauth_token ] ) ) {
+			$balances = $this->balances_cache[ $oauth_token ];
+		} else {
+			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+			$this->balances_cache[ $oauth_token ] = $balances;
+		}
 		$balances = $this->balance_collection_factory->create( $balances, array(
 			'use_whitelist' => $params['use_whitelist'] ?? null,
 		) );

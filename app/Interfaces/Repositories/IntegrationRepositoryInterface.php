@@ -2,7 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Repositories;
 
-interface SettingsRepositoryInterface {
+interface IntegrationRepositoryInterface {
 	public function show();
-	public function update( $settings );
 }

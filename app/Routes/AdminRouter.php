@@ -11,13 +11,18 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Manages routing for the WordPress admin pages
  */
 class AdminRouter implements AdminRouterInterface {
-	protected $routes;
+	protected $routes = array();
 	protected $redirects = array();
+	protected $controllers = array();
+	protected $auth_service;
+	protected $integration;
 
 	public function __construct(
 		AuthServiceInterface $auth_service,
@@ -27,9 +32,13 @@ class AdminRouter implements AdminRouterInterface {
 		ConnectionControllerInterface $connection_controller,
 		SettingsControllerInterface $settings_controller,
 		PromiseControllerInterface $promise_controller,
-		SourceControllerInterface $source_controller
+		SourceControllerInterface $source_controller,
+		IntegrationInterface $integration,
+		CurrentUserInterface $current_user
 	) {
-		$this->auth_service =$auth_service;
+		$this->integration = $integration;
+		$this->current_user = $current_user;
+		$this->auth_service = $auth_service;
 		$this->controllers = array(
 			'dashboard'  => $dashboard_controller,
 			'vendor'     => $vendor_controller,
@@ -45,6 +54,7 @@ class AdminRouter implements AdminRouterInterface {
 	 * Hooks the router to WordPress
 	 */
 	public function register() {
+		$this->integration->can_connect();
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ), 9 );
 		add_action( 'admin_print_scripts', array( $this, 'add_redirects' ) );
@@ -55,8 +65,8 @@ class AdminRouter implements AdminRouterInterface {
 	 * @return void
 	 */
 	public function register_routes() {
-		foreach ( $this->routes as $route ) {
-			$this->register_route( $route );
+		foreach ( $this->routes as $key => $route ) {
+			$this->register_route( $key, $route );
 		}
 	}
 
@@ -80,6 +90,46 @@ class AdminRouter implements AdminRouterInterface {
 				];
 			</script>
 		"; 
+	}
+	
+	/**
+	 * Specifies the routes which are accessible even if
+	 * the integration is unable to connect
+	 * @return string[]
+	 */
+	protected function get_offline_routes_integration() {
+		return array(
+			'tokenpass',
+			'settings',
+		);
+	}
+	
+	/**
+	 * Specifies the routes which are accessible even if
+	 * the user is unable to connect
+	 * @return string[]
+	 */
+	protected function get_offline_routes_user() {
+		return array(
+			'connection',
+		);
+	}
+	
+	protected function can_register( string $route ) {
+		if ( $this->current_user->is_guest() === true ) {
+			return false;
+		}
+		if ( $this->integration->can_connect() ) {
+			if ( $this->current_user->can_connect() ) {
+				return true;
+			} else if ( in_array( $route, $this->get_offline_routes_user() ) ) {
+				return true;
+			}
+		}
+		if ( in_array( $route, $this->get_offline_routes_integration() ) ) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -267,23 +317,25 @@ class AdminRouter implements AdminRouterInterface {
 	 * @param array $route Route data
 	 * @return void
 	 */
-	protected function register_route( $route ) {
+	protected function register_route( string $key, array $route ) {
 		$args = $route['args'] ?? null;
 		if ( $args ) {
-			add_menu_page(
-				$args['page_title'] ?? null,
-				$args['menu_title'] ?? null,
-				$args['capability'] ?? null,
-				$args['menu_slug'] ?? null,
-				$args['callable'] ?? null,
-				$args['icon_url'] ?? null,
-				$args['position'] ?? null,
-			);
+			if ( $this->can_register( $key ) === true ) {
+				add_menu_page(
+					$args['page_title'] ?? null,
+					$args['menu_title'] ?? null,
+					$args['capability'] ?? null,
+					$args['menu_slug'] ?? null,
+					$args['callable'] ?? null,
+					$args['icon_url'] ?? null,
+					$args['position'] ?? null,
+				);
+			}
 		}
 		$subroutes = $route['subroutes'] ?? null;
 		if ( $subroutes ) {
-			foreach ( $subroutes as $subroute ) {
-				$this->register_subroute( $subroute, $args );
+			foreach ( $subroutes as $key => $subroute ) {
+				$this->register_subroute( $key, $subroute, $args );
 			}
 		}
 	}
@@ -294,22 +346,24 @@ class AdminRouter implements AdminRouterInterface {
 	 * @param array $args Parent route data
 	 * @return void
 	 */
-	protected function register_subroute( $subroute, $args ) {
+	protected function register_subroute( string $key, array $subroute, array $args ) {
 		$subroute_args = $subroute['args'] ?? null;
 		if ( $subroute_args ) {
 			if ( array_key_exists( 'parent_slug', $subroute_args ) === false ) {
 				$subroute_args['parent_slug'] = $args['menu_slug'] ?? null;
 			}
-			add_submenu_page(
-				$subroute_args['parent_slug'] ?? null,
-				$subroute_args['page_title'] ?? null,
-				$subroute_args['menu_title'] ?? null,
-				$subroute_args['capability'] ?? null,
-				$subroute_args['menu_slug'] ?? null,
-				$subroute_args['callable'] ?? null,
-				$subroute_args['icon_url'] ?? null,
-				$subroute_args['position'] ?? null,
-			);
+			if ( $this->can_register( $key ) === true ) {
+				add_submenu_page(
+					$subroute_args['parent_slug'] ?? null,
+					$subroute_args['page_title'] ?? null,
+					$subroute_args['menu_title'] ?? null,
+					$subroute_args['capability'] ?? null,
+					$subroute_args['menu_slug'] ?? null,
+					$subroute_args['callable'] ?? null,
+					$subroute_args['icon_url'] ?? null,
+					$subroute_args['position'] ?? null,
+				);
+			}
 		}
 	}
 }

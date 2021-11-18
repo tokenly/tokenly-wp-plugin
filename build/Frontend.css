@@ -159,6 +159,12 @@
     background-color: #635BFF;
     color: white;
   }
+  .component-card-token-item .extra-container .close-button {
+    transition: background-color 0.2s;
+  }
+  .component-card-token-item .extra-container .close-button div {
+    transition: background-color 0.2s;
+  }
   .component-card-token-item .extra-container .close-button:hover {
     background-color: white;
   }

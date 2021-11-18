@@ -9,9 +9,8 @@ class SettingsView extends View {
 		$html = $this->twig->render( 'Admin.twig', array(
 			'view'  => 'settings',
 			'props' => array( 
-				'app_homepage_url' => $data['app_homepage_url'] ?? null,
-				'client_auth_url'  => $data['client_auth_url'] ?? null,
-				'settings_data'    => $data['settings_data'] ?? null,
+				'integration_data'     => $data['integration_data'] ?? array(),
+				'integration_settings' => $data['integration_settings'] ?? array(),
 			),
 		) );
 		return $html;

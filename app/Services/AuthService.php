@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
-use Tokenly\Wp\Interfaces\Models\SettingsInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 
@@ -26,7 +26,7 @@ class AuthService implements AuthServiceInterface {
 		TokenpassAPIInterface $client,
 		OauthUserFactoryInterface $oauth_user_factory,
 		UserRepositoryInterface $user_repository,
-		SettingsInterface $settings,
+		IntegrationSettingsInterface $settings,
 		CurrentUserInterface $current_user,
 		ButtonLoginComponent $button_login_component
 	) {

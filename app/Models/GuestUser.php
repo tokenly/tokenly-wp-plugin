@@ -12,4 +12,8 @@ class GuestUser implements CurrentUserInterface {
 	public function is_guest() {
 		return true;
 	}
+	
+	public function can_connect() {
+		return false;
+	}
 }
