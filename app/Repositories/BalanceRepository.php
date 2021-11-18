@@ -38,6 +38,9 @@ class BalanceRepository implements BalanceRepositoryInterface {
 			$balances = $this->balances_cache[ $oauth_token ];
 		} else {
 			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+			if ( !is_array( $balances ) ) {
+				$balances = array();
+			}
 			$this->balances_cache[ $oauth_token ] = $balances;
 		}
 		$balances = $this->balance_collection_factory->create( $balances, array(
