@@ -6726,7 +6726,7 @@ class PromiseShowPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `` }, "Manage promise")))))));
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${this.props.pageData.promise.promise_id}` }, "Manage promise")))))));
     }
 }
 exports["default"] = PromiseShowPage;

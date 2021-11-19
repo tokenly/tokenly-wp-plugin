@@ -73,7 +73,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 								<Button
 									isSecondary
 									isLarge
-									href={ `` }
+									href={ `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${ this.props.pageData.promise.promise_id }` }
 								>
 									Manage promise
 								</Button>
