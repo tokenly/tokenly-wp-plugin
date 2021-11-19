@@ -24,6 +24,7 @@ use Tokenly\Wp\Routes\PostTypeRouter;
 use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
+use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
 use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
 use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
 use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
@@ -98,6 +99,7 @@ use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
@@ -160,6 +162,7 @@ return array(
 	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class ),
 	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class ),
 	//Controllers
+	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
 	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
 	UserControllerInterface::class                 => \DI\autowire( UserController::class ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),

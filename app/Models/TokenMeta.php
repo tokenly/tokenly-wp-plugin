@@ -38,6 +38,8 @@ class TokenMeta implements TokenMetaInterface {
 			'asset',
 			'extra',
 		) );
+		$meta['name'] = $this->post_title;
+		$meta['description'] = $this->post_excerpt;
 		return $meta;
 	}
 }

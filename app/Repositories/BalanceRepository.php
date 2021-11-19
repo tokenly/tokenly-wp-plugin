@@ -82,18 +82,17 @@ class BalanceRepository implements BalanceRepositoryInterface {
 			$asset = $meta_item->tokenly_asset;
 			$meta_keyed[ $asset ] = $meta_item;
 		}
-		$balances = array_map( function( $balance ) use ( $meta_keyed ) {
+		foreach ( (array) $balances as &$balance ) {
 			$asset = $balance->asset;
 			if ( !$asset ) {
-				return $balance;
+				continue;
 			}
-			$meta = $meta_keyed[ $balance->asset ] ?? null;
+			$meta = $meta_keyed[ $asset ] ?? null;
 			if ( !$meta ) {
-				return $balance;
+				continue;
 			}
 			$balance->meta = $meta;
-			return $balance;
-		}, ( array ) $balances );
+		}
 		return $balances;
 	}
 }

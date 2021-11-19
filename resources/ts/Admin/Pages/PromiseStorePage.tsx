@@ -12,6 +12,7 @@ declare const window: any;
 import { 
 	Button,
 	Panel,
+	PanelHeader,
 	PanelBody,
 	PanelRow,
 	Modal,

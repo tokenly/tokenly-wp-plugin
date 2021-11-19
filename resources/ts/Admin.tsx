@@ -6,8 +6,10 @@ import App from './App';
 import AppLayout from './Layouts/AppLayout';
 import SettingsPage from './Admin/Pages/SettingsPage';
 import VendorPage from './Admin/Pages/VendorPage';
+import BalancesShowPage from './Admin/Pages/BalancesShowPage';
 import ConnectionPage from './Admin/Pages/ConnectionPage';
 import WhitelistPage from './Admin/Pages/WhitelistPage';
+import PromiseShowPage from './Admin/Pages/PromiseShowPage';
 import PromiseStorePage from './Admin/Pages/PromiseStorePage';
 import PromiseEditPage from './Admin/Pages/PromiseEditPage';
 import SourceIndexPage from './Admin/Pages/SourceIndexPage';
@@ -38,18 +40,23 @@ class AdminApp extends App {
 			this.view = window.tokenpassView;
 			this.pageData = window.tokenpassProps;
 			const views = this.getViews();
-			const ViewComponent = views[ this.view ];
-			this.render( ViewComponent );
+			const ViewComponent = views[ this.view ] ?? null;
+			if ( ViewComponent ) {
+				this.highlightMenu();
+				this.render( ViewComponent );
+			}
 		}
 		this.registerRedirects();
 	}
 	
 	getViews() {
 		return {
+			'balances-show'   : BalancesShowPage,
 			'settings'        : SettingsPage,
 			'connection'      : ConnectionPage,
 			'vendor'          : VendorPage,
 			'whitelist'       : WhitelistPage,
+			'promise-show'    : PromiseShowPage,
 			'promise-store'   : PromiseStorePage,
 			'promise-edit'    : PromiseEditPage,
 			'source-index'    : SourceIndexPage,
@@ -89,7 +96,12 @@ class AdminApp extends App {
 				} );
 			}
 		})
-
+	}
+	
+	highlightMenu() {
+		const adminMenu = document.querySelector( '#adminmenu #toplevel_page_tokenpass' );
+		adminMenu.classList.remove( 'wp-not-current-submenu' );
+		adminMenu.classList.add( 'wp-has-current-submenu', 'wp-menu-open' );
 	}
 }
 

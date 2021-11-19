@@ -15,6 +15,7 @@ interface SourceStoreFormProps {
 	saving: boolean;
 	onSubmit: any;
 	onCancel: any;
+	onChange: any;
 	style: any;
 	addresses: Array<any>,
 }
@@ -104,6 +105,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 						help=" Blockchain wallet address"
 						onChange={ ( value: any ) => {
 							this.setState( { address: value } );
+							this.props.onChange( this.props.addresses[value] );
 						} }
 					/>
 					{ this.state.address != null &&
@@ -112,7 +114,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 								<div>Address info:</div>
 								<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
 								<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
-								{/* <div><strong>Assets: </strong><span>{ this.getCurrentAddressAssets() }</span></div> */}
+								<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenpass-balances-show&address=${ this.getCurrentAddress() }` } >View balances</a></div>
 							</div>
 							<TextareaControl
 								label="Whitelisted assets"

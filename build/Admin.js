@@ -5165,6 +5165,80 @@ exports.AttributeRepeater = AttributeRepeater;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/BalanceCard.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/ts/Admin/Components/BalanceCard.tsx ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BalanceCard = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class BalanceCard extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.getName = this.getName.bind(this);
+    }
+    getName() {
+        var _a, _b;
+        let name = this.props.balance.asset;
+        if ((_b = (_a = this.props.balance) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.name) {
+            name = this.props.balance.meta.name;
+        }
+        return name;
+    }
+    render() {
+        var _a, _b, _c;
+        return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+            React.createElement(components_1.CardHeader, null,
+                React.createElement("strong", null, this.getName())),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_c = (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.balance) !== null && _c !== void 0 ? _c : 0)));
+    }
+}
+exports.BalanceCard = BalanceCard;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/BalanceList.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/ts/Admin/Components/BalanceList.tsx ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BalanceList = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const BalanceCard_1 = __webpack_require__(/*! ./BalanceCard */ "./resources/ts/Admin/Components/BalanceCard.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class BalanceList extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let listItems = Object.keys(this.props.balances).map((key) => this.props.balances[key]);
+        listItems = listItems.map((balanceItem, i) => {
+            return (React.createElement("div", { style: { width: '100%' } },
+                React.createElement(BalanceCard_1.BalanceCard, { balance: balanceItem })));
+        });
+        return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
+            //@ts-ignore
+            ? React.createElement(components_1.Flex, { direction: "column", style: { width: '100%' } }, listItems)
+            : React.createElement("div", { style: { opacity: 0.5 } }, "There are no assets")));
+    }
+}
+exports.BalanceList = BalanceList;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/ConfirmModal.tsx":
 /*!********************************************************!*\
   !*** ./resources/ts/Admin/Components/ConfirmModal.tsx ***!
@@ -5204,6 +5278,53 @@ class ConfirmModal extends react_1.Component {
     }
 }
 exports.ConfirmModal = ConfirmModal;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/PromiseCard.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/ts/Admin/Components/PromiseCard.tsx ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PromiseCard = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const PromiseSourceInfo_1 = __webpack_require__(/*! ./PromiseSourceInfo */ "./resources/ts/Admin/Components/PromiseSourceInfo.tsx");
+const PromiseParticipants_1 = __webpack_require__(/*! ./PromiseParticipants */ "./resources/ts/Admin/Components/PromiseParticipants.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class PromiseCard extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+            React.createElement(components_1.CardHeader, null,
+                React.createElement("div", null,
+                    React.createElement("span", null, "\u2116 "),
+                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } },
+                React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement(PromiseSourceInfo_1.PromiseSourceInfo, { promise: this.props.promise, sources: this.props.sources }),
+                        React.createElement(PromiseParticipants_1.PromiseParticipants, { promise: this.props.promise }),
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Asset: "),
+                            React.createElement("strong", null, this.props.promise.asset)),
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Quantity: "),
+                            React.createElement("strong", null, this.props.promise.quantity))))),
+            React.createElement(components_1.CardFooter, null,
+                React.createElement(components_1.Flex, { justify: "flex-start" },
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${this.props.promise.promise_id}` }, "Manage promise")))));
+    }
+}
+exports.PromiseCard = PromiseCard;
 
 
 /***/ }),
@@ -5390,15 +5511,80 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PromiseList = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
+const PromiseCard_1 = __webpack_require__(/*! ./PromiseCard */ "./resources/ts/Admin/Components/PromiseCard.tsx");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class PromiseList extends react_1.Component {
     constructor(props) {
         super(props);
+    }
+    render() {
+        let listItems = Object.keys(this.props.promises).map((key) => this.props.promises[key]);
+        listItems = listItems.map((promiseItem, i) => {
+            return (React.createElement("div", { style: { width: '100%' } },
+                React.createElement(PromiseCard_1.PromiseCard, { promise: promiseItem, sources: this.props.sources })));
+        });
+        return (
+        // @ts-ignore
+        React.createElement(components_1.Flex, { style: { width: '100%' }, direction: "column" }, listItems));
+    }
+}
+exports.PromiseList = PromiseList;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/PromiseParticipants.tsx":
+/*!***************************************************************!*\
+  !*** ./resources/ts/Admin/Components/PromiseParticipants.tsx ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PromiseParticipants = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class PromiseParticipants extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        return (React.createElement(components_1.Flex, { gap: 0, align: "center", justify: "flex-start" },
+            React.createElement("span", null, "Participants: "),
+            React.createElement(components_1.Dashicon, { icon: "admin-users" }),
+            React.createElement("strong", null,
+                React.createElement("a", { href: `/tokenpass-user/${(_b = (_a = this.props.promise.promise_meta) === null || _a === void 0 ? void 0 : _a.source_user) === null || _b === void 0 ? void 0 : _b.id}` }, (_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.name)),
+            React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
+            React.createElement(components_1.Dashicon, { icon: "admin-users" }),
+            React.createElement("strong", null,
+                React.createElement("a", { href: `/tokenpass-user/${(_h = (_g = (_f = this.props.promise) === null || _f === void 0 ? void 0 : _f.promise_meta) === null || _g === void 0 ? void 0 : _g.destination_user) === null || _h === void 0 ? void 0 : _h.id}` }, (_l = (_k = (_j = this.props.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.destination_user) === null || _l === void 0 ? void 0 : _l.name))));
+    }
+}
+exports.PromiseParticipants = PromiseParticipants;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/PromiseSourceInfo.tsx":
+/*!*************************************************************!*\
+  !*** ./resources/ts/Admin/Components/PromiseSourceInfo.tsx ***!
+  \*************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PromiseSourceInfo = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+class PromiseSourceInfo extends react_1.Component {
+    constructor(props) {
+        super(props);
         this.getPromiseSource = this.getPromiseSource.bind(this);
         this.sourceExists = this.sourceExists.bind(this);
-    }
-    onDetails(index) {
-        this.props.onDetails(index);
     }
     getPromiseSource(promiseItem) {
         var _a, _b;
@@ -5420,55 +5606,16 @@ class PromiseList extends react_1.Component {
         }
     }
     render() {
-        let listItems = Object.keys(this.props.promises).map((key) => this.props.promises[key]);
-        listItems = listItems.map((promiseItem, i) => {
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            return (React.createElement("div", { style: { width: '100%' } },
-                React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
-                    React.createElement(components_1.CardHeader, null,
-                        React.createElement("div", null,
-                            React.createElement("strong", null,
-                                "\u2116 ",
-                                promiseItem.promise_id))),
-                    React.createElement(components_1.CardBody, { style: { width: '100%' } },
-                        React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
-                            React.createElement("div", { style: { flex: 1 } },
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Source: "),
-                                    this.sourceExists(promiseItem)
-                                        ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${promiseItem.source}` },
-                                            React.createElement("strong", null, this.getPromiseSource(promiseItem)))
-                                        : React.createElement("span", null,
-                                            React.createElement("strong", null, promiseItem.source))),
-                                React.createElement("div", null,
-                                    React.createElement(components_1.Flex, { gap: 0, align: "center", justify: "flex-start" },
-                                        React.createElement("span", null, "Participants: "),
-                                        React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-                                        React.createElement("strong", null,
-                                            React.createElement("a", { href: `/tokenpass-user/${(_b = (_a = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _a === void 0 ? void 0 : _a.source_user) === null || _b === void 0 ? void 0 : _b.id}` }, (_d = (_c = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _c === void 0 ? void 0 : _c.source_user) === null || _d === void 0 ? void 0 : _d.name)),
-                                        React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
-                                        React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-                                        React.createElement("strong", null,
-                                            React.createElement("a", { href: `/tokenpass-user/${(_f = (_e = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _e === void 0 ? void 0 : _e.destination_user) === null || _f === void 0 ? void 0 : _f.id}` }, (_h = (_g = promiseItem === null || promiseItem === void 0 ? void 0 : promiseItem.promise_meta) === null || _g === void 0 ? void 0 : _g.destination_user) === null || _h === void 0 ? void 0 : _h.name)))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Asset: "),
-                                    React.createElement("strong", null, promiseItem.asset)),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Quantity: "),
-                                    React.createElement("strong", null, promiseItem.quantity))))),
-                    React.createElement(components_1.CardFooter, null,
-                        React.createElement(components_1.Flex, { justify: "flex-start" },
-                            React.createElement(components_1.Button, { isSecondary: true, isSmall: true, onClick: () => {
-                                    this.onDetails(i);
-                                } }, "Details"),
-                            React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${promiseItem.promise_id}` }, "Manage promise"))))));
-        });
-        return (
-        // @ts-ignore
-        React.createElement(components_1.Flex, { style: { width: '100%' }, direction: "column" }, listItems));
+        return (React.createElement("div", null,
+            React.createElement("span", null, "Source: "),
+            this.sourceExists(this.props.promise)
+                ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.promise.source}` },
+                    React.createElement("strong", null, this.getPromiseSource(this.props.promise)))
+                : React.createElement("span", null,
+                    React.createElement("strong", null, this.props.promise.source))));
     }
 }
-exports.PromiseList = PromiseList;
+exports.PromiseSourceInfo = PromiseSourceInfo;
 
 
 /***/ }),
@@ -5701,6 +5848,56 @@ exports.SavePanel = SavePanel;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/SourceCard.tsx":
+/*!******************************************************!*\
+  !*** ./resources/ts/Admin/Components/SourceCard.tsx ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SourceCard = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class SourceCard extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.getAssets = this.getAssets.bind(this);
+    }
+    getAssets() {
+        var _a, _b, _c, _d;
+        let assets = 'all';
+        if ((_b = (_a = this.props.source) === null || _a === void 0 ? void 0 : _a.assets) === null || _b === void 0 ? void 0 : _b.length) {
+            assets = (_d = (_c = this.props.source) === null || _c === void 0 ? void 0 : _c.assets) === null || _d === void 0 ? void 0 : _d.join(', ');
+        }
+        return assets;
+    }
+    render() {
+        var _a;
+        return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+            React.createElement(components_1.CardHeader, null,
+                React.createElement("div", { title: this.props.source.address },
+                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.source.address}` }, (_a = this.props.source.address_data) === null || _a === void 0 ? void 0 : _a.label))),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } },
+                React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Assets (whitelisted): "),
+                            React.createElement("strong", null, this.getAssets()))))),
+            React.createElement(components_1.CardFooter, null,
+                React.createElement(components_1.Flex, { justify: "flex-start" },
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.source.address}` }, "Manage source"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.source.address}` }, "View details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.props.source.address}` }, "View balances")))));
+    }
+}
+exports.SourceCard = SourceCard;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/SourceEditForm.tsx":
 /*!**********************************************************!*\
   !*** ./resources/ts/Admin/Components/SourceEditForm.tsx ***!
@@ -5775,6 +5972,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SourceList = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
+const SourceCard_1 = __webpack_require__(/*! ./SourceCard */ "./resources/ts/Admin/Components/SourceCard.tsx");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SourceList extends react_1.Component {
     constructor(props) {
@@ -5783,26 +5981,8 @@ class SourceList extends react_1.Component {
     render() {
         let listItems = Object.keys(this.props.sourceList).map((key) => this.props.sourceList[key]);
         listItems = listItems.map((sourceItem, i) => {
-            var _a, _b, _c;
-            let assets = 'all';
-            if ((_a = sourceItem === null || sourceItem === void 0 ? void 0 : sourceItem.assets) === null || _a === void 0 ? void 0 : _a.length) {
-                assets = (_b = sourceItem === null || sourceItem === void 0 ? void 0 : sourceItem.assets) === null || _b === void 0 ? void 0 : _b.join(', ');
-            }
             return (React.createElement("div", { style: { width: '100%' } },
-                React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
-                    React.createElement(components_1.CardHeader, null,
-                        React.createElement("div", { title: sourceItem.address },
-                            React.createElement("strong", null, (_c = sourceItem.address_data) === null || _c === void 0 ? void 0 : _c.label))),
-                    React.createElement(components_1.CardBody, { style: { width: '100%' } },
-                        React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
-                            React.createElement("div", { style: { flex: 1 } },
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Assets (whitelisted): "),
-                                    React.createElement("strong", null, assets))))),
-                    React.createElement(components_1.CardFooter, null,
-                        React.createElement(components_1.Flex, { justify: "flex-start" },
-                            React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${sourceItem.address}` }, "Details"),
-                            React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${sourceItem.address}` }, "Manage source"))))));
+                React.createElement(SourceCard_1.SourceCard, { source: sourceItem })));
         });
         return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
             //@ts-ignore
@@ -5894,6 +6074,7 @@ class SourceStoreForm extends react_1.Component {
             React.createElement("div", null,
                 React.createElement(components_1.SelectControl, { label: "Address", value: this.state.address, style: { width: '100%' }, options: this.state.addressOptions, help: " Blockchain wallet address", onChange: (value) => {
                         this.setState({ address: value });
+                        this.props.onChange(this.props.addresses[value]);
                     } }),
                 this.state.address != null &&
                     React.createElement("div", null,
@@ -5904,7 +6085,10 @@ class SourceStoreForm extends react_1.Component {
                                 React.createElement("span", null, this.getCurrentAddressType())),
                             React.createElement("div", null,
                                 React.createElement("strong", null, "Address: "),
-                                React.createElement("span", null, this.getCurrentAddress()))),
+                                React.createElement("span", null, this.getCurrentAddress())),
+                            React.createElement("div", null,
+                                React.createElement("strong", null, "Assets: "),
+                                React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.getCurrentAddress()}` }, "View balances"))),
                         React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised.", value: this.state.assets, onChange: (value) => {
                                 this.setState({ assets: value });
                             } })),
@@ -6108,6 +6292,48 @@ class Whitelist extends react_1.Component {
     }
 }
 exports.Whitelist = Whitelist;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/BalancesShowPage.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/ts/Admin/Pages/BalancesShowPage.tsx ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const BalanceList_1 = __webpack_require__(/*! ../Components/BalanceList */ "./resources/ts/Admin/Components/BalanceList.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class BalancesShowPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+        console.log(this.props.pageData.address);
+    }
+    render() {
+        var _a, _b, _c, _d, _e;
+        return (React.createElement(Page_1.default, { title: 'Address balances' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "To source list")),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement("div", { style: { width: '100%' } },
+                            React.createElement("div", { style: { marginBottom: '12px' } },
+                                React.createElement("span", null, "Address: "),
+                                React.createElement("strong", null, (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.address) === null || _b === void 0 ? void 0 : _b.address)),
+                            React.createElement(BalanceList_1.BalanceList, { balances: (_e = (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.address) === null || _d === void 0 ? void 0 : _d.balances) !== null && _e !== void 0 ? _e : [] })))))));
+    }
+}
+exports["default"] = BalancesShowPage;
 
 
 /***/ }),
@@ -6430,6 +6656,80 @@ __decorate([
     __metadata("design:type", Object)
 ], PromiseEditPage.prototype, "promiseRepository", void 0);
 exports["default"] = PromiseEditPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/PromiseShowPage.tsx":
+/*!******************************************************!*\
+  !*** ./resources/ts/Admin/Pages/PromiseShowPage.tsx ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
+const PromiseSourceInfo_1 = __webpack_require__(/*! ../Components/PromiseSourceInfo */ "./resources/ts/Admin/Components/PromiseSourceInfo.tsx");
+const PromiseParticipants_1 = __webpack_require__(/*! ../Components/PromiseParticipants */ "./resources/ts/Admin/Components/PromiseParticipants.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class PromiseShowPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    dateFormatted(date) {
+        if (date) {
+            return dayjs(date).format('MMMM D, YYYY h:mm A');
+        }
+        return;
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Promise details' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+            React.createElement(components_1.Panel, { header: `№ ${this.props.pageData.promise.promise_id}` },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement(PromiseSourceInfo_1.PromiseSourceInfo, { promise: this.props.pageData.promise, sources: this.props.pageData.sources }),
+                                React.createElement(PromiseParticipants_1.PromiseParticipants, { promise: this.props.pageData.promise }),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Asset: "),
+                                    React.createElement("strong", null, this.props.pageData.promise.asset)),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Quantity: "),
+                                    React.createElement("strong", null, this.props.pageData.promise.quantity)),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Ref: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.props.pageData.promise.ref))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Note: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.props.pageData.promise.note))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Created at: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.promise.created_at)))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Updated at: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.promise.updated_at))))))))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `` }, "Manage promise")))))));
+    }
+}
+exports["default"] = PromiseShowPage;
 
 
 /***/ }),
@@ -6824,8 +7124,9 @@ class SourceShowPage extends react_1.Component {
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.pageData.source.address}` }, "Manage source")))))));
+                        React.createElement(components_1.Flex, { justify: "flex-start", style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.pageData.source.address}` }, "Manage source"),
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.props.pageData.source.address}` }, "View balances")))))));
     }
 }
 exports["default"] = SourceShowPage;
@@ -6863,9 +7164,11 @@ class SourceIndexPage extends react_1.Component {
         super(props);
         this.state = {
             storingSource: false,
+            address: null,
         };
         console.log(this.props.pageData);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onAddressChange = this.onAddressChange.bind(this);
     }
     return() {
         window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
@@ -6875,6 +7178,10 @@ class SourceIndexPage extends react_1.Component {
             this.return();
         });
     }
+    onAddressChange(address) {
+        console.log(address);
+        this.setState({ address: address });
+    }
     render() {
         return (React.createElement(Page_1.default, { title: 'Register source address' },
             React.createElement("div", { style: { marginBottom: '8px' } },
@@ -6882,7 +7189,7 @@ class SourceIndexPage extends react_1.Component {
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(SourceStoreForm_1.SourceStoreForm, { onSubmit: this.onSubmit, onCancel: this.return, saving: this.state.storingSource, style: { marginBottom: '12px' }, addresses: this.props.pageData.addresses }))))));
+                        React.createElement(SourceStoreForm_1.SourceStoreForm, { onSubmit: this.onSubmit, onChange: this.onAddressChange, onCancel: this.return, saving: this.state.storingSource, style: { marginBottom: '12px' }, addresses: this.props.pageData.addresses }))))));
     }
 }
 __decorate([
@@ -8352,8 +8659,10 @@ const App_1 = __webpack_require__(/*! ./App */ "./resources/ts/App.tsx");
 const AppLayout_1 = __webpack_require__(/*! ./Layouts/AppLayout */ "./resources/ts/Layouts/AppLayout.tsx");
 const SettingsPage_1 = __webpack_require__(/*! ./Admin/Pages/SettingsPage */ "./resources/ts/Admin/Pages/SettingsPage.tsx");
 const VendorPage_1 = __webpack_require__(/*! ./Admin/Pages/VendorPage */ "./resources/ts/Admin/Pages/VendorPage.tsx");
+const BalancesShowPage_1 = __webpack_require__(/*! ./Admin/Pages/BalancesShowPage */ "./resources/ts/Admin/Pages/BalancesShowPage.tsx");
 const ConnectionPage_1 = __webpack_require__(/*! ./Admin/Pages/ConnectionPage */ "./resources/ts/Admin/Pages/ConnectionPage.tsx");
 const WhitelistPage_1 = __webpack_require__(/*! ./Admin/Pages/WhitelistPage */ "./resources/ts/Admin/Pages/WhitelistPage.tsx");
+const PromiseShowPage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseShowPage */ "./resources/ts/Admin/Pages/PromiseShowPage.tsx");
 const PromiseStorePage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseStorePage */ "./resources/ts/Admin/Pages/PromiseStorePage.tsx");
 const PromiseEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseEditPage */ "./resources/ts/Admin/Pages/PromiseEditPage.tsx");
 const SourceIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceIndexPage */ "./resources/ts/Admin/Pages/SourceIndexPage.tsx");
@@ -8365,6 +8674,7 @@ const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditP
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
+        var _a;
         super();
         this.container = Inversify_config_1.container;
         this.pageElement = document.querySelector('.tokenpass-admin-page');
@@ -8372,17 +8682,22 @@ class AdminApp extends App_1.default {
             this.view = window.tokenpassView;
             this.pageData = window.tokenpassProps;
             const views = this.getViews();
-            const ViewComponent = views[this.view];
-            this.render(ViewComponent);
+            const ViewComponent = (_a = views[this.view]) !== null && _a !== void 0 ? _a : null;
+            if (ViewComponent) {
+                this.highlightMenu();
+                this.render(ViewComponent);
+            }
         }
         this.registerRedirects();
     }
     getViews() {
         return {
+            'balances-show': BalancesShowPage_1.default,
             'settings': SettingsPage_1.default,
             'connection': ConnectionPage_1.default,
             'vendor': VendorPage_1.default,
             'whitelist': WhitelistPage_1.default,
+            'promise-show': PromiseShowPage_1.default,
             'promise-store': PromiseStorePage_1.default,
             'promise-edit': PromiseEditPage_1.default,
             'source-index': SourceIndexPage_1.default,
@@ -8415,6 +8730,11 @@ class AdminApp extends App_1.default {
                 });
             }
         });
+    }
+    highlightMenu() {
+        const adminMenu = document.querySelector('#adminmenu #toplevel_page_tokenpass');
+        adminMenu.classList.remove('wp-not-current-submenu');
+        adminMenu.classList.add('wp-has-current-submenu', 'wp-menu-open');
     }
 }
 (function () {

@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
@@ -26,6 +27,7 @@ class AdminRouter implements AdminRouterInterface {
 
 	public function __construct(
 		AuthServiceInterface $auth_service,
+		BalancesControllerInterface $balances_controller,
 		DashboardControllerInterface $dashboard_controller,
 		VendorControllerInterface $vendor_controller,
 		WhitelistControllerInterface $whitelist_controller,
@@ -47,6 +49,7 @@ class AdminRouter implements AdminRouterInterface {
 			'settings'   => $settings_controller,
 			'promise'    => $promise_controller,
 			'source'     => $source_controller,
+			'balances'   => $balances_controller,
 		);
 	}
 
@@ -181,6 +184,26 @@ class AdminRouter implements AdminRouterInterface {
 							'menu_slug'  => 'vendor',
 							'callable'   => array( $this->controllers['vendor'], 'show' ),
 							'capability' => 'manage_options',
+						),
+					),
+					'balances-show' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'Show source balances',
+							'menu_title'  => 'Source balances',
+							'menu_slug'   => 'balances-show',
+							'callable'    => array( $this->controllers['balances'], 'show' ),
+							'capability'  => 'manage_options',
+						),
+					),
+					'promise-show' => array(
+						'args'      => array(
+							'parent_slug' => null,
+							'page_title'  => 'View token promise',
+							'menu_title'  => 'View promise',
+							'menu_slug'   => 'promise-show',
+							'callable'    => array( $this->controllers['promise'], 'show' ),
+							'capability'  => 'manage_options',
 						),
 					),
 					'promise-store' => array(
