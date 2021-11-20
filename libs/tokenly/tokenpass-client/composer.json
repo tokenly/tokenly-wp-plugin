@@ -4,7 +4,6 @@
     "keywords": ["tokenly","tokenpass","accounts","oauth"],
     "type": "library",
     "license": "MIT",
-	"version": "1.0-dev",
     "authors": [
         {
             "name": "Devon Weller",
