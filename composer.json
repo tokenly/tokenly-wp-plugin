@@ -5,7 +5,7 @@
 		"tokenly/hmac-auth": "dev-master",
 		"tokenly/api-client": "dev-master",
 		"tokenly/tokenpass-client": "dev-master",
-		"php-di/php-di": "^7",
+		"php-di/php-di": "^7.0",
 		"doctrine/annotations": "^1.13",
 		"twig/twig": "^3"
 	},
