@@ -1,13 +1,13 @@
 {
 	"name": "tokenly/tokenly-wp-plugin",
 	"require": {
-		"phpunit/phpunit": "^7.0",
-		"tokenly/hmac-auth": "1.0-dev",
-		"tokenly/api-client": "1.0-dev",
-		"tokenly/tokenpass-client": "1.0-dev",
-		"php-di/php-di": "^6.3",
+		"phpunit/phpunit": "^9",
+		"tokenly/hmac-auth": "dev-master",
+		"tokenly/api-client": "dev-master",
+		"tokenly/tokenpass-client": "dev-master",
+		"php-di/php-di": "^7",
 		"doctrine/annotations": "^1.13",
-		"twig/twig": "^3.0"
+		"twig/twig": "^3"
 	},
 	"autoload": {
 		"psr-4": {
