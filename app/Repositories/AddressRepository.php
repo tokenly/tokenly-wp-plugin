@@ -14,6 +14,7 @@ use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 class AddressRepository implements AddressRepositoryInterface {
 	protected $client;
 	protected $address_collection_factory;
+	protected $address_cache = array();
 	protected $balance_repository;
 	
 	public function __construct(
@@ -36,7 +37,12 @@ class AddressRepository implements AddressRepositoryInterface {
 		if ( !$username ) {
 			return;
 		}
-		$addresses = $this->client->getPublicAddresses( $username );
+		if ( isset( $this->address_cache[ $username ] ) ) {
+			$addresses = $this->address_cache[ $username ];
+		} else {
+			$addresses = $this->client->getPublicAddresses( $username );
+			$this->address_cache[ $username ] = $addresses;
+		}	
 		$addresses = array_map( function( $address ) {
 			$address['balances'] = array_map( function( $key, $balance ) {
 				$balance['asset'] = $key;

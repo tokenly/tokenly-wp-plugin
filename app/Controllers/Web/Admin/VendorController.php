@@ -33,7 +33,7 @@ class VendorController implements VendorControllerInterface {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
-		if ( $this->current_user->is_connected() === false ) {
+		if ( $this->current_user->can_connect() === false ) {
 			return;
 		}
 		$promises = $this->promise_repository->index( array(

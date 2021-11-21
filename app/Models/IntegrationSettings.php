@@ -2,25 +2,25 @@
 
 namespace Tokenly\Wp\Models;
 
-use Tokenly\Wp\Interfaces\Models\SettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Repositories\IntegrationSettingsRepositoryInterface;
 
-class Settings implements SettingsInterface {
+class IntegrationSettings implements IntegrationSettingsInterface {
 	public $client_id = '';
 	public $client_secret = '';
-	protected $settings_repository;
+	protected $integration_settings_repository;
 	
 	public function __construct(
 		$settings_data = array(),
-		SettingsRepositoryInterface $settings_repository
+		IntegrationSettingsRepositoryInterface $integration_settings_repository
 	) {
 		$this->from_array( $settings_data );
-		$this->settings_repository = $settings_repository;
+		$this->integration_settings_repository = $integration_settings_repository;
 	}
 
 	public function save() {
 		$save_data = $this->to_array();
-		$this->settings_repository->update( $save_data );
+		$this->integration_settings_repository->update( $save_data );
 	}
 
 	public function update( $settings_data ) {

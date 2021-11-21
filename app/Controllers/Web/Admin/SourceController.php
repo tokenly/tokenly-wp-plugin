@@ -60,6 +60,9 @@ class SourceController implements SourceControllerInterface {
 				'address',
 			),
 		) );
+		if ( !$source ) {
+			return;
+		}
 		$source = $source->to_array();
 		$render = $this->source_show_view->render( array(
 			'source' => $source,
@@ -71,7 +74,11 @@ class SourceController implements SourceControllerInterface {
 		if ( !isset( $this->current_user ) ) {
 			return;
 		}
-		$addresses = $this->current_user->get_addresses();
+		$addresses = $this->current_user->get_addresses(
+			array(
+				'with' => array( 'balances.meta' ),
+			)
+		);
 		$addresses = $addresses->to_array();
 		$render = $this->source_store_view->render( array(
 			'addresses' => $addresses,

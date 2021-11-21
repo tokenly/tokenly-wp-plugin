@@ -5,6 +5,8 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Manages routing for the public views
@@ -16,16 +18,22 @@ class WebRouter implements WebRouterInterface {
 	protected $callbacks = array();
 	protected $controllers = array();
 	protected $auth_controller;
+	protected $integration;
+	protected $current_user;
 
 	public function __construct(
 		UserControllerInterface $user_controller,
-		AuthControllerInterface $auth_controller
+		AuthControllerInterface $auth_controller,
+		IntegrationInterface $integration,
+		CurrentUserInterface $current_user
 	) {
 		$this->auth_controller = $auth_controller;
 		$this->controllers = array(
 			'auth' => $auth_controller,
 			'user' => $user_controller,
 		);
+		$this->integration = $integration;
+		$this->current_user = $current_user;
 	}
 
 	/**
@@ -34,6 +42,14 @@ class WebRouter implements WebRouterInterface {
 	 */
 	public function register() {
 		$this->register_routes();
+	}
+	
+	protected function can_register( string $key ) {
+		if ( $this->integration->can_connect() && $this->current_user->can_connect() ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

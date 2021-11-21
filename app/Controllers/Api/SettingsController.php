@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Models\SettingsInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 
 /**
  * Handles the settings REST API endpoints
@@ -13,7 +13,7 @@ class SettingsController implements SettingsControllerInterface {
 	protected $settings;
 	
 	public function __construct(
-		SettingsInterface $settings
+		IntegrationSettingsInterface $settings
 	) {
 		$this->settings = $settings;
 	}

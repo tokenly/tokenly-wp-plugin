@@ -18,6 +18,10 @@ export class ComponentServiceProvider extends ServiceProvider implements Compone
 			{
 				name: 'buttonLoginComponent',
 				selector: 'button.tokenpass-login',
+			},
+			{
+				name: 'cardTokenItemComponent',
+				selector: '.component-card-token-item',
 			}
 		];
 	}

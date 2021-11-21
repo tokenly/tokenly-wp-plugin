@@ -1,9 +1,42 @@
 <div class="tokenly-component component-card-token-item">
-	<div class="token-image">{{ image | raw }}</div>
-	<div class="token-info">
-		<div class="token-name" title="{{ asset }}">{{ name }}</div>
-		<div class="token-description">{{ description }}</div>
-		<div class="token-balance-container"><span class="token-balance-label">Total: </span><span class="token-balance">{{ balance }}</span></div>
+	<div class="image-container">
+		<div class="image">
+			{{ image | raw }}
+		</div>
 	</div>
-	{# <pre>{{ extra }}</pre> #}
+	<div class="info-container">
+		<div class="name" title="{{ asset }}">{{ name }}</div>
+		<div class="description">{{ description }}</div>
+		<div class="balance-container">
+			<span class="label">Total: </span>
+			<span class="amount">{{ balance }}</span>
+		</div>
+		<div class="extra-button-container">
+			<div class="extra-button">More information</div>
+		</div>
+	</div>
+	<div class="extra-container">
+		<header>
+			<h2 class="title">Details</h2>
+			<div class="close-button">
+				<div></div>
+				<div></div>
+			</div>
+		</header>
+		<div class="name"><strong>{{ name }}</strong></div>
+		<div class="attributes-container">
+			<table>
+				<tr>
+				<th>Attribute</th>
+				<th>Value</th>
+				</tr>
+				{% for extra_item in extra %}
+					<tr>
+					<td>{{ extra_item.key }}</td>
+					<td>{{ extra_item.value }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
 </div>

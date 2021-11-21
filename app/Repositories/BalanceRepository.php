@@ -14,6 +14,7 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 class BalanceRepository implements BalanceRepositoryInterface {
 	protected $client;
 	protected $balance_collection_factory;
+	protected $balances_cache = array();
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -33,7 +34,15 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	 * @return BalanceCollectionFactoryInterface $balances
 	 */
 	public function index( $oauth_token, array $params = array() ) {
-		$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+		if ( isset( $this->balances_cache[ $oauth_token ] ) ) {
+			$balances = $this->balances_cache[ $oauth_token ];
+		} else {
+			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
+			if ( !is_array( $balances ) ) {
+				$balances = array();
+			}
+			$this->balances_cache[ $oauth_token ] = $balances;
+		}
 		$balances = $this->balance_collection_factory->create( $balances, array(
 			'use_whitelist' => $params['use_whitelist'] ?? null,
 		) );
@@ -73,18 +82,17 @@ class BalanceRepository implements BalanceRepositoryInterface {
 			$asset = $meta_item->tokenly_asset;
 			$meta_keyed[ $asset ] = $meta_item;
 		}
-		$balances = array_map( function( $balance ) use ( $meta_keyed ) {
+		foreach ( (array) $balances as &$balance ) {
 			$asset = $balance->asset;
 			if ( !$asset ) {
-				return $balance;
+				continue;
 			}
-			$meta = $meta_keyed[ $balance->asset ] ?? null;
+			$meta = $meta_keyed[ $asset ] ?? null;
 			if ( !$meta ) {
-				return $balance;
+				continue;
 			}
 			$balance->meta = $meta;
-			return $balance;
-		}, ( array ) $balances );
+		}
 		return $balances;
 	}
 }

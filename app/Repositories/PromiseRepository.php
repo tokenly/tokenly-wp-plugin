@@ -21,6 +21,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	protected $promise_meta_repository;
 	protected $source_repository;
 	protected $current_user;
+	protected $promise_cache;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -45,7 +46,12 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @return PromiseInterface[] Promises found
 	 */
 	public function index( array $params = array() ) {
-		$promises = $this->client->getPromisedTransactionList() ?? array();
+		if ( isset( $this->promise_cache ) ) {
+			$promises = $this->promise_cache;
+		} else {
+			$promises = $this->client->getPromisedTransactionList() ?? array();
+			$this->promise_cache = $promises;
+		}
 		$collection = $this->promise_collection_factory->create( $promises );
 		if ( isset( $params['with'] ) ) {
 			$collection = $this->handle_with( $collection, $params['with'] );

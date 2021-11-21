@@ -2,6 +2,7 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { SourceItem } from '../../Interfaces';
+import { BalanceList } from '../Components/BalanceList';
 
 import { 
 	Button,
@@ -69,13 +70,20 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex style={{width: '100%'}}>
+							<Flex justify="flex-start" style={{width: '100%'}}>
 								<Button
 									isSecondary
 									isLarge
 									href={ `/wp-admin/admin.php?page=tokenpass-source-edit&source=${ this.props.pageData.source.address }` }
 								>
 									Manage source
+								</Button>
+								<Button
+									isSecondary
+									isLarge
+									href={ `/wp-admin/admin.php?page=tokenpass-balances-show&address=${ this.props.pageData.source.address }` }
+								>
+									View balances
 								</Button>
 							</Flex>
 						</PanelRow>

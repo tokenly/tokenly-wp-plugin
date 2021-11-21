@@ -33,7 +33,7 @@ class ConnectionController implements ConnectionControllerInterface {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
-		$status = $this->current_user->is_connected();
+		$status = $this->current_user->can_connect();
 		$oauth_user = $this->current_user->get_oauth_user();
 		$user_data = null;
 		if ( $oauth_user ) {

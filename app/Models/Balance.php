@@ -10,6 +10,7 @@ class Balance implements BalanceInterface {
 	public $balance;
 	public $balance_sat;
 	public $precision;
+	public $meta;
 
 	public function __construct( 
 		$balance_data = array()
@@ -25,6 +26,9 @@ class Balance implements BalanceInterface {
 			'balance_sat' => $this->balance_sat,
 			'precision'   => $this->precision,
 		);
+		if ( isset( $this->meta ) ) {
+			$array['meta'] = $this->meta->to_array();
+		}
 		return $array;
 	}
 

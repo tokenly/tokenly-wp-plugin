@@ -9,6 +9,7 @@ const TYPES = {
 	WhitelistRepositoryInterface       : Symbol.for( 'WhitelistRepositoryInterface' ),
 	ComponentServiceProviderInterface  : Symbol.for( 'ComponentServiceProviderInterface' ),
 	ButtonLoginComponentInterface      : Symbol.for( 'ButtonLoginComponentInterface' ),
+	CardTokenItemComponentInterface    : Symbol.for( 'CardTokenItemComponentInterface' ),
 };
 
 export { TYPES };

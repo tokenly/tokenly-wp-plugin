@@ -14,7 +14,6 @@ class PromiseFactory extends Factory implements PromiseFactoryInterface {
 	 */
 	public function create( $data, $args = array() ) {
 		$quantity = $data['quantity'] ?? null;
-		error_log( print_r( $data, true ) );
 		if ( $quantity ) {
 			$precision = $data['precision'] ?? null;
 			if ( $precision ) {

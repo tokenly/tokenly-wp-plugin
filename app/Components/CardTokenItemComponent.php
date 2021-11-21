@@ -7,6 +7,8 @@ use Twig\Environment;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 class CardTokenItemComponent extends Component {	
+	protected $meta_repository;
+	
 	public function __construct(
 		Environment $twig,
 		MetaRepositoryInterface $meta_repository
@@ -16,37 +18,42 @@ class CardTokenItemComponent extends Component {
 	}
 
 	public function render( $data ) {
-		$balance = $data['balance'] ?? null;
-		$meta = $balance->meta ?? null;
+		if ( !isset( $data['balance'] ) ) {
+			return;
+		}
+		$balance = $data['balance'];
 		$name = $balance->name;
 		$asset = $balance->asset;
-		$balance = $balance->balance;
-		$description = '';
-		$extra = '';
+		$amount = $balance->balance;
+		$description = 'No description.';
 		$image = '';
-		if ( $meta ) {
-			$post_id = $meta->ID;
+		$extra = array();
+		if ( isset( $balance->meta ) ) {
+			$post_id = $balance->meta->ID;
 			$name = get_the_title( $post_id );
 			$image = get_the_post_thumbnail( $post_id, 'full' );
-			$description = get_the_excerpt( $post_id );
+			$excerpt = get_the_excerpt( $post_id );
+			if ( !empty( $description ) ) {
+				$description = $excerpt;
+			}
 			$additional_meta = $this->meta_repository->index( $post_id, array(
 				'asset',
+				'extra',
 			) );
-			$asset = $additional_meta['asset'] ?? null;
-			if ( $asset ) {
-				$meta_item['asset'] = $asset;
-				if ( $balances_keyed[ $asset ] ?? null ) {
-					$balances_keyed[ $asset ]->meta = $meta_item;
-				}
+			if ( isset( $additional_meta['asset'] ) ) {
+				$asset = $additional_meta['asset'];
 			}
-		} 
+			if ( isset( $additional_meta['extra'] ) ) {
+				$extra = $additional_meta['extra'];
+			}
+		}
 		$html = $this->twig->render( 'components/CardTokenItemComponent.twig', array(
 			'asset'       => $asset,
 			'name'        => $name,
 			'description' => $description,
 			'image'       => $image,
-			'balance'     => $balance,
-			// 'extra'       => $extra,
+			'balance'     => $amount,
+			'extra'       => $extra,
 		) );
 		return $html;
 	}

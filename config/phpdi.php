@@ -8,7 +8,8 @@ use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
-use Tokenly\Wp\Repositories\SettingsRepository;
+use Tokenly\Wp\Repositories\IntegrationRepository;
+use Tokenly\Wp\Repositories\IntegrationSettingsRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
 use Tokenly\Wp\Repositories\UserRepository;
 use Tokenly\Wp\Repositories\WhitelistRepository;
@@ -23,6 +24,7 @@ use Tokenly\Wp\Routes\PostTypeRouter;
 use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
+use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
 use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
 use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
 use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
@@ -49,7 +51,8 @@ use Tokenly\Wp\Models\Balance;
 use Tokenly\Wp\Models\OauthUser;
 use Tokenly\Wp\Models\Promise;
 use Tokenly\Wp\Models\PromiseMeta;
-use Tokenly\Wp\Models\Settings;
+use Tokenly\Wp\Models\Integration;
+use Tokenly\Wp\Models\IntegrationSettings;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
 use Tokenly\Wp\Models\User;
@@ -80,7 +83,8 @@ use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\SettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\IntegrationRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\IntegrationSettingsRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
@@ -95,6 +99,7 @@ use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
@@ -137,7 +142,8 @@ use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
-use Tokenly\Wp\Interfaces\Models\SettingsInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
@@ -150,69 +156,71 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
 	//Variables
-	'general.namespace'     => 'tokenly',
+	'general.namespace' => 'tokenly',
 	//Providers
-	AppServiceProviderInterface::class         => \DI\autowire( AppServiceProvider::class ),
-	RouteServiceProviderInterface::class       => \DI\autowire( RouteServiceProvider::class ),
-	ShortcodeServiceProviderInterface::class   => \DI\autowire( ShortcodeServiceProvider::class ),
+	AppServiceProviderInterface::class             => \DI\autowire( AppServiceProvider::class ),
+	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class ),
+	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class ),
 	//Controllers
-	TokenMetaControllerInterface::class        => \DI\autowire( TokenMetaController::class ),
-	UserControllerInterface::class             => \DI\autowire( UserController::class ),
-	ConnectionControllerInterface::class       => \DI\autowire( ConnectionController::class ),
-	DashboardControllerInterface::class        => \DI\autowire( DashboardController::class ),
-	PromiseControllerInterface::class          => \DI\autowire( PromiseController::class ),
-	SettingsControllerInterface::class         => \DI\autowire( SettingsController::class ),
-	SourceControllerInterface::class           => \DI\autowire( SourceController::class ),
-	VendorControllerInterface::class           => \DI\autowire( VendorController::class ),
-	WhitelistControllerInterface::class        => \DI\autowire( WhitelistController::class ),
+	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
+	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
+	UserControllerInterface::class                 => \DI\autowire( UserController::class ),
+	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
+	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
+	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
+	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
+	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
+	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
+	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
 	//Controllers - API
-	AuthApiControllerInterface::class          => \DI\autowire( AuthApiController::class ),
-	PromiseApiControllerInterface::class       => \DI\autowire( PromiseApiController::class ),
-	SettingsApiControllerInterface::class      => \DI\autowire( SettingsApiController::class ),
-	SourceApiControllerInterface::class        => \DI\autowire( SourceApiController::class ),
-	UserApiControllerInterface::class          => \DI\autowire( UserApiController::class ),
-	WhitelistApiControllerInterface::class     => \DI\autowire( WhitelistApiController::class ),
+	AuthApiControllerInterface::class              => \DI\autowire( AuthApiController::class ),
+	PromiseApiControllerInterface::class           => \DI\autowire( PromiseApiController::class ),
+	SettingsApiControllerInterface::class          => \DI\autowire( SettingsApiController::class ),
+	SourceApiControllerInterface::class            => \DI\autowire( SourceApiController::class ),
+	UserApiControllerInterface::class              => \DI\autowire( UserApiController::class ),
+	WhitelistApiControllerInterface::class         => \DI\autowire( WhitelistApiController::class ),
 	//Services
-	AuthServiceInterface::class                => \DI\autowire( AuthService::class ),
+	AuthServiceInterface::class                    => \DI\autowire( AuthService::class ),
 	//Repositories
-	AddressRepositoryInterface::class          => \DI\autowire( AddressRepository::class ),
-	BalanceRepositoryInterface::class          => \DI\autowire( BalanceRepository::class ),
-	MetaRepositoryInterface::class             => \DI\autowire( MetaRepository::class ),
-	OauthUserRepositoryInterface::class        => \DI\autowire( OauthUserRepository::class ),
-	OptionRepositoryInterface::class           => \DI\autowire( OptionRepository::class ),
-	PromiseRepositoryInterface::class          => \DI\autowire( PromiseRepository::class ),
-	PromiseMetaRepositoryInterface::class      => \DI\autowire( PromiseMetaRepository::class ),
-	SettingsRepositoryInterface::class         => \DI\autowire( SettingsRepository::class ),
-	SourceRepositoryInterface::class           => \DI\autowire( SourceRepository::class ),
-	TokenMetaRepositoryInterface::class        => \DI\autowire( TokenMetaRepository::class ),
-	UserRepositoryInterface::class             => \DI\autowire( UserRepository::class ),
-	WhitelistRepositoryInterface::class        => \DI\autowire( WhitelistRepository::class ),
-	UserMetaRepositoryInterface::class         => \DI\autowire( UserMetaRepository::class ),
+	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
+	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
+	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class ),
+	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
+	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class ),
+	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
+	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class ),
+	IntegrationRepositoryInterface::class          => \DI\autowire( IntegrationRepository::class ),
+	IntegrationSettingsRepositoryInterface::class  => \DI\autowire( IntegrationSettingsRepository::class ),
+	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
+	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class ),
+	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class ),
+	WhitelistRepositoryInterface::class            => \DI\autowire( WhitelistRepository::class ),
+	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class ),
 	//Routes
-	AdminRouterInterface::class                => \DI\autowire( AdminRouter::class ),
-	ApiRouterInterface::class                  => \DI\autowire( ApiRouter::class ),
-	PostTypeRouterInterface::class             => \DI\autowire( PostTypeRouter::class )
+	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class ),
+	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class ),
+	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	WebRouterInterface::class                  => \DI\autowire( WebRouter::class ),
+	WebRouterInterface::class                      => \DI\autowire( WebRouter::class ),
 	//Collections
-	CollectionInterface::class                 => \DI\autowire( Collection::class ),
-	AddressCollectionInterface::class          => \DI\autowire( AddressCollection::class ),
-	BalanceCollectionInterface::class          => \DI\autowire( BalanceCollection::class ),
-	PromiseCollectionInterface::class          => \DI\autowire( PromiseCollection::class ),
-	PromiseMetaCollectionInterface::class      => \DI\autowire( PromiseMetaCollection::class ),
-	SourceCollectionInterface::class           => \DI\autowire( SourceCollection::class ),
-	TokenMetaCollectionInterface::class        => \DI\autowire( TokenMetaCollection::class ),
-	UserCollectionInterface::class             => \DI\autowire( UserCollection::class ),
+	CollectionInterface::class                     => \DI\autowire( Collection::class ),
+	AddressCollectionInterface::class              => \DI\autowire( AddressCollection::class ),
+	BalanceCollectionInterface::class              => \DI\autowire( BalanceCollection::class ),
+	PromiseCollectionInterface::class              => \DI\autowire( PromiseCollection::class ),
+	PromiseMetaCollectionInterface::class          => \DI\autowire( PromiseMetaCollection::class ),
+	SourceCollectionInterface::class               => \DI\autowire( SourceCollection::class ),
+	TokenMetaCollectionInterface::class            => \DI\autowire( TokenMetaCollection::class ),
+	UserCollectionInterface::class                 => \DI\autowire( UserCollection::class ),
 	//Models
-	AddressInterface::class                    => \DI\autowire( Address::class ),
-	BalanceInterface::class                    => \DI\autowire( Balance::class ),
-	OauthUserInterface::class                  => \DI\autowire( OauthUser::class ),
-	PromiseInterface::class                    => \DI\autowire( Promise::class ),
-	PromiseMetaInterface::class                => \DI\autowire( PromiseMeta::class ), 
-	SourceInterface::class                     => \DI\autowire( Source::class ), 
-	TokenMetaInterface::class                  => \DI\autowire( TokenMeta::class ), 
-	UserInterface::class                       => \DI\autowire( User::class ),
-	WhitelistItemInterface::class              => \DI\autowire( WhitelistItem::class ),
+	AddressInterface::class                        => \DI\autowire( Address::class ),
+	BalanceInterface::class                        => \DI\autowire( Balance::class ),
+	OauthUserInterface::class                      => \DI\autowire( OauthUser::class ),
+	PromiseInterface::class                        => \DI\autowire( Promise::class ),
+	PromiseMetaInterface::class                    => \DI\autowire( PromiseMeta::class ), 
+	SourceInterface::class                         => \DI\autowire( Source::class ), 
+	TokenMetaInterface::class                      => \DI\autowire( TokenMeta::class ), 
+	UserInterface::class                           => \DI\autowire( User::class ),
+	WhitelistItemInterface::class                  => \DI\autowire( WhitelistItem::class ),
 	//Models - single instance
 	CurrentUserInterface::class                => function (
 		ContainerInterface $container,
@@ -229,12 +237,18 @@ return array(
 
 		return $user;
 	},
-	SettingsInterface::class                   => function ( 
-		ContainerInterface $container,
-		SettingsRepositoryInterface $settings_repository
+	IntegrationInterface::class                => function ( 
+		ContainerInterface $container
 	) {
-		$settings_data = $settings_repository->show();
-		$settings = $container->make( Settings::class, array(
+		$integration = $container->make( Integration::class );
+		return $integration;
+	},
+	IntegrationSettingsInterface::class        => function ( 
+		ContainerInterface $container,
+		IntegrationSettingsRepositoryInterface $integration_settings_repository
+	) {
+		$settings_data = $integration_settings_repository->show();
+		$settings = $container->make( IntegrationSettings::class, array(
 			'settings_data' => $settings_data,
 		) );
 		return $settings;
@@ -320,7 +334,7 @@ return array(
 	//Third-party
 	TokenpassAPI::class => function ( 
 		ContainerInterface $container,
-		SettingsInterface $settings
+		IntegrationSettingsInterface $settings
 	) {
 		$client_id = $settings->client_id ?? null;
 		$client_secret = $settings->client_secret ?? null;

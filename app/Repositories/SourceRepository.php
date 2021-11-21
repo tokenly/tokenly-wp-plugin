@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Interfaces\Models\SettingsInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
@@ -16,11 +16,12 @@ class SourceRepository implements SourceRepositoryInterface {
 	protected $client;
 	protected $settings;
 	protected $source_collection_factory;
+	protected $source_cache;
 	protected $current_user;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		SettingsInterface $settings,
+		IntegrationSettingsInterface $settings,
 		SourceCollectionFactoryInterface $source_collection_factory,
 		CurrentUserInterface $current_user
 	) {
@@ -53,7 +54,12 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return array
 	 */
 	public function index( array $params = array() ) {
-		$sources = $this->client->getProvisionalSourceList();
+		if ( isset( $this->source_cache ) ) {
+			$sources = $this->source_cache;
+		} else {
+			$sources = $this->client->getProvisionalSourceList();
+			$this->source_cache = $sources;
+		}
 		$sources = $this->source_collection_factory->create( $sources );
 		if ( isset( $params['with'] ) ) {
 			$sources = $this->handle_with( $sources, $params['with'] );

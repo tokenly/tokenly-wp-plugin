@@ -11,6 +11,7 @@ class OauthUserRepository implements OauthUserRepositoryInterface {
 	protected $client;
 	protected $user_meta_repository;
 	protected $oauth_user_factory;
+	protected $user_cache = array();
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -27,7 +28,12 @@ class OauthUserRepository implements OauthUserRepositoryInterface {
 		if ( !$oauth_token ) {
 			return;
 		}
-		$oauth_user = $this->client->getUserByToken( $oauth_token );
+		if ( isset( $this->user_cahce[ $oauth_token ] ) ) {
+			$oauth_token = $this->user_cache[ $oauth_user ];
+		} else {
+			$oauth_user = $this->client->getUserByToken( $oauth_token );
+			$this->user_cache[ $oauth_token ] = $oauth_user;
+		}
 		if ( !$oauth_user ) {
 			return;
 		}

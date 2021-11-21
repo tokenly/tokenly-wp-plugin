@@ -4,24 +4,21 @@ namespace Tokenly\Wp\Components;
 
 use Tokenly\Wp\Components\Component;
 use Twig\Environment;
-use Tokenly\Wp\Interfaces\Models\SettingsInterface;
+use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 
 class ButtonLoginComponent extends Component {
-	public $settings;
+	public $integration;
 	
 	public function __construct(
 		Environment $twig,
-		SettingsInterface $settings
+		IntegrationInterface $integration
 	) {
 		parent::__construct( $twig );
-		$this->settings = $settings;
+		$this->integration = $integration;
 	}
 
 	public function render() {
-		if ( $this->settings->is_configured() === false ) {
-			return;
-		}
-		if ( is_user_logged_in() === true ) {
+		if ( $this->integration->can_connect() === false ) {
 			return;
 		}
 		$logo = file_get_contents( plugin_dir_url( __FILE__ ) . '../../resources/images/tokenly_logo.svg' );

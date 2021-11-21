@@ -4,6 +4,7 @@ import Page from './Page';
 import { AuthServiceInterface } from '../../Interfaces/Services/AuthServiceInterface';
 import { Component } from 'react';
 import { StatusData } from '../../Interfaces';
+import { StatusIndicator } from '../Components/StatusIndicator';
 import { TYPES } from '../../Types';
 
 import { 
@@ -52,12 +53,7 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<div>
-									<span>Status: </span>
-									<span>
-										<strong style={{color: this.props.pageData.status ? 'green' : 'grey'}}>{this.getStatusText()}</strong>
-									</span>
-								</div>
+								<StatusIndicator status={ this.props.pageData?.status } />
 								{ this.props.pageData.status == true &&
 									<div>
 										<span>Connected as: </span>

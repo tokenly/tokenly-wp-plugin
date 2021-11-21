@@ -4,6 +4,7 @@ import Page from './Page';
 import { Component } from 'react';
 import { SourceRepositoryInterface } from '../../Interfaces/Repositories/SourceRepositoryInterface';
 import { SourceStoreForm } from '../Components/SourceStoreForm';
+import { BalanceList } from '../Components/BalanceList';
 import { SourceData } from '../../Interfaces';
 import { TYPES } from '../../Types';
 
@@ -11,6 +12,7 @@ declare const window: any;
 
 import { 
 	Panel,
+	PanelHeader,
 	PanelBody,
 	PanelRow,
 } from '@wordpress/components';
@@ -26,6 +28,7 @@ interface SourceIndexPageProps {
 
 interface SourceIndexPageState {
 	storingSource: boolean;
+	address: any;
 }
 
 export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
@@ -34,11 +37,13 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	
 	state: SourceIndexPageState = {
 		storingSource: false,
+		address: null,
 	}
 	constructor( props: SourceIndexPageProps ) {
 		super( props );
 		console.log(this.props.pageData);
 		this.onSubmit = this.onSubmit.bind( this );
+		this.onAddressChange = this.onAddressChange.bind( this );
 	}
 
 	return() {
@@ -49,6 +54,11 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		this.sourceRepository.store( promise ).then( ( result: any ) => {
 			this.return();
 		});
+	}
+	
+	onAddressChange( address: any ) {
+		console.log(address);
+		this.setState( { address: address } );
 	}
 	
 	render() {
@@ -62,6 +72,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 						<PanelRow>
 							<SourceStoreForm
 								onSubmit={ this.onSubmit }
+								onChange={ this.onAddressChange }
 								onCancel={ this.return }
 								saving={ this.state.storingSource }
 								style={ { marginBottom: '12px' } }

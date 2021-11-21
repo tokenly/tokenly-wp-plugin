@@ -26,7 +26,7 @@ class AuthController implements AuthControllerInterface {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
-		$status = $this->current_user->is_connected();
+		$status = $this->current_user->can_connect();
 		return array(
 			'status' => $connected,
 		);
