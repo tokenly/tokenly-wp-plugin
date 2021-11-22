@@ -9,11 +9,12 @@ use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Routes\Router;
 
 /**
  * Manages routing for the post type views
  */
-class PostTypeRouter implements PostTypeRouterInterface {
+class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $routes;
 	protected $namespace;
 	protected $integration;
@@ -96,7 +97,7 @@ class PostTypeRouter implements PostTypeRouterInterface {
 		return $routes;
 	}
 	
-	protected function register_routes() {
+	public function register_routes() {
 		foreach ( $this->routes as $key => $route ) {
 			$name = $route['name'];
 			$name = "{$this->namespace}_{$name}";

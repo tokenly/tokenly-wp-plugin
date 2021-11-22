@@ -58,7 +58,7 @@ class PromiseController implements PromiseControllerInterface {
 			'promise' => $promise,
 			'sources' => $sources,
 		) );
-		echo $render;
+		return $render;
 	}
 
 	public function store() {
@@ -68,7 +68,7 @@ class PromiseController implements PromiseControllerInterface {
 		$render = $this->promise_store_view->render( array(
 			'sources' => $sources,
 		) );
-		echo $render;
+		return $render;
 	}
 
 	public function edit() {
@@ -80,6 +80,6 @@ class PromiseController implements PromiseControllerInterface {
 		$render = $this->promise_edit_view->render( array(
 			'promise' => $promise,
 		) );
-		echo $render;
+		return $render;
 	}
 }

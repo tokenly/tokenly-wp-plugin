@@ -19,32 +19,19 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	) {
 		$this->shortcodes = array(
 		    array(
-				'name'		=> 'tokenpass_login',
-				'instance'  => $login_button_shortcode,
-			),
-			array(
-				'name'		=> 'tokenpass_logout',
-				'instance'  => $logout_button_shortcode,
+				'tokenpass_login'  => $login_button_shortcode,
+				'tokenpass_logout' => $logout_button_shortcode,
 			),
 		);
 	}
 
 	/**
-	 * Registers the service provider
+	 * Registers the services
 	 * @return void
 	 */
 	public function register() {
-		$this->register_shortcodes();
-	}
-
-	/**
-	 * Registers all shortcodes
-	 * @wp-hook init
-	 * @return void
-	 */
-	public function register_shortcodes() {
-		foreach ( $this->shortcodes as $shortcode ) {
-			add_shortcode( $shortcode['name'], array( $shortcode['instance'], 'shortcode_callback' ) );
+		foreach ( $this->shortcodes as $key => $shortcode ) {
+			add_shortcode( $key, array( $shortcode, 'shortcode_callback' ) );
 		}
 	}
 }

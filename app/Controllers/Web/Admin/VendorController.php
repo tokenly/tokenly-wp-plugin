@@ -48,6 +48,6 @@ class VendorController implements VendorControllerInterface {
 			'promises' => $promises,
 			'sources'  => $sources,
 		) );
-		echo $render;
+		return $render;
 	}
 }

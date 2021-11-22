@@ -21,6 +21,7 @@ class AuthService implements AuthServiceInterface {
 	protected $settings;
 	protected $current_user;
 	protected $button_login_component;
+	protected $oauth_callback_route;
 
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -28,7 +29,8 @@ class AuthService implements AuthServiceInterface {
 		UserRepositoryInterface $user_repository,
 		IntegrationSettingsInterface $settings,
 		CurrentUserInterface $current_user,
-		ButtonLoginComponent $button_login_component
+		ButtonLoginComponent $button_login_component,
+		string $oauth_callback_route
 	) {
 		$this->client = $client;
 		$this->oauth_user_factory = $oauth_user_factory;
@@ -36,6 +38,11 @@ class AuthService implements AuthServiceInterface {
 		$this->settings = $settings;
 		$this->current_user = $current_user;
 		$this->button_login_component = $button_login_component;
+		$this->oauth_callback_route = $oauth_callback_route;
+	}
+
+	public function register() {
+		add_action( 'login_footer', array( $this, 'embed_tokenpass_login' ) );
 	}
 
 	/**
@@ -180,7 +187,7 @@ class AuthService implements AuthServiceInterface {
 		$state = wp_generate_password( 12, false );
 		$args = array(
 			'client_id'     => $client_id,
-			'redirect_uri'  => TOKENLY_PLUGIN_AUTH_REDIRECT_URI,
+			'redirect_uri'  => $this->oauth_callback_route,
 			'scope'         => 'user,tca',
 			'response_type' => 'code',
 			'state'         => $state,

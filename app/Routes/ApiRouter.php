@@ -9,11 +9,12 @@ use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
+use Tokenly\Wp\Routes\Router;
 
 /**
  * Manages routing for the REST API endpoints
  */
-class ApiRouter implements ApiRouterInterface {
+class ApiRouter extends Router implements ApiRouterInterface {
 	protected $namespace = 'tokenly/v1';
 	protected $controllers = array();
 

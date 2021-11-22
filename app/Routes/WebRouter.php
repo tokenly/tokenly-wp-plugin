@@ -7,11 +7,12 @@ use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Routes\Router;
 
 /**
  * Manages routing for the public views
  */
-class WebRouter implements WebRouterInterface {
+class WebRouter extends Router implements WebRouterInterface {
 	protected $rules = array();
 	protected $vars = array();
 	protected $routes = array();
@@ -57,7 +58,7 @@ class WebRouter implements WebRouterInterface {
 	 * @return array
 	 */
 	protected function get_routes() {
-		return array(
+		$routes = array(
 			'tokenly-user' => array(
 				'rules'     => array(
 					'tokenpass-user/(\d+)\/?$' => 'index.php?tokenpass_user_id=$matches[1]',
@@ -65,7 +66,7 @@ class WebRouter implements WebRouterInterface {
 				'vars'		=> array(
 					'tokenpass_user_id',
 				),
-				'callback'	=> array( $this->controllers['user'], 'show' ),
+				'callable'	=> array( $this->controllers['user'], 'show' ),
 			),
 			'tokenly-user-me' => array(
 				'rules'     => array(
@@ -74,7 +75,7 @@ class WebRouter implements WebRouterInterface {
 				'vars'		=> array(
 					'tokenpass_user_id',
 				),
-				'callback'	=> array( $this->controllers['user'], 'show' ),
+				'callable'	=> array( $this->controllers['user'], 'show' ),
 			),
 			'tokenpass-oauth-callback' => array(
 				'rules'		=> array(
@@ -83,9 +84,25 @@ class WebRouter implements WebRouterInterface {
 				'vars'		=> array(
 					'tokenpass-oauth-callback',
 				),
-				'callback'	=> array( $this->controllers['auth'], 'authorize_callback' ),
+				'callable'	=> array( $this->controllers['auth'], 'authorize_callback' ),
 			)
 		);
+		$routes = $this->prepare_routes( $routes );
+		return $routes;
+	}
+
+	protected function prepare_routes( array $routes ) {
+		foreach ( $routes as $key => &$route ) {
+			$this->rules = array_merge( $this->rules, $route['rules'] ?? null );
+			$this->vars = array_merge( $this->vars, $route['vars'] ?? null );
+			if ( isset( $route['callable'] ) ) {
+				$callable = $route['callable'];
+				$route['callable'] = function() use ( $callable ) {
+					$this->render_route( $callable );
+				};
+			}
+		}
+		return $routes;
 	}
 
 	/**
@@ -120,16 +137,18 @@ class WebRouter implements WebRouterInterface {
 	 */
 	public function find_template( $template ) {
 		foreach ( $this->routes as $route ) {
+			if ( !isset( $route['vars'] ) ) {
+				continue;
+			}
 			$query_vars = $route['vars'] ?? null;
-			if ( $query_vars ) {
-				foreach ( $query_vars as $query_var ) {
-					$query_var = get_query_var( $query_var );
-					if ( $query_var ) {
-						$callback = $route['callback'] ?? null;
-						if ( $callback ) {
-							return call_user_func( $callback );
-						}
+			foreach ( $query_vars as $query_var ) {
+				$query_var = get_query_var( $query_var );
+				if ( $query_var ) {
+					if ( !isset( $route['callable'] ) ) {
+						continue;
 					}
+					$callback = $route['callable'] ?? null;
+					return call_user_func( $callback );
 				}
 			}
 		}
@@ -140,13 +159,8 @@ class WebRouter implements WebRouterInterface {
 	 * Registers all web routes
 	 * @return void
 	 */
-	protected function register_routes() {
+	public function register_routes() {
 		$this->routes = $this->get_routes();
-		foreach ( $this->routes as $route ) {
-			$this->rules = array_merge( $this->rules, $route['rules'] ?? null );
-			$this->vars = array_merge( $this->vars, $route['vars'] ?? null );
-			$this->callbacks[] = $route['callback'] ?? null;
-		}
 		add_filter( 'generate_rewrite_rules', array( $this, 'merge_rewrite_rules' ) );
 		add_filter( 'query_vars', array( $this, 'merge_query_vars' ) );
 		add_filter( 'template_include', array( $this, 'find_template' ) );

@@ -46,6 +46,6 @@ class ConnectionController implements ConnectionControllerInterface {
 			'status' => $status,
 			'user'   => $user_data,
 		) );
-		echo $render;
+		return $render;
 	}
 }

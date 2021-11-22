@@ -30,19 +30,10 @@ class RouteServiceProvider extends ServiceProvider implements RouteServiceProvid
 	}
 
 	/**
-	 * Registers the service provider
+	 * Registers the services
 	 * @return void
 	 */
 	public function register() {
-		$this->register_routers();
-	}
-
-	/**
-	 * Registers all routers
-	 * @wp-hook init
-	 * @return void
-	 */
-	public function register_routers() {
 		foreach ( $this->routers as $router ) {
 			$router->register();
 		}

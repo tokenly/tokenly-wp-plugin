@@ -55,6 +55,6 @@ class UserController implements UserControllerInterface {
 		$render = $this->user_view->render( array(
 			'balances' => $balances,
 		) );
-		echo $render;
+		return $render;
 	}
 }

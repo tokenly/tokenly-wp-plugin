@@ -12,13 +12,16 @@ use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 class SettingsController implements SettingsControllerInterface {
 	protected $settings_view;
 	protected $integration;
+	protected $oauth_callback_route;
 
 	public function __construct(
 		SettingsView $settings_view,
-		IntegrationInterface $integration
+		IntegrationInterface $integration,
+		string $oauth_callback_route
 	) {
 		$this->settings_view = $settings_view;
 		$this->integration = $integration;
+		$this->oauth_callback_route = $oauth_callback_route;
 	}
 
 	public function show() {
@@ -27,10 +30,10 @@ class SettingsController implements SettingsControllerInterface {
 			'integration_settings' => $integration_settings,
 			'integration_data'     => array(
 				'app_homepage_url'  => get_site_url(),
-				'client_auth_url'   => TOKENLY_PLUGIN_AUTH_REDIRECT_URI,
+				'client_auth_url'   => $this->oauth_callback_route,
 				'status'            => $this->integration->can_connect(),
 			),
 		) );
-		echo $render;
+		return $render;
 	}
 }

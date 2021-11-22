@@ -49,7 +49,7 @@ class SourceController implements SourceControllerInterface {
 		$render = $this->source_index_view->render( array(
 			'sources' => $sources,
 		) );
-		echo $render;
+		return $render;
 	}
 
 	public function show() {
@@ -67,7 +67,7 @@ class SourceController implements SourceControllerInterface {
 		$render = $this->source_show_view->render( array(
 			'source' => $source,
 		) );
-		echo $render;
+		return $render;
 	}
 
 	public function store() {
@@ -83,7 +83,7 @@ class SourceController implements SourceControllerInterface {
 		$render = $this->source_store_view->render( array(
 			'addresses' => $addresses,
 		) );
-		echo $render;
+		return $render;
 	}
 
 	public function edit() {
@@ -97,6 +97,6 @@ class SourceController implements SourceControllerInterface {
 		$render = $this->source_edit_view->render( array(
 			'source' => $source,
 		) );
-		echo $render;
+		return $render;
 	}
 }

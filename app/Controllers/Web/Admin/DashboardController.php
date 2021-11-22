@@ -30,6 +30,6 @@ class DashboardController implements DashboardControllerInterface {
 			'integration_can_connect' => $this->integration->can_connect(),
 			'user_can_connect'        => $this->current_user->can_connect(),
 		) );
-		echo $render;
+		return $render;
 	}
 }

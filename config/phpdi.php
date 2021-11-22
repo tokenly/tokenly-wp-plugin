@@ -4,6 +4,9 @@ use Tokenly\Wp\Providers\AppServiceProvider;
 use Tokenly\Wp\Providers\RouteServiceProvider;
 use Tokenly\Wp\Providers\ShortcodeServiceProvider;
 use Tokenly\Wp\Services\AuthService;
+use Tokenly\Wp\Services\LifecycleService;
+use Tokenly\Wp\Services\ResourceService;
+use Tokenly\Wp\Services\UserService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
@@ -79,6 +82,9 @@ use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
+use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
@@ -156,7 +162,32 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
 	//Variables
-	'general.namespace' => 'tokenly',
+	'general.name'             => 'tokenly-wp-plugin',
+	'general.namespace'        => 'tokenly',
+	'general.version'          => '0.3-alpha',
+	'general.root_dir'         => \DI\factory( function( string $name ) {
+		return WP_PLUGIN_DIR . '/' . $name;
+	} )->parameter( 'name', \DI\get( 'general.name' ) ),
+	'general.root_url'         => \DI\factory( function( string $name ) {
+		return WP_PLUGIN_URL . '/' . $name;
+	} )->parameter( 'name', \DI\get( 'general.name' ) ),
+	'general.root_filepath'    => \DI\factory( function( string $root_dir ) {
+		return $root_dir . '/tokenly-wp-plugin.php';
+	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	'general.root_filepath'    => \DI\factory( function( string $root_dir ) {
+		return $root_dir . '/tokenly-wp-plugin.php';
+	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	'api.host'                 => 'https://tokenpass.tokenly.com',
+	'twig.template_dir'        => \DI\factory( function( string $root_dir ) {
+		return $root_dir . '/resources/views/';
+	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	'twig.template_cache_dir'  => \DI\factory( function( string $root_dir ) {
+		return $root_dir . '/build/template-cache/';
+	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	'oauth.callback_route'     => get_site_url() . '/tokenpass-oauth-callback',
+	'oauth.host'               => \DI\factory( function( string $api_host ) {
+		return $api_host . '/oauth/authorize';
+	} )->parameter( 'api_host', \DI\get( 'api.host' ) ),
 	//Providers
 	AppServiceProviderInterface::class             => \DI\autowire( AppServiceProvider::class ),
 	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class ),
@@ -168,7 +199,8 @@ return array(
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
-	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
+	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
+		->constructorParameter( 'oauth_callback_route', DI\get( 'oauth.callback_route' ) ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
 	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
@@ -180,7 +212,15 @@ return array(
 	UserApiControllerInterface::class              => \DI\autowire( UserApiController::class ),
 	WhitelistApiControllerInterface::class         => \DI\autowire( WhitelistApiController::class ),
 	//Services
-	AuthServiceInterface::class                    => \DI\autowire( AuthService::class ),
+	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
+		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') ),
+	LifecycleServiceInterface::class               => \DI\autowire( LifecycleService::class )
+		->constructorParameter( 'version', \DI\get( 'general.version' ) )
+		->constructorParameter( 'root_filepath', \DI\get( 'general.root_filepath' ) ),
+	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )
+		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	UserServiceInterface::class                    => \DI\autowire( UserService::class ),
 	//Repositories
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
@@ -197,7 +237,8 @@ return array(
 	WhitelistRepositoryInterface::class            => \DI\autowire( WhitelistRepository::class ),
 	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class ),
 	//Routes
-	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class ),
+	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
+		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
 	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class ),
 	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
@@ -234,7 +275,6 @@ return array(
 				'id' => $user_id,
 			) );
 		}
-
 		return $user;
 	},
 	IntegrationInterface::class                => function ( 
@@ -299,42 +339,44 @@ return array(
 		->constructorParameter( 'class', UserCollectionInterface::class ),
 	//Factories - abstract - models
 	AddressFactoryInterface::class               => \DI\autowire( AddressFactory::class )
-		->constructorParameter( 'factory', Di\get( AddressFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( AddressFactoryConcrete::class ) ),
 	BalanceFactoryInterface::class               => \DI\autowire( BalanceFactory::class )
-		->constructorParameter( 'factory', Di\get( BalanceFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( BalanceFactoryConcrete::class ) ),
 	OauthUserFactoryInterface::class             => \DI\autowire( OauthUserFactory::class )
-		->constructorParameter( 'factory', Di\get( OauthUserFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( OauthUserFactoryConcrete::class ) ),
 	PromiseFactoryInterface::class               => \DI\autowire( PromiseFactory::class )
-		->constructorParameter( 'factory', Di\get( PromiseFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
 	PromiseMetaFactoryInterface::class           => \DI\autowire( PromiseMetaFactory::class )
-		->constructorParameter( 'factory', Di\get( PromiseMetaFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( PromiseMetaFactoryConcrete::class ) ),
 	SourceFactoryInterface::class                => \DI\autowire( SourceFactory::class )
-		->constructorParameter( 'factory', Di\get( SourceFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( SourceFactoryConcrete::class ) ),
 	TokenMetaFactoryInterface::class             => \DI\autowire( TokenMetaFactory::class )
-		->constructorParameter( 'factory', Di\get( TokenMetaFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( TokenMetaFactoryConcrete::class ) ),
 	UserFactoryInterface::class                  => \DI\autowire( UserFactory::class )
-		->constructorParameter( 'factory', Di\get( UserFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( UserFactoryConcrete::class ) ),
 	WhitelistItemFactoryInterface::class         => \DI\autowire( WhitelistItemFactory::class )
-		->constructorParameter( 'factory', Di\get( WhitelistItemFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( WhitelistItemFactoryConcrete::class ) ),
 	//Factories - abstract - collections
 	AddressCollectionFactoryInterface::class     => \DI\autowire( AddressCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( AddressCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( AddressCollectionFactoryConcrete::class ) ),
 	BalanceCollectionFactoryInterface::class     => \DI\autowire( BalanceCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( BalanceCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( BalanceCollectionFactoryConcrete::class ) ),
 	PromiseCollectionFactoryInterface::class     => \DI\autowire( PromiseCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( PromiseCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( PromiseCollectionFactoryConcrete::class ) ),
 	PromiseMetaCollectionFactoryInterface::class => \DI\autowire( PromiseMetaCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( PromiseMetaCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( PromiseMetaCollectionFactoryConcrete::class ) ),
 	SourceCollectionFactoryInterface::class      => \DI\autowire( SourceCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( SourceCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( SourceCollectionFactoryConcrete::class ) ),
 	TokenMetaCollectionFactoryInterface::class   => \DI\autowire( TokenMetaCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
 	UserCollectionFactoryInterface::class        => \DI\autowire( UserCollectionFactory::class )
-		->constructorParameter( 'factory', Di\get( UserCollectionFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( UserCollectionFactoryConcrete::class ) ),
 	//Third-party
-	TokenpassAPI::class => function ( 
+	TokenpassAPI::class => \DI\factory( function ( 
 		ContainerInterface $container,
-		IntegrationSettingsInterface $settings
+		IntegrationSettingsInterface $settings,
+		string $api_host,
+		string $oauth_callback_route
 	) {
 		$client_id = $settings->client_id ?? null;
 		$client_secret = $settings->client_secret ?? null;
@@ -342,8 +384,8 @@ return array(
 		$privileged_client_secret = $client_secret;
 		$oauth_client_id = $client_id;
 		$oauth_client_secret = $client_secret;
-		$tokenpass_url = 'https://tokenpass.tokenly.com';
-		$redirect_uri = TOKENLY_PLUGIN_AUTH_REDIRECT_URI;
+		$tokenpass_url = $api_host;
+		$redirect_uri = $oauth_callback_route;
 		return new TokenpassAPI( 
 			$client_id,
 			$client_secret,
@@ -354,16 +396,24 @@ return array(
 			$oauth_client_id,
 			$oauth_client_secret
 		);
-	},
-	TokenpassAPIInterface::class => DI\get( TokenpassAPI::class ),
-	Environment::class => function () {
-		$loader = new FilesystemLoader( TOKENLY_PLUGIN_TEMPLATE_DIR );
+	} )
+		->parameter( 'api_host', \DI\get( 'api.host' ) )
+		->parameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) )
+	,
+	TokenpassAPIInterface::class => \DI\get( TokenpassAPI::class ),
+	Environment::class => \DI\factory( function (
+		string $twig_template_dir,
+		string $twig_template_cache_dir
+	) {
+		$loader = new FilesystemLoader( $twig_template_dir );
 		$twig = new Environment( $loader, array(
-			// 'cache' => TOKENLY_PLUGIN_TEMPLATE_CACHE_DIR,
+			// 'cache' => $twig_template_cache_dir
 			'cache' => false,
 		) );
 		return $twig;
-	},
+	} )
+		->parameter( 'twig_template_dir', \DI\get( 'twig.template_dir' ) )
+		->parameter( 'twig_template_cache_dir', \DI\get( 'twig.template_cache_dir' ) ),
 );
 
 class RootFactory {

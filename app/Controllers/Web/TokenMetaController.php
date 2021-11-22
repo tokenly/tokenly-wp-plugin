@@ -33,6 +33,6 @@ class TokenMetaController implements TokenMetaControllerInterface {
 		$render = $this->token_meta_edit_view->render( array(
 			'meta' => $meta,
 		) );
-		echo $render;
+		return $render;
 	}
 }

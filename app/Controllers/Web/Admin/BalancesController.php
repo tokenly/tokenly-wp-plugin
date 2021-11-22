@@ -39,10 +39,9 @@ class BalancesController implements BalancesControllerInterface {
 		if ( !$address ) {
 			return;
 		}
-		error_log(print_r( $addresses, true ));
 		$render = $this->balances_show_view->render( array(
 			'address' => $address,
 		) );
-		echo $render;
+		return $render;
 	}
 }

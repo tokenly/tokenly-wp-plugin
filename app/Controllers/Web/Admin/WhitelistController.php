@@ -26,6 +26,6 @@ class WhitelistController implements WhitelistControllerInterface {
 		$render = $this->whitelist_view->render( array(
 			'whitelist' => $whitelist,
 		) );
-		echo $render;
+		return $render;
 	}
 }
