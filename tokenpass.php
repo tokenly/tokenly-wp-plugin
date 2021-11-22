@@ -39,22 +39,37 @@ function tk_activation_function(){
         array( 
             'read' => true, 
             'tk_manage_options_user' => true,
-            'read'         => true,
-            'read_post' => true,
-            'edit_posts'   => true,
-            'delete_post' => true,
-            'publish_post' => true,
-            'publish_post' => true,
-            'upload_files' => true,
-            'delete_pages' => true,
-            'edit_pages' => true,
+            'read'          => true,
+            'edit_posts'    => true,
+            'delete_posts'  => true,
+            'publish_posts' => true,
+            'upload_files'  => true,
+            'delete_pages'  => true,
+            'edit_pages'    => true,
             'publish_pages' => true,
+            'manage_categories' => true,
+            'delete_others_posts' => true,
+            'delete_published_posts' =>true,
+            'delete_published_pages' =>true,
+            'edit_published_pages' => true,
+            'edit_published_posts' => true,
+            'delete_private_posts' => true,
+            'delete_private_pages' => true,
+            'edit_private_posts' => true,
+            'edit_private_pages' => true,
             'edit_theme_options' => true,            
         ) 
     );
 }
 
 register_activation_hook(__FILE__, 'tk_activation_function');
+
+
+function tk_deactivate_function(){
+     remove_role( 'tk_member' );
+}
+register_deactivation_hook( __FILE__, 'tk_deactivate_function' );
+
 
 add_filter( 'page_template', 'wpa3396_page_template_tokenly' );
 function wpa3396_page_template_tokenly( $page_template )

@@ -53,6 +53,7 @@ if(isset($authorization_code)){
   $result = json_decode($response);
   $access_token = $result->access_token;
 
+  // FETCHING USER DATA USING ACCESS TOKEN
   if(isset($access_token)){
     curl_close($curl);
     $curl_1 = curl_init();
@@ -108,6 +109,7 @@ if(isset($authorization_code)){
           'user_password' => $random_password,
           'remember'      => true
         );
+        //User Login 
         $user = wp_signon( $creds, false );
         if ( is_wp_error( $user ) ) {
             echo $user->get_error_message();

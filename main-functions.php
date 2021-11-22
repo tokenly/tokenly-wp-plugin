@@ -108,17 +108,17 @@ function tokenly_login_check() {
     if(isset($_GET['error'])){
         if($_GET['error'] == 'yes' ){
             $message = $_GET['message'];
-            echo "<script>window.location.href = '/';</script>";            
+            echo "<script>window.location.href = '/tokenly';</script>";            
         }else{
             if($_GET['logged_in'] == 'yes' ){
                 $user_email = $_GET['useremail'];
                 $message = $user_email.' you are successfully logged in.';
-                echo "<script>window.location.href = '/wp-admin';</script>";            
+                echo "<script>window.location.href = '/tokenly/wp-admin';</script>";            
             }
             if($_GET['user_register'] == 'yes' ){
                 $user_email = $_GET['useremail'];
                 $message = $user_email.' you are registered successfully. please check your email for credentials';
-                echo "<script>window.location.href = '/';</script>";            
+                echo "<script>window.location.href = '/tokenly';</script>";            
             }
         }
     }
@@ -202,7 +202,7 @@ class tokenpassSettings {
                 </ul>
                 <?php 
                     $app_homepage_url =  "https://";;
-                    $app_homepage_url .=  $_SERVER['HTTP_HOST'].'/';
+                    $app_homepage_url .=  $_SERVER['HTTP_HOST'].'/tokenly';
                     $client_auth_url = $app_homepage_url.'/wp-content/plugins/tokenpass/account/authorize/callback.php';
                 ?>
                 <div class="tk_app_details">
