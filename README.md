@@ -1,21 +1,27 @@
 # Tokenly WordPress Integration
 
-The plugin integrates Tokenpass features into a WordPress website.
+The plugin integrates Tokenly & Tokenpass features into a WordPress website.
 
 ## Installation
+
+0. Run `composer install` within the plugin directory once to install library files.
 
 1. Create an account on tokenpass.tokenly.com
 2. Go to the "developers" section
 3. Create a new Client Application
 4. Set name and home page URL
-5. Set redirect URL to: https://YOUR_DOMAIN/wp-content/plugins/tokenly-wp-plugin-main/account/authorize/callback.php
+5. Set redirect URL to: https://YOUR_DOMAIN/tokenpass-oauth-callback
 6. Install and activate the Wordpress plugin
 7. Find the "Tokenpass" menu item in the sidebar for plugin settings
-8. Save the Client ID and Client Secret provided from the Developers sectionon Tokenpass
+8. Save the Client ID and Client Secret provided from the Developers section on Tokenpass
+
+If it is not working, make sure your permalink rewrite rules cache is flushed.
 
 ## Usage
 
-Use the shortcode [tokenpass_login] on a page to display the Login button
+Tokenpass login button is automatically included on the WP login screen
+
+Use the shortcode [tokenpass_login] on a page to display the Login button as well.
 
 ## Contributing
 
