@@ -11,6 +11,7 @@ import {
 	TextareaControl,
 	SelectControl,
 	Flex,
+	CheckboxControl,
 	// @ts-ignore
 	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
@@ -35,6 +36,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 			source: null,
 			destination: null,
 			asset: null,
+			pseudo: false,
 			quantity: 0,
 			ref: null,
 			note: null,
@@ -136,7 +138,6 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 
 	getMaxCount() {
 		const asset = this.getCurrentAsset();
-		console.log(asset);
 		if ( !asset ) {
 			return null;
 		}
@@ -145,7 +146,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 
 	isAssetValid() {
 		const asset = this.getCurrentAsset();
-		if ( asset ) {
+		if ( asset || this.state?.promise?.pseudo == true ) {
 			return true;
 		}
 		return false;
@@ -154,7 +155,11 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	render() {
 		return (
 			<form style={ { width: '100%', maxWidth: '320px' } }>
-				<div style={ { marginBottom: '12px' } }>
+				<Flex
+					//@ts-ignore
+					direction="column"
+					style={ { width: '100%' } }
+				>
 					<SelectControl
 						label="Source"
 						value={ this.state.promise.source }
@@ -164,78 +169,105 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						} }
 						help="Source address to use."
 					/>
-				</div>
-				<div>
-					<label>Destination
-						<div style={{opacity:0.8, marginBottom: '12px'}}>WordPress username. The user who will receive the asset.</div>
-						<UserSearchField
-							onChange={ ( value: any ) => {
-								const state = Object.assign( {}, this.state.promise );
-								state.destination = value;
-								this.setState( { promise: state } );
-							} }
-						/>
-					</label>
-				</div>
-				<div>
-					<label>Asset
-						<div style={{opacity:0.8, marginBottom: '12px'}}>Name of the asset that will be promised.</div>
-						<AssetSearchField
-							assets={ this.getAssetOptions() }
-							onChange={ ( value: any ) => {
-								const state = Object.assign( {}, this.state.promise );
-								state.asset = value;
-								this.setState( { promise: state } );
-							} }
-						/>
-					</label>
-				</div>
-				{ this.isAssetValid() &&
 					<div>
-						<label>
-							Quantity
-							<Flex justify="flex-start" align="center" style={{paddingTop: '12px'}}>
-								<NumberControl
-									type="number"
-									value={ this.state.promise.quantity }
-									
-									style={ { maxWidth: '100px' } }
-									onChange={ (value: any) => {
-										const state = Object.assign( {}, this.state.promise );
-										state.quantity = value;
-										this.setState( { promise: state } );
-									} }
-								/>
-								<span>
-									<span>of / </span>
-									<span title={ this.getMaxCount() }>
-										<strong>{ parseFloat( this.getMaxCount().toFixed( 4 ) ) }</strong>
-									</span>
-								</span>
-							</Flex>
+						<label>Destination
+							<div style={{opacity:0.8, marginBottom: '12px'}}>WordPress username. The user who will receive the asset.</div>
+							<UserSearchField
+								onChange={ ( value: any ) => {
+									const state = Object.assign( {}, this.state.promise );
+									state.destination = value;
+									this.setState( { promise: state } );
+								} }
+							/>
 						</label>
-						<TextControl
-							label="Ref"
-							help="Extra reference data"
-							value={ this.state.promise.ref }
-							onChange={ (value: any) => {
+					</div>
+					<div>
+						<CheckboxControl
+							label="Pseudo promise"
+							help="Pseudo promises allow arbitrary asset names"
+							checked={ this.state.promise.pseudo }
+							onChange={ ( value: any ) => {
 								const state = Object.assign( {}, this.state.promise );
-								state.ref = value;
-								this.setState( { promise: state } );
-							} }
-						/>
-						<TextareaControl
-							label="Note"
-							help="Note to display to user"
-							value={ this.state.promise.note }
-							onChange={ (value: any) => {
-								const state = Object.assign( {}, this.state.promise );
-								state.note = value;
+								state.pseudo = value;
+								state.asset = null;
+								state.quantity = 0;
 								this.setState( { promise: state } );
 							} }
 						/>
 					</div>
-				}
+					<div>
+						<label>Asset
+							<div style={{opacity:0.8, marginBottom: '12px'}}>Name of the asset that will be promised.</div>
+							{ this.state.promise.pseudo == false
+								?	<AssetSearchField
+										assets={ this.getAssetOptions() }
+										value={ this.state.promise.asset }
+										onChange={ ( value: any ) => {
+											const state = Object.assign( {}, this.state.promise );
+											state.asset = value;
+											this.setState( { promise: state } );
+										} }
+									/>
+								:	<TextControl
+										value={ this.state.promise.asset }
+										onChange={ (value: any) => {
+											const state = Object.assign( {}, this.state.promise );
+											state.asset = value;
+											this.setState( { promise: state } );
+										} }
+									/>
+							}
+						</label>
+					</div>
+					{ this.isAssetValid() &&
+						<div>
+							<label>
+								Quantity
+								<Flex justify="flex-start" align="center" style={ { paddingTop: '12px' } }>
+									<NumberControl
+										type="number"
+										value={ this.state.promise.quantity }
+										
+										style={ { maxWidth: '100px' } }
+										onChange={ (value: any) => {
+											const state = Object.assign( {}, this.state.promise );
+											state.quantity = value;
+											this.setState( { promise: state } );
+										} }
+									/>
+									{ this.state.promise.pseudo == false &&
+										<span>
+											<span>of / </span>
+											<span title={ this.getMaxCount() }>
+												<strong>{ parseFloat( this.getMaxCount().toFixed( 4 ) ) }</strong>
+											</span>
+										</span>
+									}
+								</Flex>
+							</label>
+							<TextControl
+								label="Ref"
+								help="Extra reference data"
+								value={ this.state.promise.ref }
+								onChange={ (value: any) => {
+									const state = Object.assign( {}, this.state.promise );
+									state.ref = value;
+									this.setState( { promise: state } );
+								} }
+							/>
+							<TextareaControl
+								label="Note"
+								help="Note to display to user"
+								value={ this.state.promise.note }
+								onChange={ ( value: any ) => {
+									const state = Object.assign( {}, this.state.promise );
+									state.note = value;
+									this.setState( { promise: state } );
+								} }
+							/>
+						</div>
+					}
+				</Flex>
 				<Flex justify="flex-start">
 					<Button
 						isPrimary

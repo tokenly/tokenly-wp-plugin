@@ -33,14 +33,24 @@ export class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
 		return (
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
-					<div>
-						<span>№ </span>
-						<a 
-							href={ `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }
-						>
-							{ this.props.promise.promise_id }
-						</a>
-					</div>
+					<Flex
+						align="center"
+						justify="flex-start"
+					>
+						<span>
+							<span>№ </span>
+							<strong>
+								<a href={ `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }>
+									{ this.props.promise.promise_id }
+								</a>
+							</strong>
+						</span>
+						{ this.props?.promise?.pseudo == true &&
+							<span>
+								<span className="tokenly-component-chip">pseudo</span>
+							</span>
+						}
+					</Flex>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
 					<Flex style={ { width: '100%', alignItems: 'center' } }>

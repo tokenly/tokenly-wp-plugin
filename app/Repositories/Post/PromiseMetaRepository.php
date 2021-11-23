@@ -61,6 +61,11 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		return $meta[0] ?? null;
 	}
 	
+	/**
+	 * Creates a new promise meta post
+	 * @param array $params New promise meta post data
+	 * @return PromiseMetaInterface
+	 */
 	public function store( array $params ) {
 		if ( !isset( $params['promise_id'] ) ) {
 			return;

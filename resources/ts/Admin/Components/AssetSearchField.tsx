@@ -13,6 +13,7 @@ interface AssetSearchFieldProps {
 	assets: any;
 	label?: string;
 	help?: string;
+	value: string;
 }
 
 interface AssetSearchFieldState {
@@ -40,11 +41,11 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 	}
 	
 	onKeywordsChange( keywords: string ) {
-		if ( keywords == '' ) {
+		if ( !keywords || keywords == '' ) {
 			return;
 		}
-		let results = this.props.assets.filter( ( value: string ) => {
-			return value.toLowerCase().indexOf( keywords.toLowerCase() ) >= 0;
+		let results = this.props.assets.filter( ( asset: string ) => {
+			return asset.toLowerCase().indexOf( keywords.toLowerCase() ) >= 0;
 		} );
 		if ( results?.length > 0 ) {
 			results = results.map( ( result: string ) => {
@@ -83,7 +84,7 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 					<ComboboxControl
 						label={ this.props.label }
 						help={ this.props.help }
-						value={ this.state.keywords }
+						value={ this.props.value }
 						onChange={ ( value: any ) => {
 							this.onAssetChange( value );
 						} }
@@ -93,9 +94,6 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 						} }
 					/>
 				</div>
-				{/* <div>
-					<span>Available: </span><span><strong>{ this.getAssetsAvailable() }</strong></span>
-				</div> */}
 			</div>
 		)
 	}

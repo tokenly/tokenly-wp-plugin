@@ -5040,11 +5040,11 @@ class AssetSearchField extends react_1.Component {
         this.getAssetsAvailable = this.getAssetsAvailable.bind(this);
     }
     onKeywordsChange(keywords) {
-        if (keywords == '') {
+        if (!keywords || keywords == '') {
             return;
         }
-        let results = this.props.assets.filter((value) => {
-            return value.toLowerCase().indexOf(keywords.toLowerCase()) >= 0;
+        let results = this.props.assets.filter((asset) => {
+            return asset.toLowerCase().indexOf(keywords.toLowerCase()) >= 0;
         });
         if ((results === null || results === void 0 ? void 0 : results.length) > 0) {
             results = results.map((result) => {
@@ -5078,7 +5078,7 @@ class AssetSearchField extends react_1.Component {
     render() {
         return (React.createElement("div", { style: { marginBottom: '12px' } },
             React.createElement("div", { style: { height: '40px' } },
-                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.state.keywords, onChange: (value) => {
+                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.props.value, onChange: (value) => {
                         this.onAssetChange(value);
                     }, options: this.state.assets, onFilterValueChange: (keywords) => {
                         this.onKeywordsChange(keywords);
@@ -5282,6 +5282,102 @@ exports.ConfirmModal = ConfirmModal;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx":
+/*!*******************************************************************!*\
+  !*** ./resources/ts/Admin/Components/IntegrationSettingsForm.tsx ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class IntegrationSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    render() {
+        var _a, _b, _c;
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
+            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_a = this.props.status) !== null && _a !== void 0 ? _a : false }),
+            React.createElement(components_1.TextControl, { label: "Client ID", value: (_b = this.props.settings.client_id) !== null && _b !== void 0 ? _b : '', onChange: (value) => {
+                    let newSettings = Object.assign({}, this.props.settings);
+                    newSettings.client_id = value;
+                    this.onChange(newSettings);
+                } }),
+            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_c = this.props.settings.client_secret) !== null && _c !== void 0 ? _c : '', onChange: (value) => {
+                    let newSettings = Object.assign({}, this.props.settings);
+                    newSettings.client_secret = value;
+                    this.onChange(newSettings);
+                } })));
+    }
+}
+exports.IntegrationSettingsForm = IntegrationSettingsForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx":
+/*!*******************************************************************!*\
+  !*** ./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsHelp = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+class IntegrationSettingsHelp extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var _a, _b, _c, _d;
+        return (React.createElement("div", null,
+            React.createElement("ul", { className: "tk_steps" },
+                React.createElement("li", null,
+                    React.createElement("span", null, "1. Add a new application on "),
+                    React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
+                    "."),
+                React.createElement("li", null, "2. Enter the received app credentials below."),
+                React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features.")),
+            React.createElement("div", { className: "tk_app_details" },
+                React.createElement("h3", null, "Register Client Application"),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "CLIENT NAME: ")),
+                    React.createElement("span", null, "Random Input")),
+                React.createElement("br", null),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "APP HOMEPAGE URL: ")),
+                    React.createElement("a", { href: (_a = this.props) === null || _a === void 0 ? void 0 : _a.appHomepageUrl, target: "_blank" }, (_b = this.props) === null || _b === void 0 ? void 0 : _b.appHomepageUrl)),
+                React.createElement("br", null),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
+                    React.createElement("a", { href: (_c = this.props) === null || _c === void 0 ? void 0 : _c.clientAuthUrl, target: "_blank" }, (_d = this.props) === null || _d === void 0 ? void 0 : _d.clientAuthUrl)))));
+    }
+}
+exports.IntegrationSettingsHelp = IntegrationSettingsHelp;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/PromiseCard.tsx":
 /*!*******************************************************!*\
   !*** ./resources/ts/Admin/Components/PromiseCard.tsx ***!
@@ -5302,11 +5398,17 @@ class PromiseCard extends react_1.Component {
         super(props);
     }
     render() {
+        var _a, _b;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
-                React.createElement("div", null,
-                    React.createElement("span", null, "\u2116 "),
-                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+                React.createElement(components_1.Flex, { align: "center", justify: "flex-start" },
+                    React.createElement("span", null,
+                        React.createElement("span", null, "\u2116 "),
+                        React.createElement("strong", null,
+                            React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+                    ((_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.pseudo) == true &&
+                        React.createElement("span", null,
+                            React.createElement("span", { className: "tokenly-component-chip" }, "pseudo")))),
             React.createElement(components_1.CardBody, { style: { width: '100%' } },
                 React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
                     React.createElement("div", { style: { flex: 1 } },
@@ -5551,16 +5653,18 @@ class PromiseParticipants extends react_1.Component {
         super(props);
     }
     render() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
         return (React.createElement(components_1.Flex, { gap: 0, align: "center", justify: "flex-start" },
             React.createElement("span", null, "Participants: "),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", null,
-                React.createElement("a", { href: `/tokenpass-user/${(_b = (_a = this.props.promise.promise_meta) === null || _a === void 0 ? void 0 : _a.source_user) === null || _b === void 0 ? void 0 : _b.id}` }, (_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.name)),
+            React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.destination }, ((_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.id)
+                ? React.createElement("a", { href: `/tokenpass-user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
+                : React.createElement("span", null, "unknown")),
             React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", null,
-                React.createElement("a", { href: `/tokenpass-user/${(_h = (_g = (_f = this.props.promise) === null || _f === void 0 ? void 0 : _f.promise_meta) === null || _g === void 0 ? void 0 : _g.destination_user) === null || _h === void 0 ? void 0 : _h.id}` }, (_l = (_k = (_j = this.props.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.destination_user) === null || _l === void 0 ? void 0 : _l.name))));
+            React.createElement("strong", { title: (_o = (_m = this.props) === null || _m === void 0 ? void 0 : _m.promise) === null || _o === void 0 ? void 0 : _o.source }, ((_r = (_q = (_p = this.props.promise) === null || _p === void 0 ? void 0 : _p.promise_meta) === null || _q === void 0 ? void 0 : _q.destination_user) === null || _r === void 0 ? void 0 : _r.id)
+                ? React.createElement("a", { href: `/tokenpass-user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
+                : React.createElement("span", null, "unknown"))));
     }
 }
 exports.PromiseParticipants = PromiseParticipants;
@@ -5644,6 +5748,7 @@ class PromiseStoreForm extends react_1.Component {
                 source: null,
                 destination: null,
                 asset: null,
+                pseudo: false,
                 quantity: 0,
                 ref: null,
                 note: null,
@@ -5738,67 +5843,86 @@ class PromiseStoreForm extends react_1.Component {
     }
     getMaxCount() {
         const asset = this.getCurrentAsset();
-        console.log(asset);
         if (!asset) {
             return null;
         }
         return asset.balance;
     }
     isAssetValid() {
+        var _a, _b;
         const asset = this.getCurrentAsset();
-        if (asset) {
+        if (asset || ((_b = (_a = this.state) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.pseudo) == true) {
             return true;
         }
         return false;
     }
     render() {
         return (React.createElement("form", { style: { width: '100%', maxWidth: '320px' } },
-            React.createElement("div", { style: { marginBottom: '12px' } },
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { width: '100%' } },
                 React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source, options: this.getSourceOptions(), onChange: (value) => {
                         this.onSourceChange(value);
-                    }, help: "Source address to use." })),
-            React.createElement("div", null,
-                React.createElement("label", null,
-                    "Destination",
-                    React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. The user who will receive the asset."),
-                    React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.destination = value;
-                            this.setState({ promise: state });
-                        } }))),
-            React.createElement("div", null,
-                React.createElement("label", null,
-                    "Asset",
-                    React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
-                    React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.asset = value;
-                            this.setState({ promise: state });
-                        } }))),
-            this.isAssetValid() &&
+                    }, help: "Source address to use." }),
                 React.createElement("div", null,
                     React.createElement("label", null,
-                        "Quantity",
-                        React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
-                            React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
-                                    const state = Object.assign({}, this.state.promise);
-                                    state.quantity = value;
-                                    this.setState({ promise: state });
-                                } }),
-                            React.createElement("span", null,
-                                React.createElement("span", null, "of / "),
-                                React.createElement("span", { title: this.getMaxCount() },
-                                    React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
-                    React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
+                        "Destination",
+                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. The user who will receive the asset."),
+                        React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.destination = value;
+                                this.setState({ promise: state });
+                            } }))),
+                React.createElement("div", null,
+                    React.createElement(components_1.CheckboxControl, { label: "Pseudo promise", help: "Pseudo promises allow arbitrary asset names", checked: this.state.promise.pseudo, onChange: (value) => {
                             const state = Object.assign({}, this.state.promise);
-                            state.ref = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.TextareaControl, { label: "Note", help: "Note to display to user", value: this.state.promise.note, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.note = value;
+                            state.pseudo = value;
+                            state.asset = null;
+                            state.quantity = 0;
                             this.setState({ promise: state });
                         } })),
+                React.createElement("div", null,
+                    React.createElement("label", null,
+                        "Asset",
+                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
+                        this.state.promise.pseudo == false
+                            ? React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), value: this.state.promise.asset, onChange: (value) => {
+                                    const state = Object.assign({}, this.state.promise);
+                                    state.asset = value;
+                                    this.setState({ promise: state });
+                                } })
+                            : React.createElement(components_1.TextControl, { value: this.state.promise.asset, onChange: (value) => {
+                                    const state = Object.assign({}, this.state.promise);
+                                    state.asset = value;
+                                    this.setState({ promise: state });
+                                } }))),
+                this.isAssetValid() &&
+                    React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Quantity",
+                            React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
+                                React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
+                                        const state = Object.assign({}, this.state.promise);
+                                        state.quantity = value;
+                                        this.setState({ promise: state });
+                                    } }),
+                                this.state.promise.pseudo == false &&
+                                    React.createElement("span", null,
+                                        React.createElement("span", null, "of / "),
+                                        React.createElement("span", { title: this.getMaxCount() },
+                                            React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
+                        React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.ref = value;
+                                this.setState({ promise: state });
+                            } }),
+                        React.createElement(components_1.TextareaControl, { label: "Note", help: "Note to display to user", value: this.state.promise.note, onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.note = value;
+                                this.setState({ promise: state });
+                            } }))),
             React.createElement(components_1.Flex, { justify: "flex-start" },
                 React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
                         this.onSubmit();
@@ -5833,14 +5957,17 @@ class SavePanel extends react_1.Component {
         super(props);
     }
     render() {
-        return (React.createElement(components_1.Panel, null,
-            React.createElement(components_1.PanelBody, null,
-                React.createElement(components_1.PanelRow, { className: "save-button-container" },
-                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
-                            this.props.onClick();
-                        } }, "Save settings"),
-                    this.props.saving === true &&
-                        React.createElement(components_1.Spinner, null)))));
+        var _a;
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "row", justify: "flex-start" },
+            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                    this.props.onClick();
+                } }, (_a = this.props.label) !== null && _a !== void 0 ? _a : 'Save settings'),
+            this.props.saving === true &&
+                React.createElement(components_1.Spinner, null)));
     }
 }
 exports.SavePanel = SavePanel;
@@ -6682,6 +6809,7 @@ class PromiseShowPage extends react_1.Component {
         this.state = {
         //
         };
+        console.log(this.props.pageData);
     }
     dateFormatted(date) {
         if (date) {
@@ -6823,7 +6951,8 @@ const React = __webpack_require__(/*! react */ "react");
 const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
 const react_1 = __webpack_require__(/*! react */ "react");
 const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resources/ts/Admin/Components/SavePanel.tsx");
-const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
+const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/IntegrationSettingsForm */ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx");
+const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {
@@ -6836,7 +6965,8 @@ class SettingsPage extends react_1.Component {
             },
             saving: false,
         };
-        this.onSave = this.onSave.bind(this);
+        this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind(this);
+        this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
     }
     setClientId(value) {
@@ -6849,7 +6979,7 @@ class SettingsPage extends react_1.Component {
         state.integrationSettings.client_secret = value;
         this.setState(state);
     }
-    onSave() {
+    onIntegrationSettingsSave() {
         this.setState({ saving: true });
         this.settingsRepository.update(this.state.integrationSettings).then(result => {
             this.setState({ saving: false });
@@ -6858,50 +6988,24 @@ class SettingsPage extends react_1.Component {
             console.log(error);
         });
     }
+    onIntegrationSettingsChange(newSettings) {
+        this.setState({ integrationSettings: newSettings });
+    }
     render() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+        var _a, _b, _c, _d, _e, _f, _g;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
-            React.createElement(components_1.Panel, { header: "Integration settings" },
-                React.createElement(components_1.PanelBody, null,
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, { title: "Integration settings" },
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement("ul", { className: "tk_steps" },
-                            React.createElement("li", null,
-                                React.createElement("span", null, "1. Add a new application on "),
-                                React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
-                                "."),
-                            React.createElement("li", null, "2. Enter the received app credentials below."),
-                            React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features."))),
+                        React.createElement(IntegrationSettingsHelp_1.IntegrationSettingsHelp, { appHomepageUrl: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, clientAuthUrl: (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.client_auth_url })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement("div", { className: "tk_app_details" },
-                            React.createElement("h3", null, "Register Client Application"),
-                            React.createElement("span", null,
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "CLIENT NAME: ")),
-                                React.createElement("span", null, "Random Input")),
-                            React.createElement("br", null),
-                            React.createElement("span", null,
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "APP HOMEPAGE URL: ")),
-                                React.createElement("a", { href: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, target: "_blank" }, (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.app_homepage_url)),
-                            React.createElement("br", null),
-                            React.createElement("span", null,
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
-                                React.createElement("a", { href: (_f = (_e = this.props.pageData) === null || _e === void 0 ? void 0 : _e.integration_data) === null || _f === void 0 ? void 0 : _f.client_auth_url, target: "_blank" }, (_h = (_g = this.props.pageData) === null || _g === void 0 ? void 0 : _g.integration_data) === null || _h === void 0 ? void 0 : _h.client_auth_url)))),
+                        React.createElement(IntegrationSettingsForm_1.IntegrationSettingsForm, { status: (_g = (_f = (_e = this.props.pageData) === null || _e === void 0 ? void 0 : _e.integration_data) === null || _f === void 0 ? void 0 : _f.status) !== null && _g !== void 0 ? _g : false, settings: this.state.integrationSettings, onChange: this.onIntegrationSettingsChange })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.Flex
-                        //@ts-ignore
-                        , { 
-                            //@ts-ignore
-                            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
-                            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_l = (_k = (_j = this.props.pageData) === null || _j === void 0 ? void 0 : _j.integration_data) === null || _k === void 0 ? void 0 : _k.status) !== null && _l !== void 0 ? _l : false }),
-                            React.createElement(components_1.TextControl, { label: "Client ID", value: (_m = this.state.integrationSettings.client_id) !== null && _m !== void 0 ? _m : '', onChange: (value) => {
-                                    this.setClientId(value);
-                                } }),
-                            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_o = this.state.integrationSettings.client_secret) !== null && _o !== void 0 ? _o : '', onChange: (value) => {
-                                    this.setClientSecret(value);
-                                } }))))),
-            React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save Integration settings", saving: this.state.saving, onClick: this.onIntegrationSettingsSave })))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, { title: "TCA settings" },
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.saving, onClick: this.onIntegrationSettingsSave }))))));
     }
 }
 __decorate([

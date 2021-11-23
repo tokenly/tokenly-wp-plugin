@@ -108,6 +108,10 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			if ( $this->can_register( $key ) ) {
 				register_post_type( $name, $args );
 				if ( isset( $route['edit_callback'] ) ) {
+					$callable = $route['edit_callback'];
+					$route['edit_callback'] = function() use ( $callable ) {
+						$this->render_route( $callable );
+					};
 					add_action( 'edit_form_advanced', $route['edit_callback'] );
 				}
 			}

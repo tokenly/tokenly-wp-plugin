@@ -9,7 +9,7 @@ use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Components\ButtonLoginComponent;
+use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 
 /**
  * Handles the Tokenpass authentication flow (OAuth)
@@ -29,7 +29,7 @@ class AuthService implements AuthServiceInterface {
 		UserRepositoryInterface $user_repository,
 		IntegrationSettingsInterface $settings,
 		CurrentUserInterface $current_user,
-		ButtonLoginComponent $button_login_component,
+		ButtonLoginComponentInterface $button_login_component,
 		string $oauth_callback_route
 	) {
 		$this->client = $client;

@@ -1,1 +1,54 @@
+@use '/resources/scss/variables' as *;
 @use '/resources/scss/Components/ButtonLoginComponent.scss' as *;
+
+.tokenly-component-chip {
+	background-color: transparent;
+	border: 1px solid var(--wp-admin-theme-color);
+	padding: 2px 8px;
+	font-size: 0.775rem;
+	color: var(--wp-admin-theme-color);
+	font-weight: 400;
+	border-radius: 12px;
+}
+
+.tokenly-component-button {
+	display: inline;
+	background-color: $color-primary;
+	color: white;
+	cursor: pointer;
+	border: none;
+	font-size: 14px;
+	font-weight: 500;
+	padding: 8px 18px;
+	border-radius: 25px 25px 25px 25px;
+	transition: none;
+	text-decoration: none !important;
+	&.with-icon {
+		display: inline-grid;
+		grid-template-columns: 32px 1fr;
+		flex-direction: row;
+		grid-column-gap: 8px;
+		align-items: center;
+		.icon {
+			display: flex;
+			align-items: center;
+			svg {
+				* {
+					fill: white;
+				}
+				width: 32px;
+				height: 32px;
+			}
+		}
+	}
+	.title {
+		color: white;
+		text-decoration: none;
+		text-decoration-color: white;
+	}
+	&:hover {
+		.title {
+			text-decoration: underline;
+		}
+	}
+}

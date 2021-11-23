@@ -23,12 +23,12 @@ class OauthUserRepository implements OauthUserRepositoryInterface {
 		$this->oauth_user_factory = $oauth_user_factory;
 	}
 
-	public function show( $user_id ) {
+	public function show( int $user_id ) {
 		$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
 		if ( !$oauth_token ) {
 			return;
 		}
-		if ( isset( $this->user_cahce[ $oauth_token ] ) ) {
+		if ( isset( $this->user_cache[ $oauth_token ] ) ) {
 			$oauth_token = $this->user_cache[ $oauth_user ];
 		} else {
 			$oauth_user = $this->client->getUserByToken( $oauth_token );

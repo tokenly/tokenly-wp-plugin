@@ -3,19 +3,21 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+
 
 class PromiseRepository implements PromiseRepositoryInterface {
 	protected $client;
-	protected $user_repository;
+	protected $oauth_user_repository;
 	protected $promise_factory;
 	protected $promise_collection_factory;
 	protected $promise_meta_repository;
@@ -25,16 +27,14 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		UserRepositoryInterface $user_repository,
-		PromiseFactoryInterface $promise_factory,
+		OauthUserRepositoryInterface $oauth_user_repository,
 		PromiseCollectionFactoryInterface $promise_collection_factory,
 		PromiseMetaRepositoryInterface $promise_meta_repository,
 		SourceRepositoryInterface $source_repository,
 		CurrentUserInterface $current_user
 	) {
 		$this->client = $client;
-		$this->user_repository = $user_repository;
-		$this->promise_factory = $promise_factory;
+		$this->oauth_user_repository = $oauth_user_repository;
 		$this->promise_collection_factory = $promise_collection_factory;
 		$this->promise_meta_repository = $promise_meta_repository;
 		$this->source_repository = $source_repository;
@@ -65,10 +65,15 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @return PromiseInterface Promise found
 	 */
 	public function show( int $promise_id, array $params = array() ) {
-		$promises = $this->index( $params );
-		$promises->key_by_field( 'promise_id' );
-		$promise = $promises[ $promise_id ] ?? null;
-		return $promise;
+		$promise = $this->client->getPromisedTransaction( $promise_id );
+		if ( !$promise ) {
+			return false;
+		}
+		$collection = $this->promise_collection_factory->create( array( $promise ) );
+		if ( isset( $params['with'] ) ) {
+			$collection = $this->handle_with( $collection, $params['with'] );
+		}
+		return $collection[0];
 	}
 
 	/**
@@ -87,69 +92,90 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @return void
 	 */
 	public function store( array $params = array() ) {
-		$user_id = $params['destination'] ?? null;
-		if ( !$user_id ) {
-			return;
+		if (
+			!isset( $params['asset'] ) || 
+			!isset( $params['source'] ) ||
+			!isset( $params['destination'] ) ||
+			!isset( $params['quantity'] ) ||
+			!isset( $params['pseudo'] )
+		) {
+			throw new \Exception( 'Missing required parameters.' );
 		}
-		$user = $this->user_repository->show( array( 
-			'id' => $user_id,
+		$asset = $params['asset'];
+		$quantity = floatval( $params['quantity'] );
+		$pseudo = boolval( $params['pseudo'] );
+		$source = $params['source'];
+		$source = $this->source_repository->show( array(
+			'address' => $params['source'],
+			'with'    => array( 'address' ),
 		) );
-		if ( !$user ) {
-			return;
+		if ( !$source ||
+			!isset( $source->address_data ) ||
+			!isset( $source->address )
+		) {
+			throw new \Exception( 'Source not found or no address data.' );
 		}
-		$profile = $user->get_oauth_user();
-		if ( !$profile ) {
-			return;
+		$source_address = $source->address;
+		$destination = $params['destination'];
+		$destination_oauth_user = $this->oauth_user_repository->show( $destination );
+		if ( !$destination_oauth_user ) {
+			throw new \Exception( 'Destination oauth user not found.' );
 		}
-		$destination = 'user:' . $profile->username ?? null;
-		if ( isset( $params['source'] ) ) {
-			$source = $this->source_repository->show( array(
-				'address' => $params['source'],
-				'with'    => array( 'address' ),
-			) );
-			if ( $source ) {
-				$address_data = $source->address_data;
-				if ( $address_data ) {
-					$balances = $address_data->balances;
-					if ( $balances ) {
-						$balances = $balances->key_by_field( 'asset' );
-						$balance = $balances[ $params['asset'] ] ?? null;
-						if ( $balance ) {
-							$precision = $balance->precision ?? 0;
-							$quantity = $params['quantity'] ?? null;
-							if ( $precision > 0 ) {
-								$multiplier = intval( 1 . str_repeat( 0, $precision ) );
-								$quantity = $quantity * $multiplier;
-							}
-						}
-					}
-				}
-			}
+		$destination = $this->get_destination( $destination_oauth_user );
+		if ( !$destination ) {
+			throw new \Exception( 'Destination is invalid.' );
 		}
+		$address_data = $source->address_data;
+		if (
+			!isset( $address_data->type ) ||
+			!isset( $address_data->balances )
+		) {
+			throw new \Exception( 'Address data is incomplete.' );
+		}
+		$type = $address_data->type;
+		$balances = $address_data->balances;
+		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balances );
+		$ref = $params['ref'] ?? '';
+		$note = $params['note'] ?? '';
+		$expiration = null;
+		$txid = null;
+		$fingerprint = null;
+		$protocol = 'counterparty';
 		$promise_data = $this->client->promiseTransaction(
-			$params['source'] ?? null,
+			$source_address,
 			$destination,
-			$params['asset'] ?? null,
+			$asset,
 			$quantity,
-			null,
-			null,
-			null,
-			$params['ref'] ?? null,
-			'bitcoin',
-			'counterparty',
-			true,
-			$params['note'] ?? null
+			$expiration,
+			$txid,
+			$fingerprint,
+			$ref,
+			$type,
+			$protocol,
+			$pseudo,
+			$note
 		);
 		if ( !$promise_data ) {
-			return;
+			throw new \Exception( 'Promise was not created on the remote server.' );
 		}
-		$promise = $this->promise_factory->create( $promise_data );
-		$current_user_profile = $this->current_user->get_oauth_user();
-		$this->promise_meta_repository->store( array(
-			'promise_id'          => $promise->promise_id,
-			'source_user_id'      => $current_user_profile->id,
-			'destination_user_id' => $profile->id,
-		) );
+		if ( !isset( $promise_data['promise_id'] ) ) {
+			throw new \Exception( 'No ID on the returned promise.' );
+		}
+		$promise_id = $promise_data['promise_id'];
+		$promise = $this->show( $promise_id );
+		$promise_meta_data = array();
+		$current_oauth_user = $this->current_user->get_oauth_user();
+		if ( isset( $current_oauth_user->id ) ) {
+			$promise_meta_data['source_user_id'] = $current_oauth_user->id;
+		}
+		if ( isset( $destination_oauth_user->id ) ) {
+			$promise_meta_data['destination_user_id'] = $destination_oauth_user->id;
+		}
+		$promise_meta = $promise->add_meta( $promise_meta_data );
+		if ( !$promise_meta ) {
+			throw new \Exception( 'Promise meta was not added.' );
+		}
+		return $promise;
 	}
 
 	/**
@@ -159,6 +185,45 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 */
 	public function destroy( int $promise_id ) {
 		$this->client->deletePromisedTransaction( $promise_id );
+	}
+
+	/**
+	 * Prepares user destination field for promise storage
+	 * @param int $user_id WordPress user ID of the destination user
+	 * @return string
+	 */
+	protected function get_destination( OauthUserInterface $oauth_user ) {
+		if ( !isset( $oauth_user->username ) ) {
+			return false;
+		}
+		$destination = "user:{$oauth_user->username}";
+		return $destination;
+	}
+
+	/**
+	 * Searches for the specified asset in balances to get its precision then
+	 * applies the precision to the specified quantity
+	 * @param int $quantity Quantity to apply precision to
+	 * @param string $asset Asset name to get precision from
+	 * @param BalanceCollectionInterface $balances Collection of balances where
+	 * the asset data will be searched
+	 * @return int
+	 */
+	protected function apply_precision_to_quantity( int $quantity, string $asset, BalanceCollectionInterface $balances ) {
+		$balances = $balances->key_by_field( 'asset' );
+		if ( !isset( $balances[ $asset ] ) ) {
+			return $quantity;
+		}
+		$balance = $balances[ $asset ];
+		if ( !isset( $balance->precision ) ) {
+			return $quantity;
+		}
+		$precision = $balance->precision;
+		if ( $precision > 0 ) {
+			$multiplier = intval( 1 . str_repeat( 0, $precision ) );
+			$quantity = $quantity * $multiplier;
+		}
+		return $quantity;
 	}
 	
 	/**

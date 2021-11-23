@@ -5,8 +5,9 @@ namespace Tokenly\Wp\Components;
 use Tokenly\Wp\Components\Component;
 use Twig\Environment;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
 
-class CardTokenItemComponent extends Component {	
+class CardTokenItemComponent extends Component implements CardTokenItemComponentInterface {	
 	protected $meta_repository;
 	
 	public function __construct(

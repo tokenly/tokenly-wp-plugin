@@ -65,6 +65,7 @@ export interface PromiseStoreParams {
 	destination: number;
 	asset: string;
 	quantity: number;
+	pseudo: boolean;
 	ref: string;
 	note: string;
 }

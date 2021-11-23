@@ -25,6 +25,9 @@ use Tokenly\Wp\Routes\AdminRouter;
 use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\Wp\Routes\PostTypeRouter;
 use Tokenly\Wp\Routes\WebRouter;
+use Tokenly\Wp\Components\ButtonLoginComponent;
+use Tokenly\Wp\Components\ButtonLogoutComponent;
+use Tokenly\Wp\Components\CardTokenItemComponent;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
@@ -155,6 +158,9 @@ use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
+use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
+use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
+use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
@@ -211,6 +217,12 @@ return array(
 	SourceApiControllerInterface::class            => \DI\autowire( SourceApiController::class ),
 	UserApiControllerInterface::class              => \DI\autowire( UserApiController::class ),
 	WhitelistApiControllerInterface::class         => \DI\autowire( WhitelistApiController::class ),
+	//Components 
+	ButtonLoginComponentInterface::class           => \DI\autowire( ButtonLoginComponent::class )
+		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
+	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
+		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
+	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
 	//Services
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
 		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') ),
