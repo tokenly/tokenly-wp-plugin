@@ -42,21 +42,31 @@ class PromiseMeta implements PromiseMetaInterface {
 	
 	public function to_array() {
 		$meta = $this->meta_repository->index( $this->ID, array(
-			'promise_id',     
+			'promise_id',
 			'source_user_id',
 			'destination_user_id',
 		) );
+		$uuids = array();
+		if ( isset( $meta['source_user_id'] ) ) {
+			$uuids[] = $meta['source_user_id'];
+		}
+		if ( isset( $meta['destination_user_id'] ) ) {
+			$uuids[] = $meta['destination_user_id'];
+		}
 		$users = $this->user_repository->index( array(
-			'uuids' => array(
-				$meta['source_user_id'] ?? null,
-				$meta['destination_user_id'] ?? null,
-			)
+			'uuids' => $uuids,
 		) );
 		$users->key_by_uuid();
-		$source_user = $users[$meta['source_user_id']];
-		$source_user = $source_user->to_array();
-		$destination_user = $users[$meta['destination_user_id']];
-		$destination_user = $destination_user->to_array();
+		$source_user = null;
+		if ( isset( $meta['source_user_id'] ) && isset( $users[ $meta['source_user_id'] ] ) ) {
+			$source_user = $users[ $meta['source_user_id'] ];
+			$source_user = $source_user->to_array();
+		}
+		$destination_user = null;
+		if ( isset( $meta['destination_user_id'] ) && isset( $users[ $meta['destination_user_id'] ] ) ) {
+			$destination_user = $users[ $meta['destination_user_id'] ];
+			$destination_user = $destination_user->to_array();
+		}
 		$array = array(
 			'promise_id'       => $meta['promise_id'] ?? null, 
 			'source_user'      => $source_user,

@@ -16,6 +16,7 @@ class UserService implements UserServiceInterface {
 	) {
 		$this->user_repository = $user_repository;
 	}
+	
 	/**
 	 * Registers the service
 	 * @return void
