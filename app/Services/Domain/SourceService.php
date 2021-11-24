@@ -6,7 +6,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 
 class SourceService implements SourceServiceInterface {
-	protected $source_cache = array();
+	protected $source_cache;
 	protected $source_repository;
 
 	public function __construct(
@@ -19,12 +19,15 @@ class SourceService implements SourceServiceInterface {
 	 * Gets the list of registered source addresses
 	 * @return array
 	 */
-	public function index( array $params = array() ) {
+	public function index( array $params = array() ) {	
 		$sources;
 		if ( isset( $this->source_cache ) ) {
 			$sources = $this->source_cache;
 		} else {
 			$sources = $this->source_repository->index();
+			if ( $sources == false ) {
+				return false;
+			}
 			$this->source_cache = $sources;
 		}
 		if ( isset( $params['with'] ) ) {

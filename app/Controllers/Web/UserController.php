@@ -2,29 +2,25 @@
 
 namespace Tokenly\Wp\Controllers\Web;
 
-use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
-use Tokenly\Wp\Views\UserView;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Views\UserView;
 
 /**
  * Serves the public user views
  */
 class UserController implements UserControllerInterface {
-	protected $balance_repository;
-	protected $user_repository;
 	protected $user_service;
 	protected $user_view;
 	protected $current_user;
 
 	public function __construct(
-		BalanceRepositoryInterface $balance_repository,
-		UserRepositoryInterface $user_repository,
+		UserServiceInterface $user_service,
 		CurrentUserInterface $current_user,
 		UserView $user_view
 	) {
-		$this->user_repository = $user_repository;
+		$this->user_service = $user_service;
 		$this->current_user = $current_user;
 		$this->user_view = $user_view;
 	}
@@ -42,7 +38,7 @@ class UserController implements UserControllerInterface {
 		if ( $user_id == 'me' ) {
 			$user = $this->current_user;
 		} else {
-			$user = $this->user_repository->show( array(
+			$user = $this->user_service->show( array(
 				'id' => $user_id,
 			) );
 		}

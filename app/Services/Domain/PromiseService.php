@@ -2,21 +2,29 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
+use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
-use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
-class PromiseService implements PromiseServiceInterface {
+class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_cache = array();
+	protected $promise_collection_cache;
 	protected $promise_repository;
+	protected $promise_meta_service;
 	protected $source_service;
 
 	public function __construct(
 		PromiseRepositoryInterface $promise_repository,
+		PromiseMetaServiceInterface $promise_meta_service,
 		SourceServiceInterface $source_service
 	) {
 		$this->promise_repository = $promise_repository;
-		$this->source_service = $source_serivce;
+		$this->promise_meta_service = $promise_meta_service;
+		$this->source_service = $source_service;
 	}
 
 	/**
@@ -24,17 +32,17 @@ class PromiseService implements PromiseServiceInterface {
 	 * @return PromiseInterface[] Promises found
 	 */
 	public function index( array $params = array() ) {
-		$promises;
-		if ( isset( $this->promise_cache ) ) {
-			$promises = $this->promise_cache;
+		$promise_collection;
+		if ( isset( $this->promise_collection_cache ) ) {
+			$promise_collection = $this->promise_collection_cache;
 		} else {
-			$promises = $this->promise_repository->index();
-			$this->promise_cache = $promises;
+			$promise_collection = $this->promise_repository->index();
+			$this->promise_collection_cache = $promise_collection;
 		}
 		if ( isset( $params['with'] ) ) {
-			$promises = $this->handle_with( $promises, $params['with'] );
+			$promise_collection = $this->load_collection( $promise_collection, $params['with'] );
 		}
-		return $promises;
+		return $promise_collection;
 	}
 
 	/**
@@ -43,12 +51,17 @@ class PromiseService implements PromiseServiceInterface {
 	 * @return PromiseInterface Promise found
 	 */
 	public function show( int $promise_id, array $params = array() ) {
-		$promise = $this->promise_repository->show( $promise_id );
+		if ( isset( $this->promise_cache[ $promise_id ] ) ) {
+			$promise = $this->promise_cache[ $promise_id ];
+		} else {
+			$promise = $this->promise_repository->show( $promise_id );
+			$this->promise_cache[ $promise_id ] = $promise;
+		}
 		if ( !$promise ) {
 			return false;
 		}
 		if ( isset( $params['with'] ) ) {
-			$promise = $this->handle_with( $promise, $params['with'] );
+			$promise = $this->load( $promise, $params['with'] );
 		}
 		return $promise;
 	}
@@ -147,6 +160,73 @@ class PromiseService implements PromiseServiceInterface {
 		}
 		return $promise;
 	}
+	
+	/**
+	 * Destroys the existing promise
+	 * @param integer $promise_id Tokenpass promise index
+	 * @return void
+	 */
+	public function destroy( int $promise_id ) {
+		$this->promise_repository->destroy( $promise_id );
+	}
+
+	public function load( PromiseInterface $promise, array $relations ) {
+		$relations = $this->format_relations( $relations );
+		$load_definitions = $this->get_load_definitions();
+		foreach ( $relations as $key => $relation ) {
+			$promise = call_user_func( $load_definitions[ $key ], $promise, $relation );
+		}
+		return $promise;
+	}
+
+	public function load_collection( PromiseCollectionInterface $promise_collection, array $relations ) {
+		$relations = $this->format_relations( $relations );
+		$load_definitions = $this->get_load_definitions_collection();
+		foreach ( $relations as $key => $relation ) {
+			$promise_collection = call_user_func( $load_definitions[ $key ], $promise_collection, $relation );
+		}
+		return $promise_collection;
+	}
+
+	protected function get_load_definitions() {
+		return array(
+			'meta' => array( $this, 'load_promise_meta' ),
+		);
+	}
+
+	protected function get_load_definitions_collection() {
+		return array(
+			'meta' => array( $this, 'load_promise_meta_collection' ),
+		);
+	}
+
+	protected function load_promise_meta( PromiseInterface $promise, string $relation ) {
+		$promise_meta = $this->promise_meta_service->show( array(
+			'with'        => $relation,
+			'promise_ids' => array( $promise->promise_id ), 
+		) );
+		if ( !$promise_meta ) {
+			return $promise;
+		}
+		$promise->promise_meta = $promise;
+		return $promise;
+	}
+
+	protected function load_promise_meta_collection( PromiseCollectionInterface $promise_collection, string $relation ) {
+		$promise_ids = array_map( function( $promise ) {
+			return $promise->promise_id;	
+		}, ( array ) $promise_collection );
+		$promise_meta = $this->promise_meta_service->index( array(
+			'with'        => $relation,
+			'promise_ids' => $promise_ids, 
+		) );
+		$promise_meta->key_by_promise_id();
+		foreach ( ( array ) $promise_collection as &$promise ) {
+			$promise_id = $promise->promise_id;
+			$promise->promise_meta = $promise_meta[ $promise_id ] ?? array();
+		}
+		return $promise_collection;
+	}
 
 	/**
 	 * Prepares user destination field for promise storage
@@ -186,55 +266,6 @@ class PromiseService implements PromiseServiceInterface {
 		}
 		return $quantity;
 	}
-	
-	/**
-	 * Handles queries using parameter 'with'
-	 * @param PromiseCollectionInterface $promises Queried promises
-	 * @return PromiseCollectionInterface Modified promises
-	 */
-	protected function handle_with( PromiseCollectionInterface $promises, array $with = array() ) {
-		foreach ( $with as $with_rule ) {
-			$with_rule = explode( '.', $with_rule );
-			switch( $with_rule[0] ?? null ) {
-				case 'meta':
-					if ( count( $with_rule ) > 1 ) {
-						unset( $with_rule[0] );
-						$with_rule = implode( '.', $with_rule );
-					}
-					$promises = $this->handle_with_meta( $promises, array( $with_rule ) );
-					break;
-			}
-		}
-		return $promises;
-	}
 
-	/**
-	 * Appends promise meta objects to the queried promises (part of 'with' handler)
-	 * @param PromiseCollectionInterface $promises Queried promises
-	 * @return PromiseCollectionInterface Modified promises
-	 */
-	protected function handle_with_meta( PromiseCollectionInterface $promises, $with_rule ) {
-		$promise_ids = array_map( function( $promise ) {
-			return $promise->promise_id;	
-		}, ( array ) $promises );
-		$promise_meta = $this->promise_meta_repository->index( array(
-			'with'        => $with_rule,
-			'promise_ids' => $promise_ids, 
-		) );
-		$promise_meta->key_by_promise_id();
-		foreach ( ( array )$promises as &$promise ) {
-			$promise_id = $promise->promise_id;
-			$promise->promise_meta = $promise_meta[ $promise_id ] ?? array();
-		}
-		return $promises;
-	}
 
-		/**
-	 * Destroys the existing promise
-	 * @param integer $promise_id Tokenpass promise index
-	 * @return void
-	 */
-	public function destroy( int $promise_id ) {
-		$this->promise_repository->destroy( $promise_id );
-	}
 }

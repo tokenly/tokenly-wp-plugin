@@ -95,7 +95,7 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 			$store_params = array_merge( array(
 				'post_type'  => 'tokenly_promise_meta',
 			), $common_params );
-			$post = wp_insert_post( $store_params );
+			$post = $this->store( $store_params );
 		}
 		return $post;
 	}
@@ -106,12 +106,8 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 * @param array $params New post data
 	 * @return void
 	 */
-	public function update( int $post_id, array $params = array() ) {
-		$update_params = array(
-			'ID' => $post_id,
-		);
-		$update_params = array_merge( $update_params, $params );
-		$post = wp_update_post( $update_params );
+	public function update( array $params = array() ) {
+		$post = wp_update_post( $params );
 	}
 	
 	/**

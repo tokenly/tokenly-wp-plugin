@@ -6,8 +6,6 @@
 
 namespace Tokenly\Wp\Collections;
 
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
@@ -18,15 +16,11 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	protected $item_type = BalanceInterface::class;
 
 	public function __construct(
-		MetaRepositoryInterface $meta_repository,
-		TokenMetaRepositoryInterface $token_meta_repository,
 		WhitelistInterface $whitelist,
 		BalanceFactoryInterface $balance_factory,
 		array $items
 	) {
 		parent::__construct( $items );
-		$this->token_meta_repository = $token_meta_repository;
-		$this->meta_repository = $meta_repository;
 		$this->whitelist = $whitelist;
 		$this->balance_factory = $balance_factory;
 	}

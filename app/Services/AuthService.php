@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Services;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
@@ -17,7 +17,7 @@ use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 class AuthService implements AuthServiceInterface {
 	protected $client;
 	protected $oauth_user_factory;
-	protected $user_repository;
+	protected $user_service;
 	protected $settings;
 	protected $current_user;
 	protected $button_login_component;
@@ -26,7 +26,7 @@ class AuthService implements AuthServiceInterface {
 	public function __construct(
 		TokenpassAPIInterface $client,
 		OauthUserFactoryInterface $oauth_user_factory,
-		UserRepositoryInterface $user_repository,
+		UserServiceInterface $user_service,
 		IntegrationSettingsInterface $settings,
 		CurrentUserInterface $current_user,
 		ButtonLoginComponentInterface $button_login_component,
@@ -34,7 +34,7 @@ class AuthService implements AuthServiceInterface {
 	) {
 		$this->client = $client;
 		$this->oauth_user_factory = $oauth_user_factory;
-		$this->user_repository = $user_repository;
+		$this->user_service = $user_service;
 		$this->settings = $settings;
 		$this->current_user = $current_user;
 		$this->button_login_component = $button_login_component;
@@ -74,7 +74,7 @@ class AuthService implements AuthServiceInterface {
 			}
 			$user = $this->find_existing_user( $oauth_user );
 			if ( !$user ) {
-				$user = $this->user_repository->store( $oauth_user );
+				$user = $this->user_service->store( $oauth_user );
 			}
 		}
 		if ( !$user ) {
@@ -161,7 +161,7 @@ class AuthService implements AuthServiceInterface {
 		$email = $oauth_user->email ?? null;
 		$user;
 		if ( $uuid ) {
-			$user = $this->user_repository->show( array(
+			$user = $this->user_service->show( array(
 				'uuid' => $uuid,
 			) );
 			if ( $user ) {
@@ -169,7 +169,7 @@ class AuthService implements AuthServiceInterface {
 			}
 		}
 		if ( $email ) {
-			$user = $this->user_repository->show( array(
+			$user = $this->user_service->show( array(
 				'email' => $email,
 			) );
 			if ( $user ) {

@@ -28,7 +28,7 @@ class UserRepository implements UserRepositoryInterface {
 		$this->user_collection_factory = $user_collection_factory;
 	}
 
-	public function index( $params, $args ) {
+	public function index( array $params = array() ) {
 		$args = array(
 			'orderby'    => 'ID',
 			'order'      => 'ASC',

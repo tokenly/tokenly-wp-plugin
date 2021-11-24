@@ -26,10 +26,13 @@ class OauthUserService implements OauthUserServiceInterface {
 		}
 		$oauth_user;
 		if ( isset( $this->user_cache[ $oauth_token ] ) ) {
-			$oauth_token = $this->user_cache[ $oauth_user ];
+			$oauth_user = $this->user_cache[ $oauth_token ];
 		} else {
 			$oauth_user = $this->oauth_user_repository->show( $oauth_token );
 			$this->user_cache[ $oauth_token ] = $oauth_user;
+		}
+		if ( !$oauth_user ) {
+			return;
 		}
 		return $oauth_user;
 	}

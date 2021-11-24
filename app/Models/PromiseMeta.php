@@ -38,7 +38,7 @@ class PromiseMeta implements PromiseMetaInterface {
 	}
 	
 	public function to_array() {
-		$meta = $this->promise_meta_service->get_meta( $this->ID );
+		$meta = $this->promise_meta_service->get_promise_meta( $this->ID );
 		$uuids = array();
 		if ( isset( $meta['source_user_id'] ) ) {
 			$uuids[] = $meta['source_user_id'];

@@ -13,7 +13,6 @@ use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 class SourceRepository implements SourceRepositoryInterface {
 	protected $client;
 	protected $source_collection_factory;
-	protected $source_cache;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
@@ -43,11 +42,9 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return array
 	 */
 	public function index( array $params = array() ) {
-		if ( isset( $this->source_cache ) ) {
-			$sources = $this->source_cache;
-		} else {
-			$sources = $this->client->getProvisionalSourceList();
-			$this->source_cache = $sources;
+		$sources = $this->client->getProvisionalSourceList();
+		if ( $sources == false ) {
+			return false;
 		}
 		$sources = $this->source_collection_factory->create( $sources );
 		return $sources;

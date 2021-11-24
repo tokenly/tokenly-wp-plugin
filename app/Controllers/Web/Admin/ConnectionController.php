@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 use Tokenly\Wp\Views\Admin\ConnectionView;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
@@ -14,18 +14,18 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 class ConnectionController implements ConnectionControllerInterface {
 	public $connection_view;
 	public $auth_serivce;
-	protected $user_repository;
+	protected $user_service;
 	protected $current_user;
 
 	public function __construct(
 		ConnectionView $connection_view,
 		AuthServiceInterface $auth_serivce,
-		UserRepositoryInterface $user_repository,
+		UserServiceInterface $user_service,
 		CurrentUserInterface $current_user
 	) {
 		$this->connection_view = $connection_view;
 		$this->auth_service = $auth_serivce;
-		$this->user_repository = $user_repository;
+		$this->user_service = $user_service;
 		$this->current_user = $current_user;
 	}
 

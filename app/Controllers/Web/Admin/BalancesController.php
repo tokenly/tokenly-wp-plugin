@@ -3,7 +3,6 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Views\Admin\BalancesShowView;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
@@ -15,11 +14,9 @@ class BalancesController implements BalancesControllerInterface {
 	
 	public function __construct(
 		BalancesShowView $balances_show_view,
-		SourceRepositoryInterface $source_repository,
 		CurrentUserInterface $current_user
 	) {
 		$this->balances_show_view = $balances_show_view;
-		$this->source_repository = $source_repository;
 		$this->current_user = $current_user;
 	}
 

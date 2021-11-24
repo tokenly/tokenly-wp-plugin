@@ -6,7 +6,7 @@ use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\PostTypes\TokenMetaPostType;
 use Tokenly\Wp\PostTypes\PromiseMetaPostType;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
@@ -25,7 +25,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		TokenMetaPostType $token_meta_post_type,
 		PromiseMetaPostType $promise_meta_post_type,
 		TokenMetaControllerInterface $token_meta_controller,
-		TokenMetaRepositoryInterface $token_meta_repository,
+		TokenMetaServiceInterface $token_meta_service,
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
 		string $namespace
@@ -37,7 +37,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			'token_meta' => array(
 				'post_type'  => $token_meta_post_type,
 				'controller' => $token_meta_controller,
-				'repository' => $token_meta_repository,
+				'service'    => $token_meta_service,
 			),
 			'promise_meta'    => array(
 				'post_type'  => $promise_meta_post_type,
@@ -52,7 +52,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 
 	/**
 	 * Passes the data from the post edit page to
-	 * the post type repository
+	 * the post type service
 	 * @param int $post_id Post index
 	 * @param \WP_Post $post Post object
 	 * @param bool $update Is existing post
@@ -86,7 +86,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				'slug'          => 'token-meta',
 				'post_type'     => $this->post_types['token_meta']['post_type'],
 				'edit_callback' => array( $this->post_types['token_meta']['controller'], 'edit' ),
-				'save_callback' => array( $this->post_types['token_meta']['repository'], 'update' ),
+				'save_callback' => array( $this->post_types['token_meta']['service'], 'update' ),
 			),
 			'promise_meta'   => array(
 				'name'          => 'promise_meta',

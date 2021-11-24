@@ -66,8 +66,8 @@ class User implements UserInterface, CurrentUserInterface {
 		return $can_connect;
 	}
 
-	public function connect( OauthUserInterface $oauth_user, string $access_token ) {
-		$this->user_service->connect( $this->ID );
+	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
+		$this->user_service->connect( $this->ID, $oauth_user, $oauth_token );
 	}
 
 	/**
@@ -83,7 +83,8 @@ class User implements UserInterface, CurrentUserInterface {
 	 * @return string
 	 */
 	protected function get_oauth_token() {
-		$this->user_service->get_oauth_token( $this->ID );
+		$oauth_token = $this->user_service->get_oauth_token( $this->ID );
+		return $oauth_token;
 	}
 
 	/**
@@ -91,7 +92,8 @@ class User implements UserInterface, CurrentUserInterface {
 	 * @return OauthUserInterface
 	 */
 	public function get_oauth_user() {
-		$this->user_service->get_oauth_user( $this->ID );
+		$oauth_user = $this->user_service->get_oauth_user( $this->ID );
+		return $oauth_user;
 	}
 	
 	public function is_guest() {

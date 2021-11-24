@@ -29,6 +29,7 @@ export class SavePanel extends Component<SavePanelProps, SavePanelState> {
 				//@ts-ignore
 				direction="row"
 				justify="flex-start"
+				style={ { marginTop: '8px' } }
 			>
 				<Button
 					isPrimary

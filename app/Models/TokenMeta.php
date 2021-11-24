@@ -32,12 +32,14 @@ class TokenMeta implements TokenMetaInterface {
 	public function __set( $key, $val ) {
 		return $this->_instance->$key = $val;
 	}
+
+	public function get_token_meta() {
+		$meta = $this->token_meta_service->get_token_meta( $this->ID );
+		return $meta;
+	}
 	
 	public function to_array() {
-		$meta = $this->token_meta_service->index( $this->ID, array(
-			'asset',
-			'extra',
-		) );
+		$meta = $this->get_token_meta();
 		$meta['name'] = $this->post_title;
 		$meta['description'] = $this->post_excerpt;
 		return $meta;

@@ -29,7 +29,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * Fetches all currently promised transactions
 	 * @return PromiseCollectionInterface Promises found
 	 */
-	public function index( array $params = array() ) {
+	public function index() {
 		$promises = $this->client->getPromisedTransactionList();
 		$promises = $this->promise_collection_factory->create( $promises );
 		return $promises;
@@ -40,7 +40,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return PromiseInterface Promise found
 	 */
-	public function show( int $promise_id, array $params = array() ) {
+	public function show( int $promise_id ) {
 		$promise = $this->client->getPromisedTransaction( $promise_id );
 		if ( !$promise ) {
 			return false;

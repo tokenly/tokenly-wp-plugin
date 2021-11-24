@@ -2,6 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Services\Domain;
 
-interface AddressServiceInteface {
+interface AddressServiceInterface {
 	//
 }

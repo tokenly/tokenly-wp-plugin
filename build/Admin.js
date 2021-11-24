@@ -5962,7 +5962,7 @@ class SavePanel extends react_1.Component {
         //@ts-ignore
         , { 
             //@ts-ignore
-            direction: "row", justify: "flex-start" },
+            direction: "row", justify: "flex-start", style: { marginTop: '8px' } },
             React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
                     this.props.onClick();
                 } }, (_a = this.props.label) !== null && _a !== void 0 ? _a : 'Save settings'),

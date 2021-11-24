@@ -3,18 +3,18 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
 class UserController implements UserControllerInterface {
 	public function __construct(
-		UserRepositoryInterface $user_repository
+		UserServiceInterface $user_service
 	) {
-		$this->user_repository = $user_repository;
+		$this->user_service = $user_service;
 	}
 	
 	public function index( $request ) {
 		$params = $request->get_params();
-		$users = $this->user_repository->index( $params );
+		$users = $this->user_service->index( $params );
 		return $users;
 	}
 
@@ -23,7 +23,7 @@ class UserController implements UserControllerInterface {
 		if ( !$id ) {
 			return;
 		}
-		$user = $this->user_repository->show( $id );
+		$user = $this->user_service->show( $id );
 		return $user;
 	}
 }

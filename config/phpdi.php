@@ -14,13 +14,13 @@ use Tokenly\Wp\Services\Domain\OauthUserService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
 use Tokenly\Wp\Services\Domain\PromiseService;
 use Tokenly\Wp\Services\Domain\SourceService;
+use Tokenly\Wp\Services\Domain\TokenMetaService;
 use Tokenly\Wp\Services\Domain\UserService;
 use Tokenly\Wp\Services\Domain\WhitelistService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
-use Tokenly\Wp\Repositories\IntegrationRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
 use Tokenly\Wp\Repositories\UserRepository;
 use Tokenly\Wp\Repositories\Post\PromiseMetaRepository;
@@ -102,13 +102,13 @@ use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\IntegrationRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
@@ -247,7 +247,7 @@ return array(
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Services - Domain
-	AddressServiceInteface::class                  => \DI\autowire( AddressService::class ),
+	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
 	IntegrationServiceInterface::class             => \DI\autowire( IntegrationService::class ),
 	IntegrationSettingsServiceInterface::class     => \DI\autowire( IntegrationSettingsService::class ),
@@ -255,6 +255,7 @@ return array(
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
 	PromiseServiceInterface::class                 => \DI\autowire( PromiseService::class ),
 	SourceServiceInterface::class                  => \DI\autowire( SourceService::class ),
+	TokenMetaServiceInterface::class               => \DI\autowire( TokenMetaService::class ),
 	UserServiceInterface::class                    => \DI\autowire( UserService::class ),
 	WhitelistServiceInterface::class               => \DI\autowire( WhitelistService::class ),
 	//Repositories - General
@@ -267,7 +268,6 @@ return array(
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
 	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class ),
-	IntegrationRepositoryInterface::class          => \DI\autowire( IntegrationRepository::class ),
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
 	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class ),
 	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class ),
@@ -300,13 +300,13 @@ return array(
 	//Models - single instance
 	CurrentUserInterface::class                => \DI\factory( function (
 		ContainerInterface $container,
-		UserRepositoryInterface $user_repository
+		UserServiceInterface $user_service
 	) {
 		$user_id = get_current_user_id();
 		if ( $user_id == 0 ) {
 			$user = $container->make( GuestUser::class );
 		} else {
-			$user = $user_repository->show( array(
+			$user = $user_service->show( array(
 				'id' => $user_id,
 			) );
 		}
@@ -409,12 +409,16 @@ return array(
 	//Third-party
 	TokenpassAPI::class => \DI\factory( function ( 
 		ContainerInterface $container,
-		IntegrationSettingsInterface $settings,
+		OptionRepositoryInterface $option_repository,
 		string $api_host,
 		string $oauth_callback_route
 	) {
-		$client_id = $settings->client_id ?? null;
-		$client_secret = $settings->client_secret ?? null;
+		$settings = $option_repository->index( array(
+			'client_id',
+			'client_secret',
+		) );
+		$client_id = $settings['client_id'] ?? null;
+		$client_secret = $settings['client_secret'] ?? null;
 		$privileged_client_id = $client_id;
 		$privileged_client_secret = $client_secret;
 		$oauth_client_id = $client_id;

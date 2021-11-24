@@ -2,8 +2,13 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 /**
  * User related functions
@@ -12,17 +17,20 @@ class UserService implements UserServiceInterface {
 	protected $address_service;
 	protected $balance_service;
 	protected $oauth_user_service;
+	protected $user_repository;
 	protected $user_meta_repository;
 
 	public function __construct(
 		AddressServiceInterface $address_service,
-		BalanceService $balance_service,
+		BalanceServiceInterface $balance_service,
 		OauthUserServiceInterface $oauth_user_service,
+		UserRepositoryInterface $user_repository,
 		UserMetaRepositoryInterface $user_meta_repository
 	) {
 		$this->address_service = $address_service;
 		$this->balance_service = $balance_service;
 		$this->oauth_user_service = $oauth_user_service;
+		$this->user_repository = $user_repository;
 		$this->user_meta_repository = $user_meta_repository;
 	}
 	
@@ -85,21 +93,18 @@ class UserService implements UserServiceInterface {
 	 * Checks if the user is currently connected to Tokenpass
 	 * @return bool
 	 */
-	public function can_connect( int $id ) {
-		$oauth_user = $this->get_oauth_user( $id );
-		if ( $oauth_user ) {
-			return true;
-		} else {
-			return false;
-		}
+	public function can_connect( int $user_id ) {
+		$can_connect =  $this->user_meta_repository->show( $user_id, 'can_connect' ) ?? false;
+		return $can_connect;
 	}
 
-	public function connect( OauthUserInterface $oauth_user, string $access_token ) {
-		$this->user_meta_repository->update( $id, array(
+	public function connect( int $user_id, OauthUserInterface $oauth_user, string $oauth_token ) {
+		$this->user_meta_repository->update( $user_id, array(
 			'uuid'        => $oauth_user->id,
-			'oauth_token' => $access_token,
+			'oauth_token' => $oauth_token,
+			'can_connect' => true,
 		) );
-		$user = get_user_by( 'ID', $id );
+		$user = get_user_by( 'ID', $user_id );
 		if ( !$user ) {
 			return;
 		}
@@ -111,7 +116,7 @@ class UserService implements UserServiceInterface {
 	 * @return void
 	 */
 	public function disconnect( int $id ) {
-		$this->user_meta_repository->destroy( $id, ...array( 'uuid', 'oauth_token' ) );
+		$this->user_meta_repository->destroy( $id, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
 		$user = get_user_by( 'ID', $id );
 		if ( !$user ) {
 			return;
@@ -133,7 +138,7 @@ class UserService implements UserServiceInterface {
 	 * @return OauthUserInterface
 	 */
 	public function get_oauth_user( $id ) {
-		$oauth_user = $this->oauth_user_repository->show( $id );
+		$oauth_user = $this->oauth_user_service->show( $id );
 		return $oauth_user;
 	}
 

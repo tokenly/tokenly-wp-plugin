@@ -12,29 +12,30 @@ use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
  */
 class IntegrationSettingsService implements IntegrationSettingsServiceInterface {
 	protected $option_repository;
+	protected $integration_service;
 
 	public function __construct(
-		OptionRepositoryInterface $option_repository
+		OptionRepositoryInterface $option_repository,
+		IntegrationServiceInterface $integration_service
 	) {
 		$this->option_repository = $option_repository;
+		$this->integration_service = $integration_service;
 	}
 
 	public function show() {
-		$result = $this->option_repository->index( array(
+		$settings = $this->option_repository->index( array(
 			'client_id',
 			'client_secret',
+			'settings_updated',
 		) );
-		return $result;
+		return $settings;
 	}
 	
-	public function update( $settings ) {
+	public function update( array $settings = array() ) {
 		$this->option_repository->update( array(
 			'client_id' => $settings['client_id'] ?? null,
 			'client_secret' => $settings['client_secret'] ?? null,
-		) );
-		$this->can_connect = $this->integration_service->show();
-		$this->option_repository->update( array(
-			'integration_can_connect' => $this->can_connect,
+			'settings_updated' => true,
 		) );
 	}
 }
