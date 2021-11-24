@@ -14,7 +14,7 @@ class IntegrationSettingsService implements IntegrationSettingsServiceInterface 
 	protected $option_repository;
 
 	public function __construct(
-		OptionRepositoryInterface $option_repository,
+		OptionRepositoryInterface $option_repository
 	) {
 		$this->option_repository = $option_repository;
 	}
