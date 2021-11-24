@@ -1,14 +1,15 @@
 <?php
 
-namespace Tokenly\Wp\Repositories;
+namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 
 /**
  * Manages token whitelist
  */
-class WhitelistRepository implements WhitelistRepositoryInterface {
+class WhitelistService implements WhitelistServiceInterface {
 	protected $option_repository;
 
 	public function __construct(

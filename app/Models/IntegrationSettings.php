@@ -3,24 +3,24 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\IntegrationSettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
 
 class IntegrationSettings implements IntegrationSettingsInterface {
 	public $client_id = '';
 	public $client_secret = '';
-	protected $integration_settings_repository;
+	protected $integration_settings_service;
 	
 	public function __construct(
 		$settings_data = array(),
-		IntegrationSettingsRepositoryInterface $integration_settings_repository
+		IntegrationSettingsServiceInterface $integration_settings_service
 	) {
 		$this->from_array( $settings_data );
-		$this->integration_settings_repository = $integration_settings_repository;
+		$this->integration_settings_service = $integration_settings_service;
 	}
 
 	public function save() {
 		$save_data = $this->to_array();
-		$this->integration_settings_repository->update( $save_data );
+		$this->integration_settings_service->update( $save_data );
 	}
 
 	public function update( $settings_data ) {

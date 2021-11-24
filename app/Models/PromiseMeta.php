@@ -7,25 +7,22 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 
 class PromiseMeta implements PromiseMetaInterface {
 	protected $_instance;
-	protected $meta_repository;
-	protected $promise_meta_repository;
-	protected $user_repository;
+	protected $user_service;
+	protected $promise_meta_service;
 
 	public function __construct(
 		\WP_Post $post,
-		MetaRepositoryInterface $meta_repository,
-		PromiseMetaRepositoryInterface $promise_meta_repository,
-		UserRepositoryInterface $user_repository
+		UserServiceInterface $user_service,
+		PromiseMetaServiceInterface $promise_meta_service
 	) {
 		$this->_instance = $post;
-		$this->meta_repository = $meta_repository;
-		$this->user_repository = $user_repository;
+		$this->promise_meta_service = $promise_meta_service;
+		$this->user_service = $user_service;
 	}
 
 	public function __call( $method, $args ) {
@@ -41,11 +38,7 @@ class PromiseMeta implements PromiseMetaInterface {
 	}
 	
 	public function to_array() {
-		$meta = $this->meta_repository->index( $this->ID, array(
-			'promise_id',
-			'source_user_id',
-			'destination_user_id',
-		) );
+		$meta = $this->promise_meta_service->get_meta( $this->ID );
 		$uuids = array();
 		if ( isset( $meta['source_user_id'] ) ) {
 			$uuids[] = $meta['source_user_id'];
@@ -53,7 +46,7 @@ class PromiseMeta implements PromiseMetaInterface {
 		if ( isset( $meta['destination_user_id'] ) ) {
 			$uuids[] = $meta['destination_user_id'];
 		}
-		$users = $this->user_repository->index( array(
+		$users = $this->user_service->index( array(
 			'uuids' => $uuids,
 		) );
 		$users->key_by_uuid();
@@ -76,10 +69,10 @@ class PromiseMeta implements PromiseMetaInterface {
 	}
 	
 	public function update( $params = array() ) {
-		$this->promise_meta_repository->update( $this->ID, $params );
+		$this->promise_meta_service->update( $this->ID, $params );
 	}
 	
 	public function destroy() {
-		$this->promise_meta_repository->destroy( $this->ID );
+		$this->promise_meta_service->destroy( $this->ID );
 	}
 }

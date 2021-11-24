@@ -5,6 +5,7 @@ namespace Tokenly\Wp\Repositories;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
@@ -12,19 +13,22 @@ use Tokenly\Wp\Interfaces\Models\UserInterface;
 class UserRepository implements UserRepositoryInterface {
 	protected $client;
 	protected $user_meta_repository;
+	protected $user_factory;
 	protected $user_collection_factory;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		UserMetaRepositoryInterface $user_meta_repository,
+		UserFactoryInterface $user_factory,
 		UserCollectionFactoryInterface $user_collection_factory
 	) {
 		$this->client = $client;
 		$this->user_meta_repository = $user_meta_repository;
+		$this->user_factory = $user_factory;
 		$this->user_collection_factory = $user_collection_factory;
 	}
 
-	public function index( $params ) {
+	public function index( $params, $args ) {
 		$args = array(
 			'orderby'    => 'ID',
 			'order'      => 'ASC',
@@ -68,10 +72,6 @@ class UserRepository implements UserRepositoryInterface {
 		}
 		$query = new \WP_User_Query( $args );
 		$users = $query->get_results();
-		if ( isset( $params['suggestions'] ) ) {
-			$suggestions = $this->make_suggestions( $users );
-			return $suggestions;
-		}
 		$users = $this->user_collection_factory->create( $users );
 		return $users;
 	}
@@ -86,36 +86,16 @@ class UserRepository implements UserRepositoryInterface {
 	 * @param OauthUserInterface $oauth_user Reference user
 	 * @return UserInterface New user
 	 */
-	public function store( OauthUserInterface $oauth_user ) {
-		$username = $oauth_user->username;
-		$password = wp_generate_password( 12, false );
-		$email = $tokenpass_user->email ?? null;
+	public function store( $username, $password, $email ) {
 		$user_id = wp_create_user( $username, $password, $email );
 		if ( is_numeric( $user_id ) === false ) {
 			return false;
 		}
-		$user = $this->show( array(
-			'id' => $user_id,
-		) );
-		return $user;
-	}
-
-	/**
-	 * Creates an array of suggestions out of users
-	 * (used for real-time search in combobox inputs)
-	 * @param \WP_User[] $users
-	 * @return array Suggestions
-	 */
-	protected function make_suggestions( array $users ) {
-		$suggestions = array();
-		if ( !empty( $users ) ) {
-			foreach ( $users as $user ) {
-				$suggestions[] = array(
-					'id'   => $user->ID, 
-					'name' => $user->nickname,
-				);
-			}
+		$user = get_user_by( 'ID', $user_id );
+		if ( !$user ) {
+			return;
 		}
-		return $suggestions;
+		$user = $this->user_factory->create( $user );
+		return $user;
 	}
 }

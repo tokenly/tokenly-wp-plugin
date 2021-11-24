@@ -3,32 +3,24 @@
 namespace Tokenly\Wp\Repositories;
 
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 /**
  * Manages sources for promise type transactions
  */
 class SourceRepository implements SourceRepositoryInterface {
 	protected $client;
-	protected $settings;
 	protected $source_collection_factory;
 	protected $source_cache;
-	protected $current_user;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		IntegrationSettingsInterface $settings,
-		SourceCollectionFactoryInterface $source_collection_factory,
-		CurrentUserInterface $current_user
+		SourceCollectionFactoryInterface $source_collection_factory
 	) {
 		$this->client = $client;
-		$this->settings = $settings;
 		$this->source_collection_factory = $source_collection_factory;
-		$this->current_user = $current_user;
 	}
 
 	/**
@@ -42,9 +34,6 @@ class SourceRepository implements SourceRepositoryInterface {
 		}
 		$address = $params['address'];
 		$sources = $this->index();
-		if ( isset( $params['with'] ) ) {
-			$sources = $this->handle_with( $sources, $params['with'] );
-		}
 		$source = $sources[ $address ] ?? null;
 		return $source;
 	}
@@ -61,9 +50,6 @@ class SourceRepository implements SourceRepositoryInterface {
 			$this->source_cache = $sources;
 		}
 		$sources = $this->source_collection_factory->create( $sources );
-		if ( isset( $params['with'] ) ) {
-			$sources = $this->handle_with( $sources, $params['with'] );
-		}
 		return $sources;
 	}
 	
@@ -72,23 +58,15 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @param array $source New source address data
 	 * @return boolean
 	 */
-	public function store( $source ) {
-		$client_id = $this->settings->client_id ?? null;
-		$hash = hash( 'sha256', $client_id );
-		$address = $source['address'] ?? null;
-		$type = $source['type'] ?? null;
-		$proof =  $address . '_' . $hash;
-		$assets = $source['assets'] ?? null;
-		if ( empty( $assets ) ) {
-			$assets = null;
-		}
-		try {
-			$this->client->registerProvisionalSource( $address, $type, $proof, $assets );
-			return true;
-		}
-		catch ( exception $e ) {
-			return false;
-		}
+	public function store( array $params = array() ) {
+		$source = $this->client->registerProvisionalSource(
+			$params['address'] ?? null,
+			$params['type'] ?? null,
+			$params['proof'] ?? null,
+			$params['assets'] ?? null,
+		);
+		$source = $this->source_factory->create( $source );
+		return $source;
 	}
 
 	/**
@@ -108,49 +86,5 @@ class SourceRepository implements SourceRepositoryInterface {
 	 */
 	public function destroy( $address ) {
 		$this->client->deleteProvisionalSource( $address );
-	}
-
-	/**
-	 * Handles queries using parameter 'with'
-	 * @param SourceCollectionInterface $sources Queried sources
-	 * @return SourceCollectionInterface Modified sources
-	 */
-	protected function handle_with( SourceCollectionInterface $sources, array $with = array() ) {
-		foreach ( $with as $with_rule ) {
-			$with_rule = explode( '.', $with_rule );
-			switch( $with_rule[0] ?? null ) {
-				case 'address':
-					if ( count( $with_rule ) > 1 ) {
-						unset( $with_rule[0] );
-						$with_rule = implode( '.', $with_rule );
-					}
-					$sources = $this->handle_with_address( $sources, array( $with_rule ) );
-					break;
-			}
-		}
-		return $sources;
-	}
-
-	/**
-	 * Appends Address objects to the queried sources (part of 'with' handler)
-	 * @param SourceCollectionInterface $sources Queried sources
-	 * @return SourceCollectionInterface Modified sources
-	 */
-	protected function handle_with_address( SourceCollectionInterface $sources, $with_rule ) {
-		if ( $this->current_user->is_guest() === true ) {
-			return $sources;
-		}
-		$addresses = $this->current_user->get_addresses( array(
-			'with' => $with_rule,
-		) );
-		$addresses->key_by_field( 'address' );
-		$with_address = array_map( function( $source ) use ( $addresses ) {
-			$address_data = $addresses[ $source->address ] ?? null;
-			if ( $address_data ) {
-				$source->address_data = $address_data;
-			}
-			return $source;
-		}, ( array ) $sources );
-		return $sources;
 	}
 }

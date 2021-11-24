@@ -4,23 +4,19 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\IntegrationRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
 
 class Integration implements IntegrationInterface {
 	public $settings;
 	public $can_connect;
-	protected $integration_repository;
-	protected $option_repository;
+	protected $integration_service;
 	
 	public function __construct(
 		IntegrationSettingsInterface $settings,
-		IntegrationRepositoryInterface $integration_repository,
-		OptionRepositoryInterface $option_repository
+		IntegrationServiceInterface $integration_service
 	) {
 		$this->settings = $settings;
-		$this->integration_repository = $integration_repository;
-		$this->option_repository = $option_repository;
+		$this->integration_service = $integration_service;
 	}
 	
 	/**
@@ -29,7 +25,8 @@ class Integration implements IntegrationInterface {
 	 */
 	public function can_connect() {
 		if ( !isset( $this->can_connect ) ) {
-			$this->can_connect = boolval( $this->option_repository->show( 'integration_can_connect' ) );
+			$this->can_connect = true;
+			//$this->can_connect = boolval( $this->option_repository->show( 'integration_can_connect' ) );
 		}
 		return $this->can_connect;
 	}

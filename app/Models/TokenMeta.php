@@ -7,18 +7,18 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 
 class TokenMeta implements TokenMetaInterface {
 	protected $_instance;
-	protected $meta_repository;
+	protected $token_meta_service;
 
 	public function __construct(
 		\WP_Post $post,
-		MetaRepositoryInterface $meta_repository
+		TokenMetaServiceInterface $token_meta_service
 	) {
 		$this->_instance = $post;
-		$this->meta_repository = $meta_repository;
+		$this->token_meta_service = $token_meta_service;
 	}
 
 	public function __call( $method, $args ) {
@@ -34,7 +34,7 @@ class TokenMeta implements TokenMetaInterface {
 	}
 	
 	public function to_array() {
-		$meta = $this->meta_repository->index( $this->ID, array(
+		$meta = $this->token_meta_service->index( $this->ID, array(
 			'asset',
 			'extra',
 		) );

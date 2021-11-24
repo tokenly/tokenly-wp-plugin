@@ -6,16 +6,23 @@ use Tokenly\Wp\Providers\ShortcodeServiceProvider;
 use Tokenly\Wp\Services\AuthService;
 use Tokenly\Wp\Services\LifecycleService;
 use Tokenly\Wp\Services\ResourceService;
-use Tokenly\Wp\Services\UserService;
+use Tokenly\Wp\Services\Domain\AddressService;
+use Tokenly\Wp\Services\Domain\BalanceService;
+use Tokenly\Wp\Services\Domain\IntegrationService;
+use Tokenly\Wp\Services\Domain\IntegrationSettingsService;
+use Tokenly\Wp\Services\Domain\OauthUserService;
+use Tokenly\Wp\Services\Domain\PromiseMetaService;
+use Tokenly\Wp\Services\Domain\PromiseService;
+use Tokenly\Wp\Services\Domain\SourceService;
+use Tokenly\Wp\Services\Domain\UserService;
+use Tokenly\Wp\Services\Domain\WhitelistService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
 use Tokenly\Wp\Repositories\IntegrationRepository;
-use Tokenly\Wp\Repositories\IntegrationSettingsRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
 use Tokenly\Wp\Repositories\UserRepository;
-use Tokenly\Wp\Repositories\WhitelistRepository;
 use Tokenly\Wp\Repositories\Post\PromiseMetaRepository;
 use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
 use Tokenly\Wp\Repositories\General\MetaRepository;
@@ -87,16 +94,23 @@ use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\IntegrationRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\IntegrationSettingsRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
@@ -223,7 +237,7 @@ return array(
 	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
 	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
-	//Services
+	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
 		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') ),
 	LifecycleServiceInterface::class               => \DI\autowire( LifecycleService::class )
@@ -232,22 +246,31 @@ return array(
 	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	//Services - Domain
+	AddressServiceInteface::class                  => \DI\autowire( AddressService::class ),
+	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
+	IntegrationServiceInterface::class             => \DI\autowire( IntegrationService::class ),
+	IntegrationSettingsServiceInterface::class     => \DI\autowire( IntegrationSettingsService::class ),
+	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
+	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
+	PromiseServiceInterface::class                 => \DI\autowire( PromiseService::class ),
+	SourceServiceInterface::class                  => \DI\autowire( SourceService::class ),
 	UserServiceInterface::class                    => \DI\autowire( UserService::class ),
-	//Repositories
+	WhitelistServiceInterface::class               => \DI\autowire( WhitelistService::class ),
+	//Repositories - General
+	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class ),
+	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class ),
+	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class ),
+	//Repositories - Domain
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
-	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
-	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
 	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class ),
 	IntegrationRepositoryInterface::class          => \DI\autowire( IntegrationRepository::class ),
-	IntegrationSettingsRepositoryInterface::class  => \DI\autowire( IntegrationSettingsRepository::class ),
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
 	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class ),
 	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class ),
-	WhitelistRepositoryInterface::class            => \DI\autowire( WhitelistRepository::class ),
-	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class ),
 	//Routes
 	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
@@ -275,7 +298,7 @@ return array(
 	UserInterface::class                           => \DI\autowire( User::class ),
 	WhitelistItemInterface::class                  => \DI\autowire( WhitelistItem::class ),
 	//Models - single instance
-	CurrentUserInterface::class                => function (
+	CurrentUserInterface::class                => \DI\factory( function (
 		ContainerInterface $container,
 		UserRepositoryInterface $user_repository
 	) {
@@ -288,33 +311,33 @@ return array(
 			) );
 		}
 		return $user;
-	},
-	IntegrationInterface::class                => function ( 
+	} ),
+	IntegrationInterface::class                => \DI\factory( function ( 
 		ContainerInterface $container
 	) {
 		$integration = $container->make( Integration::class );
 		return $integration;
-	},
-	IntegrationSettingsInterface::class        => function ( 
+	} ),
+	IntegrationSettingsInterface::class        => \DI\factory( function ( 
 		ContainerInterface $container,
-		IntegrationSettingsRepositoryInterface $integration_settings_repository
+		IntegrationSettingsServiceInterface $integration_settings_service
 	) {
-		$settings_data = $integration_settings_repository->show();
+		$settings_data = $integration_settings_service->show();
 		$settings = $container->make( IntegrationSettings::class, array(
 			'settings_data' => $settings_data,
 		) );
 		return $settings;
-	},
-	WhitelistInterface::class                  => function ( 
+	} ),
+	WhitelistInterface::class                  => \DI\factory( function ( 
 		ContainerInterface $container,
-		WhitelistRepositoryInterface $whitelist_repository
+		WhitelistServiceInterface $whitelist_service
 	) {
-		$whitelist_data = $whitelist_repository->show();
+		$whitelist_data = $whitelist_service->show();
 		$whitelist = $container->make( Whitelist::class, array(
 			'whitelist_data' => $whitelist_data,
 		) );
 		return $whitelist;
-	},
+	} ),
 	//Factories - concrete - models
 	AddressFactoryConcrete::class                => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', AddressInterface::class ),

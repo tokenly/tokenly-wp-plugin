@@ -3,21 +3,21 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
-use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 
 class Whitelist implements WhitelistInterface {
 	public $enabled = false;
 	public $items = array();
-	protected $whitelist_repository;
+	protected $whitelist_service;
 	protected $whitelist_item_factory;
 	
 	public function __construct(
 		$whitelist_data = array(),
-		WhitelistRepositoryInterface $whitelist_repository,
+		WhitelistServiceInterface $whitelist_service,
 		WhitelistItemFactoryInterface $whitelist_item_factory
 	) {
-		$this->whitelist_repository = $whitelist_repository;
+		$this->whitelist_service = $whitelist_service;
 		$this->whitelist_item_factory = $whitelist_item_factory;
 		$this->from_array( $whitelist_data );
 	}
@@ -29,7 +29,7 @@ class Whitelist implements WhitelistInterface {
 
 	public function save() {
 		$save_data = $this->to_array();
-		$this->whitelist_repository->update( $save_data );
+		$this->whitelist_service->update( $save_data );
 	}
 
 	public function from_array( $whitelist_data ) {
