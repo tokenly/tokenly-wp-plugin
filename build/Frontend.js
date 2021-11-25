@@ -5059,6 +5059,7 @@ let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Compon
     }
     register(selector) {
         this.element.addEventListener('click', () => {
+            this.element.classList.add('loading');
             this.authService.connect();
         });
     }

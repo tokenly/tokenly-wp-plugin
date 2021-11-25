@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 /**
@@ -172,10 +173,10 @@ class UserService implements UserServiceInterface {
 	/**
 	 * Creates an array of suggestions out of users
 	 * (used for real-time search in combobox inputs)
-	 * @param \WP_User[] $users
+	 * @param UserCollectionInterface $users
 	 * @return array Suggestions
 	 */
-	protected function make_suggestions( array $users ) {
+	protected function make_suggestions( UserCollectionInterface $users ) {
 		$suggestions = array();
 		if ( !empty( $users ) ) {
 			foreach ( $users as $user ) {

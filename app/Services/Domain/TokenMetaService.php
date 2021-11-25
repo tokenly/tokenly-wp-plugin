@@ -55,6 +55,7 @@ class TokenMetaService implements TokenMetaServiceInterface {
 			'asset',
 			'extra',
 		) );
+		return $meta;
 	}
 }
 

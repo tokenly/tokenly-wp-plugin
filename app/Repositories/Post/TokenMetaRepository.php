@@ -12,11 +12,14 @@ use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
  */
 class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	protected $token_meta_collection_factory;
+	protected $namespace;
 	
 	public function __construct(
-		TokenMetaCollectionFactoryInterface $token_meta_collection_factory
+		TokenMetaCollectionFactoryInterface $token_meta_collection_factory,
+		string $namespace
 	) {
 		$this->token_meta_collection_factory = $token_meta_collection_factory;
+		$this->namespace = $namespace;
 	}
 
 	/**
@@ -26,7 +29,7 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	 */
 	public function index( array $params = array() ) {
 		$query_args = array(
-			'post_type'   => 'tokenly_token_meta',
+			'post_type'   => "{$this->namespace}_token_meta",
 			'meta_query'  => array(),
 		);
 		if ( isset( $params['id'] ) ) {
@@ -34,7 +37,7 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 		if ( isset( $params['assets'] ) ) {
 			$query_args['meta_query'][] = array(
-				'key'     => $this->meta_repository->namespace_key( 'asset' ),
+				'key'     => "{$this->namespace}_asset",
 				'value'   => $params['assets'] ?? null,
 				'compare' => 'IN',
 			);

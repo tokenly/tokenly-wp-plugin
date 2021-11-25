@@ -2,11 +2,13 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
+use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 
-class AddressService implements AddressServiceInterface {
+class AddressService extends DomainService implements AddressServiceInterface {
 	protected $address_cache = array();
 	protected $address_repository;
 	protected $balance_service;
@@ -32,19 +34,7 @@ class AddressService implements AddressServiceInterface {
 			$this->address_cache[ $username ] = $addresses;
 		}
 		if ( isset( $params['with'] ) ) {
-			$addresses = $this->handle_with( $addresses, $params['with'] );
-		}
-		return $addresses;
-	}
-
-	/**
-	 * Handles queries using parameter 'with'
-	 * @param AddressCollectionInterface $addresses Queried addresses
-	 * @return AddressCollectionInterface Modified addresses
-	 */
-	protected function handle_with( AddressCollectionInterface $addresses, array $with ) {
-		if ( in_array( 'balances.meta', $with ) ) {
-			$addresses = $this->handle_with_balances_meta( $addresses );
+			$addresses = $this->load( $addresses, $params['with'] );
 		}
 		return $addresses;
 	}
@@ -54,9 +44,9 @@ class AddressService implements AddressServiceInterface {
 	 * @param AddressCollectionInterface $addresses Queried addresses
 	 * @return AddressCollectionInterface Modified addresses
 	 */
-	protected function handle_with_balances_meta( AddressCollectionInterface $addresses ) {
+	protected function load_balances_collection( AddressCollectionInterface $addresses, array $relation ) {
 		foreach( (array) $addresses as &$address ) {
-			$address->balances = $this->balance_service->handle_with_meta( $address->balances );
+			$address->balances = $this->balance_service->load( $address->balances, $relation );
 		}
 		return $addresses;
 	}

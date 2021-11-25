@@ -74,7 +74,7 @@ class SourceController implements SourceControllerInterface {
 		}
 		$addresses = $this->current_user->get_addresses(
 			array(
-				'with' => array( 'balances.meta' ),
+				'with' => array( 'balances.token_meta' ),
 			)
 		);
 		$addresses = $addresses->to_array();

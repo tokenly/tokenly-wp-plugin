@@ -37,7 +37,7 @@ class VendorController implements VendorControllerInterface {
 			return;
 		}
 		$promises = $this->promise_service->index( array(
-			'with' => array( 'meta' ),
+			'with' => array( 'promise_meta' ),
 		) );
 		$promises = $promises->to_array();
 		$sources = $this->source_service->index( array(

@@ -2,11 +2,13 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 
-class BalanceService implements BalanceServiceInterface {
+class BalanceService extends DomainService implements BalanceServiceInterface {
 	protected $balance_cache = array();
 	protected $balance_repository;
 	protected $token_meta_service;
@@ -28,34 +30,23 @@ class BalanceService implements BalanceServiceInterface {
 			$this->balances_cache[ $oauth_token ] = $balances;
 		}
 		if ( isset( $params['with'] ) ) {
-			$balances = $this->handle_with( $balances, $params['with'] );
+			$balances = $this->load( $balances, $params['with'] );
 		}
 		return $balances;
 	}
 
 	/**
-	 * Handles queries using parameter 'with'
-	 * @param BalanceCollectionInterface $sources Queried sources
-	 * @return BalanceCollectionInterface Modified sources
-	 */
-	protected function handle_with( BalanceCollectionInterface $balances, array $with ) {
-		if ( in_array( 'meta', $with ) ) {
-			$balances = $this->handle_with_meta( $balances );
-		}
-		return $balances;
-	}
-
-		/**
 	 * Embeds the WordPress token meta post data into the balance objects
 	 * @param BalanceCollectionInterface $balances Queried balances
 	 * @return BalanceCollectionInterface
 	 */
-	public function handle_with_meta( BalanceCollectionInterface $balances ) {
+	protected function load_token_meta_collection( BalanceCollectionInterface $balances, array $relation ) {
 		$assets = array_map( function( $balance ) {
 			return $balance->name;
 		}, ( array ) $balances );
 		$meta = $this->token_meta_service->index( array(
 			'assets' => $assets,
+			'with'   => $relation,
 		) );
 		$balances = $balances->key_by_field( 'asset' );
 		$meta_keyed = array();

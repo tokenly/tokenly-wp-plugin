@@ -46,7 +46,7 @@ class UserController implements UserControllerInterface {
 			return;
 		}
 		$balances = $user->get_balances( array(
-			'with' => array( 'meta' ),
+			'with' => array( 'token_meta' ),
 		) );
 		$render = $this->user_view->render( array(
 			'balances' => $balances,

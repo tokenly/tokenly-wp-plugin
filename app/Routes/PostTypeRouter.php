@@ -109,13 +109,25 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				register_post_type( $name, $args );
 				if ( isset( $route['edit_callback'] ) ) {
 					$callable = $route['edit_callback'];
-					$route['edit_callback'] = function() use ( $callable ) {
+					$callable = function() use ( $callable, $name ) {
 						$this->render_route( $callable );
 					};
-					add_action( 'edit_form_advanced', $route['edit_callback'] );
+					$route['edit_callback'] = $callable;
+					add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
+						add_meta_box(
+							'tokenpass_data',
+							__( 'Tokenpass', 'textdomain' ),
+							$callable,
+							$name,
+							'advanced',
+							'high'
+						);
+					} );
 				}
 			}
 		}
+
+
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
 	}
 }

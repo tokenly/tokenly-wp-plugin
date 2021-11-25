@@ -4,11 +4,14 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_cache = array();
@@ -16,15 +19,18 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_repository;
 	protected $promise_meta_service;
 	protected $source_service;
+	protected $oauth_user_service;
 
 	public function __construct(
 		PromiseRepositoryInterface $promise_repository,
 		PromiseMetaServiceInterface $promise_meta_service,
-		SourceServiceInterface $source_service
+		SourceServiceInterface $source_service,
+		OauthUserServiceInterface $oauth_user_service
 	) {
 		$this->promise_repository = $promise_repository;
 		$this->promise_meta_service = $promise_meta_service;
 		$this->source_service = $source_service;
+		$this->oauth_user_service = $oauth_user_service;
 	}
 
 	/**
@@ -40,7 +46,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			$this->promise_collection_cache = $promise_collection;
 		}
 		if ( isset( $params['with'] ) ) {
-			$promise_collection = $this->load_collection( $promise_collection, $params['with'] );
+			$promise_collection = $this->load( $promise_collection, $params['with'] );
 		}
 		return $promise_collection;
 	}
@@ -108,7 +114,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		}
 		$source_address = $source->address;
 		$destination = $params['destination'];
-		$destination_oauth_user = $this->oauth_user_repository->show( $destination );
+		$destination_oauth_user = $this->oauth_user_service->show( $destination );
 		if ( !$destination_oauth_user ) {
 			throw new \Exception( 'Destination oauth user not found.' );
 		}
@@ -170,37 +176,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$this->promise_repository->destroy( $promise_id );
 	}
 
-	public function load( PromiseInterface $promise, array $relations ) {
-		$relations = $this->format_relations( $relations );
-		$load_definitions = $this->get_load_definitions();
-		foreach ( $relations as $key => $relation ) {
-			$promise = call_user_func( $load_definitions[ $key ], $promise, $relation );
-		}
-		return $promise;
-	}
-
-	public function load_collection( PromiseCollectionInterface $promise_collection, array $relations ) {
-		$relations = $this->format_relations( $relations );
-		$load_definitions = $this->get_load_definitions_collection();
-		foreach ( $relations as $key => $relation ) {
-			$promise_collection = call_user_func( $load_definitions[ $key ], $promise_collection, $relation );
-		}
-		return $promise_collection;
-	}
-
-	protected function get_load_definitions() {
-		return array(
-			'meta' => array( $this, 'load_promise_meta' ),
-		);
-	}
-
-	protected function get_load_definitions_collection() {
-		return array(
-			'meta' => array( $this, 'load_promise_meta_collection' ),
-		);
-	}
-
-	protected function load_promise_meta( PromiseInterface $promise, string $relation ) {
+	protected function load_promise_meta( PromiseInterface $promise, array $relation ) {
 		$promise_meta = $this->promise_meta_service->show( array(
 			'with'        => $relation,
 			'promise_ids' => array( $promise->promise_id ), 
@@ -208,11 +184,11 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		if ( !$promise_meta ) {
 			return $promise;
 		}
-		$promise->promise_meta = $promise;
+		$promise->promise_meta = $promise_meta;
 		return $promise;
 	}
 
-	protected function load_promise_meta_collection( PromiseCollectionInterface $promise_collection, string $relation ) {
+	protected function load_promise_meta_collection( PromiseCollectionInterface $promise_collection, array $relation ) {
 		$promise_ids = array_map( function( $promise ) {
 			return $promise->promise_id;	
 		}, ( array ) $promise_collection );

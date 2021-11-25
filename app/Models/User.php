@@ -43,7 +43,7 @@ class User implements UserInterface, CurrentUserInterface {
 	 * @return AddressCollectionInterface Found addresses
 	 */
 	public function get_addresses( array $params = array() ) {
-		$addresses = $this->user_service->get_addresses( $this->ID );
+		$addresses = $this->user_service->get_addresses( $this->ID, $params );
 		return $addresses;
 	}
 
@@ -53,7 +53,7 @@ class User implements UserInterface, CurrentUserInterface {
 	 * @return BalanceCollectionInterface Found balances
 	 */
 	public function get_balances( array $params = array() ) {
-		$balances = $this->user_service->get_balances( $this->ID );
+		$balances = $this->user_service->get_balances( $this->ID, $params );
 		return $balances;
 	}
 

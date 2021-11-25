@@ -27,7 +27,7 @@ class BalancesController implements BalancesControllerInterface {
 		}
 		$addresses = $this->current_user->get_addresses(
 			array(
-				'with' => array( 'balances.meta' ),
+				'with' => array( 'balances.token_meta' ),
 			)
 		);
 		$addresses->key_by_field( 'address' );

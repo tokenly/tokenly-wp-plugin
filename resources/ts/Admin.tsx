@@ -18,6 +18,7 @@ import SourceStorePage from './Admin/Pages/SourceStorePage';
 import SourceEditPage from './Admin/Pages/SourceEditPage';
 import DashboardPage from './Admin/Pages/DashboardPage';
 import TokenMetaEditPage from './Admin/Pages/TokenMetaEditPage';
+import TCARuleEditor from './Admin/Components/TCARuleEditor';
 import { Redirect } from './Interfaces';
 
 declare const document: any;
@@ -32,13 +33,19 @@ class AdminApp extends App {
 	pageElement: any;
 	view: string;
 	pageData: object;
+	useTCA: boolean;
 	
 	constructor() {
 		super();
 		this.pageElement = document.querySelector( '.tokenpass-admin-page' );
 		if ( this.pageElement ) {
-			this.view = window.tokenpassView;
-			this.pageData = window.tokenpassProps;
+			const data = window.tokenpassData;
+			if ( !data ) {
+				return;
+			}
+			this.view = data?.view;
+			this.pageData = data?.props;
+			this.useTCA = data.useTCA;
 			const views = this.getViews();
 			const ViewComponent = views[ this.view ] ?? null;
 			if ( ViewComponent ) {
@@ -78,6 +85,9 @@ class AdminApp extends App {
 			<Provider container={ this.container }>
 				<AppLayout>
 					<ViewComponent pageData={ this.pageData } />
+					{ this.useTCA == true &&
+						<TCARuleEditor />
+					}
 				</AppLayout>
 			</Provider>,
 			pageContainer

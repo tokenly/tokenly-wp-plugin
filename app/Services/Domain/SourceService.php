@@ -2,17 +2,24 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Models\SourceInterface;
 
-class SourceService implements SourceServiceInterface {
+class SourceService extends DomainService implements SourceServiceInterface {
 	protected $source_cache;
 	protected $source_repository;
+	protected $current_user;
 
 	public function __construct(
-		SourceRepositoryInterface $source_repository
+		SourceRepositoryInterface $source_repository,
+		CurrentUserInterface $current_user
 	) {
 		$this->source_repository = $source_repository;
+		$this->current_user = $current_user;
 	}
 
 	/**
@@ -31,7 +38,7 @@ class SourceService implements SourceServiceInterface {
 			$this->source_cache = $sources;
 		}
 		if ( isset( $params['with'] ) ) {
-			$sources = $this->handle_with( $sources, $params['with'] );
+			$sources = $this->load( $sources, $params['with'] );
 		}
 		return $sources;
 	}
@@ -47,7 +54,7 @@ class SourceService implements SourceServiceInterface {
 			return;
 		}
 		if ( isset( $params['with'] ) ) {
-			$source = $this->handle_with( $source, $params['with'] );
+			$source = $this->load( $source, $params['with'] );
 		}
 		return $source;
 	}
@@ -90,46 +97,44 @@ class SourceService implements SourceServiceInterface {
 	}
 
 	/**
-	 * Handles queries using parameter 'with'
-	 * @param SourceCollectionInterface $sources Queried sources
-	 * @return SourceCollectionInterface Modified sources
+	 * Appends Address object to the queried source
+	 * @param SourceInterface $sources Queried source
+	 * @return SourceInterface Modified source
 	 */
-	protected function handle_with( SourceCollectionInterface $sources, array $with = array() ) {
-		foreach ( $with as $with_rule ) {
-			$with_rule = explode( '.', $with_rule );
-			switch( $with_rule[0] ?? null ) {
-				case 'address':
-					if ( count( $with_rule ) > 1 ) {
-						unset( $with_rule[0] );
-						$with_rule = implode( '.', $with_rule );
-					}
-					$sources = $this->handle_with_address( $sources, array( $with_rule ) );
-					break;
-			}
+	protected function load_address( SourceInterface $source, array $relation ) {
+		if ( $this->current_user->is_guest() === true ) {
+			return $source;
 		}
-		return $sources;
+		$addresses = $this->current_user->get_addresses( array(
+			'with' => $relation,
+		) );
+		$addresses->key_by_field( 'address' );
+		$address_data = $addresses[ $source->address ] ?? null;
+		if ( $address_data ) {
+			$source->address_data = $address_data;
+		}
+		return $source;
 	}
 
 	/**
-	 * Appends Address objects to the queried sources (part of 'with' handler)
+	 * Appends Address objects to the queried sources
 	 * @param SourceCollectionInterface $sources Queried sources
 	 * @return SourceCollectionInterface Modified sources
 	 */
-	protected function handle_with_address( SourceCollectionInterface $sources, $with_rule ) {
+	protected function load_address_collection( SourceCollectionInterface $sources, array $relation ) {
 		if ( $this->current_user->is_guest() === true ) {
 			return $sources;
 		}
 		$addresses = $this->current_user->get_addresses( array(
-			'with' => $with_rule,
+			'with' => $relation,
 		) );
 		$addresses->key_by_field( 'address' );
-		$with_address = array_map( function( $source ) use ( $addresses ) {
+		foreach ( $sources as &$source ) {
 			$address_data = $addresses[ $source->address ] ?? null;
 			if ( $address_data ) {
 				$source->address_data = $address_data;
 			}
-			return $source;
-		}, ( array ) $sources );
+		}
 		return $sources;
 	}
 }

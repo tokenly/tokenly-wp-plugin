@@ -1,5 +1,8 @@
 <script type="text/javascript">
-	window.tokenpassProps = JSON.parse( `{{ props|json_encode|raw }}` );
-	window.tokenpassView = '{{ view }}';
+	let tokenpassData = {}
+	tokenpassData.props = JSON.parse( `{{ props|json_encode|raw }}` );
+	tokenpassData.view = '{{ view }}';
+	tokenpassData.useTCA = '{{ use_tca ?? false }}'
+	window.tokenpassData = tokenpassData;
 </script>
 <div id="tokenpass-admin-page-{{ view }}" class="tokenpass-admin-page"></div>

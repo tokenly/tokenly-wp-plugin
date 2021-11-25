@@ -11,6 +11,7 @@ use Tokenly\Wp\Services\Domain\BalanceService;
 use Tokenly\Wp\Services\Domain\IntegrationService;
 use Tokenly\Wp\Services\Domain\IntegrationSettingsService;
 use Tokenly\Wp\Services\Domain\OauthUserService;
+use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
 use Tokenly\Wp\Services\Domain\PromiseService;
 use Tokenly\Wp\Services\Domain\SourceService;
@@ -23,6 +24,7 @@ use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
 use Tokenly\Wp\Repositories\UserRepository;
+use Tokenly\Wp\Repositories\Post\PostRepository;
 use Tokenly\Wp\Repositories\Post\PromiseMetaRepository;
 use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
 use Tokenly\Wp\Repositories\General\MetaRepository;
@@ -63,6 +65,7 @@ use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
 use Tokenly\Wp\Models\OauthUser;
 use Tokenly\Wp\Models\Promise;
+use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Models\PromiseMeta;
 use Tokenly\Wp\Models\Integration;
 use Tokenly\Wp\Models\IntegrationSettings;
@@ -75,6 +78,7 @@ use Tokenly\Wp\Models\WhitelistItem;
 use Tokenly\Wp\Factories\Models\AddressFactory;
 use Tokenly\Wp\Factories\Models\BalanceFactory;
 use Tokenly\Wp\Factories\Models\OauthUserFactory;
+use Tokenly\Wp\Factories\Models\PostFactory;
 use Tokenly\Wp\Factories\Models\PromiseFactory;
 use Tokenly\Wp\Factories\Models\PromiseMetaFactory;
 use Tokenly\Wp\Factories\Models\SourceFactory;
@@ -99,6 +103,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
@@ -111,6 +116,7 @@ use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
@@ -139,6 +145,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as Whitel
 use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
@@ -163,6 +170,7 @@ use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
@@ -252,6 +260,7 @@ return array(
 	IntegrationServiceInterface::class             => \DI\autowire( IntegrationService::class ),
 	IntegrationSettingsServiceInterface::class     => \DI\autowire( IntegrationSettingsService::class ),
 	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
+	PostServiceInterface::class                    => \DI\autowire( PostService::class ),
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
 	PromiseServiceInterface::class                 => \DI\autowire( PromiseService::class ),
 	SourceServiceInterface::class                  => \DI\autowire( SourceService::class ),
@@ -266,10 +275,12 @@ return array(
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
+	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
 	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class ),
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
-	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class ),
+	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class ),
 	//Routes
 	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
@@ -291,6 +302,7 @@ return array(
 	AddressInterface::class                        => \DI\autowire( Address::class ),
 	BalanceInterface::class                        => \DI\autowire( Balance::class ),
 	OauthUserInterface::class                      => \DI\autowire( OauthUser::class ),
+	PostInterface::class                           => \DI\autowire( Post::class ),
 	PromiseInterface::class                        => \DI\autowire( Promise::class ),
 	PromiseMetaInterface::class                    => \DI\autowire( PromiseMeta::class ), 
 	SourceInterface::class                         => \DI\autowire( Source::class ), 
@@ -345,6 +357,8 @@ return array(
 		->constructorParameter( 'class', BalanceInterface::class ),
 	OauthUserFactoryConcrete::class              => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', OauthUserInterface::class ),
+	PostFactoryConcrete::class                   => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', PostInterface::class ),
 	PromiseFactoryConcrete::class                => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', PromiseInterface::class ),
 	PromiseMetaFactoryConcrete::class            => \DI\autowire( RootFactory::class )
@@ -379,6 +393,8 @@ return array(
 		->constructorParameter( 'factory', \Di\get( BalanceFactoryConcrete::class ) ),
 	OauthUserFactoryInterface::class             => \DI\autowire( OauthUserFactory::class )
 		->constructorParameter( 'factory', \Di\get( OauthUserFactoryConcrete::class ) ),
+	PostFactoryInterface::class                  => \DI\autowire( PostFactory::class )
+		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
 	PromiseFactoryInterface::class               => \DI\autowire( PromiseFactory::class )
 		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
 	PromiseMetaFactoryInterface::class           => \DI\autowire( PromiseMetaFactory::class )

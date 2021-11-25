@@ -6271,6 +6271,33 @@ exports.StatusIndicator = StatusIndicator;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/TCARuleEditor.tsx":
+/*!*********************************************************!*\
+  !*** ./resources/ts/Admin/Components/TCARuleEditor.tsx ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class TCARuleEditor extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement(components_1.Panel, null,
+            React.createElement(components_1.PanelBody, { title: "TCA Rule Editor" },
+                React.createElement(components_1.PanelRow, null, "123"))));
+    }
+}
+exports["default"] = TCARuleEditor;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/UserSearchField.tsx":
 /*!***********************************************************!*\
   !*** ./resources/ts/Admin/Components/UserSearchField.tsx ***!
@@ -7356,16 +7383,14 @@ class TokenMetaEditPage extends react_1.Component {
     render() {
         var _a, _b;
         return (React.createElement(element_1.Fragment, null,
-            React.createElement(components_1.Panel, { header: "Additional token meta" },
-                React.createElement(components_1.PanelBody, null,
-                    React.createElement(components_1.PanelRow, null,
-                        React.createElement("div", { style: { width: '100%' } },
-                            React.createElement(components_1.TextControl, { value: this.state.meta.asset, label: "Asset", help: "Is used for pairing meta with an asset", onChange: (value) => {
-                                    const state = Object.assign({}, this.state.meta);
-                                    state.asset = value;
-                                    this.setState({ meta: state });
-                                }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
-                            React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated }))))),
+            React.createElement(components_1.PanelRow, null,
+                React.createElement("div", { style: { width: '100%', marginTop: '12px' } },
+                    React.createElement(components_1.TextControl, { value: this.state.meta.asset, label: "Asset", help: "Is used for pairing meta with an asset", onChange: (value) => {
+                            const state = Object.assign({}, this.state.meta);
+                            state.asset = value;
+                            this.setState({ meta: state });
+                        }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
+                    React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated }))),
             React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.meta) })));
     }
 }
@@ -7533,13 +7558,14 @@ class WhitelistPage extends react_1.Component {
                                 ? 'Whitelist enabled.'
                                 : 'Whitelist disabled.', checked: this.state.whitelistData.enabled, onChange: (value) => {
                                 this.setUseWhitelist(value);
-                            } })))),
-            this.state.whitelistData.enabled == true &&
-                React.createElement(components_1.Panel, { header: "Token Whitelist Editor" },
-                    React.createElement(components_1.PanelBody, null,
+                            } })),
+                    this.state.whitelistData.enabled == true &&
                         React.createElement(components_1.PanelRow, null,
-                            React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.items })))),
-            React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
+                            React.createElement("div", { style: { marginBottom: '12px' } },
+                                React.createElement("h4", null, "Token Whitelist Editor"),
+                                React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.items }))),
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave }))))));
     }
 }
 __decorate([
@@ -7617,6 +7643,7 @@ let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Compon
     }
     register(selector) {
         this.element.addEventListener('click', () => {
+            this.element.classList.add('loading');
             this.authService.connect();
         });
     }
@@ -8775,6 +8802,7 @@ const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage 
 const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */ "./resources/ts/Admin/Pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditPage */ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx");
+const TCARuleEditor_1 = __webpack_require__(/*! ./Admin/Components/TCARuleEditor */ "./resources/ts/Admin/Components/TCARuleEditor.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
@@ -8783,8 +8811,13 @@ class AdminApp extends App_1.default {
         this.container = Inversify_config_1.container;
         this.pageElement = document.querySelector('.tokenpass-admin-page');
         if (this.pageElement) {
-            this.view = window.tokenpassView;
-            this.pageData = window.tokenpassProps;
+            const data = window.tokenpassData;
+            if (!data) {
+                return;
+            }
+            this.view = data === null || data === void 0 ? void 0 : data.view;
+            this.pageData = data === null || data === void 0 ? void 0 : data.props;
+            this.useTCA = data.useTCA;
             const views = this.getViews();
             const ViewComponent = (_a = views[this.view]) !== null && _a !== void 0 ? _a : null;
             if (ViewComponent) {
@@ -8820,7 +8853,9 @@ class AdminApp extends App_1.default {
         this.pageElement.appendChild(pageContainer);
         (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
             React.createElement(AppLayout_1.default, null,
-                React.createElement(ViewComponent, { pageData: this.pageData }))), pageContainer);
+                React.createElement(ViewComponent, { pageData: this.pageData }),
+                this.useTCA == true &&
+                    React.createElement(TCARuleEditor_1.default, null))), pageContainer);
     }
     registerRedirects() {
         document.addEventListener('DOMContentLoaded', () => {
