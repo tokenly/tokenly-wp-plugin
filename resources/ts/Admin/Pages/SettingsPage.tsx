@@ -5,8 +5,10 @@ import { Component } from 'react';
 import { SavePanel } from '../Components/SavePanel';
 import { IntegrationSettingsForm } from '../Components/IntegrationSettingsForm';
 import { IntegrationSettingsHelp } from '../Components/IntegrationSettingsHelp';
+import { TcaSettingsForm } from '../Components/TcaSettingsForm';
 import { SettingsData } from '../../Interfaces';
-import { SettingsRepositoryInterface } from '../../Interfaces/Repositories/SettingsRepositoryInterface';
+import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/IntegrationSettingsRepositoryInterface';
+import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/TcaSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
 
 import { 
@@ -20,6 +22,8 @@ import {
 interface SettingsPageData {
 	integration_settings: any;
 	integration_data: any;
+	tca_settings: any;
+	tca_data: any;
 }
 
 interface SettingsPageProps {
@@ -28,25 +32,36 @@ interface SettingsPageProps {
 
 interface SettingsPageState {
 	integrationSettings: SettingsData;
-	saving: boolean;
+	tcaSettings: any;
+	savingIntegrationSettings: boolean,
+	savingTcaSettings: boolean,
 }
 
 export default class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
-	@resolve( TYPES.SettingsRepositoryInterface )
-	settingsRepository: SettingsRepositoryInterface;
+	@resolve( TYPES.IntegrationSettingsRepositoryInterface )
+	integrationSettingsRepository: IntegrationSettingsRepositoryInterface;
+	@resolve( TYPES.TcaSettingsRepositoryInterface )
+	tcaSettingsRepository: TcaSettingsRepositoryInterface;
 	
 	state: SettingsPageState = {
 		integrationSettings: {
 			client_id: '',
 			client_secret: '',
 		},
-		saving: false,
+		tcaSettings: {
+			post_types: {},
+		},
+		savingIntegrationSettings: false,
+		savingTcaSettings: false,
 	}
 	constructor( props: SettingsPageProps ) {
 		super( props );
 		this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind( this );
 		this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind( this );
+		this.onTcaSettingsSave = this.onTcaSettingsSave.bind( this );
+		this.onTcaSettingsChange = this.onTcaSettingsChange.bind( this );
 		this.state.integrationSettings = Object.assign( this.state.integrationSettings, this.props.pageData.integration_settings );
+		this.state.tcaSettings = Object.assign( {}, this.props.pageData?.tca_settings );
 	}
 	
 	setClientId( value: string ) {
@@ -62,9 +77,9 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	}
 	
 	onIntegrationSettingsSave() {
-		this.setState( { saving: true } );
-		this.settingsRepository.update( this.state.integrationSettings ).then( result => {
-			this.setState( { saving: false } );
+		this.setState( { savingIntegrationSettings: true } );
+		this.integrationSettingsRepository.update( this.state.integrationSettings ).then( result => {
+			this.setState( { savingIntegrationSettings: false } );
 			window.location.reload();
 		} ).catch( error => {
 			console.log( error );
@@ -73,6 +88,19 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 
 	onIntegrationSettingsChange( newSettings: any ) {
 		this.setState( { integrationSettings: newSettings } );
+	}
+
+	onTcaSettingsSave() {
+		this.setState( { savingTcaSettings: true } );
+		this.tcaSettingsRepository.update( this.state.tcaSettings ).then( ( result: any ) => {
+			this.setState( { savingTcaSettings: false } );
+		} ).catch( ( error: any ) => {
+			console.log( error );
+		})
+	}
+
+	onTcaSettingsChange( newSettings: any ) {
+		this.setState( { tcaSettings: newSettings } )
 	}
 
 	render() {
@@ -96,7 +124,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 						<PanelRow>
 							<SavePanel
 								label="Save Integration settings"
-								saving={ this.state.saving }
+								saving={ this.state.savingIntegrationSettings }
 								onClick={ this.onIntegrationSettingsSave }
 							/>
 						</PanelRow>
@@ -105,10 +133,17 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 				<Panel>
 					<PanelBody title="TCA settings">
 						<PanelRow>
+							<TcaSettingsForm
+								settings={ this.state.tcaSettings }
+								data={ this.props.pageData.tca_data }
+								onChange={ this.onTcaSettingsChange }
+							/>
+						</PanelRow>
+						<PanelRow>
 							<SavePanel
 								label="Save TCA settings"
-								saving={ this.state.saving }
-								onClick={ this.onIntegrationSettingsSave }
+								saving={ this.state.savingTcaSettings }
+								onClick={ this.onTcaSettingsSave }
 							/>
 						</PanelRow>
 					</PanelBody>

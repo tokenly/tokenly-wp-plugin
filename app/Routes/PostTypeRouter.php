@@ -10,6 +10,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
+use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 
 /**
  * Manages routing for the post type views
@@ -20,18 +23,23 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $integration;
 	protected $post_types;
 	protected $current_user;
+	protected $tca_settings;
 	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
 		PromiseMetaPostType $promise_meta_post_type,
 		TokenMetaControllerInterface $token_meta_controller,
 		TokenMetaServiceInterface $token_meta_service,
+		PostControllerInterface $post_controller,
+		PostServiceInterface $post_service,
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
+		TcaSettingsInterface $tca_settings,
 		string $namespace
 	) {
 		$this->integration = $integration;
 		$this->current_user = $current_user;
+		$this->tca_settings = $tca_settings;
 		$this->namespace = $namespace;
 		$this->post_types = array(
 			'token_meta' => array(
@@ -41,7 +49,11 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			),
 			'promise_meta'    => array(
 				'post_type'  => $promise_meta_post_type,
-			)
+			),
+			'post'       => array(
+				'controller' => $post_controller,
+				'service'    => $post_service,
+			),
 		);
 	}
 
@@ -61,7 +73,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	public function on_post_save( int $post_id, \WP_Post $post, bool $update ) {
 		$post_type = $post->post_type;
 		$post_type_key = str_replace( "{$this->namespace}_", '', $post_type );
-		$params = $_POST['tokenly_data'] ?? array();
+		$params = $_POST["{$this->namespace}_data"] ?? array();
 		if ( $params ) {
 			$params = wp_unslash( $params );
 			$params = json_decode( $params, true );
@@ -71,7 +83,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		}
 	}
 	
-	protected function can_register( string $key ) {
+	protected function can_register() {
 		if ( $this->integration->can_connect() && $this->current_user->can_connect() ) {
 			return true;
 		} else {
@@ -94,40 +106,71 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				'post_type'     => $this->post_types['promise_meta']['post_type'],
 			)
 		);
+		$routes = $this->process_routes( $routes );
+		return $routes;
+	}
+
+	protected function process_routes( array $routes ) {
+		$routes = $this->add_tca_routes( $routes );
+		return $routes;
+	}
+
+	protected function add_tca_routes( array $routes ) {
+		if ( !isset( $this->tca_settings->post_types ) ) {
+			return $routes;
+		}
+		$tca_post_types = $this->tca_settings->post_types;
+		foreach ( $routes as $key => &$route ) {
+			$route['name'] = "{$this->namespace}_{$route['name']}";
+			$route['slug'] = "{$this->namespace}-{$route['slug']}";
+			$name = $route['name'];
+			$use_tca = false;
+			if ( isset( $tca_post_types[ $name ] ) ) {
+				$use_tca = $tca_post_types[ $name ] ?? false;
+				unset( $tca_post_types[ $name ] );
+			}
+			$route['use_tca'] = $use_tca; 
+		}
+		foreach ( $tca_post_types as $key => $post_type ) {
+			$routes[ $key ] = array(
+				'name'          => $key,
+				'edit_callback' => array( $this->post_types['post']['controller'], 'edit' ),
+				'save_callback' => array( $this->post_types['post']['service'], 'update' ),
+			);
+		}
 		return $routes;
 	}
 	
 	public function register_routes() {
+		if ( !$this->can_register() ) {
+			return;
+		}
 		foreach ( $this->routes as $key => $route ) {
 			$name = $route['name'];
-			$name = "{$this->namespace}_{$name}";
-			$slug = $route['slug'];
-			$slug = "{$this->namespace}-{$slug}";
-			$args = $route['post_type']->get_args();
-			$args['rewrite'] = array( 'slug' => $slug );
-			if ( $this->can_register( $key ) ) {
+			if ( isset( $route['post_type'] ) ) {
+				$args = $route['post_type']->get_args();
+				$slug = $route['slug'];
+				$args['rewrite'] = array( 'slug' => $slug );
 				register_post_type( $name, $args );
-				if ( isset( $route['edit_callback'] ) ) {
-					$callable = $route['edit_callback'];
-					$callable = function() use ( $callable, $name ) {
-						$this->render_route( $callable );
-					};
-					$route['edit_callback'] = $callable;
-					add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
-						add_meta_box(
-							'tokenpass_data',
-							__( 'Tokenpass', 'textdomain' ),
-							$callable,
-							$name,
-							'advanced',
-							'high'
-						);
-					} );
-				}
+			}
+			if ( isset( $route['edit_callback'] ) ) {
+				$callable = $route['edit_callback'];
+				$callable = function() use ( $callable, $name ) {
+					$this->render_route( $callable );
+				};
+				$route['edit_callback'] = $callable;
+				add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
+					add_meta_box(
+						'tokenpass_data',
+						__( 'Tokenpass', 'textdomain' ),
+						$callable,
+						$name,
+						'advanced',
+						'high'
+					);
+				} );
 			}
 		}
-
-
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
 	}
 }

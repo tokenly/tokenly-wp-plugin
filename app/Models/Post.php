@@ -32,4 +32,11 @@ class Post implements PostInterface {
 	public function __set( $key, $val ) {
 		return $this->_instance->$key = $val;
 	}
+
+	public function to_array() {
+		$array = array(
+			//
+		);
+		return $array;
+	}
 }

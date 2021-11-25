@@ -1,11 +1,11 @@
 import { injectable, inject } from 'inversify';
 import { SettingsData } from '../Interfaces';
-import { SettingsRepositoryInterface } from './../Interfaces/Repositories/SettingsRepositoryInterface';
+import { TcaSettingsRepositoryInterface } from './../Interfaces/Repositories/TcaSettingsRepositoryInterface';
 import { AdminApiServiceInterface } from '../Interfaces/Services/AdminApiServiceInterface';
 import { TYPES } from './../Types';
 
 @injectable()
-export class SettingsRepository implements SettingsRepositoryInterface {
+export class TcaSettingsRepository implements TcaSettingsRepositoryInterface {
 	adminApiService;
 	
 	constructor(
@@ -14,9 +14,9 @@ export class SettingsRepository implements SettingsRepositoryInterface {
 		this.adminApiService = adminApiService;
 	}
 	
-	show(): Promise<SettingsData> {
+	show(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.settingsShow().then( ( result: SettingsData ) => {
+			this.adminApiService.settingsTcaShow().then( ( result: SettingsData ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -24,9 +24,9 @@ export class SettingsRepository implements SettingsRepositoryInterface {
 		});
 	}
 	
-	update( params: SettingsData ): Promise<any> {
+	update( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.settingsUpdate( params ).then( result => {
+			this.adminApiService.settingsTcaUpdate( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

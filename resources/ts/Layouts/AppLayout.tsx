@@ -15,12 +15,14 @@ interface AppLayoutProps {
 interface AppLayoutState {
 	confirmModalData: ConfirmModalData;
 	confirmModalShow: boolean;
+	postData: any;
 }
 
 export default class AppLayout extends Component<AppLayoutProps, AppLayoutState> {
 	state: AppLayoutState = {
 		confirmModalData: null,
 		confirmModalShow: false,
+		postData: {},
 	};
 	constructor( props: AppLayoutProps ) {
 		super( props );
@@ -53,6 +55,11 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 
 	componentDidMount() {
 		eventBus.on( 'confirmModalShow', this.onConfirmModalShow );
+		eventBus.on( 'postDataUpdated', ( newState: any ) => {
+			let state = Object.assign( {}, this.state );
+			state = Object.assign( state, newState );
+			this.setState( { postData: state } );
+		} );
 	}
 	
 	componentWillUnmount() {
@@ -62,6 +69,7 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 	render() {
 		return (
 			<Fragment>
+				{ this.props.children }
 				{ this.state.confirmModalShow == true &&
 					<ConfirmModal
 						key={ this.state.confirmModalData.key }
@@ -71,7 +79,7 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 						onChoice={ this.onConfirmModalChoice }
 					/>
 				}
-				{ this.props.children }
+				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.postData as any ) } />
 			</Fragment>
 		)
 	}

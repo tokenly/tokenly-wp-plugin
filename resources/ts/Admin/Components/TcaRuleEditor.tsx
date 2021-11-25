@@ -7,17 +7,17 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface TCARuleEditorProps {
+interface TcaRuleEditorProps {
 	//
 }
 
-interface TCARuleEditorState {
+interface TcaRuleEditorState {
 	//
 }
 
-export default class TCARuleEditor extends Component<TCARuleEditorProps, TCARuleEditorState> {
+export default class TcaRuleEditor extends Component<TcaRuleEditorProps, TcaRuleEditorState> {
 
-	constructor( props: TCARuleEditorProps ) {
+	constructor( props: TcaRuleEditorProps ) {
 		super( props );
 	}
 

@@ -29,6 +29,7 @@
 		grid-template-columns: 32px 1fr;
 		flex-direction: row;
 		grid-column-gap: 8px;
+		/* autoprefixer: ignore next */
 		align-items: center;
 		.icon {
 			display: flex;

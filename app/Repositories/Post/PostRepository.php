@@ -24,13 +24,19 @@ class PostRepository implements PostRepositoryInterface {
 	 * @return PostInterface
 	 */
 	public function show( array $params = array() ) {
-		$query = new \WP_Query( $params );
-		$posts = $query_meta->posts;
+		$query_args = array(
+			'post_type'   => 'any',
+		);
+		if ( isset( $params['id'] ) ) {
+			$query_args['p'] = $params['id'];
+		}
+		$query = new \WP_Query( $query_args );
+		$posts = $query->posts;
 		if ( !isset( $posts[0] ) ) {
 			return;
 		}
 		$post = $posts[0];
 		$post = $this->post_factory->create( $post );
-		return $posts;
+		return $post;
 	}
 }

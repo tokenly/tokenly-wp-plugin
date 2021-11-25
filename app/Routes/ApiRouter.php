@@ -4,7 +4,8 @@ namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\IntegrationSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
@@ -20,19 +21,21 @@ class ApiRouter extends Router implements ApiRouterInterface {
 
 	public function __construct(
 		AuthControllerInterface $auth_controller,
-		SettingsControllerInterface $settings_controller,
+		IntegrationSettingsControllerInterface $settings_integration_controller,
+		TcaSettingsControllerInterface $settings_tca_controller,
 		WhitelistControllerInterface $whitelist_controller,
 		PromiseControllerInterface $promise_controller,
 		SourceControllerInterface $source_controller,
 		UserControllerInterface $user_controller
 	) {
 		$this->controllers = array(
-			'auth'       => $auth_controller,
-			'settings'   => $settings_controller,
-			'whitelist'  => $whitelist_controller,
-			'promise'    => $promise_controller,
-			'source'     => $source_controller,
-			'user'       => $user_controller,
+			'auth'                   => $auth_controller,
+			'settings-integration'   => $settings_integration_controller,
+			'settings-tca'           => $settings_tca_controller,
+			'whitelist'              => $whitelist_controller,
+			'promise'                => $promise_controller,
+			'source'                 => $source_controller,
+			'user'                   => $user_controller,
 		);
 		global $tokenly_routes;
 		$tokenly_routes['api'] = $this->get_route_urls();
@@ -101,26 +104,45 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'settings-show' => array(
-				'path' => '/settings',
+			'settings-integration-show' => array(
+				'path' => '/settings/integration',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['settings'], 'show' ),
+					'callback'            => array( $this->controllers['settings-integration'], 'show' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
 			),
-			'settings-update' => array(
-				'path' => '/settings',
+			'settings-integration-update' => array(
+				'path' => '/settings/integration',
 				'args' => array(
 					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['settings'], 'update' ),
+					'callback'            => array( $this->controllers['settings-integration'], 'update' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
-				'schema' => array( $this->controllers['settings'], 'get_update_schema' ),
+			),
+			'settings-tca-show' => array(
+				'path' => '/settings/tca',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['settings-tca'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings-tca-update' => array(
+				'path' => '/settings/tca',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['settings-tca'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
 			),
 			'whitelist-show' => array(
 				'path' => '/whitelist',

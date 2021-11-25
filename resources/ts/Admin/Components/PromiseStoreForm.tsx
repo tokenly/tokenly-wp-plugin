@@ -227,7 +227,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 									<NumberControl
 										type="number"
 										value={ this.state.promise.quantity }
-										
+										min={ 0 }
 										style={ { maxWidth: '100px' } }
 										onChange={ (value: any) => {
 											const state = Object.assign( {}, this.state.promise );
@@ -277,7 +277,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						}}
 						style={ { marginTop: '12px' } }
 					>
-						Create transaction
+						Create promise
 					</Button>
 					{this.props.saving === true &&
 						<Spinner/>

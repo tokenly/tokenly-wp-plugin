@@ -29,14 +29,6 @@ class IntegrationSettings implements IntegrationSettingsInterface {
 		$this->save();
 	}
 
-	public function is_configured() {
-		if ( !empty( $this->client_id ?? null ) && !empty( $this->client_secret ?? null ) ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public function from_array( $settings_data ) {
 		if ( isset( $settings_data['client_id'] ) ) {
 			$this->client_id = $settings_data['client_id'];

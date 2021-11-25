@@ -5903,7 +5903,7 @@ class PromiseStoreForm extends react_1.Component {
                         React.createElement("label", null,
                             "Quantity",
                             React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
-                                React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
+                                React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, min: 0, style: { maxWidth: '100px' }, onChange: (value) => {
                                         const state = Object.assign({}, this.state.promise);
                                         state.quantity = value;
                                         this.setState({ promise: state });
@@ -5926,7 +5926,7 @@ class PromiseStoreForm extends react_1.Component {
             React.createElement(components_1.Flex, { justify: "flex-start" },
                 React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
                         this.onSubmit();
-                    }, style: { marginTop: '12px' } }, "Create transaction"),
+                    }, style: { marginTop: '12px' } }, "Create promise"),
                 this.props.saving === true &&
                     React.createElement(components_1.Spinner, null),
                 React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
@@ -6271,9 +6271,9 @@ exports.StatusIndicator = StatusIndicator;
 
 /***/ }),
 
-/***/ "./resources/ts/Admin/Components/TCARuleEditor.tsx":
+/***/ "./resources/ts/Admin/Components/TcaRuleEditor.tsx":
 /*!*********************************************************!*\
-  !*** ./resources/ts/Admin/Components/TCARuleEditor.tsx ***!
+  !*** ./resources/ts/Admin/Components/TcaRuleEditor.tsx ***!
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -6283,7 +6283,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-class TCARuleEditor extends react_1.Component {
+class TcaRuleEditor extends react_1.Component {
     constructor(props) {
         super(props);
     }
@@ -6293,7 +6293,64 @@ class TCARuleEditor extends react_1.Component {
                 React.createElement(components_1.PanelRow, null, "123"))));
     }
 }
-exports["default"] = TCARuleEditor;
+exports["default"] = TcaRuleEditor;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/TcaSettingsForm.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Components/TcaSettingsForm.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class TcaSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    isPostTypeChecked(key) {
+        var _a, _b;
+        let checked = false;
+        if (((_a = this.props.settings) === null || _a === void 0 ? void 0 : _a.post_types) && ((_b = this.props.settings) === null || _b === void 0 ? void 0 : _b.post_types[key])) {
+            checked = this.props.settings.post_types[key];
+        }
+        return checked;
+    }
+    render() {
+        let listItems = [];
+        Object.keys(this.props.data.post_types).map((key, index) => {
+            const label = this.props.data.post_types[key];
+            const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
+                    let settings = Object.assign({}, this.props.settings);
+                    if (settings.post_types && typeof settings.post_types == 'object') {
+                        settings.post_types[key] = value;
+                    }
+                    this.onChange(settings);
+                } }));
+            listItems.push(item);
+        });
+        return (React.createElement("div", null,
+            React.createElement("div", { style: { marginBottom: '12px' } }, "Enable TCA for the post types:"),
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, listItems)));
+    }
+}
+exports.TcaSettingsForm = TcaSettingsForm;
 
 
 /***/ }),
@@ -6420,8 +6477,8 @@ class Whitelist extends react_1.Component {
         this.onUpdate(this.state.whitelist);
     }
     render() {
-        const listItems = this.state.whitelist.map((listItem, i) => React.createElement("div", null,
-            React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
+        const listItems = this.state.whitelist.map((listItem, i) => {
+            return (React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
                 React.createElement(components_1.TextControl, { label: "Contract Address", value: listItem.address, onChange: (value) => {
                         let newState = Object.assign({}, this.state);
                         newState.whitelist[i].address = value;
@@ -6437,7 +6494,8 @@ class Whitelist extends react_1.Component {
                 React.createElement(components_1.Button, { isTertiary: true, onClick: () => {
                         this.onRemove(i);
                     } },
-                    React.createElement(components_1.Dashicon, { icon: "no" })))));
+                    React.createElement(components_1.Dashicon, { icon: "no" }))));
+        });
         return (React.createElement("div", null,
             React.createElement("ul", null, listItems),
             React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: () => {
@@ -6706,6 +6764,34 @@ class Page extends react_1.Component {
     }
 }
 exports["default"] = Page;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/PostEditPage.tsx":
+/*!***************************************************!*\
+  !*** ./resources/ts/Admin/Pages/PostEditPage.tsx ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class PostEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(element_1.Fragment, null, "123"));
+    }
+}
+exports["default"] = PostEditPage;
 
 
 /***/ }),
@@ -6980,21 +7066,30 @@ const react_1 = __webpack_require__(/*! react */ "react");
 const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resources/ts/Admin/Components/SavePanel.tsx");
 const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/IntegrationSettingsForm */ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx");
 const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx");
+const TcaSettingsForm_1 = __webpack_require__(/*! ../Components/TcaSettingsForm */ "./resources/ts/Admin/Components/TcaSettingsForm.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {
     constructor(props) {
+        var _a;
         super(props);
         this.state = {
             integrationSettings: {
                 client_id: '',
                 client_secret: '',
             },
-            saving: false,
+            tcaSettings: {
+                post_types: {},
+            },
+            savingIntegrationSettings: false,
+            savingTcaSettings: false,
         };
         this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind(this);
         this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind(this);
+        this.onTcaSettingsSave = this.onTcaSettingsSave.bind(this);
+        this.onTcaSettingsChange = this.onTcaSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
+        this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);
@@ -7007,9 +7102,9 @@ class SettingsPage extends react_1.Component {
         this.setState(state);
     }
     onIntegrationSettingsSave() {
-        this.setState({ saving: true });
-        this.settingsRepository.update(this.state.integrationSettings).then(result => {
-            this.setState({ saving: false });
+        this.setState({ savingIntegrationSettings: true });
+        this.integrationSettingsRepository.update(this.state.integrationSettings).then(result => {
+            this.setState({ savingIntegrationSettings: false });
             window.location.reload();
         }).catch(error => {
             console.log(error);
@@ -7017,6 +7112,17 @@ class SettingsPage extends react_1.Component {
     }
     onIntegrationSettingsChange(newSettings) {
         this.setState({ integrationSettings: newSettings });
+    }
+    onTcaSettingsSave() {
+        this.setState({ savingTcaSettings: true });
+        this.tcaSettingsRepository.update(this.state.tcaSettings).then((result) => {
+            this.setState({ savingTcaSettings: false });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+    onTcaSettingsChange(newSettings) {
+        this.setState({ tcaSettings: newSettings });
     }
     render() {
         var _a, _b, _c, _d, _e, _f, _g;
@@ -7028,17 +7134,23 @@ class SettingsPage extends react_1.Component {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(IntegrationSettingsForm_1.IntegrationSettingsForm, { status: (_g = (_f = (_e = this.props.pageData) === null || _e === void 0 ? void 0 : _e.integration_data) === null || _f === void 0 ? void 0 : _f.status) !== null && _g !== void 0 ? _g : false, settings: this.state.integrationSettings, onChange: this.onIntegrationSettingsChange })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(SavePanel_1.SavePanel, { label: "Save Integration settings", saving: this.state.saving, onClick: this.onIntegrationSettingsSave })))),
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save Integration settings", saving: this.state.savingIntegrationSettings, onClick: this.onIntegrationSettingsSave })))),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, { title: "TCA settings" },
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.saving, onClick: this.onIntegrationSettingsSave }))))));
+                        React.createElement(TcaSettingsForm_1.TcaSettingsForm, { settings: this.state.tcaSettings, data: this.props.pageData.tca_data, onChange: this.onTcaSettingsChange })),
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.savingTcaSettings, onClick: this.onTcaSettingsSave }))))));
     }
 }
 __decorate([
-    (0, inversify_react_1.resolve)(Types_1.TYPES.SettingsRepositoryInterface),
+    (0, inversify_react_1.resolve)(Types_1.TYPES.IntegrationSettingsRepositoryInterface),
     __metadata("design:type", Object)
-], SettingsPage.prototype, "settingsRepository", void 0);
+], SettingsPage.prototype, "integrationSettingsRepository", void 0);
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.TcaSettingsRepositoryInterface),
+    __metadata("design:type", Object)
+], SettingsPage.prototype, "tcaSettingsRepository", void 0);
 exports["default"] = SettingsPage;
 
 
@@ -7355,6 +7467,7 @@ const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const AttributeRepeater_1 = __webpack_require__(/*! ../Components/AttributeRepeater */ "./resources/ts/Admin/Components/AttributeRepeater.tsx");
+const EventBus_1 = __webpack_require__(/*! ./../../EventBus */ "./resources/ts/EventBus.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class TokenMetaEditPage extends react_1.Component {
@@ -7369,8 +7482,12 @@ class TokenMetaEditPage extends react_1.Component {
         const postId = parseInt(urlParams.get('post'));
         this.state.postId = postId;
         this.state.meta = Object.assign(this.state.meta, this.props.pageData.meta);
+        this.onAssetUpdated = this.onExtraUpdated.bind(this);
         this.onExtraUpdated = this.onExtraUpdated.bind(this);
+        this.onPostUpdate = this.onPostUpdate.bind(this);
         console.log(this.props.pageData);
+    }
+    onAssetUpdated(value) {
     }
     onExtraUpdated(newExtra) {
         let newState = Object.assign({}, this.state);
@@ -7379,6 +7496,10 @@ class TokenMetaEditPage extends react_1.Component {
             return attribute != null;
         });
         this.setState(Object.assign({}, newState));
+        this.onPostUpdate(newState.meta);
+    }
+    onPostUpdate(newPostData) {
+        EventBus_1.default.dispatch('postDataUpdated', newPostData);
     }
     render() {
         var _a, _b;
@@ -7390,8 +7511,7 @@ class TokenMetaEditPage extends react_1.Component {
                             state.asset = value;
                             this.setState({ meta: state });
                         }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
-                    React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated }))),
-            React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.meta) })));
+                    React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated })))));
     }
 }
 __decorate([
@@ -7779,7 +7899,8 @@ __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Ref
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const Types_1 = __webpack_require__(/*! ./Types */ "./resources/ts/Types.ts");
 const AuthService_1 = __webpack_require__(/*! ./Services/AuthService */ "./resources/ts/Services/AuthService.ts");
-const SettingsRepository_1 = __webpack_require__(/*! ./Repositories/SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/IntegrationSettingsRepository */ "./resources/ts/Repositories/IntegrationSettingsRepository.ts");
+const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/TcaSettingsRepository */ "./resources/ts/Repositories/TcaSettingsRepository.ts");
 const PromiseRepository_1 = __webpack_require__(/*! ./Repositories/PromiseRepository */ "./resources/ts/Repositories/PromiseRepository.ts");
 const UserRepository_1 = __webpack_require__(/*! ./Repositories/UserRepository */ "./resources/ts/Repositories/UserRepository.ts");
 const SourceRepository_1 = __webpack_require__(/*! ./Repositories/SourceRepository */ "./resources/ts/Repositories/SourceRepository.ts");
@@ -7791,14 +7912,18 @@ const CardTokenItemComponent_1 = __webpack_require__(/*! ./Components/CardTokenI
 const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
 const container = new inversify_1.Container();
 exports.container = container;
+// Services - Application
 container.bind(Types_1.TYPES.AuthServiceInterface).to(AuthService_1.AuthService);
 container.bind(Types_1.TYPES.AdminApiServiceInterface).to(AdminApiService_1.AdminApiService);
+// Repositories
 container.bind(Types_1.TYPES.PromiseRepositoryInterface).to(PromiseRepository_1.PromiseRepository);
-container.bind(Types_1.TYPES.SettingsRepositoryInterface).to(SettingsRepository_1.SettingsRepository);
+container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
+container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 container.bind(Types_1.TYPES.SourceRepositoryInterface).to(SourceRepository_1.SourceRepository);
 container.bind(Types_1.TYPES.TokenMetaRepositoryInterface).to(TokenMetaRepository_1.TokenMetaRepository);
 container.bind(Types_1.TYPES.UserRepositoryInterface).to(UserRepository_1.UserRepository);
 container.bind(Types_1.TYPES.WhitelistRepositoryInterface).to(WhitelistRepository_1.WhitelistRepository);
+// Components
 container.bind(Types_1.TYPES.ComponentServiceProviderInterface).to(ComponentServiceProvider_1.ComponentServiceProvider);
 container.bind(Types_1.TYPES.ButtonLoginComponentInterface).to(ButtonLoginComponent_1.ButtonLoginComponent);
 container.bind(Types_1.TYPES.CardTokenItemComponentInterface).to(CardTokenItemComponent_1.CardTokenItemComponent);
@@ -7830,6 +7955,7 @@ class AppLayout extends react_1.Component {
         this.state = {
             confirmModalData: null,
             confirmModalShow: false,
+            postData: {},
         };
         this.onConfirmModalShow = this.onConfirmModalShow.bind(this);
         this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind(this);
@@ -7857,15 +7983,21 @@ class AppLayout extends react_1.Component {
     }
     componentDidMount() {
         EventBus_1.default.on('confirmModalShow', this.onConfirmModalShow);
+        EventBus_1.default.on('postDataUpdated', (newState) => {
+            let state = Object.assign({}, this.state);
+            state = Object.assign(state, newState);
+            this.setState({ postData: state });
+        });
     }
     componentWillUnmount() {
         EventBus_1.default.remove('confirmModalShow', this.onConfirmModalShow);
     }
     render() {
         return (React.createElement(element_1.Fragment, null,
+            this.props.children,
             this.state.confirmModalShow == true &&
                 React.createElement(ConfirmModal_1.ConfirmModal, { key: this.state.confirmModalData.key, title: this.state.confirmModalData.title, subtitle: this.state.confirmModalData.subtitle, onRequestClose: this.onConfirmModalRequestClose, onChoice: this.onConfirmModalChoice }),
-            this.props.children));
+            React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.postData) })));
     }
 }
 exports["default"] = AppLayout;
@@ -7972,6 +8104,63 @@ exports.ServiceProvider = ServiceProvider;
 
 /***/ }),
 
+/***/ "./resources/ts/Repositories/IntegrationSettingsRepository.ts":
+/*!********************************************************************!*\
+  !*** ./resources/ts/Repositories/IntegrationSettingsRepository.ts ***!
+  \********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let IntegrationSettingsRepository = class IntegrationSettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsIntegrationShow().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsIntegrationUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+IntegrationSettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], IntegrationSettingsRepository);
+exports.IntegrationSettingsRepository = IntegrationSettingsRepository;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Repositories/PromiseRepository.ts":
 /*!********************************************************!*\
   !*** ./resources/ts/Repositories/PromiseRepository.ts ***!
@@ -8047,63 +8236,6 @@ exports.PromiseRepository = PromiseRepository;
 
 /***/ }),
 
-/***/ "./resources/ts/Repositories/SettingsRepository.ts":
-/*!*********************************************************!*\
-  !*** ./resources/ts/Repositories/SettingsRepository.ts ***!
-  \*********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SettingsRepository = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-let SettingsRepository = class SettingsRepository {
-    constructor(adminApiService) {
-        this.adminApiService = adminApiService;
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsShow().then((result) => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    update(params) {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsUpdate(params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-};
-SettingsRepository = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], SettingsRepository);
-exports.SettingsRepository = SettingsRepository;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Repositories/SourceRepository.ts":
 /*!*******************************************************!*\
   !*** ./resources/ts/Repositories/SourceRepository.ts ***!
@@ -8175,6 +8307,63 @@ SourceRepository = __decorate([
     __metadata("design:paramtypes", [Object])
 ], SourceRepository);
 exports.SourceRepository = SourceRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/TcaSettingsRepository.ts":
+/*!************************************************************!*\
+  !*** ./resources/ts/Repositories/TcaSettingsRepository.ts ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let TcaSettingsRepository = class TcaSettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsTcaShow().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsTcaUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+TcaSettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], TcaSettingsRepository);
+exports.TcaSettingsRepository = TcaSettingsRepository;
 
 
 /***/ }),
@@ -8377,18 +8566,36 @@ let AdminApiService = class AdminApiService {
             'X-WP-Nonce': wpApiSettings.nonce,
         };
     }
-    settingsShow() {
+    settingsIntegrationShow() {
         return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/settings').then((result) => {
+            this.makeRequest('GET', '/settings/integration').then((result) => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsUpdate(params) {
+    settingsIntegrationUpdate(params) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/settings', params).then(result => {
+            this.makeRequest('PUT', '/settings/integration', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    settingsTcaShow() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/settings/tca').then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    settingsTcaUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/settings/tca', params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -8657,7 +8864,8 @@ const TYPES = {
     AuthServiceInterface: Symbol.for('AuthServiceInterface'),
     AdminApiServiceInterface: Symbol.for('AdminApiServiceInterface'),
     PromiseRepositoryInterface: Symbol.for('PromiseRepositoryInterface'),
-    SettingsRepositoryInterface: Symbol.for('SettingsRepositoryInterface'),
+    IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
+    TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
     SourceRepositoryInterface: Symbol.for('SourceRepositoryInterface'),
     TokenMetaRepositoryInterface: Symbol.for('TokenMetaRepositoryInterface'),
     UserRepositoryInterface: Symbol.for('UserRepositoryInterface'),
@@ -8801,8 +9009,9 @@ const SourceShowPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceShowPage */
 const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage */ "./resources/ts/Admin/Pages/SourceStorePage.tsx");
 const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */ "./resources/ts/Admin/Pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
+const PostEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PostEditPage */ "./resources/ts/Admin/Pages/PostEditPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditPage */ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx");
-const TCARuleEditor_1 = __webpack_require__(/*! ./Admin/Components/TCARuleEditor */ "./resources/ts/Admin/Components/TCARuleEditor.tsx");
+const TcaRuleEditor_1 = __webpack_require__(/*! ./Admin/Components/TcaRuleEditor */ "./resources/ts/Admin/Components/TcaRuleEditor.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
@@ -8841,6 +9050,7 @@ class AdminApp extends App_1.default {
             'source-show': SourceShowPage_1.default,
             'source-store': SourceStorePage_1.default,
             'source-edit': SourceEditPage_1.default,
+            'post-edit': PostEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
             'dashboard': DashboardPage_1.default,
         };
@@ -8855,7 +9065,7 @@ class AdminApp extends App_1.default {
             React.createElement(AppLayout_1.default, null,
                 React.createElement(ViewComponent, { pageData: this.pageData }),
                 this.useTCA == true &&
-                    React.createElement(TCARuleEditor_1.default, null))), pageContainer);
+                    React.createElement(TcaRuleEditor_1.default, null))), pageContainer);
     }
     registerRedirects() {
         document.addEventListener('DOMContentLoaded', () => {

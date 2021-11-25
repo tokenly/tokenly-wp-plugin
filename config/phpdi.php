@@ -10,6 +10,7 @@ use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
 use Tokenly\Wp\Services\Domain\IntegrationService;
 use Tokenly\Wp\Services\Domain\IntegrationSettingsService;
+use Tokenly\Wp\Services\Domain\TcaSettingsService;
 use Tokenly\Wp\Services\Domain\OauthUserService;
 use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
@@ -37,6 +38,7 @@ use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\Wp\Components\ButtonLogoutComponent;
 use Tokenly\Wp\Components\CardTokenItemComponent;
+use Tokenly\Wp\Controllers\Web\PostController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
@@ -49,7 +51,8 @@ use Tokenly\Wp\Controllers\Web\Admin\VendorController;
 use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
 use Tokenly\Wp\Controllers\Api\AuthController as AuthApiController;
 use Tokenly\Wp\Controllers\Api\PromiseController as PromiseApiController;
-use Tokenly\Wp\Controllers\Api\SettingsController as SettingsApiController;
+use Tokenly\Wp\Controllers\Api\IntegrationSettingsController as IntegrationSettingsApiController;
+use Tokenly\Wp\Controllers\Api\TcaSettingsController as TcaSettingsApiController;
 use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\WhitelistController as WhitelistApiController;
@@ -69,6 +72,7 @@ use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Models\PromiseMeta;
 use Tokenly\Wp\Models\Integration;
 use Tokenly\Wp\Models\IntegrationSettings;
+use Tokenly\Wp\Models\TcaSettings;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
 use Tokenly\Wp\Models\User;
@@ -102,6 +106,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TcaSettingsServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
@@ -126,6 +131,7 @@ use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
@@ -138,7 +144,8 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface as PromiseApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface as SettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\IntegrationSettingsControllerInterface as IntegrationSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface as TcaSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as WhitelistApiControllerInterface;
@@ -175,6 +182,7 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
@@ -227,18 +235,20 @@ return array(
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
+	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
 	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
 		->constructorParameter( 'oauth_callback_route', DI\get( 'oauth.callback_route' ) ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
 	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
 	//Controllers - API
-	AuthApiControllerInterface::class              => \DI\autowire( AuthApiController::class ),
-	PromiseApiControllerInterface::class           => \DI\autowire( PromiseApiController::class ),
-	SettingsApiControllerInterface::class          => \DI\autowire( SettingsApiController::class ),
-	SourceApiControllerInterface::class            => \DI\autowire( SourceApiController::class ),
-	UserApiControllerInterface::class              => \DI\autowire( UserApiController::class ),
-	WhitelistApiControllerInterface::class         => \DI\autowire( WhitelistApiController::class ),
+	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
+	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
+	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
+	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
+	SourceApiControllerInterface::class               => \DI\autowire( SourceApiController::class ),
+	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
+	WhitelistApiControllerInterface::class            => \DI\autowire( WhitelistApiController::class ),
 	//Components 
 	ButtonLoginComponentInterface::class           => \DI\autowire( ButtonLoginComponent::class )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
@@ -259,6 +269,7 @@ return array(
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
 	IntegrationServiceInterface::class             => \DI\autowire( IntegrationService::class ),
 	IntegrationSettingsServiceInterface::class     => \DI\autowire( IntegrationSettingsService::class ),
+	TcaSettingsServiceInterface::class             => \DI\autowire( TcaSettingsService::class ),
 	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
 	PostServiceInterface::class                    => \DI\autowire( PostService::class ),
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
@@ -277,7 +288,8 @@ return array(
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
 	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
-	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class ),
+	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
 	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
@@ -340,6 +352,16 @@ return array(
 		) );
 		return $settings;
 	} ),
+	TcaSettingsInterface::class        => \DI\factory( function ( 
+		ContainerInterface $container,
+		TcaSettingsServiceInterface $tca_settings_service
+	) {
+		$settings_data = $tca_settings_service->show();
+		$settings = $container->make( TcaSettings::class, array(
+			'settings_data' => $settings_data,
+		) );
+		return $settings;
+	} ),
 	WhitelistInterface::class                  => \DI\factory( function ( 
 		ContainerInterface $container,
 		WhitelistServiceInterface $whitelist_service
@@ -394,7 +416,7 @@ return array(
 	OauthUserFactoryInterface::class             => \DI\autowire( OauthUserFactory::class )
 		->constructorParameter( 'factory', \Di\get( OauthUserFactoryConcrete::class ) ),
 	PostFactoryInterface::class                  => \DI\autowire( PostFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
+		->constructorParameter( 'factory', \Di\get( PostFactoryConcrete::class ) ),
 	PromiseFactoryInterface::class               => \DI\autowire( PromiseFactory::class )
 		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
 	PromiseMetaFactoryInterface::class           => \DI\autowire( PromiseMetaFactory::class )

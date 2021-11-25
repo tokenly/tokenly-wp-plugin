@@ -12,6 +12,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_cache = array();
@@ -20,17 +21,20 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_meta_service;
 	protected $source_service;
 	protected $oauth_user_service;
+	protected $current_user;
 
 	public function __construct(
 		PromiseRepositoryInterface $promise_repository,
 		PromiseMetaServiceInterface $promise_meta_service,
 		SourceServiceInterface $source_service,
-		OauthUserServiceInterface $oauth_user_service
+		OauthUserServiceInterface $oauth_user_service,
+		CurrentUserInterface $current_user
 	) {
 		$this->promise_repository = $promise_repository;
 		$this->promise_meta_service = $promise_meta_service;
 		$this->source_service = $source_service;
 		$this->oauth_user_service = $oauth_user_service;
+		$this->current_user = $current_user;
 	}
 
 	/**

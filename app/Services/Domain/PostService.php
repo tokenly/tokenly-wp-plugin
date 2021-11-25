@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 class PostService extends DomainService implements PostServiceInterface {
@@ -20,6 +21,7 @@ class PostService extends DomainService implements PostServiceInterface {
 	
 	public function show( $params = array() ) {
 		$post = $this->post_repository->show( $params );
+		return $post;
 	}
 }
 

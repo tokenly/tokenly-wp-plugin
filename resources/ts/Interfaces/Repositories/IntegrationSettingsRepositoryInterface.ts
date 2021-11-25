@@ -2,7 +2,7 @@ import {
 	SettingsData,
 } from './../../Interfaces';
 
-export interface SettingsRepositoryInterface {
+export interface IntegrationSettingsRepositoryInterface {
 	show(): Promise<SettingsData>;
 	update( params: SettingsData ): Promise<any>;
 }

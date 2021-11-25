@@ -17,8 +17,9 @@ import SourceShowPage from './Admin/Pages/SourceShowPage';
 import SourceStorePage from './Admin/Pages/SourceStorePage';
 import SourceEditPage from './Admin/Pages/SourceEditPage';
 import DashboardPage from './Admin/Pages/DashboardPage';
+import PostEditPage from './Admin/Pages/PostEditPage';
 import TokenMetaEditPage from './Admin/Pages/TokenMetaEditPage';
-import TCARuleEditor from './Admin/Components/TCARuleEditor';
+import TcaRuleEditor from './Admin/Components/TcaRuleEditor';
 import { Redirect } from './Interfaces';
 
 declare const document: any;
@@ -34,6 +35,7 @@ class AdminApp extends App {
 	view: string;
 	pageData: object;
 	useTCA: boolean;
+	postData: any;
 	
 	constructor() {
 		super();
@@ -70,6 +72,7 @@ class AdminApp extends App {
 			'source-show'     : SourceShowPage,
 			'source-store'    : SourceStorePage,
 			'source-edit'     : SourceEditPage,
+			'post-edit'       : PostEditPage,
 			'token-meta-edit' : TokenMetaEditPage,
 			'dashboard'       : DashboardPage,
 		} as any;
@@ -86,7 +89,7 @@ class AdminApp extends App {
 				<AppLayout>
 					<ViewComponent pageData={ this.pageData } />
 					{ this.useTCA == true &&
-						<TCARuleEditor />
+						<TcaRuleEditor />
 					}
 				</AppLayout>
 			</Provider>,

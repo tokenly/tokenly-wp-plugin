@@ -5,6 +5,7 @@ import { TokenMetaRepositoryInterface } from '../../Interfaces/Repositories/Toke
 import { TokenMetaData } from '../../Interfaces';
 import { TYPES } from '../../Types';
 import { AttributeRepeater } from '../Components/AttributeRepeater';
+import eventBus from './../../EventBus';
 
 import { 
 	TextControl,
@@ -49,8 +50,14 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 		const postId = parseInt( urlParams.get( 'post' ) );
 		this.state.postId = postId;
 		this.state.meta = Object.assign( this.state.meta, this.props.pageData.meta );
+		this.onAssetUpdated = this.onExtraUpdated.bind( this );
 		this.onExtraUpdated = this.onExtraUpdated.bind( this );
+		this.onPostUpdate = this.onPostUpdate.bind( this );
 		console.log(this.props.pageData);
+	}
+	
+	onAssetUpdated( value: any ) {
+
 	}
 	
 	onExtraUpdated( newExtra: any ) {
@@ -60,6 +67,11 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 			return attribute != null;
 		} );
 		this.setState( { ...newState } );
+		this.onPostUpdate( newState.meta );
+	}
+
+	onPostUpdate( newPostData: any ) {
+		eventBus.dispatch( 'postDataUpdated', newPostData );
 	}
 
 	render() {
@@ -86,7 +98,6 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 						/>
 					</div>
 				</PanelRow>
-				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.meta as any ) } />
 			</Fragment>
 		);
 	}

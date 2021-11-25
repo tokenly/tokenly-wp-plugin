@@ -11,8 +11,10 @@ import {
 } from './../../Interfaces';
 
 export interface AdminApiServiceInterface {
-	settingsShow(): Promise<SettingsData>;
-	settingsUpdate( params: SettingsData ): Promise<any>;
+	settingsIntegrationShow(): Promise<SettingsData>;
+	settingsIntegrationUpdate( params: SettingsData ): Promise<any>;
+	settingsTcaShow(): Promise<any>;
+	settingsTcaUpdate( params: any ): Promise<any>;
 	sourceIndex(): Promise<Array<SourceData>>;
 	sourceStore( params: SourceData ): Promise<any>;
 	sourceUpdate( address: string, params: SourceData ): Promise<any>;
