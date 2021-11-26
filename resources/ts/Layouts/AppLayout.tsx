@@ -34,9 +34,10 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 		this.onConfirmModalShow = this.onConfirmModalShow.bind( this );
 		this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
+		this.onPostDataUpdated = this.onPostDataUpdated.bind( this );
 		this.onTcaUpdate = this.onTcaUpdate.bind( this );
 		this.state.tcaRules = Object.assign( {}, this.props.tcaRules );
-		console.log(this.state.tcaRules);
+		this.state.postData.tca_rules = this.state.tcaRules;
 	}
 
 	onConfirmModalRequestClose() {
@@ -63,16 +64,23 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 
 	componentDidMount() {
 		eventBus.on( 'confirmModalShow', this.onConfirmModalShow );
+		eventBus.on( 'postDataUpdated', this.onPostDataUpdated );
 	}
 	
 	componentWillUnmount() {
 		eventBus.remove( 'confirmModalShow', this.onConfirmModalShow );
 	}
 
+	onPostDataUpdated( newData: any ) {
+		let state = Object.assign( {}, this.state.postData );
+		state = Object.assign( state, newData );
+		this.setState( { postData: state } );
+	}
+
 	onTcaUpdate( rules: any ) {
-		let postData = Object.assign( {}, this.state.postData );
-		postData.tca_rules = rules;
-		this.setState( { postData: postData } );
+		this.onPostDataUpdated( {
+			tca_rules: rules,
+		} );
 	}
 
 	render() {

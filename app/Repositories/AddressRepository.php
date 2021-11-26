@@ -34,15 +34,16 @@ class AddressRepository implements AddressRepositoryInterface {
 		}
 		$username = $params['username'] ?? null;
 		$addresses = $this->client->getPublicAddresses( $username );
-		$addresses = array_map( function( $address ) {
-			$address['balances'] = array_map( function( $key, $balance ) {
-				$balance['asset'] = $key;
-				$balance['name'] = $key;
-				$balance['balanceSat'] = $balance['value'] ?? null;
-				return $balance;
-			}, array_keys( $address['balances'] ), $address['balances'] );
-			return $address;
-		}, $addresses );
+		foreach ( $addresses as &$address ) {
+			if ( isset( $address['balances'] ) ) {
+				foreach ( $address['balances'] as $key => &$balance ) {
+					$balance['asset'] = $key;
+					$balance['name'] = $key;
+					$balance['balanceSat'] = $balance['value'] ?? null;
+				}
+				$address['balances'] = array_values( $address['balances'] );
+			}
+		}
 		$address_collection = $this->address_collection_factory->create( $addresses );
 		return $address_collection;
 	}

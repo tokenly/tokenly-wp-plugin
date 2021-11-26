@@ -12,9 +12,10 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class User implements UserInterface, CurrentUserInterface {
-	public $oauth_user;
-	public $oauth_token;
 	protected $_instance;
+	protected $oauth_user;
+	protected $oauth_token;
+	protected $addresses;
 	protected $user_service;
 
 	public function __construct(
@@ -79,21 +80,25 @@ class User implements UserInterface, CurrentUserInterface {
 	}
 
 	/**
-	 * Retrieves oauth token from the options
-	 * @return string
-	 */
-	protected function get_oauth_token() {
-		$oauth_token = $this->user_service->get_oauth_token( $this->ID );
-		return $oauth_token;
-	}
-
-	/**
 	 * Retrieves oauth user from the API
 	 * @return OauthUserInterface
 	 */
 	public function get_oauth_user() {
-		$oauth_user = $this->user_service->get_oauth_user( $this->ID );
-		return $oauth_user;
+		if ( !isset( $this->oauth_user ) ) {
+			$this->oauth_user = $this->user_service->get_oauth_user( $this->ID );
+		}
+		return $this->oauth_user;
+	}
+
+	/**
+	 * Retrieves oauth token from the options
+	 * @return string
+	 */
+	public function get_oauth_token() {
+		if ( !isset( $this->oauth_token ) ) {
+			$this->oauth_token = $this->user_service->get_oauth_token( $this->ID );
+		}
+		return $this->oauth_token;
 	}
 	
 	public function is_guest() {

@@ -37,8 +37,6 @@ class PostService extends DomainService implements PostServiceInterface {
 	}
 
 	public function update( int $post_id, $params = array() ) {
-		error_log( 'updating post' );
-		error_log( print_r( $params, true ) );
 		$update_params = array();
 		if ( isset( $params['tca_rules'] ) ) {
 			$update_params['tca_rules'] = $params['tca_rules'];
@@ -67,11 +65,11 @@ class PostService extends DomainService implements PostServiceInterface {
 		if ( $tca_enabled === false ) {
 			return true;
 		}
-		$tca_rules = get_tca_rules( $post_id );
-		if ( !$tca_rules ) {
+		$tca_rules = $this->get_tca_rules( $post_id );
+		if ( count( $tca_rules ) == 0 ) {
 			return true;
 		}
-		$tca_allowed = $this->tca_service->check_token_access_user( $user_id, $rules ) ?? false;
+		$tca_allowed = $this->tca_service->check_token_access_user( $user_id, $tca_rules ) ?? false;
 		return $tca_allowed;
 	}
 }

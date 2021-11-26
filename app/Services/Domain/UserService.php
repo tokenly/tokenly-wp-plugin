@@ -82,6 +82,10 @@ class UserService implements UserServiceInterface {
 	 * @return BalanceCollectionInterface Found balances
 	 */
 	public function get_balances( int $id, array $params = array() ) {
+		$oauth_user = $this->get_oauth_user( $id );
+		if ( !$oauth_user ) {
+			return;
+		}
 		$oauth_token = $this->get_oauth_token( $id );
 		if ( !$oauth_token ) {
 			return;
@@ -126,21 +130,21 @@ class UserService implements UserServiceInterface {
 	}
 
 	/**
-	 * Retrieves oauth token from the options
-	 * @return string
-	 */
-	protected function get_oauth_token( int $id ) {
-		$oauth_token = $this->user_meta_repository->show( $id, 'oauth_token' );
-		return $oauth_token;
-	}
-
-	/**
 	 * Retrieves oauth user from the API
 	 * @return OauthUserInterface
 	 */
 	public function get_oauth_user( $id ) {
 		$oauth_user = $this->oauth_user_service->show( $id );
 		return $oauth_user;
+	}
+
+	/**
+	 * Retrieves oauth token from the options
+	 * @return string
+	 */
+	public function get_oauth_token( int $id ) {
+		$oauth_token = $this->user_meta_repository->show( $id, 'oauth_token' );
+		return $oauth_token;
 	}
 
 	public function index( $params ) {

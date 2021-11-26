@@ -21,7 +21,8 @@ class BalanceCollectionFactory extends CollectionFactory implements BalanceColle
 	 */
 	public function create( $data, $args = array() ) {
 		$collection = parent::create( $data, $args );
-		if ( isset( $args['use_whitelist'] ) && $args['use_whitelist'] == true ) {
+		$use_whitelist = $args['use_whitelist'] ?? true;
+		if ( $use_whitelist == true ) {
 			$collection->apply_whitelist();
 		}
 		return $collection;

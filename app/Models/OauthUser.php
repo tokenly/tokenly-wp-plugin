@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 
 class OauthUser implements OauthUserInterface {
 	public $id;
@@ -10,10 +11,13 @@ class OauthUser implements OauthUserInterface {
 	public $email;
 	public $name;
 	public $email_is_confirmed;
+	protected $oauth_user_service;
 
 	public function __construct(
-		$oauth_user_data = array()
+		$oauth_user_data = array(),
+		OauthUserServiceInterface $oauth_user_service
 	) {
+		$this->oauth_user_service = $oauth_user_service;
 		$this->from_array( $oauth_user_data );
 	}
 

@@ -37,7 +37,7 @@ export default class TcaRuleEditor extends Component<TcaRuleEditorProps, TcaRule
 	
 	onAdd() {
 		let newState = Object.assign( {}, this.state );
-		newState.rules[newState.rules.length] = { asset: null, quantity: null, op: null, stackOp: null };
+		newState.rules[newState.rules.length] = { asset: null, quantity: 0, op: '=', stackOp: 'AND' };
 		this.setState( newState );
 		this.dispatchUpdate();
 	}
@@ -96,6 +96,7 @@ export default class TcaRuleEditor extends Component<TcaRuleEditorProps, TcaRule
 						placeholder="Quantity"
 						style={ { maxWidth: '100px' } }
 						type="number"
+						min={ 0 }
 						onChange={ ( value: string ) => {
 								let newState = Object.assign( {}, this.state );
 								newState.rules[ i ].quantity = value;

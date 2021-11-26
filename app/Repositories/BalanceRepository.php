@@ -33,7 +33,7 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	public function index( $oauth_token, array $params = array() ) {
 		$balances = $this->client->getCombinedPublicBalances( $oauth_token ) ?? array();
 		$balances = $this->balance_collection_factory->create( $balances, array(
-			'use_whitelist' => $params['use_whitelist'] ?? null,
+			'use_whitelist' => $params['use_whitelist'] ?? true,
 		) );
 		return $balances;
 	}

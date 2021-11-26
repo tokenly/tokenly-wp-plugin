@@ -30,6 +30,8 @@ class PostController implements PostControllerInterface {
 	 * It is responsible for editing the additional token meta.
 	 */
 	public function edit() {
+		$post_type = get_post_type();
+		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
 		$post_id = get_the_ID();
 		if ( !$post_id || $post_id == 0 ) {
 			return;
@@ -37,13 +39,11 @@ class PostController implements PostControllerInterface {
 		$post = $this->post_service->show( array(
 			'id' => $post_id,
 		) );
-		if ( !$post ) {
-			return;
+		$tca_rules = array();
+		if ( $post ) {
+			$tca_rules = $post->get_tca_rules();
+			$tca_rules = $tca_rules->to_array();
 		}
-		$post_type = get_post_type();
-		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
-		$tca_rules = $post->get_tca_rules();
-		$tca_rules = $tca_rules->to_array();
 		$render = $this->post_edit_view->render( array(
 			'tca_enabled' => $tca_enabled,
 			'tca_rules'   => $tca_rules,

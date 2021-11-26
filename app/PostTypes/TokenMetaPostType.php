@@ -33,15 +33,10 @@ class TokenMetaPostType {
 	 
 		$args = array(
 			'labels'             => $labels,
-			'public'             => false,
-			'publicly_queryable' => true,
 			'show_ui'            => true,
 			'show_in_menu'       => 'tokenpass',
 			'query_var'          => true,
-			'rewrite'            => array( 'slug' => 'token-meta' ),
 			'capability_type'    => 'post',
-			'has_archive'        => false,
-			'hierarchical'       => false,
 			'menu_position'      => 100,
 			'supports'           => array( 'title', 'thumbnail', 'excerpt' ),
 		);

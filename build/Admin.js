@@ -5192,11 +5192,11 @@ class BalanceCard extends react_1.Component {
         return name;
     }
     render() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
-                React.createElement("strong", null, this.getName())),
-            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_c = (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.balance) !== null && _c !== void 0 ? _c : 0)));
+                React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.asset }, this.getName())),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_e = (_d = (_c = this.props) === null || _c === void 0 ? void 0 : _c.balance) === null || _d === void 0 ? void 0 : _d.balance) !== null && _e !== void 0 ? _e : 0)));
     }
 }
 exports.BalanceCard = BalanceCard;
@@ -6297,7 +6297,7 @@ class TcaRuleEditor extends react_1.Component {
     }
     onAdd() {
         let newState = Object.assign({}, this.state);
-        newState.rules[newState.rules.length] = { asset: null, quantity: null, op: null, stackOp: null };
+        newState.rules[newState.rules.length] = { asset: null, quantity: 0, op: '=', stackOp: 'AND' };
         this.setState(newState);
         this.dispatchUpdate();
     }
@@ -6337,7 +6337,7 @@ class TcaRuleEditor extends react_1.Component {
                         this.setState(Object.assign({}, newState));
                         this.dispatchUpdate();
                     } }),
-                React.createElement(components_1.TextControl, { value: rule.quantity, placeholder: "Quantity", style: { maxWidth: '100px' }, type: "number", onChange: (value) => {
+                React.createElement(components_1.TextControl, { value: rule.quantity, placeholder: "Quantity", style: { maxWidth: '100px' }, type: "number", min: 0, onChange: (value) => {
                         let newState = Object.assign({}, this.state);
                         newState.rules[i].quantity = value;
                         this.setState(Object.assign({}, newState));
@@ -8037,9 +8037,10 @@ class AppLayout extends react_1.Component {
         this.onConfirmModalShow = this.onConfirmModalShow.bind(this);
         this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind(this);
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
+        this.onPostDataUpdated = this.onPostDataUpdated.bind(this);
         this.onTcaUpdate = this.onTcaUpdate.bind(this);
         this.state.tcaRules = Object.assign({}, this.props.tcaRules);
-        console.log(this.state.tcaRules);
+        this.state.postData.tca_rules = this.state.tcaRules;
     }
     onConfirmModalRequestClose() {
         this.setState({
@@ -8063,14 +8064,20 @@ class AppLayout extends react_1.Component {
     }
     componentDidMount() {
         EventBus_1.default.on('confirmModalShow', this.onConfirmModalShow);
+        EventBus_1.default.on('postDataUpdated', this.onPostDataUpdated);
     }
     componentWillUnmount() {
         EventBus_1.default.remove('confirmModalShow', this.onConfirmModalShow);
     }
+    onPostDataUpdated(newData) {
+        let state = Object.assign({}, this.state.postData);
+        state = Object.assign(state, newData);
+        this.setState({ postData: state });
+    }
     onTcaUpdate(rules) {
-        let postData = Object.assign({}, this.state.postData);
-        postData.tca_rules = rules;
-        this.setState({ postData: postData });
+        this.onPostDataUpdated({
+            tca_rules: rules,
+        });
     }
     render() {
         return (React.createElement(element_1.Fragment, null,

@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Routes;
 
+use Tokenly\Wp\Routes\Router;
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\PostTypes\TokenMetaPostType;
 use Tokenly\Wp\PostTypes\PromiseMetaPostType;
@@ -9,7 +10,6 @@ use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Routes\Router;
 use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
@@ -181,11 +181,15 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	}
 
 	public function on_template_redirect() {
+		$is_virtual = boolval( get_query_var( 'virtual' ) ) ?? false;
+		if ( $is_virtual === true ) {
+			return;
+		}
 		$post_id = get_the_ID();
-		$can_access = $this->post_service->can_access_post( $post_id, $current_user->ID );
+		$user_id = get_current_user_id();
+		$can_access = $this->post_service->can_access_post( $post_id, $user_id );
 		if ( $can_access === false ) {
-			wp_redirect( get_home_url() );
-			exit();
+			wp_die( 'Access denied by TCA.' );
 		}
 	}
 }

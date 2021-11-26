@@ -37,7 +37,7 @@ export class BalanceCard extends Component<BalanceCardProps, BalanceCardState> {
 		return (
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
-					<strong>{ this.getName() }</strong>
+					<strong title={ this.props?.balance?.asset }>{ this.getName() }</strong>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
 					{ this.props?.balance?.balance ?? 0 }
