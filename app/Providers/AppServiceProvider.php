@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
 /**
  * Registers general plugin modules

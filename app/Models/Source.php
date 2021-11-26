@@ -3,23 +3,23 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 
 class Source implements SourceInterface {
 	public $address;
 	public $address_data;
 	public $assets;
 	public $type;
-	protected $source_repository;
+	protected $source_service;
 
 	public function __construct(
 		$source_data = array(),
-		SourceRepositoryInterface $source_repository
+		SourceServiceInterface $source_service
 	) {
 		$this->address = $source_data['address'] ?? null;
 		$this->assets = $source_data['assets'] ?? null;
 		$this->type = $source_data['type'] ?? null;
-		$this->source_repository = $source_repository;
+		$this->source_service = $source_service;
 	}
 
 	/**
@@ -28,7 +28,7 @@ class Source implements SourceInterface {
 	 * @return void
 	 */
 	public function update( $params ) {
-		return $this->source_repository->update( $this->address, $params );
+		return $this->source_service->update( $this->address, $params );
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Source implements SourceInterface {
 	 * @return void
 	 */
 	public function destroy() {
-		$this->source_repository->destroy( $this->address );
+		$this->source_service->destroy( $this->address );
 	}
 
 	/**

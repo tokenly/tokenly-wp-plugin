@@ -34,14 +34,14 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 	
 	onAdd() {
 		let newState = Object.assign( {}, this.state );
-		newState.whitelist[newState.whitelist.length] = { address: '', index: '' };
+		newState.whitelist[ newState.whitelist.length ] = { address: '', index: '' };
 		this.setState( newState );
 		this.dispatchUpdate();
 	}
 	
 	onRemove( index: number ) {
 		let newState = Object.assign( {}, this.state );
-		delete newState.whitelist[index];
+		delete newState.whitelist[ index ];
 		this.setState( newState );
 		this.dispatchUpdate();
 	}
@@ -51,9 +51,9 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 	}
 
 	render() {
-		const listItems = this.state.whitelist.map( ( listItem: WhitelistItem, i: number ) =>
-			<div>
-				<Flex style={{alignItems: 'flex-end', margin: '8px 0'}}>
+		const listItems = this.state.whitelist.map( ( listItem: WhitelistItem, i: number ) => {
+			return (
+				<Flex style={ { alignItems: 'flex-end', margin: '8px 0' } }>
 					<TextControl
 						label="Contract Address"
 						value={ listItem.address }
@@ -70,8 +70,8 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 						value={ listItem.index }
 						onChange={ ( value: string ) => {
 								let newState = Object.assign( {}, this.state );
-								newState.whitelist[i].index = value;
-								this.setState({ ...newState } );
+								newState.whitelist[ i ].index = value;
+								this.setState( { ...newState } );
 								this.dispatchUpdate();
 							}
 						}
@@ -85,17 +85,17 @@ export class Whitelist extends Component<WhitelistProps, WhitelistState> {
 						<Dashicon icon="no" />
 					</Button>
 				</Flex>
-			</div>
-		);
+			)
+		} );
 		return (
 			<div>
-				<ul>{listItems}</ul>
+				<ul>{ listItems }</ul>
 				<Button
 					isSecondary
 					isLarge
 					onClick={ () => {
 						this.onAdd();
-					}}
+					} }
 				>
 					Add Token
 				</Button>

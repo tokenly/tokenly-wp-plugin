@@ -4,12 +4,11 @@ import { Component } from 'react';
 import { 
 	Button,
 	Spinner,
-	Panel,
-	PanelBody,
-	PanelRow,
+	Flex,
 } from '@wordpress/components';
 
 interface SavePanelProps {
+	label?: string;
 	saving: boolean;
 	onClick: any;
 }
@@ -26,25 +25,26 @@ export class SavePanel extends Component<SavePanelProps, SavePanelState> {
 
 	render() {
 		return (
-			<Panel>
-				<PanelBody>
-					<PanelRow className="save-button-container">
-						<Button
-							isPrimary
-							isLarge
-							disabled={ this.props.saving }
-							onClick={ () => {
-								this.props.onClick();
-							}}
-						>
-							Save settings
-						</Button>
-						{this.props.saving === true &&
-							<Spinner/>
-						}
-					</PanelRow>
-				</PanelBody>
-			</Panel>
+			<Flex
+				//@ts-ignore
+				direction="row"
+				justify="flex-start"
+				style={ { marginTop: '8px' } }
+			>
+				<Button
+					isPrimary
+					isLarge
+					disabled={ this.props.saving }
+					onClick={ () => {
+						this.props.onClick();
+					}}
+				>
+					{ this.props.label ?? 'Save settings' }
+				</Button>
+				{ this.props.saving === true &&
+					<Spinner/>
+				}
+			</Flex>
 		);
 	}
 }

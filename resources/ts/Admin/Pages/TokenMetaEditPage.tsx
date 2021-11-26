@@ -5,6 +5,7 @@ import { TokenMetaRepositoryInterface } from '../../Interfaces/Repositories/Toke
 import { TokenMetaData } from '../../Interfaces';
 import { TYPES } from '../../Types';
 import { AttributeRepeater } from '../Components/AttributeRepeater';
+import eventBus from './../../EventBus';
 
 import { 
 	TextControl,
@@ -49,8 +50,14 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 		const postId = parseInt( urlParams.get( 'post' ) );
 		this.state.postId = postId;
 		this.state.meta = Object.assign( this.state.meta, this.props.pageData.meta );
+		this.onAssetUpdated = this.onExtraUpdated.bind( this );
 		this.onExtraUpdated = this.onExtraUpdated.bind( this );
+		this.onPostUpdate = this.onPostUpdate.bind( this );
 		console.log(this.props.pageData);
+	}
+	
+	onAssetUpdated( value: any ) {
+
 	}
 	
 	onExtraUpdated( newExtra: any ) {
@@ -60,37 +67,37 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 			return attribute != null;
 		} );
 		this.setState( { ...newState } );
+		this.onPostUpdate( newState.meta );
+	}
+
+	onPostUpdate( newPostData: any ) {
+		eventBus.dispatch( 'postDataUpdated', newPostData );
 	}
 
 	render() {
 		return (
 			<Fragment>
-				<Panel header="Additional token meta">
-					<PanelBody>
-						<PanelRow>
-							<div style={{width: '100%'}}>
-								<TextControl
-									value={this.state.meta.asset}
-									label="Asset"
-									help="Is used for pairing meta with an asset"
-									onChange={( value: any ) => {
-										const state = Object.assign( {}, this.state.meta );
-										state.asset = value;
-										this.setState( { meta: state } );
-									}}
-									style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
-								/>
-								<AttributeRepeater
-									label="Extra attributes"
-									help="Additional key-value asset meta attributes. They are displayed in the more info sections."
-									attributes={ this.props.pageData?.meta?.extra }
-									onUpdate={ this.onExtraUpdated }
-								/>
-							</div>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.meta as any ) } />
+				<PanelRow>
+					<div style={{width: '100%', marginTop: '12px'}}>
+						<TextControl
+							value={this.state.meta.asset}
+							label="Asset"
+							help="Is used for pairing meta with an asset"
+							onChange={( value: any ) => {
+								const state = Object.assign( {}, this.state.meta );
+								state.asset = value;
+								this.setState( { meta: state } );
+							}}
+							style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
+						/>
+						<AttributeRepeater
+							label="Extra attributes"
+							help="Additional key-value asset meta attributes. They are displayed in the more info sections."
+							attributes={ this.props.pageData?.meta?.extra }
+							onUpdate={ this.onExtraUpdated }
+						/>
+					</div>
+				</PanelRow>
 			</Fragment>
 		);
 	}

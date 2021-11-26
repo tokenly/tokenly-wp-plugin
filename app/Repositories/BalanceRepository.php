@@ -6,7 +6,6 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 
 /**
  * Manages token balance
@@ -18,12 +17,10 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		BalanceCollectionFactoryInterface $balance_collection_factory,
-		TokenMetaRepositoryInterface $token_meta_repository
+		BalanceCollectionFactoryInterface $balance_collection_factory
 	) {
 		$this->client = $client;
 		$this->balance_collection_factory = $balance_collection_factory;
-		$this->token_meta_repository = $token_meta_repository;
 	}
 
 	/**
@@ -34,65 +31,10 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	 * @return BalanceCollectionFactoryInterface $balances
 	 */
 	public function index( $oauth_token, array $params = array() ) {
-		if ( isset( $this->balances_cache[ $oauth_token ] ) ) {
-			$balances = $this->balances_cache[ $oauth_token ];
-		} else {
-			$balances = $this->client->getCombinedPublicBalances( $oauth_token );
-			if ( !is_array( $balances ) ) {
-				$balances = array();
-			}
-			$this->balances_cache[ $oauth_token ] = $balances;
-		}
+		$balances = $this->client->getCombinedPublicBalances( $oauth_token ) ?? array();
 		$balances = $this->balance_collection_factory->create( $balances, array(
-			'use_whitelist' => $params['use_whitelist'] ?? null,
+			'use_whitelist' => $params['use_whitelist'] ?? true,
 		) );
-		if ( isset( $params['with'] ) ) {
-			$balances = $this->handle_with( $balances, $params['with'] );
-		}
-		return $balances;
-	}
-
-	/**
-	 * Handles queries using parameter 'with'
-	 * @param BalanceCollectionInterface $sources Queried sources
-	 * @return BalanceCollectionInterface Modified sources
-	 */
-	protected function handle_with( BalanceCollectionInterface $balances, array $with ) {
-		if ( in_array( 'meta', $with ) ) {
-			$balances = $this->handle_with_meta( $balances );
-		}
-		return $balances;
-	}
-
-		/**
-	 * Embeds the WordPress token meta post data into the balance objects
-	 * @param BalanceCollectionInterface $balances Queried balances
-	 * @return BalanceCollectionInterface
-	 */
-	public function handle_with_meta( BalanceCollectionInterface $balances ) {
-		$assets = array_map( function( $balance ) {
-			return $balance->name;
-		}, ( array ) $balances );
-		$meta = $this->token_meta_repository->index( array(
-			'assets' => $assets,
-		) );
-		$balances = $balances->key_by_field( 'asset' );
-		$meta_keyed = array();
-		foreach ( ( array ) $meta as $meta_item ) {
-			$asset = $meta_item->tokenly_asset;
-			$meta_keyed[ $asset ] = $meta_item;
-		}
-		foreach ( (array) $balances as &$balance ) {
-			$asset = $balance->asset;
-			if ( !$asset ) {
-				continue;
-			}
-			$meta = $meta_keyed[ $asset ] ?? null;
-			if ( !$meta ) {
-				continue;
-			}
-			$balance->meta = $meta;
-		}
 		return $balances;
 	}
 }

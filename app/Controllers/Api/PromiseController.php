@@ -3,23 +3,20 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Defines promise-related endpoints
  */
 class PromiseController implements PromiseControllerInterface {
-	protected $promise_repository;
+	protected $promise_service;
 	protected $user_repository;
 
 	public function __construct(
-		PromiseRepositoryInterface $promise_repository,
-		UserRepositoryInterface $user_repository
+		PromiseServiceInterface $promise_service
 	) {
-		$this->promise_repository = $promise_repository;
-		$this->user_repository = $user_repository;
+		$this->promise_service = $promise_service;
 	}
 	
 	/**
@@ -28,7 +25,7 @@ class PromiseController implements PromiseControllerInterface {
 	 * @return PromiseInterface[]
 	 */
 	public function index( $request ) {
-		$promises = $this->promise_repository->index();
+		$promises = $this->promise_service->index();
 		return $promises;
 	}
 
@@ -39,7 +36,7 @@ class PromiseController implements PromiseControllerInterface {
 	 */
 	public function store( $request ) {
 		$params = $request->get_params();
-		$promise = $this->promise_repository->store( $params );
+		$promise = $this->promise_service->store( $params );
 		return array(
 			'promise' => $promise,
 			'status'  => 'Promise created successfully',
@@ -89,7 +86,7 @@ class PromiseController implements PromiseControllerInterface {
 		if ( !$promise_id ) {
 			return;
 		}
-		$promise = $this->promise_repository->show( $promise_id );
+		$promise = $this->promise_service->show( $promise_id );
 		return $promise;
 	}
 }

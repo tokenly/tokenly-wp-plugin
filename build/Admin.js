@@ -5040,11 +5040,11 @@ class AssetSearchField extends react_1.Component {
         this.getAssetsAvailable = this.getAssetsAvailable.bind(this);
     }
     onKeywordsChange(keywords) {
-        if (keywords == '') {
+        if (!keywords || keywords == '') {
             return;
         }
-        let results = this.props.assets.filter((value) => {
-            return value.toLowerCase().indexOf(keywords.toLowerCase()) >= 0;
+        let results = this.props.assets.filter((asset) => {
+            return asset.toLowerCase().indexOf(keywords.toLowerCase()) >= 0;
         });
         if ((results === null || results === void 0 ? void 0 : results.length) > 0) {
             results = results.map((result) => {
@@ -5078,7 +5078,7 @@ class AssetSearchField extends react_1.Component {
     render() {
         return (React.createElement("div", { style: { marginBottom: '12px' } },
             React.createElement("div", { style: { height: '40px' } },
-                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.state.keywords, onChange: (value) => {
+                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.props.value, onChange: (value) => {
                         this.onAssetChange(value);
                     }, options: this.state.assets, onFilterValueChange: (keywords) => {
                         this.onKeywordsChange(keywords);
@@ -5192,11 +5192,11 @@ class BalanceCard extends react_1.Component {
         return name;
     }
     render() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
-                React.createElement("strong", null, this.getName())),
-            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_c = (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.balance) !== null && _c !== void 0 ? _c : 0)));
+                React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.asset }, this.getName())),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_e = (_d = (_c = this.props) === null || _c === void 0 ? void 0 : _c.balance) === null || _d === void 0 ? void 0 : _d.balance) !== null && _e !== void 0 ? _e : 0)));
     }
 }
 exports.BalanceCard = BalanceCard;
@@ -5282,6 +5282,102 @@ exports.ConfirmModal = ConfirmModal;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx":
+/*!*******************************************************************!*\
+  !*** ./resources/ts/Admin/Components/IntegrationSettingsForm.tsx ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class IntegrationSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    render() {
+        var _a, _b, _c;
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
+            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_a = this.props.status) !== null && _a !== void 0 ? _a : false }),
+            React.createElement(components_1.TextControl, { label: "Client ID", value: (_b = this.props.settings.client_id) !== null && _b !== void 0 ? _b : '', onChange: (value) => {
+                    let newSettings = Object.assign({}, this.props.settings);
+                    newSettings.client_id = value;
+                    this.onChange(newSettings);
+                } }),
+            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_c = this.props.settings.client_secret) !== null && _c !== void 0 ? _c : '', onChange: (value) => {
+                    let newSettings = Object.assign({}, this.props.settings);
+                    newSettings.client_secret = value;
+                    this.onChange(newSettings);
+                } })));
+    }
+}
+exports.IntegrationSettingsForm = IntegrationSettingsForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx":
+/*!*******************************************************************!*\
+  !*** ./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsHelp = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+class IntegrationSettingsHelp extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var _a, _b, _c, _d;
+        return (React.createElement("div", null,
+            React.createElement("ul", { className: "tk_steps" },
+                React.createElement("li", null,
+                    React.createElement("span", null, "1. Add a new application on "),
+                    React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
+                    "."),
+                React.createElement("li", null, "2. Enter the received app credentials below."),
+                React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features.")),
+            React.createElement("div", { className: "tk_app_details" },
+                React.createElement("h3", null, "Register Client Application"),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "CLIENT NAME: ")),
+                    React.createElement("span", null, "Random Input")),
+                React.createElement("br", null),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "APP HOMEPAGE URL: ")),
+                    React.createElement("a", { href: (_a = this.props) === null || _a === void 0 ? void 0 : _a.appHomepageUrl, target: "_blank" }, (_b = this.props) === null || _b === void 0 ? void 0 : _b.appHomepageUrl)),
+                React.createElement("br", null),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
+                    React.createElement("a", { href: (_c = this.props) === null || _c === void 0 ? void 0 : _c.clientAuthUrl, target: "_blank" }, (_d = this.props) === null || _d === void 0 ? void 0 : _d.clientAuthUrl)))));
+    }
+}
+exports.IntegrationSettingsHelp = IntegrationSettingsHelp;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/PromiseCard.tsx":
 /*!*******************************************************!*\
   !*** ./resources/ts/Admin/Components/PromiseCard.tsx ***!
@@ -5302,11 +5398,17 @@ class PromiseCard extends react_1.Component {
         super(props);
     }
     render() {
+        var _a, _b;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
-                React.createElement("div", null,
-                    React.createElement("span", null, "\u2116 "),
-                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+                React.createElement(components_1.Flex, { align: "center", justify: "flex-start" },
+                    React.createElement("span", null,
+                        React.createElement("span", null, "\u2116 "),
+                        React.createElement("strong", null,
+                            React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+                    ((_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.pseudo) == true &&
+                        React.createElement("span", null,
+                            React.createElement("span", { className: "tokenly-component-chip" }, "pseudo")))),
             React.createElement(components_1.CardBody, { style: { width: '100%' } },
                 React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
                     React.createElement("div", { style: { flex: 1 } },
@@ -5551,16 +5653,18 @@ class PromiseParticipants extends react_1.Component {
         super(props);
     }
     render() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
         return (React.createElement(components_1.Flex, { gap: 0, align: "center", justify: "flex-start" },
             React.createElement("span", null, "Participants: "),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", null,
-                React.createElement("a", { href: `/tokenpass-user/${(_b = (_a = this.props.promise.promise_meta) === null || _a === void 0 ? void 0 : _a.source_user) === null || _b === void 0 ? void 0 : _b.id}` }, (_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.name)),
+            React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.destination }, ((_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.id)
+                ? React.createElement("a", { href: `/tokenpass-user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
+                : React.createElement("span", null, "unknown")),
             React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", null,
-                React.createElement("a", { href: `/tokenpass-user/${(_h = (_g = (_f = this.props.promise) === null || _f === void 0 ? void 0 : _f.promise_meta) === null || _g === void 0 ? void 0 : _g.destination_user) === null || _h === void 0 ? void 0 : _h.id}` }, (_l = (_k = (_j = this.props.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.destination_user) === null || _l === void 0 ? void 0 : _l.name))));
+            React.createElement("strong", { title: (_o = (_m = this.props) === null || _m === void 0 ? void 0 : _m.promise) === null || _o === void 0 ? void 0 : _o.source }, ((_r = (_q = (_p = this.props.promise) === null || _p === void 0 ? void 0 : _p.promise_meta) === null || _q === void 0 ? void 0 : _q.destination_user) === null || _r === void 0 ? void 0 : _r.id)
+                ? React.createElement("a", { href: `/tokenpass-user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
+                : React.createElement("span", null, "unknown"))));
     }
 }
 exports.PromiseParticipants = PromiseParticipants;
@@ -5644,6 +5748,7 @@ class PromiseStoreForm extends react_1.Component {
                 source: null,
                 destination: null,
                 asset: null,
+                pseudo: false,
                 quantity: 0,
                 ref: null,
                 note: null,
@@ -5738,71 +5843,90 @@ class PromiseStoreForm extends react_1.Component {
     }
     getMaxCount() {
         const asset = this.getCurrentAsset();
-        console.log(asset);
         if (!asset) {
             return null;
         }
         return asset.balance;
     }
     isAssetValid() {
+        var _a, _b;
         const asset = this.getCurrentAsset();
-        if (asset) {
+        if (asset || ((_b = (_a = this.state) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.pseudo) == true) {
             return true;
         }
         return false;
     }
     render() {
         return (React.createElement("form", { style: { width: '100%', maxWidth: '320px' } },
-            React.createElement("div", { style: { marginBottom: '12px' } },
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { width: '100%' } },
                 React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source, options: this.getSourceOptions(), onChange: (value) => {
                         this.onSourceChange(value);
-                    }, help: "Source address to use." })),
-            React.createElement("div", null,
-                React.createElement("label", null,
-                    "Destination",
-                    React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. The user who will receive the asset."),
-                    React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.destination = value;
-                            this.setState({ promise: state });
-                        } }))),
-            React.createElement("div", null,
-                React.createElement("label", null,
-                    "Asset",
-                    React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
-                    React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.asset = value;
-                            this.setState({ promise: state });
-                        } }))),
-            this.isAssetValid() &&
+                    }, help: "Source address to use." }),
                 React.createElement("div", null,
                     React.createElement("label", null,
-                        "Quantity",
-                        React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
-                            React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, style: { maxWidth: '100px' }, onChange: (value) => {
-                                    const state = Object.assign({}, this.state.promise);
-                                    state.quantity = value;
-                                    this.setState({ promise: state });
-                                } }),
-                            React.createElement("span", null,
-                                React.createElement("span", null, "of / "),
-                                React.createElement("span", { title: this.getMaxCount() },
-                                    React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
-                    React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
+                        "Destination",
+                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. The user who will receive the asset."),
+                        React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.destination = value;
+                                this.setState({ promise: state });
+                            } }))),
+                React.createElement("div", null,
+                    React.createElement(components_1.CheckboxControl, { label: "Pseudo promise", help: "Pseudo promises allow arbitrary asset names", checked: this.state.promise.pseudo, onChange: (value) => {
                             const state = Object.assign({}, this.state.promise);
-                            state.ref = value;
-                            this.setState({ promise: state });
-                        } }),
-                    React.createElement(components_1.TextareaControl, { label: "Note", help: "Note to display to user", value: this.state.promise.note, onChange: (value) => {
-                            const state = Object.assign({}, this.state.promise);
-                            state.note = value;
+                            state.pseudo = value;
+                            state.asset = null;
+                            state.quantity = 0;
                             this.setState({ promise: state });
                         } })),
+                React.createElement("div", null,
+                    React.createElement("label", null,
+                        "Asset",
+                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
+                        this.state.promise.pseudo == false
+                            ? React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), value: this.state.promise.asset, onChange: (value) => {
+                                    const state = Object.assign({}, this.state.promise);
+                                    state.asset = value;
+                                    this.setState({ promise: state });
+                                } })
+                            : React.createElement(components_1.TextControl, { value: this.state.promise.asset, onChange: (value) => {
+                                    const state = Object.assign({}, this.state.promise);
+                                    state.asset = value;
+                                    this.setState({ promise: state });
+                                } }))),
+                this.isAssetValid() &&
+                    React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Quantity",
+                            React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
+                                React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, min: 0, style: { maxWidth: '100px' }, onChange: (value) => {
+                                        const state = Object.assign({}, this.state.promise);
+                                        state.quantity = value;
+                                        this.setState({ promise: state });
+                                    } }),
+                                this.state.promise.pseudo == false &&
+                                    React.createElement("span", null,
+                                        React.createElement("span", null, "of / "),
+                                        React.createElement("span", { title: this.getMaxCount() },
+                                            React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
+                        React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.ref = value;
+                                this.setState({ promise: state });
+                            } }),
+                        React.createElement(components_1.TextareaControl, { label: "Note", help: "Note to display to user", value: this.state.promise.note, onChange: (value) => {
+                                const state = Object.assign({}, this.state.promise);
+                                state.note = value;
+                                this.setState({ promise: state });
+                            } }))),
             React.createElement(components_1.Flex, { justify: "flex-start" },
                 React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
                         this.onSubmit();
-                    }, style: { marginTop: '12px' } }, "Create transaction"),
+                    }, style: { marginTop: '12px' } }, "Create promise"),
                 this.props.saving === true &&
                     React.createElement(components_1.Spinner, null),
                 React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
@@ -5833,14 +5957,17 @@ class SavePanel extends react_1.Component {
         super(props);
     }
     render() {
-        return (React.createElement(components_1.Panel, null,
-            React.createElement(components_1.PanelBody, null,
-                React.createElement(components_1.PanelRow, { className: "save-button-container" },
-                    React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
-                            this.props.onClick();
-                        } }, "Save settings"),
-                    this.props.saving === true &&
-                        React.createElement(components_1.Spinner, null)))));
+        var _a;
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "row", justify: "flex-start", style: { marginTop: '8px' } },
+            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, disabled: this.props.saving, onClick: () => {
+                    this.props.onClick();
+                } }, (_a = this.props.label) !== null && _a !== void 0 ? _a : 'Save settings'),
+            this.props.saving === true &&
+                React.createElement(components_1.Spinner, null)));
     }
 }
 exports.SavePanel = SavePanel;
@@ -6144,6 +6271,165 @@ exports.StatusIndicator = StatusIndicator;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/TcaRuleEditor.tsx":
+/*!*********************************************************!*\
+  !*** ./resources/ts/Admin/Components/TcaRuleEditor.tsx ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class TcaRuleEditor extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            rules: [],
+        };
+        this.onUpdate = props.onUpdate;
+        this.state.rules = Object.assign([], props.rules);
+    }
+    onUpdate(rules) {
+        //
+    }
+    onAdd() {
+        let newState = Object.assign({}, this.state);
+        newState.rules[newState.rules.length] = { asset: null, quantity: 0, op: '=', stackOp: 'AND' };
+        this.setState(newState);
+        this.dispatchUpdate();
+    }
+    onRemove(rule) {
+        let newState = Object.assign({}, this.state);
+        let index = this.state.rules.indexOf(rule);
+        if (index !== -1) {
+            newState.rules.splice(index, 1);
+        }
+        this.setState(newState);
+        this.dispatchUpdate();
+    }
+    dispatchUpdate() {
+        this.onUpdate(this.state.rules);
+    }
+    render() {
+        const listItems = this.state.rules.map((rule, i) => {
+            return (React.createElement(components_1.Flex, { justify: "flex-start", align: "center" },
+                React.createElement(components_1.TextControl, { value: rule.asset, placeholder: "Asset", onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.rules[i].asset = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                React.createElement(components_1.SelectControl, { placeholder: "Logic", value: rule.op, options: [
+                        { label: '>=', value: '>=' },
+                        { label: '>', value: '>' },
+                        { label: '=', value: '=' },
+                        { label: '==', value: '==' },
+                        { label: '!=', value: '!=' },
+                        { label: '!', value: '!' },
+                        { label: '<', value: '<' },
+                        { label: '<=', value: '<=' },
+                    ], onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.rules[i].op = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                React.createElement(components_1.TextControl, { value: rule.quantity, placeholder: "Quantity", style: { maxWidth: '100px' }, type: "number", min: 0, onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.rules[i].quantity = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                i > 0 &&
+                    React.createElement(components_1.SelectControl, { placeholder: "Grouping", value: rule.stackOp, options: [
+                            { label: 'AND', value: 'AND' },
+                            { label: 'OR', value: 'OR' },
+                        ], onChange: (value) => {
+                            let newState = Object.assign({}, this.state);
+                            newState.rules[i].stackOp = value;
+                            this.setState(Object.assign({}, newState));
+                            this.dispatchUpdate();
+                        } }),
+                React.createElement(components_1.Button, { isTertiary: true, isSmall: true, style: { marginBottom: '8px' }, onClick: () => {
+                        this.onRemove(rule);
+                    } },
+                    React.createElement(components_1.Dashicon, { icon: "no" }))));
+        });
+        return (React.createElement("div", { style: { display: 'inline-block', marginTop: '12px' } },
+            React.createElement("label", null,
+                React.createElement("strong", null, "TCA Rule Editor"),
+                React.createElement("div", { style: { opacity: 0.8 } }, "The visitor's token inventory will be checked against these rules. If not passed - access to the content will be prevented."),
+                React.createElement("ul", null, listItems)),
+            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: () => {
+                    this.onAdd();
+                } }, "Add rule")));
+    }
+}
+exports["default"] = TcaRuleEditor;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/TcaSettingsForm.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Components/TcaSettingsForm.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class TcaSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    isPostTypeChecked(key) {
+        var _a, _b;
+        let checked = false;
+        if (((_a = this.props.settings) === null || _a === void 0 ? void 0 : _a.post_types) && ((_b = this.props.settings) === null || _b === void 0 ? void 0 : _b.post_types[key])) {
+            checked = this.props.settings.post_types[key];
+        }
+        return checked;
+    }
+    render() {
+        let listItems = [];
+        Object.keys(this.props.data.post_types).map((key, index) => {
+            const label = this.props.data.post_types[key];
+            const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
+                    let settings = Object.assign({}, this.props.settings);
+                    if (settings.post_types && typeof settings.post_types == 'object') {
+                        settings.post_types[key] = value;
+                    }
+                    this.onChange(settings);
+                } }));
+            listItems.push(item);
+        });
+        return (React.createElement("div", null,
+            React.createElement("div", { style: { marginBottom: '12px' } }, "Enable TCA for the post types:"),
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, listItems)));
+    }
+}
+exports.TcaSettingsForm = TcaSettingsForm;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/UserSearchField.tsx":
 /*!***********************************************************!*\
   !*** ./resources/ts/Admin/Components/UserSearchField.tsx ***!
@@ -6266,8 +6552,8 @@ class Whitelist extends react_1.Component {
         this.onUpdate(this.state.whitelist);
     }
     render() {
-        const listItems = this.state.whitelist.map((listItem, i) => React.createElement("div", null,
-            React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
+        const listItems = this.state.whitelist.map((listItem, i) => {
+            return (React.createElement(components_1.Flex, { style: { alignItems: 'flex-end', margin: '8px 0' } },
                 React.createElement(components_1.TextControl, { label: "Contract Address", value: listItem.address, onChange: (value) => {
                         let newState = Object.assign({}, this.state);
                         newState.whitelist[i].address = value;
@@ -6283,7 +6569,8 @@ class Whitelist extends react_1.Component {
                 React.createElement(components_1.Button, { isTertiary: true, onClick: () => {
                         this.onRemove(i);
                     } },
-                    React.createElement(components_1.Dashicon, { icon: "no" })))));
+                    React.createElement(components_1.Dashicon, { icon: "no" }))));
+        });
         return (React.createElement("div", null,
             React.createElement("ul", null, listItems),
             React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: () => {
@@ -6556,6 +6843,34 @@ exports["default"] = Page;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Pages/PostEditPage.tsx":
+/*!***************************************************!*\
+  !*** ./resources/ts/Admin/Pages/PostEditPage.tsx ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class PostEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(element_1.Fragment, null));
+    }
+}
+exports["default"] = PostEditPage;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Pages/PromiseEditPage.tsx":
 /*!******************************************************!*\
   !*** ./resources/ts/Admin/Pages/PromiseEditPage.tsx ***!
@@ -6682,6 +6997,7 @@ class PromiseShowPage extends react_1.Component {
         this.state = {
         //
         };
+        console.log(this.props.pageData);
     }
     dateFormatted(date) {
         if (date) {
@@ -6823,21 +7139,32 @@ const React = __webpack_require__(/*! react */ "react");
 const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
 const react_1 = __webpack_require__(/*! react */ "react");
 const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resources/ts/Admin/Components/SavePanel.tsx");
-const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
+const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/IntegrationSettingsForm */ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx");
+const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx");
+const TcaSettingsForm_1 = __webpack_require__(/*! ../Components/TcaSettingsForm */ "./resources/ts/Admin/Components/TcaSettingsForm.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {
     constructor(props) {
+        var _a;
         super(props);
         this.state = {
             integrationSettings: {
                 client_id: '',
                 client_secret: '',
             },
-            saving: false,
+            tcaSettings: {
+                post_types: {},
+            },
+            savingIntegrationSettings: false,
+            savingTcaSettings: false,
         };
-        this.onSave = this.onSave.bind(this);
+        this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind(this);
+        this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind(this);
+        this.onTcaSettingsSave = this.onTcaSettingsSave.bind(this);
+        this.onTcaSettingsChange = this.onTcaSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
+        this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);
@@ -6849,65 +7176,56 @@ class SettingsPage extends react_1.Component {
         state.integrationSettings.client_secret = value;
         this.setState(state);
     }
-    onSave() {
-        this.setState({ saving: true });
-        this.settingsRepository.update(this.state.integrationSettings).then(result => {
-            this.setState({ saving: false });
+    onIntegrationSettingsSave() {
+        this.setState({ savingIntegrationSettings: true });
+        this.integrationSettingsRepository.update(this.state.integrationSettings).then(result => {
+            this.setState({ savingIntegrationSettings: false });
             window.location.reload();
         }).catch(error => {
             console.log(error);
         });
     }
+    onIntegrationSettingsChange(newSettings) {
+        this.setState({ integrationSettings: newSettings });
+    }
+    onTcaSettingsSave() {
+        this.setState({ savingTcaSettings: true });
+        this.tcaSettingsRepository.update(this.state.tcaSettings).then((result) => {
+            this.setState({ savingTcaSettings: false });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+    onTcaSettingsChange(newSettings) {
+        this.setState({ tcaSettings: newSettings });
+    }
     render() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+        var _a, _b, _c, _d, _e, _f, _g;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
-            React.createElement(components_1.Panel, { header: "Integration settings" },
-                React.createElement(components_1.PanelBody, null,
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, { title: "Integration settings" },
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement("ul", { className: "tk_steps" },
-                            React.createElement("li", null,
-                                React.createElement("span", null, "1. Add a new application on "),
-                                React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
-                                "."),
-                            React.createElement("li", null, "2. Enter the received app credentials below."),
-                            React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features."))),
+                        React.createElement(IntegrationSettingsHelp_1.IntegrationSettingsHelp, { appHomepageUrl: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, clientAuthUrl: (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.client_auth_url })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement("div", { className: "tk_app_details" },
-                            React.createElement("h3", null, "Register Client Application"),
-                            React.createElement("span", null,
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "CLIENT NAME: ")),
-                                React.createElement("span", null, "Random Input")),
-                            React.createElement("br", null),
-                            React.createElement("span", null,
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "APP HOMEPAGE URL: ")),
-                                React.createElement("a", { href: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, target: "_blank" }, (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.app_homepage_url)),
-                            React.createElement("br", null),
-                            React.createElement("span", null,
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
-                                React.createElement("a", { href: (_f = (_e = this.props.pageData) === null || _e === void 0 ? void 0 : _e.integration_data) === null || _f === void 0 ? void 0 : _f.client_auth_url, target: "_blank" }, (_h = (_g = this.props.pageData) === null || _g === void 0 ? void 0 : _g.integration_data) === null || _h === void 0 ? void 0 : _h.client_auth_url)))),
+                        React.createElement(IntegrationSettingsForm_1.IntegrationSettingsForm, { status: (_g = (_f = (_e = this.props.pageData) === null || _e === void 0 ? void 0 : _e.integration_data) === null || _f === void 0 ? void 0 : _f.status) !== null && _g !== void 0 ? _g : false, settings: this.state.integrationSettings, onChange: this.onIntegrationSettingsChange })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.Flex
-                        //@ts-ignore
-                        , { 
-                            //@ts-ignore
-                            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
-                            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_l = (_k = (_j = this.props.pageData) === null || _j === void 0 ? void 0 : _j.integration_data) === null || _k === void 0 ? void 0 : _k.status) !== null && _l !== void 0 ? _l : false }),
-                            React.createElement(components_1.TextControl, { label: "Client ID", value: (_m = this.state.integrationSettings.client_id) !== null && _m !== void 0 ? _m : '', onChange: (value) => {
-                                    this.setClientId(value);
-                                } }),
-                            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_o = this.state.integrationSettings.client_secret) !== null && _o !== void 0 ? _o : '', onChange: (value) => {
-                                    this.setClientSecret(value);
-                                } }))))),
-            React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save Integration settings", saving: this.state.savingIntegrationSettings, onClick: this.onIntegrationSettingsSave })))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, { title: "TCA settings" },
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(TcaSettingsForm_1.TcaSettingsForm, { settings: this.state.tcaSettings, data: this.props.pageData.tca_data, onChange: this.onTcaSettingsChange })),
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.savingTcaSettings, onClick: this.onTcaSettingsSave }))))));
     }
 }
 __decorate([
-    (0, inversify_react_1.resolve)(Types_1.TYPES.SettingsRepositoryInterface),
+    (0, inversify_react_1.resolve)(Types_1.TYPES.IntegrationSettingsRepositoryInterface),
     __metadata("design:type", Object)
-], SettingsPage.prototype, "settingsRepository", void 0);
+], SettingsPage.prototype, "integrationSettingsRepository", void 0);
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.TcaSettingsRepositoryInterface),
+    __metadata("design:type", Object)
+], SettingsPage.prototype, "tcaSettingsRepository", void 0);
 exports["default"] = SettingsPage;
 
 
@@ -7224,6 +7542,7 @@ const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const AttributeRepeater_1 = __webpack_require__(/*! ../Components/AttributeRepeater */ "./resources/ts/Admin/Components/AttributeRepeater.tsx");
+const EventBus_1 = __webpack_require__(/*! ./../../EventBus */ "./resources/ts/EventBus.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class TokenMetaEditPage extends react_1.Component {
@@ -7238,8 +7557,12 @@ class TokenMetaEditPage extends react_1.Component {
         const postId = parseInt(urlParams.get('post'));
         this.state.postId = postId;
         this.state.meta = Object.assign(this.state.meta, this.props.pageData.meta);
+        this.onAssetUpdated = this.onExtraUpdated.bind(this);
         this.onExtraUpdated = this.onExtraUpdated.bind(this);
+        this.onPostUpdate = this.onPostUpdate.bind(this);
         console.log(this.props.pageData);
+    }
+    onAssetUpdated(value) {
     }
     onExtraUpdated(newExtra) {
         let newState = Object.assign({}, this.state);
@@ -7248,21 +7571,22 @@ class TokenMetaEditPage extends react_1.Component {
             return attribute != null;
         });
         this.setState(Object.assign({}, newState));
+        this.onPostUpdate(newState.meta);
+    }
+    onPostUpdate(newPostData) {
+        EventBus_1.default.dispatch('postDataUpdated', newPostData);
     }
     render() {
         var _a, _b;
         return (React.createElement(element_1.Fragment, null,
-            React.createElement(components_1.Panel, { header: "Additional token meta" },
-                React.createElement(components_1.PanelBody, null,
-                    React.createElement(components_1.PanelRow, null,
-                        React.createElement("div", { style: { width: '100%' } },
-                            React.createElement(components_1.TextControl, { value: this.state.meta.asset, label: "Asset", help: "Is used for pairing meta with an asset", onChange: (value) => {
-                                    const state = Object.assign({}, this.state.meta);
-                                    state.asset = value;
-                                    this.setState({ meta: state });
-                                }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
-                            React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated }))))),
-            React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.meta) })));
+            React.createElement(components_1.PanelRow, null,
+                React.createElement("div", { style: { width: '100%', marginTop: '12px' } },
+                    React.createElement(components_1.TextControl, { value: this.state.meta.asset, label: "Asset", help: "Is used for pairing meta with an asset", onChange: (value) => {
+                            const state = Object.assign({}, this.state.meta);
+                            state.asset = value;
+                            this.setState({ meta: state });
+                        }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
+                    React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated })))));
     }
 }
 __decorate([
@@ -7429,13 +7753,14 @@ class WhitelistPage extends react_1.Component {
                                 ? 'Whitelist enabled.'
                                 : 'Whitelist disabled.', checked: this.state.whitelistData.enabled, onChange: (value) => {
                                 this.setUseWhitelist(value);
-                            } })))),
-            this.state.whitelistData.enabled == true &&
-                React.createElement(components_1.Panel, { header: "Token Whitelist Editor" },
-                    React.createElement(components_1.PanelBody, null,
+                            } })),
+                    this.state.whitelistData.enabled == true &&
                         React.createElement(components_1.PanelRow, null,
-                            React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.items })))),
-            React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave })));
+                            React.createElement("div", { style: { marginBottom: '12px' } },
+                                React.createElement("h4", null, "Token Whitelist Editor"),
+                                React.createElement(Whitelist_1.Whitelist, { onUpdate: this.onWhitelistChange, whitelist: this.state.whitelistData.items }))),
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { saving: this.state.saving, onClick: this.onSave }))))));
     }
 }
 __decorate([
@@ -7513,6 +7838,7 @@ let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Compon
     }
     register(selector) {
         this.element.addEventListener('click', () => {
+            this.element.classList.add('loading');
             this.authService.connect();
         });
     }
@@ -7648,7 +7974,8 @@ __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Ref
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const Types_1 = __webpack_require__(/*! ./Types */ "./resources/ts/Types.ts");
 const AuthService_1 = __webpack_require__(/*! ./Services/AuthService */ "./resources/ts/Services/AuthService.ts");
-const SettingsRepository_1 = __webpack_require__(/*! ./Repositories/SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/IntegrationSettingsRepository */ "./resources/ts/Repositories/IntegrationSettingsRepository.ts");
+const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/TcaSettingsRepository */ "./resources/ts/Repositories/TcaSettingsRepository.ts");
 const PromiseRepository_1 = __webpack_require__(/*! ./Repositories/PromiseRepository */ "./resources/ts/Repositories/PromiseRepository.ts");
 const UserRepository_1 = __webpack_require__(/*! ./Repositories/UserRepository */ "./resources/ts/Repositories/UserRepository.ts");
 const SourceRepository_1 = __webpack_require__(/*! ./Repositories/SourceRepository */ "./resources/ts/Repositories/SourceRepository.ts");
@@ -7660,14 +7987,18 @@ const CardTokenItemComponent_1 = __webpack_require__(/*! ./Components/CardTokenI
 const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
 const container = new inversify_1.Container();
 exports.container = container;
+// Services - Application
 container.bind(Types_1.TYPES.AuthServiceInterface).to(AuthService_1.AuthService);
 container.bind(Types_1.TYPES.AdminApiServiceInterface).to(AdminApiService_1.AdminApiService);
+// Repositories
 container.bind(Types_1.TYPES.PromiseRepositoryInterface).to(PromiseRepository_1.PromiseRepository);
-container.bind(Types_1.TYPES.SettingsRepositoryInterface).to(SettingsRepository_1.SettingsRepository);
+container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
+container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 container.bind(Types_1.TYPES.SourceRepositoryInterface).to(SourceRepository_1.SourceRepository);
 container.bind(Types_1.TYPES.TokenMetaRepositoryInterface).to(TokenMetaRepository_1.TokenMetaRepository);
 container.bind(Types_1.TYPES.UserRepositoryInterface).to(UserRepository_1.UserRepository);
 container.bind(Types_1.TYPES.WhitelistRepositoryInterface).to(WhitelistRepository_1.WhitelistRepository);
+// Components
 container.bind(Types_1.TYPES.ComponentServiceProviderInterface).to(ComponentServiceProvider_1.ComponentServiceProvider);
 container.bind(Types_1.TYPES.ButtonLoginComponentInterface).to(ButtonLoginComponent_1.ButtonLoginComponent);
 container.bind(Types_1.TYPES.CardTokenItemComponentInterface).to(CardTokenItemComponent_1.CardTokenItemComponent);
@@ -7691,6 +8022,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
 const ConfirmModal_1 = __webpack_require__(/*! ../Admin/Components/ConfirmModal */ "./resources/ts/Admin/Components/ConfirmModal.tsx");
+const TcaRuleEditor_1 = __webpack_require__(/*! ./../Admin/Components/TcaRuleEditor */ "./resources/ts/Admin/Components/TcaRuleEditor.tsx");
 const EventBus_1 = __webpack_require__(/*! ../EventBus */ "./resources/ts/EventBus.ts");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AppLayout extends react_1.Component {
@@ -7699,10 +8031,16 @@ class AppLayout extends react_1.Component {
         this.state = {
             confirmModalData: null,
             confirmModalShow: false,
+            postData: {},
+            tcaRules: []
         };
         this.onConfirmModalShow = this.onConfirmModalShow.bind(this);
         this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind(this);
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
+        this.onPostDataUpdated = this.onPostDataUpdated.bind(this);
+        this.onTcaUpdate = this.onTcaUpdate.bind(this);
+        this.state.tcaRules = Object.assign({}, this.props.tcaRules);
+        this.state.postData.tca_rules = this.state.tcaRules;
     }
     onConfirmModalRequestClose() {
         this.setState({
@@ -7726,15 +8064,29 @@ class AppLayout extends react_1.Component {
     }
     componentDidMount() {
         EventBus_1.default.on('confirmModalShow', this.onConfirmModalShow);
+        EventBus_1.default.on('postDataUpdated', this.onPostDataUpdated);
     }
     componentWillUnmount() {
         EventBus_1.default.remove('confirmModalShow', this.onConfirmModalShow);
     }
+    onPostDataUpdated(newData) {
+        let state = Object.assign({}, this.state.postData);
+        state = Object.assign(state, newData);
+        this.setState({ postData: state });
+    }
+    onTcaUpdate(rules) {
+        this.onPostDataUpdated({
+            tca_rules: rules,
+        });
+    }
     render() {
         return (React.createElement(element_1.Fragment, null,
+            this.props.children,
             this.state.confirmModalShow == true &&
                 React.createElement(ConfirmModal_1.ConfirmModal, { key: this.state.confirmModalData.key, title: this.state.confirmModalData.title, subtitle: this.state.confirmModalData.subtitle, onRequestClose: this.onConfirmModalRequestClose, onChoice: this.onConfirmModalChoice }),
-            this.props.children));
+            this.props.tcaEnabled == true &&
+                React.createElement(TcaRuleEditor_1.default, { rules: this.state.tcaRules, onUpdate: this.onTcaUpdate }),
+            React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.postData) })));
     }
 }
 exports["default"] = AppLayout;
@@ -7841,6 +8193,63 @@ exports.ServiceProvider = ServiceProvider;
 
 /***/ }),
 
+/***/ "./resources/ts/Repositories/IntegrationSettingsRepository.ts":
+/*!********************************************************************!*\
+  !*** ./resources/ts/Repositories/IntegrationSettingsRepository.ts ***!
+  \********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let IntegrationSettingsRepository = class IntegrationSettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsIntegrationShow().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsIntegrationUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+IntegrationSettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], IntegrationSettingsRepository);
+exports.IntegrationSettingsRepository = IntegrationSettingsRepository;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Repositories/PromiseRepository.ts":
 /*!********************************************************!*\
   !*** ./resources/ts/Repositories/PromiseRepository.ts ***!
@@ -7916,63 +8325,6 @@ exports.PromiseRepository = PromiseRepository;
 
 /***/ }),
 
-/***/ "./resources/ts/Repositories/SettingsRepository.ts":
-/*!*********************************************************!*\
-  !*** ./resources/ts/Repositories/SettingsRepository.ts ***!
-  \*********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SettingsRepository = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-let SettingsRepository = class SettingsRepository {
-    constructor(adminApiService) {
-        this.adminApiService = adminApiService;
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsShow().then((result) => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    update(params) {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsUpdate(params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-};
-SettingsRepository = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], SettingsRepository);
-exports.SettingsRepository = SettingsRepository;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Repositories/SourceRepository.ts":
 /*!*******************************************************!*\
   !*** ./resources/ts/Repositories/SourceRepository.ts ***!
@@ -8044,6 +8396,63 @@ SourceRepository = __decorate([
     __metadata("design:paramtypes", [Object])
 ], SourceRepository);
 exports.SourceRepository = SourceRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/TcaSettingsRepository.ts":
+/*!************************************************************!*\
+  !*** ./resources/ts/Repositories/TcaSettingsRepository.ts ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let TcaSettingsRepository = class TcaSettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsTcaShow().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsTcaUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+TcaSettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], TcaSettingsRepository);
+exports.TcaSettingsRepository = TcaSettingsRepository;
 
 
 /***/ }),
@@ -8246,18 +8655,36 @@ let AdminApiService = class AdminApiService {
             'X-WP-Nonce': wpApiSettings.nonce,
         };
     }
-    settingsShow() {
+    settingsIntegrationShow() {
         return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/settings').then((result) => {
+            this.makeRequest('GET', '/settings/integration').then((result) => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsUpdate(params) {
+    settingsIntegrationUpdate(params) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/settings', params).then(result => {
+            this.makeRequest('PUT', '/settings/integration', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    settingsTcaShow() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/settings/tca').then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    settingsTcaUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/settings/tca', params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -8526,7 +8953,8 @@ const TYPES = {
     AuthServiceInterface: Symbol.for('AuthServiceInterface'),
     AdminApiServiceInterface: Symbol.for('AdminApiServiceInterface'),
     PromiseRepositoryInterface: Symbol.for('PromiseRepositoryInterface'),
-    SettingsRepositoryInterface: Symbol.for('SettingsRepositoryInterface'),
+    IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
+    TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
     SourceRepositoryInterface: Symbol.for('SourceRepositoryInterface'),
     TokenMetaRepositoryInterface: Symbol.for('TokenMetaRepositoryInterface'),
     UserRepositoryInterface: Symbol.for('UserRepositoryInterface'),
@@ -8670,19 +9098,28 @@ const SourceShowPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceShowPage */
 const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage */ "./resources/ts/Admin/Pages/SourceStorePage.tsx");
 const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */ "./resources/ts/Admin/Pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
+const PostEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PostEditPage */ "./resources/ts/Admin/Pages/PostEditPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditPage */ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
-        var _a;
+        var _a, _b, _c;
         super();
         this.container = Inversify_config_1.container;
+        this.tcaEnabled = false;
+        this.tcaRules = [];
         this.pageElement = document.querySelector('.tokenpass-admin-page');
         if (this.pageElement) {
-            this.view = window.tokenpassView;
-            this.pageData = window.tokenpassProps;
+            const data = window.tokenpassData;
+            if (!data) {
+                return;
+            }
+            this.view = data === null || data === void 0 ? void 0 : data.view;
+            this.pageData = data === null || data === void 0 ? void 0 : data.props;
+            this.tcaEnabled = (_a = data.tcaEnabled) !== null && _a !== void 0 ? _a : false;
+            this.tcaRules = (_b = data.tcaRules) !== null && _b !== void 0 ? _b : [];
             const views = this.getViews();
-            const ViewComponent = (_a = views[this.view]) !== null && _a !== void 0 ? _a : null;
+            const ViewComponent = (_c = views[this.view]) !== null && _c !== void 0 ? _c : null;
             if (ViewComponent) {
                 this.highlightMenu();
                 this.render(ViewComponent);
@@ -8704,6 +9141,7 @@ class AdminApp extends App_1.default {
             'source-show': SourceShowPage_1.default,
             'source-store': SourceStorePage_1.default,
             'source-edit': SourceEditPage_1.default,
+            'post-edit': PostEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
             'dashboard': DashboardPage_1.default,
         };
@@ -8715,7 +9153,7 @@ class AdminApp extends App_1.default {
         const pageContainer = document.createElement('div');
         this.pageElement.appendChild(pageContainer);
         (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
-            React.createElement(AppLayout_1.default, null,
+            React.createElement(AppLayout_1.default, { tcaEnabled: this.tcaEnabled, tcaRules: this.tcaRules },
                 React.createElement(ViewComponent, { pageData: this.pageData }))), pageContainer);
     }
     registerRedirects() {

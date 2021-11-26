@@ -3,24 +3,24 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 
 class Address implements AddressInterface {
 	public $address;
 	public $type;
 	public $label;
 	public $balances;
-	protected $source_repository;
+	protected $source_service;
 
 	public function __construct(
 		string $address = '',
 		string $type = '',
 		string $label = 'Unnamed',
 		BalanceCollectionInterface $balances,
-		SourceRepositoryInterface $source_repository
+		SourceServiceInterface $source_service
 	) {
-		$this->source_repository = $source_repository;
+		$this->source_service = $source_service;
 		$this->address = $address;
 		$this->type = $type;
 		$this->label = $label;
@@ -44,6 +44,6 @@ class Address implements AddressInterface {
 			'type'    => $this->type,
 			'assets'  => $assets,
 		);
-		$this->source_repository->store( $payload );
+		$this->source_service->store( $payload );
 	}
 }

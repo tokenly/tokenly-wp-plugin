@@ -4,19 +4,31 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\IntegrationRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
 
 class Integration implements IntegrationInterface {
 	public $settings;
-	public $can_connect;
-	protected $integration_repository;
+	public $can_connect = false;
+	protected $integration_service;
 	
 	public function __construct(
 		IntegrationSettingsInterface $settings,
-		IntegrationRepositoryInterface $integration_repository
+		IntegrationServiceInterface $integration_service
 	) {
 		$this->settings = $settings;
-		$this->integration_repository = $integration_repository;
+		$this->integration_service = $integration_service;
+		if ( isset( $this->settings->settings_updated ) && $this->settings->settings_updated == true ) {
+			$this->check_connection();
+		}
+	}
+
+	public function check_connection() {
+		$can_connect = $this->integration_service->check_connection();
+		$this->settings->update( array(
+			'settings_updated' => false,
+		) );
+		$this->can_connect = $can_connect;
+		$this->update();
 	}
 	
 	/**
@@ -24,14 +36,17 @@ class Integration implements IntegrationInterface {
 	 * @return bool
 	 */
 	public function can_connect() {
-		if ( !isset( $this->can_connect ) ) {
-			$result = $this->integration_repository->show();
-			if ( $result ) {
-				$this->can_connect = true;
-			} else {
-				$this->can_connect = false;
-			}
-		}
-		return $this->can_connect;
+		return $this->can_connect ?? false;
+	}
+
+	public function update() {
+		$new_data = $this->to_array();
+		$this->integration_service->update( $new_data );
+	}
+
+	protected function to_array() {
+		return array(
+			'integration_can_connect' => $this->can_connect ?? false,
+		);
 	}
 }

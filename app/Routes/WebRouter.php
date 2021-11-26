@@ -112,8 +112,13 @@ class WebRouter extends Router implements WebRouterInterface {
 	 * @return void
 	 */
 	public function merge_rewrite_rules( $wp_rewrite ) {
+		$rules_formatted = array();
+		foreach ( $this->rules as $key => $rule ) {
+			$rule = "{$rule}&virtual=1";
+			$rules_formatted[ $key ] = $rule;
+		}
 		$wp_rewrite->rules = array_merge(
-			$this->rules,
+			$rules_formatted,
 			$wp_rewrite->rules
 		);
 	}
@@ -126,6 +131,7 @@ class WebRouter extends Router implements WebRouterInterface {
 	 */
 	public function merge_query_vars( $query_vars ) {
 		$query_vars = array_merge( $query_vars, $this->vars );
+		$query_vars[] = 'virtual';
 		return $query_vars;
 	}
 

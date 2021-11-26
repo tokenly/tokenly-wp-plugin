@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Views\TokenMetaEditView;
-use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 
 /**
@@ -15,10 +15,10 @@ class TokenMetaController implements TokenMetaControllerInterface {
 
 	public function __construct(
 		TokenMetaEditView $token_meta_edit_view,
-		TokenMetaRepositoryInterface $token_meta_repository
+		TokenMetaServiceInterface $token_meta_service
 	) {
 		$this->token_meta_edit_view = $token_meta_edit_view;
-		$this->token_meta_repository = $token_meta_repository;
+		$this->token_meta_service = $token_meta_service;
 	}
 	
 	/**
@@ -26,7 +26,7 @@ class TokenMetaController implements TokenMetaControllerInterface {
 	 * It is responsible for editing the additional token meta.
 	 */
 	public function edit() {
-		$meta = $this->token_meta_repository->show( array( 'id' => get_the_ID() ) );
+		$meta = $this->token_meta_service->show( array( 'id' => get_the_ID() ) );
 		if ( $meta ) {
 			$meta = $meta->to_array();
 		}

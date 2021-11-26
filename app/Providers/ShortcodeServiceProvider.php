@@ -18,10 +18,8 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 		LogoutButtonShortcode $logout_button_shortcode
 	) {
 		$this->shortcodes = array(
-		    array(
-				'tokenpass_login'  => $login_button_shortcode,
-				'tokenpass_logout' => $logout_button_shortcode,
-			),
+			'tokenpass_login'  => $login_button_shortcode,
+			'tokenpass_logout' => $logout_button_shortcode,
 		);
 	}
 
