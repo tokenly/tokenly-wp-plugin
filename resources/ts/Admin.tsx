@@ -19,7 +19,7 @@ import SourceEditPage from './Admin/Pages/SourceEditPage';
 import DashboardPage from './Admin/Pages/DashboardPage';
 import PostEditPage from './Admin/Pages/PostEditPage';
 import TokenMetaEditPage from './Admin/Pages/TokenMetaEditPage';
-import TcaRuleEditor from './Admin/Components/TcaRuleEditor';
+
 import { Redirect } from './Interfaces';
 
 declare const document: any;
@@ -34,9 +34,9 @@ class AdminApp extends App {
 	pageElement: any;
 	view: string;
 	pageData: object;
-	useTCA: boolean;
-	postData: any;
-	
+	tcaEnabled: boolean = false;
+	tcaRules: any = [];
+
 	constructor() {
 		super();
 		this.pageElement = document.querySelector( '.tokenpass-admin-page' );
@@ -47,7 +47,8 @@ class AdminApp extends App {
 			}
 			this.view = data?.view;
 			this.pageData = data?.props;
-			this.useTCA = data.useTCA;
+			this.tcaEnabled = data.tcaEnabled ?? false;
+			this.tcaRules = data.tcaRules ?? [];
 			const views = this.getViews();
 			const ViewComponent = views[ this.view ] ?? null;
 			if ( ViewComponent ) {
@@ -86,11 +87,11 @@ class AdminApp extends App {
 		this.pageElement.appendChild( pageContainer );
 		render(
 			<Provider container={ this.container }>
-				<AppLayout>
+				<AppLayout
+					tcaEnabled={ this.tcaEnabled }
+					tcaRules={ this.tcaRules }
+				>
 					<ViewComponent pageData={ this.pageData } />
-					{ this.useTCA == true &&
-						<TcaRuleEditor />
-					}
 				</AppLayout>
 			</Provider>,
 			pageContainer

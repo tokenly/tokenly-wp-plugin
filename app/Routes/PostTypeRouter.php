@@ -13,6 +13,7 @@ use Tokenly\Wp\Routes\Router;
 use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
+use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 
 /**
  * Manages routing for the post type views
@@ -24,6 +25,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $post_types;
 	protected $current_user;
 	protected $tca_settings;
+	protected $tca_service;
 	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
@@ -35,12 +37,15 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
 		TcaSettingsInterface $tca_settings,
+		TcaServiceInterface $tca_service,
 		string $namespace
 	) {
 		$this->integration = $integration;
 		$this->current_user = $current_user;
 		$this->tca_settings = $tca_settings;
+		$this->tca_service = $tca_service;
 		$this->namespace = $namespace;
+		$this->post_service = $post_service;
 		$this->post_types = array(
 			'token_meta' => array(
 				'post_type'  => $token_meta_post_type,
@@ -60,6 +65,8 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	public function register() {
 		$this->routes = $this->get_routes();
 		$this->register_routes();
+		add_action( 'template_redirect', array( $this, 'on_template_redirect' ) );
+		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
 	}
 
 	/**
@@ -171,6 +178,14 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				} );
 			}
 		}
-		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
+	}
+
+	public function on_template_redirect() {
+		$post_id = get_the_ID();
+		$can_access = $this->post_service->can_access_post( $post_id, $current_user->ID );
+		if ( $can_access === false ) {
+			wp_redirect( get_home_url() );
+			exit();
+		}
 	}
 }

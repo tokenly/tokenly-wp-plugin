@@ -2,21 +2,17 @@
 
 namespace Tokenly\Wp\Factories\Collections;
 
+use Tokenly\Wp\Factories\Collections\CollectionFactory;
 use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\BalanceInterface;
-use Tokenly\Wp\Factories\Factory;
 
-class BalanceCollectionFactory extends Factory implements BalanceCollectionFactoryInterface {
-	protected $balance_factory;
-
+class BalanceCollectionFactory extends CollectionFactory implements BalanceCollectionFactoryInterface {
 	public function __construct(
 		$factory,
-		BalanceFactoryInterface $balance_factory
+		BalanceFactoryInterface $item_factory
 	) {
-		parent::__construct( $factory );
-		$this->balance_factory = $balance_factory;
+		parent::__construct( $factory, $item_factory );
 	}
 	/**
 	 * Creates a new collection
@@ -24,17 +20,8 @@ class BalanceCollectionFactory extends Factory implements BalanceCollectionFacto
 	 * @return BalanceCollectionInterface
 	 */
 	public function create( $data, $args = array() ) {
-		$items = array_map( function( $item_data ) {
-			if ( is_a( $item_data, BalanceInterface::class ) === false ) {
-				return $this->balance_factory->create( $item_data );
-			} else {
-				return $item_data;
-			}
-		}, $data );
-		$collection = $this->factory->create( array(
-			'items' => $items,
-		) );
-		if ( $args['use_whitelist'] ?? true == true ) {
+		$collection = parent::create( $data, $args );
+		if ( isset( $args['use_whitelist'] ) && $args['use_whitelist'] == true ) {
 			$collection->apply_whitelist();
 		}
 		return $collection;

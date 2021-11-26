@@ -6,6 +6,7 @@ use Tokenly\Wp\Providers\ShortcodeServiceProvider;
 use Tokenly\Wp\Services\AuthService;
 use Tokenly\Wp\Services\LifecycleService;
 use Tokenly\Wp\Services\ResourceService;
+use Tokenly\Wp\Services\TcaService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
 use Tokenly\Wp\Services\Domain\IntegrationService;
@@ -63,6 +64,7 @@ use Tokenly\Wp\Collections\PromiseCollection;
 use Tokenly\Wp\Collections\PromiseMetaCollection;
 use Tokenly\Wp\Collections\SourceCollection;
 use Tokenly\Wp\Collections\TokenMetaCollection;
+use Tokenly\Wp\Collections\TcaRuleCollection;
 use Tokenly\Wp\Collections\UserCollection;
 use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
@@ -75,6 +77,7 @@ use Tokenly\Wp\Models\IntegrationSettings;
 use Tokenly\Wp\Models\TcaSettings;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
+use Tokenly\Wp\Models\TcaRule;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Models\GuestUser;
 use Tokenly\Wp\Models\Whitelist;
@@ -87,6 +90,7 @@ use Tokenly\Wp\Factories\Models\PromiseFactory;
 use Tokenly\Wp\Factories\Models\PromiseMetaFactory;
 use Tokenly\Wp\Factories\Models\SourceFactory;
 use Tokenly\Wp\Factories\Models\TokenMetaFactory;
+use Tokenly\Wp\Factories\Models\TcaRuleFactory;
 use Tokenly\Wp\Factories\Models\UserFactory;
 use Tokenly\Wp\Factories\Models\WhitelistItemFactory;
 use Tokenly\Wp\Factories\Collections\AddressCollectionFactory;
@@ -95,6 +99,7 @@ use Tokenly\Wp\Factories\Collections\PromiseCollectionFactory;
 use Tokenly\Wp\Factories\Collections\PromiseMetaCollectionFactory;
 use Tokenly\Wp\Factories\Collections\SourceCollectionFactory;
 use Tokenly\Wp\Factories\Collections\TokenMetaCollectionFactory;
+use Tokenly\Wp\Factories\Collections\TcaRuleCollectionFactory;
 use Tokenly\Wp\Factories\Collections\UserCollectionFactory;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
@@ -102,6 +107,7 @@ use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
@@ -157,6 +163,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TokenMetaFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
@@ -165,6 +172,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterfac
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
@@ -173,6 +181,7 @@ use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
@@ -185,6 +194,7 @@ use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
+use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
@@ -264,6 +274,7 @@ return array(
 	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	TcaServiceInterface::class                     => \DI\autowire( TcaService::class ),
 	//Services - Domain
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
@@ -309,6 +320,7 @@ return array(
 	PromiseMetaCollectionInterface::class          => \DI\autowire( PromiseMetaCollection::class ),
 	SourceCollectionInterface::class               => \DI\autowire( SourceCollection::class ),
 	TokenMetaCollectionInterface::class            => \DI\autowire( TokenMetaCollection::class ),
+	TcaRuleCollectionInterface::class              => \DI\autowire( TcaRuleCollection::class ),
 	UserCollectionInterface::class                 => \DI\autowire( UserCollection::class ),
 	//Models
 	AddressInterface::class                        => \DI\autowire( Address::class ),
@@ -319,6 +331,7 @@ return array(
 	PromiseMetaInterface::class                    => \DI\autowire( PromiseMeta::class ), 
 	SourceInterface::class                         => \DI\autowire( Source::class ), 
 	TokenMetaInterface::class                      => \DI\autowire( TokenMeta::class ), 
+	TcaRuleInterface::class                        => \DI\autowire( TcaRule::class ), 
 	UserInterface::class                           => \DI\autowire( User::class ),
 	WhitelistItemInterface::class                  => \DI\autowire( WhitelistItem::class ),
 	//Models - single instance
@@ -389,6 +402,8 @@ return array(
 		->constructorParameter( 'class', SourceInterface::class ),
 	TokenMetaFactoryConcrete::class              => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', TokenMetaInterface::class ),
+	TcaRuleFactoryConcrete::class                => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', TcaRuleInterface::class ),
 	UserFactoryConcrete::class                   => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', UserInterface::class ),
 	WhitelistItemFactoryConcrete::class          => \DI\autowire( RootFactory::class )
@@ -406,6 +421,8 @@ return array(
 		->constructorParameter( 'class', SourceCollectionInterface::class ),
 	TokenMetaCollectionFactoryConcrete::class    => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', TokenMetaCollectionInterface::class ),
+	TcaRuleCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
+		->constructorParameter( 'class', TcaRuleCollectionInterface::class ),
 	UserCollectionFactoryConcrete::class         => \DI\autowire( RootFactory::class )
 		->constructorParameter( 'class', UserCollectionInterface::class ),
 	//Factories - abstract - models
@@ -425,6 +442,8 @@ return array(
 		->constructorParameter( 'factory', \Di\get( SourceFactoryConcrete::class ) ),
 	TokenMetaFactoryInterface::class             => \DI\autowire( TokenMetaFactory::class )
 		->constructorParameter( 'factory', \Di\get( TokenMetaFactoryConcrete::class ) ),
+	TcaRuleFactoryInterface::class               => \DI\autowire( TcaRuleFactory::class )
+		->constructorParameter( 'factory', \Di\get( TcaRuleFactoryConcrete::class ) ),
 	UserFactoryInterface::class                  => \DI\autowire( UserFactory::class )
 		->constructorParameter( 'factory', \Di\get( UserFactoryConcrete::class ) ),
 	WhitelistItemFactoryInterface::class         => \DI\autowire( WhitelistItemFactory::class )
@@ -442,6 +461,8 @@ return array(
 		->constructorParameter( 'factory', \Di\get( SourceCollectionFactoryConcrete::class ) ),
 	TokenMetaCollectionFactoryInterface::class   => \DI\autowire( TokenMetaCollectionFactory::class )
 		->constructorParameter( 'factory', \Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
+	TcaRuleCollectionFactoryInterface::class   => \DI\autowire( TcaRuleCollectionFactory::class )
+		->constructorParameter( 'factory', \Di\get( TcaRuleCollectionFactoryConcrete::class ) ),
 	UserCollectionFactoryInterface::class        => \DI\autowire( UserCollectionFactory::class )
 		->constructorParameter( 'factory', \Di\get( UserCollectionFactoryConcrete::class ) ),
 	//Third-party
@@ -495,7 +516,7 @@ return array(
 
 class RootFactory {
 	protected $container;
-	protected $class;
+	public $class;
 
 	public function __construct( ContainerInterface $container, $class ) {
 		$this->container = $container;

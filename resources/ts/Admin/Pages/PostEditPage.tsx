@@ -39,7 +39,6 @@ export default class PostEditPage extends Component<PostEditPageProps, PostEditP
 	render() {
 		return (
 			<Fragment>
-				123
 			</Fragment>
 		);
 	}

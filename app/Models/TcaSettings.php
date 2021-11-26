@@ -34,6 +34,10 @@ class TcaSettings implements TcaSettingsInterface {
 		return $this;
 	}
 
+	public function is_enabled_for_post_type( string $post_type ) {
+		return $this->post_types[ $post_type ] ?? false;
+	}
+
 	public function to_array() {
 		return array(
 			'post_types' => $this->post_types,

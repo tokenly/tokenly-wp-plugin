@@ -6286,11 +6286,86 @@ const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpres
 class TcaRuleEditor extends react_1.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            rules: [],
+        };
+        this.onUpdate = props.onUpdate;
+        this.state.rules = Object.assign([], props.rules);
+    }
+    onUpdate(rules) {
+        //
+    }
+    onAdd() {
+        let newState = Object.assign({}, this.state);
+        newState.rules[newState.rules.length] = { asset: null, quantity: null, op: null, stackOp: null };
+        this.setState(newState);
+        this.dispatchUpdate();
+    }
+    onRemove(rule) {
+        let newState = Object.assign({}, this.state);
+        let index = this.state.rules.indexOf(rule);
+        if (index !== -1) {
+            newState.rules.splice(index, 1);
+        }
+        this.setState(newState);
+        this.dispatchUpdate();
+    }
+    dispatchUpdate() {
+        this.onUpdate(this.state.rules);
     }
     render() {
-        return (React.createElement(components_1.Panel, null,
-            React.createElement(components_1.PanelBody, { title: "TCA Rule Editor" },
-                React.createElement(components_1.PanelRow, null, "123"))));
+        const listItems = this.state.rules.map((rule, i) => {
+            return (React.createElement(components_1.Flex, { justify: "flex-start", align: "center" },
+                React.createElement(components_1.TextControl, { value: rule.asset, placeholder: "Asset", onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.rules[i].asset = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                React.createElement(components_1.SelectControl, { placeholder: "Logic", value: rule.op, options: [
+                        { label: '>=', value: '>=' },
+                        { label: '>', value: '>' },
+                        { label: '=', value: '=' },
+                        { label: '==', value: '==' },
+                        { label: '!=', value: '!=' },
+                        { label: '!', value: '!' },
+                        { label: '<', value: '<' },
+                        { label: '<=', value: '<=' },
+                    ], onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.rules[i].op = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                React.createElement(components_1.TextControl, { value: rule.quantity, placeholder: "Quantity", style: { maxWidth: '100px' }, type: "number", onChange: (value) => {
+                        let newState = Object.assign({}, this.state);
+                        newState.rules[i].quantity = value;
+                        this.setState(Object.assign({}, newState));
+                        this.dispatchUpdate();
+                    } }),
+                i > 0 &&
+                    React.createElement(components_1.SelectControl, { placeholder: "Grouping", value: rule.stackOp, options: [
+                            { label: 'AND', value: 'AND' },
+                            { label: 'OR', value: 'OR' },
+                        ], onChange: (value) => {
+                            let newState = Object.assign({}, this.state);
+                            newState.rules[i].stackOp = value;
+                            this.setState(Object.assign({}, newState));
+                            this.dispatchUpdate();
+                        } }),
+                React.createElement(components_1.Button, { isTertiary: true, isSmall: true, style: { marginBottom: '8px' }, onClick: () => {
+                        this.onRemove(rule);
+                    } },
+                    React.createElement(components_1.Dashicon, { icon: "no" }))));
+        });
+        return (React.createElement("div", { style: { display: 'inline-block', marginTop: '12px' } },
+            React.createElement("label", null,
+                React.createElement("strong", null, "TCA Rule Editor"),
+                React.createElement("div", { style: { opacity: 0.8 } }, "The visitor's token inventory will be checked against these rules. If not passed - access to the content will be prevented."),
+                React.createElement("ul", null, listItems)),
+            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, onClick: () => {
+                    this.onAdd();
+                } }, "Add rule")));
     }
 }
 exports["default"] = TcaRuleEditor;
@@ -6788,7 +6863,7 @@ class PostEditPage extends react_1.Component {
         };
     }
     render() {
-        return (React.createElement(element_1.Fragment, null, "123"));
+        return (React.createElement(element_1.Fragment, null));
     }
 }
 exports["default"] = PostEditPage;
@@ -7947,6 +8022,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
 const ConfirmModal_1 = __webpack_require__(/*! ../Admin/Components/ConfirmModal */ "./resources/ts/Admin/Components/ConfirmModal.tsx");
+const TcaRuleEditor_1 = __webpack_require__(/*! ./../Admin/Components/TcaRuleEditor */ "./resources/ts/Admin/Components/TcaRuleEditor.tsx");
 const EventBus_1 = __webpack_require__(/*! ../EventBus */ "./resources/ts/EventBus.ts");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AppLayout extends react_1.Component {
@@ -7956,10 +8032,14 @@ class AppLayout extends react_1.Component {
             confirmModalData: null,
             confirmModalShow: false,
             postData: {},
+            tcaRules: []
         };
         this.onConfirmModalShow = this.onConfirmModalShow.bind(this);
         this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind(this);
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
+        this.onTcaUpdate = this.onTcaUpdate.bind(this);
+        this.state.tcaRules = Object.assign({}, this.props.tcaRules);
+        console.log(this.state.tcaRules);
     }
     onConfirmModalRequestClose() {
         this.setState({
@@ -7983,20 +8063,22 @@ class AppLayout extends react_1.Component {
     }
     componentDidMount() {
         EventBus_1.default.on('confirmModalShow', this.onConfirmModalShow);
-        EventBus_1.default.on('postDataUpdated', (newState) => {
-            let state = Object.assign({}, this.state);
-            state = Object.assign(state, newState);
-            this.setState({ postData: state });
-        });
     }
     componentWillUnmount() {
         EventBus_1.default.remove('confirmModalShow', this.onConfirmModalShow);
+    }
+    onTcaUpdate(rules) {
+        let postData = Object.assign({}, this.state.postData);
+        postData.tca_rules = rules;
+        this.setState({ postData: postData });
     }
     render() {
         return (React.createElement(element_1.Fragment, null,
             this.props.children,
             this.state.confirmModalShow == true &&
                 React.createElement(ConfirmModal_1.ConfirmModal, { key: this.state.confirmModalData.key, title: this.state.confirmModalData.title, subtitle: this.state.confirmModalData.subtitle, onRequestClose: this.onConfirmModalRequestClose, onChoice: this.onConfirmModalChoice }),
+            this.props.tcaEnabled == true &&
+                React.createElement(TcaRuleEditor_1.default, { rules: this.state.tcaRules, onUpdate: this.onTcaUpdate }),
             React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.postData) })));
     }
 }
@@ -9011,13 +9093,14 @@ const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
 const PostEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PostEditPage */ "./resources/ts/Admin/Pages/PostEditPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditPage */ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx");
-const TcaRuleEditor_1 = __webpack_require__(/*! ./Admin/Components/TcaRuleEditor */ "./resources/ts/Admin/Components/TcaRuleEditor.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
-        var _a;
+        var _a, _b, _c;
         super();
         this.container = Inversify_config_1.container;
+        this.tcaEnabled = false;
+        this.tcaRules = [];
         this.pageElement = document.querySelector('.tokenpass-admin-page');
         if (this.pageElement) {
             const data = window.tokenpassData;
@@ -9026,9 +9109,10 @@ class AdminApp extends App_1.default {
             }
             this.view = data === null || data === void 0 ? void 0 : data.view;
             this.pageData = data === null || data === void 0 ? void 0 : data.props;
-            this.useTCA = data.useTCA;
+            this.tcaEnabled = (_a = data.tcaEnabled) !== null && _a !== void 0 ? _a : false;
+            this.tcaRules = (_b = data.tcaRules) !== null && _b !== void 0 ? _b : [];
             const views = this.getViews();
-            const ViewComponent = (_a = views[this.view]) !== null && _a !== void 0 ? _a : null;
+            const ViewComponent = (_c = views[this.view]) !== null && _c !== void 0 ? _c : null;
             if (ViewComponent) {
                 this.highlightMenu();
                 this.render(ViewComponent);
@@ -9062,10 +9146,8 @@ class AdminApp extends App_1.default {
         const pageContainer = document.createElement('div');
         this.pageElement.appendChild(pageContainer);
         (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
-            React.createElement(AppLayout_1.default, null,
-                React.createElement(ViewComponent, { pageData: this.pageData }),
-                this.useTCA == true &&
-                    React.createElement(TcaRuleEditor_1.default, null))), pageContainer);
+            React.createElement(AppLayout_1.default, { tcaEnabled: this.tcaEnabled, tcaRules: this.tcaRules },
+                React.createElement(ViewComponent, { pageData: this.pageData }))), pageContainer);
     }
     registerRedirects() {
         document.addEventListener('DOMContentLoaded', () => {
