@@ -12,8 +12,8 @@ class Balance implements BalanceInterface {
 	public $precision;
 	public $meta;
 
-	public function __construct( 
-		$balance_data = array()
+	public function __construct(
+		array $balance_data
 	) {
 		$this->from_array( $balance_data );
 	}
@@ -48,9 +48,9 @@ class Balance implements BalanceInterface {
 		if ( isset( $balance_data['precision'] ) ) {
 			$this->precision = intval( $balance_data['precision'] ?? null );
 		}
-		if ( 
-			isset( $this->balance ) === false && 
-			isset( $this->balance_sat ) == true && 
+		if (
+			isset( $this->balance ) === false &&
+			isset( $this->balance_sat ) == true &&
 			isset( $this->precision ) === true
 		) {
 			$this->balance = $this->from_sat( $this->balance_sat, $this->precision );

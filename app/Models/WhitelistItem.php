@@ -7,9 +7,9 @@ use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
 class WhitelistItem implements WhitelistItemInterface {
 	public $address = '';
 	public $index = '';
-	
+
 	public function __construct(
-		$whitelist_item_data = array()
+		array $whitelist_item_data
 	) {
 		$this->from_array( $whitelist_item_data );
 	}

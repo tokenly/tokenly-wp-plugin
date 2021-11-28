@@ -14,9 +14,9 @@ class Address implements AddressInterface {
 	protected $source_service;
 
 	public function __construct(
-		string $address = '',
-		string $type = '',
-		string $label = 'Unnamed',
+		string $address,
+		string $type,
+		string $label,
 		BalanceCollectionInterface $balances,
 		SourceServiceInterface $source_service
 	) {

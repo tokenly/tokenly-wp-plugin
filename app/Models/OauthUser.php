@@ -14,7 +14,7 @@ class OauthUser implements OauthUserInterface {
 	protected $oauth_user_service;
 
 	public function __construct(
-		$oauth_user_data = array(),
+		array $oauth_user_data,
 		OauthUserServiceInterface $oauth_user_service
 	) {
 		$this->oauth_user_service = $oauth_user_service;
@@ -48,7 +48,7 @@ class OauthUser implements OauthUserInterface {
 		$email = $this->email ?? null;
 		$email_is_confirmed = $this->email_is_confirmed ?? null;
 		if ( !$email || $email_is_confirmed == false ) {
-			return false;	
+			return false;
 		}
 		return true;
 	}

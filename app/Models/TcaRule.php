@@ -9,9 +9,9 @@ class TcaRule implements TcaRuleInterface {
 	public $quantity;
 	public $op;
 	public $stackOp;
-	
+
 	public function __construct(
-		$rule_data = array()
+		array $rule_data
 	) {
 		$this->from_array( $rule_data );
 	}

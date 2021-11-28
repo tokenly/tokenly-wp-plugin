@@ -29,7 +29,7 @@ class Promise implements PromiseInterface {
 	protected $promise_meta_service;
 
 	public function __construct(
-		$promise_data = array(),
+		array $promise_data,
 		PromiseServiceInterface $promise_service,
 		PromiseMetaServiceInterface $promise_meta_service
 	) {
@@ -58,7 +58,7 @@ class Promise implements PromiseInterface {
 		$this->precision = $promise_data['precision'] ?? null;
 		$this->promise_meta = $promise_data['promise_meta'] ?? null;
 	}
-	
+
 	public function to_array() {
 		$array = array(
 			'source'       => $this->source,
@@ -76,7 +76,7 @@ class Promise implements PromiseInterface {
 			'protocol'     => $this->protocol,
 			'chain'        => $this->chain,
 			'promise_id'   => $this->promise_id,
-			'precision'    => $this->precision, 
+			'precision'    => $this->precision,
 		);
 		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
 			$array['promise_meta'] = $this->promise_meta->to_array();
@@ -93,7 +93,7 @@ class Promise implements PromiseInterface {
 	 */
 	public function destroy() {
 		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
-			$this->promise_meta->destroy();	
+			$this->promise_meta->destroy();
 		}
 		$this->promise_service->destroy( $this->promise_id );
 	}

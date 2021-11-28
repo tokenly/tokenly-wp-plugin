@@ -13,7 +13,7 @@ class Source implements SourceInterface {
 	protected $source_service;
 
 	public function __construct(
-		$source_data = array(),
+		array $source_data,
 		SourceServiceInterface $source_service
 	) {
 		$this->address = $source_data['address'] ?? null;
