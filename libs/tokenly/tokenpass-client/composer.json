@@ -4,7 +4,6 @@
     "keywords": ["tokenly","tokenpass","accounts","oauth"],
     "type": "library",
     "license": "MIT",
-	"version": "1.0-dev",
     "authors": [
         {
             "name": "Devon Weller",
@@ -15,7 +14,7 @@
     "require": {
         "php": ">=7.0.0",
 		"guzzlehttp/guzzle": "~7.3.0",
-		"tokenly/api-client": "@dev"
+		"tokenly/api-client": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~7"
