@@ -14,18 +14,21 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Routes\Router;
 
 /**
  * Manages routing for the WordPress admin pages
  */
-class AdminRouter implements AdminRouterInterface {
+class AdminRouter extends Router implements AdminRouterInterface {
 	protected $routes = array();
 	protected $redirects = array();
 	protected $controllers = array();
 	protected $auth_service;
 	protected $integration;
+	protected $root_dir;
 
 	public function __construct(
+		string $root_dir,
 		AuthServiceInterface $auth_service,
 		BalancesControllerInterface $balances_controller,
 		DashboardControllerInterface $dashboard_controller,
@@ -38,6 +41,7 @@ class AdminRouter implements AdminRouterInterface {
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user
 	) {
+		$this->root_dir = $root_dir;
 		$this->integration = $integration;
 		$this->current_user = $current_user;
 		$this->auth_service = $auth_service;
@@ -61,16 +65,6 @@ class AdminRouter implements AdminRouterInterface {
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ), 9 );
 		add_action( 'admin_print_scripts', array( $this, 'add_redirects' ) );
-	}
-
-	/**
-	 * Registers the admin routes
-	 * @return void
-	 */
-	public function register_routes() {
-		foreach ( $this->routes as $key => $route ) {
-			$this->register_route( $key, $route );
-		}
 	}
 
 	/**
@@ -142,152 +136,122 @@ class AdminRouter implements AdminRouterInterface {
 	protected function get_routes() {
 		$routes = array(
 			'tokenpass' => array(
-				'args'    => array(
-					'page_title' => 'Tokenpass',
-					'menu_title' => 'Tokenpass',
-					'menu_slug'  => 'tokenpass',
-					'callable'   => array( $this->controllers['dashboard'], 'show' ),
-					'capability' => 'read',
-					'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( plugin_dir_url( __FILE__ ) . '../../resources/images/tokenly_logo.svg' ) ),
-					'position'   => 3,
-				),
+				'page_title' => 'Tokenpass',
+				'menu_title' => 'Tokenpass',
+				'menu_slug'  => 'tokenpass',
+				'callable'   => array( $this->controllers['dashboard'], 'show' ),
+				'capability' => 'read',
+				'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' ) ),
+				'position'   => 3,
 				'subroutes'   => array(
 					'dashboard' => array(
-						'args'      => array(
-							'page_title' => 'Dashboard',
-							'menu_title' => 'Dashboard',
-							'menu_slug'  => 'dashboard',
-							'capability' => 'use_tokenpass',
-						),
+						'page_title' => 'Dashboard',
+						'menu_title' => 'Dashboard',
+						'menu_slug'  => 'dashboard',
+						'capability' => 'use_tokenpass',
 					),
 					'inventory' => array(
-						'args'      => array(
-							'page_title' => 'Inventory',
-							'menu_title' => 'Inventory',
-							'menu_slug'  => 'inventory',
-							'capability' => 'use_tokenpass',
-						),
+						'page_title' => 'Inventory',
+						'menu_title' => 'Inventory',
+						'menu_slug'  => 'inventory',
+						'capability' => 'use_tokenpass',
 					),
 					'connection' => array(
-						'args'      => array(
-							'page_title' => 'Connection Status',
-							'menu_title' => 'Connection',
-							'menu_slug'  => 'connection',
-							'callable'   => array( $this->controllers['connection'], 'show' ),
-							'capability' => 'read',
-						),
+						'page_title' => 'Connection Status',
+						'menu_title' => 'Connection',
+						'menu_slug'  => 'connection',
+						'callable'   => array( $this->controllers['connection'], 'show' ),
+						'capability' => 'read',
 					),
 					'vendor' => array(
-						'args'      => array(
-							'page_title' => 'Tokenly Vendor',
-							'menu_title' => 'Vendor',
-							'menu_slug'  => 'vendor',
-							'callable'   => array( $this->controllers['vendor'], 'show' ),
-							'capability' => 'manage_options',
-						),
+						'page_title' => 'Tokenly Vendor',
+						'menu_title' => 'Vendor',
+						'menu_slug'  => 'vendor',
+						'callable'   => array( $this->controllers['vendor'], 'show' ),
+						'capability' => 'manage_options',
 					),
 					'balances-show' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Show source balances',
-							'menu_title'  => 'Source balances',
-							'menu_slug'   => 'balances-show',
-							'callable'    => array( $this->controllers['balances'], 'show' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Show source balances',
+						'menu_title'  => 'Source balances',
+						'menu_slug'   => 'balances-show',
+						'callable'    => array( $this->controllers['balances'], 'show' ),
+						'capability'  => 'manage_options',
 					),
 					'promise-show' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'View token promise',
-							'menu_title'  => 'View promise',
-							'menu_slug'   => 'promise-show',
-							'callable'    => array( $this->controllers['promise'], 'show' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'View token promise',
+						'menu_title'  => 'View promise',
+						'menu_slug'   => 'promise-show',
+						'callable'    => array( $this->controllers['promise'], 'show' ),
+						'capability'  => 'manage_options',
 					),
 					'promise-store' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Create token promise',
-							'menu_title'  => 'Create promise',
-							'menu_slug'   => 'promise-store',
-							'callable'    => array( $this->controllers['promise'], 'store' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Create token promise',
+						'menu_title'  => 'Create promise',
+						'menu_slug'   => 'promise-store',
+						'callable'    => array( $this->controllers['promise'], 'store' ),
+						'capability'  => 'manage_options',
 					),
 					'promise-edit' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Manage token promise',
-							'menu_title'  => 'Manage promise',
-							'menu_slug'   => 'promise-edit',
-							'callable'    => array( $this->controllers['promise'], 'edit' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Manage token promise',
+						'menu_title'  => 'Manage promise',
+						'menu_slug'   => 'promise-edit',
+						'callable'    => array( $this->controllers['promise'], 'edit' ),
+						'capability'  => 'manage_options',
 					),
 					'source-index' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Manage source addresses',
-							'menu_title'  => 'Source',
-							'menu_slug'   => 'source-index',
-							'callable'    => array( $this->controllers['source'], 'index' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Manage source addresses',
+						'menu_title'  => 'Source',
+						'menu_slug'   => 'source-index',
+						'callable'    => array( $this->controllers['source'], 'index' ),
+						'capability'  => 'manage_options',
 					),
 					'source-show' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Show source address details',
-							'menu_title'  => 'Source details',
-							'menu_slug'   => 'source-show',
-							'callable'    => array( $this->controllers['source'], 'show' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Show source address details',
+						'menu_title'  => 'Source details',
+						'menu_slug'   => 'source-show',
+						'callable'    => array( $this->controllers['source'], 'show' ),
+						'capability'  => 'manage_options',
 					),
 					'source-store' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Register source address',
-							'menu_title'  => 'Register source',
-							'menu_slug'   => 'source-store',
-							'callable'    => array( $this->controllers['source'], 'store' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Register source address',
+						'menu_title'  => 'Register source',
+						'menu_slug'   => 'source-store',
+						'callable'    => array( $this->controllers['source'], 'store' ),
+						'capability'  => 'manage_options',
 					),
 					'source-edit' => array(
-						'args'      => array(
-							'parent_slug' => null,
-							'page_title'  => 'Manage source address',
-							'menu_title'  => 'Manage source',
-							'menu_slug'   => 'source-edit',
-							'callable'   => array( $this->controllers['source'], 'edit' ),
-							'capability'  => 'manage_options',
-						),
+						'parent_slug' => null,
+						'page_title'  => 'Manage source address',
+						'menu_title'  => 'Manage source',
+						'menu_slug'   => 'source-edit',
+						'callable'    => array( $this->controllers['source'], 'edit' ),
+						'capability'  => 'manage_options',
 					),
 					'whitelist' => array(
-						'args'      => array(
-							'page_title' => 'Gallery Token Whitelist',
-							'menu_title' => 'Whitelist',
-							'menu_slug'  => 'whitelist',
-							'callable'   => array( $this->controllers['whitelist'], 'show' ),
-							'capability' => 'manage_options',
-						),
+						'page_title' => 'Gallery Token Whitelist',
+						'menu_title' => 'Whitelist',
+						'menu_slug'  => 'whitelist',
+						'callable'   => array( $this->controllers['whitelist'], 'show' ),
+						'capability' => 'manage_options',
 					),
 					'settings' => array(
-						'args'      => array(
-							'page_title' => 'Settings',
-							'menu_title' => 'Settings',
-							'menu_slug'  => 'settings',
-							'callable'   => array( $this->controllers['settings'], 'show' ),
-							'capability' => 'manage_options',
-						),
+						'page_title' => 'Settings',
+						'menu_title' => 'Settings',
+						'menu_slug'  => 'settings',
+						'callable'   => array( $this->controllers['settings'], 'show' ),
+						'capability' => 'manage_options',
 					),
 				),
 			),
 		);
-		$routes = $this->prepare_routes( $routes );
+		$routes = $this->process_routes( $routes );
 		return $routes;
 	}
 
@@ -296,25 +260,57 @@ class AdminRouter implements AdminRouterInterface {
 	 * @param array $routes Admin routes
 	 * @return array
 	 */
-	protected function prepare_routes( $routes ) {
-		$routes = array_map( function( $route ) {
-			$subroutes = $route['subroutes'] ?? null;
-			if ( $subroutes ) {
-				$subroutes = array_map( function( $subroute ) use ( $route ) {
-					$subroute_args = $subroute['args'] ?? null;
-					if ( $subroute_args ) {
-						$menu_slug = $this->get_subroute_slug( $route, $subroute );
-						$subroute_args['menu_slug']= $menu_slug;
-						$subroute['args'] = $subroute_args;
-					}
-					$subroute['args'] = $subroute_args;
-					return $subroute;
-				}, $subroutes );
-				$route['subroutes'] = $subroutes;
-			}
-			return $route;
-		}, $routes );
+	protected function process_routes( array $routes ) {
+		foreach ( $routes as &$route ) {
+			$route = $this->process_route( $route );
+			$route = $this->process_subroutes( $route );
+		}
 		return $routes;
+	}
+
+	/**
+	 * Prepares a group of subroutes before rendering
+	 * @param array $route
+	 * @return array $route
+	 */
+	protected function process_subroutes( $route ) {
+		if ( !isset( $route['subroutes'] ) ) {
+			return;
+		}
+		$subroutes = $route['subroutes'];
+		foreach ( $subroutes as &$subroute ) {
+			$subroute = $this->process_subroute( $route, $subroute );
+		}
+		$route['subroutes'] = $subroutes;
+		return $route;
+	}
+
+	/**
+	 * Prepares a single subroute before rendering
+	 * @param array $route Parent route data
+	 * @param array $subroute Subroute data
+	 * @return array
+	 */
+	protected function process_subroute( $route, $subroute ) {
+		$subroute = $this->process_route( $subroute );
+		$menu_slug = $this->get_subroute_slug( $route, $subroute );
+		$subroute['menu_slug'] = $menu_slug;
+		return $subroute;
+	}
+
+	/**
+	 * Prepare a single route before rendering
+	 * @param array $route Route data
+	 * @return array
+	 */
+	protected function process_route( $route ) {
+		if ( isset( $route['callable'] ) ) {
+			$callable = $route['callable'];
+			$route['callable'] = function() use ( $callable ) {
+				$this->render_route( $callable );
+			};
+		}
+		return $route;
 	}
 
 	/**
@@ -324,15 +320,12 @@ class AdminRouter implements AdminRouterInterface {
 	 * @return string
 	 */
 	protected function get_subroute_slug( $route, $subroute ) {
-		$route_args = $route['args'] ?? null;
-		$subroute_args = $subroute['args'] ?? null;
-		if ( $route_args && $subroute_args ) {
-			$route_slug = $route_args['menu_slug'] ?? null;
-			$subroute_slug = $subroute_args['menu_slug'] ?? null;
-			if( $route_slug && $subroute_slug ) {
-				return implode( '-', array( $route_slug, $subroute_slug ) );
-			}
+		if ( !isset( $route['menu_slug'] ) || !isset( $subroute['menu_slug'] ) ) {
+			return false;
 		}
+		$route_slug = $route['menu_slug'];
+		$subroute_slug = $subroute['menu_slug'];
+		return implode( '-', array( $route_slug, $subroute_slug ) );
 	}
 
 	/**
@@ -340,25 +333,22 @@ class AdminRouter implements AdminRouterInterface {
 	 * @param array $route Route data
 	 * @return void
 	 */
-	protected function register_route( string $key, array $route ) {
-		$args = $route['args'] ?? null;
-		if ( $args ) {
-			if ( $this->can_register( $key ) === true ) {
-				add_menu_page(
-					$args['page_title'] ?? null,
-					$args['menu_title'] ?? null,
-					$args['capability'] ?? null,
-					$args['menu_slug'] ?? null,
-					$args['callable'] ?? null,
-					$args['icon_url'] ?? null,
-					$args['position'] ?? null,
-				);
-			}
+	public function register_route( string $key, array $route ) {
+		if ( $this->can_register( $key ) === true ) {
+			add_menu_page(
+				$route['page_title'] ?? null,
+				$route['menu_title'] ?? null,
+				$route['capability'] ?? null,
+				$route['menu_slug'] ?? null,
+				$route['callable'] ?? null,
+				$route['icon_url'] ?? null,
+				$route['position'] ?? null,
+			);
 		}
-		$subroutes = $route['subroutes'] ?? null;
-		if ( $subroutes ) {
+		if ( isset( $route['subroutes'] ) ) {
+			$subroutes = $route['subroutes'] ?? null;
 			foreach ( $subroutes as $key => $subroute ) {
-				$this->register_subroute( $key, $subroute, $args );
+				$this->register_subroute( $key, $subroute, $route );
 			}
 		}
 	}
@@ -366,27 +356,25 @@ class AdminRouter implements AdminRouterInterface {
 	/**
 	 * Registers admin subroute
 	 * @param array $subroute Subroute data
-	 * @param array $args Parent route data
+	 * @param array $route Parent route data
 	 * @return void
 	 */
-	protected function register_subroute( string $key, array $subroute, array $args ) {
-		$subroute_args = $subroute['args'] ?? null;
-		if ( $subroute_args ) {
-			if ( array_key_exists( 'parent_slug', $subroute_args ) === false ) {
-				$subroute_args['parent_slug'] = $args['menu_slug'] ?? null;
-			}
-			if ( $this->can_register( $key ) === true ) {
-				add_submenu_page(
-					$subroute_args['parent_slug'] ?? null,
-					$subroute_args['page_title'] ?? null,
-					$subroute_args['menu_title'] ?? null,
-					$subroute_args['capability'] ?? null,
-					$subroute_args['menu_slug'] ?? null,
-					$subroute_args['callable'] ?? null,
-					$subroute_args['icon_url'] ?? null,
-					$subroute_args['position'] ?? null,
-				);
-			}
+	protected function register_subroute( string $key, array $subroute, array $route ) {
+		if ( array_key_exists( 'parent_slug', $subroute ) === false ) {
+			$subroute['parent_slug'] = $route['menu_slug'] ?? null;
 		}
+		if ( $this->can_register( $key ) === false ) {
+			return false;
+		}
+		add_submenu_page(
+			$subroute['parent_slug'] ?? null,
+			$subroute['page_title'] ?? null,
+			$subroute['menu_title'] ?? null,
+			$subroute['capability'] ?? null,
+			$subroute['menu_slug'] ?? null,
+			$subroute['callable'] ?? null,
+			$subroute['icon_url'] ?? null,
+			$subroute['position'] ?? null,
+		);
 	}
 }

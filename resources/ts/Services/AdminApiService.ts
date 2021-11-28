@@ -25,9 +25,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		}
 	}
 	
-	settingsShow(): Promise<SettingsData> {
+	settingsIntegrationShow(): Promise<SettingsData> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/settings' ).then( ( result: SettingsData ) => {
+			this.makeRequest( 'GET', '/settings/integration' ).then( ( result: SettingsData ) => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -35,9 +35,29 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	settingsUpdate( params: SettingsData ): Promise<any> {
+	settingsIntegrationUpdate( params: SettingsData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/settings', params ).then( result => {
+			this.makeRequest( 'PUT', '/settings/integration', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	settingsTcaShow(): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/settings/tca' ).then( ( result: any ) => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	settingsTcaUpdate( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', '/settings/tca', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );

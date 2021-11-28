@@ -49,7 +49,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -72,7 +72,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -89,7 +89,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -106,7 +106,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -131,7 +131,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -150,10 +150,10 @@ class TokenpassAPI implements TokenpassAPIInterface
         catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             throw new \Exception('Unknown error updating user');
         }
-        if(isset($call['error']) AND trim($call['error']) != ''){
+        if (isset($call['error']) AND trim($call['error']) != ''){
             throw new \Exception($call['error']);
         }
         return true;
@@ -173,10 +173,10 @@ class TokenpassAPI implements TokenpassAPIInterface
         catch (TokenpassAPIException $e){
             throw new \Exception($e->getMessage());
         }
-        if(isset($result['error']) AND trim($result['error']) != ''){
+        if (isset($result['error']) AND trim($result['error']) != ''){
             throw new \Exception($result['error']);
         }
-        if(!isset($result['result'])){
+        if (!isset($result['result'])){
             throw new \Exception('Unknown error registering user');
         }
         return $result['result'];
@@ -283,7 +283,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -299,7 +299,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -327,7 +327,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -349,7 +349,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -364,13 +364,13 @@ class TokenpassAPI implements TokenpassAPIInterface
         }
         try {
             $params = [];
-            if($label !== null){
+            if ($label !== null){
                 $params['label'] = $label;
             }
-            if($public !== null){
+            if ($public !== null){
                 $params['public'] = $public;
             }
-            if($active !== null){
+            if ($active !== null){
                 $params['active'] = $active;
             }
             $call = $this->fetchFromTokenpassAPI('PATCH', 'tca/address/'.$address, $params, $oauth_token);
@@ -379,7 +379,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -400,7 +400,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -410,7 +410,7 @@ class TokenpassAPI implements TokenpassAPIInterface
     {
         $params = [];
         $method = 'GET';
-        if(is_array($address)){
+        if (is_array($address)){
             $params['address_list'] = $address;
             $method = 'POST';
             $address = 'null';
@@ -422,7 +422,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call;
@@ -438,7 +438,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call;
@@ -446,10 +446,10 @@ class TokenpassAPI implements TokenpassAPIInterface
 
     public function registerProvisionalSource($address, $chain = 'bitcoin', $proof = null, $assets = null, $extra_opts = array())
     {
-		if($chain == 'counterparty'){
+		if ($chain == 'counterparty'){
 			$chain = 'bitcoin';
 		}
-		if($chain == 'counterpartyTestnet'){
+		if ($chain == 'counterpartyTestnet'){
 			$chain = 'counterparty';
 		}
         try {
@@ -460,7 +460,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             $params['assets'] = $assets;
             $valid_extra = array('assign_user', 'assign_user_hash', 'assign_user_label');
             foreach($valid_extra as $f){
-                if(isset($extra_opts[$f])){
+                if (isset($extra_opts[$f])){
                     $params[$f] = $extra_opts[$f];
                 }
             }
@@ -470,11 +470,11 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             throw new Exception($e->getMessage());
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             throw new Exception('Unkown error registering provisional source');
         }
-        if(!$call['result']){
-            if(isset($call['error'])){
+        if (!$call['result']){
+            if (isset($call['error'])){
                 throw new Exception($call['error']);
             }
         }
@@ -491,7 +491,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['whitelist'];
@@ -507,7 +507,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['proof_suffix'];
@@ -516,7 +516,7 @@ class TokenpassAPI implements TokenpassAPIInterface
     public function getProvisionalSourceProofMessage($address)
     {
         $suffix = $this->getProvisionalSourceProofSuffix();
-        if(!$suffix){
+        if (!$suffix){
             return false;
         }
         return $address.$suffix;
@@ -531,13 +531,25 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
     }
 	
-    public function promiseTransaction($source, $destination, $asset, $quantity, $expiration, $txid = null, $fingerprint = null, $ref = null, $chain = 'bitcoin', $protocol = 'counterparty', $pseudo = false, $note = null)
+    public function promiseTransaction(
+		string $source,
+		string $destination,
+		string $asset,
+		float $quantity,
+		string $expiration = null,
+		string $txid = null,
+		string $fingerprint = null,
+		string $ref = null,
+		string $chain = 'bitcoin',
+		string $protocol = 'counterparty',
+		bool $pseudo = false,
+		string $note = null)
     {
         try {
             $params = [];
@@ -550,10 +562,10 @@ class TokenpassAPI implements TokenpassAPIInterface
             $params['protocol'] = $protocol;
 			$params['pseudo'] = $pseudo;
 			$params['note'] = $note;
-            if($txid != null){
+            if ($txid != null){
                 $params['txid'] = $txid;
             }
-            if($fingerprint != null){
+            if ($fingerprint != null) {
                 $params['fingerprint'] = $fingerprint;
             }
             $params['ref'] = $ref;
@@ -563,7 +575,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['tx'];
@@ -579,7 +591,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['tx'];
@@ -598,7 +610,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['list'];
@@ -614,7 +626,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['list'];
@@ -630,7 +642,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -640,25 +652,25 @@ class TokenpassAPI implements TokenpassAPIInterface
     {
         try {
             $params = [];
-            if(isset($data['quantity'])){
+            if (isset($data['quantity'])){
                 $params['quantity'] = $data['quantity'];
             }
-            if(isset($data['expiration'])){
+            if (isset($data['expiration'])){
                 $params['expiration'] = $data['expiration'];
             }
-            if(isset($data['txid'])){
+            if (isset($data['txid'])){
                 $params['txid'] = $data['txid'];
             }
-            if(isset($data['fingerprint'])){
+            if (isset($data['fingerprint'])){
                 $params['fingerprint'] = $data['fingerprint'];
             }
-            if(isset($data['ref'])){
+            if (isset($data['ref'])){
                 $params['ref'] = $data['ref'];
             }
-            if(isset($data['note'])){
+            if (isset($data['note'])){
                 $params['note'] = $data['note'];
             }
-            if(isset($data['destination'])){
+            if (isset($data['destination'])){
                 $params['destination'] = $data['destination'];
             }
             $call = $this->fetchFromTokenpassAPI('PATCH', 'tca/provisional/tx/'.$id, $params);
@@ -667,7 +679,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['tx'];
@@ -803,7 +815,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!$response OR !$response['result']){
+        if (!$response OR !$response['result']){
             return false;
         }
         return true;
@@ -816,10 +828,10 @@ class TokenpassAPI implements TokenpassAPIInterface
         try {
             $params = array();
             $params['name'] = $name;
-            if(is_string($app_whitelist)){
+            if (is_string($app_whitelist)){
                 $params['app_whitelist'] = $app_whitelist;
             }
-            elseif(is_array($app_whitelist)){
+            elseif (is_array($app_whitelist)){
                 $params['app_whitelist'] = join("\n", $app_whitelist);
             }
             $response = $this->fetchFromTokenpassAPI('POST', 'credits', $params);
@@ -827,7 +839,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!$response){
+        if (!$response){
             return false;
         }
         return $response['credit_group'];
@@ -837,14 +849,14 @@ class TokenpassAPI implements TokenpassAPIInterface
     {
         try {
             $params = array();
-            if(isset($data['name'])){
+            if (isset($data['name'])){
                 $params['name'] = $name;
             }
-            if(isset($data['app_whitelist'])){
-                if(is_string($data['app_whitelist'])){
+            if (isset($data['app_whitelist'])){
+                if (is_string($data['app_whitelist'])){
                     $params['app_whitelist'] = $data['app_whitelist'];
                 }
-                elseif(is_array($data['app_whitelist'])){
+                elseif (is_array($data['app_whitelist'])){
                     $params['app_whitelist'] = join("\n", $data['app_whitelist']);
                 }
             }
@@ -853,7 +865,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!$response){
+        if (!$response){
             return false;
         }
         return $response['credit_group'];
@@ -868,7 +880,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['list'])){
+        if (!isset($call['list'])){
             return false;
         }
         return $call['list'];
@@ -883,7 +895,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['credit_group'])){
+        if (!isset($call['credit_group'])){
             return false;
         }
         return $call['credit_group'];
@@ -899,7 +911,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!$response){
+        if (!$response){
             return false;
         }
         return $response['account'];
@@ -914,7 +926,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['accounts'])){
+        if (!isset($call['accounts'])){
             return false;
         }
         return $call['accounts'];
@@ -929,7 +941,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['account'])){
+        if (!isset($call['account'])){
             return false;
         }
         return $call['account'];
@@ -938,7 +950,7 @@ class TokenpassAPI implements TokenpassAPIInterface
     public function getAppCreditAccountBalance($groupId, $accountId)
     {
         $get = $this->getAppCreditAccount($groupId, $accountId);
-        if(!$get){
+        if (!$get){
             return false;
         }
         return $get['balance'];
@@ -948,7 +960,7 @@ class TokenpassAPI implements TokenpassAPIInterface
     {
         $accounts_amounts = array();
         $item = array('account' => $account, 'amount' => $amount, 'ref' => $ref);
-        if($source !== null){
+        if ($source !== null){
             $item['source'] = $source;
         }
         $accounts_amounts[] = $item;
@@ -959,7 +971,7 @@ class TokenpassAPI implements TokenpassAPIInterface
     {
         $accounts_amounts = array();
         $item = array('account' => $account, 'amount' => $amount, 'ref' => $ref);
-        if($destination !== null){
+        if ($destination !== null){
             $item['destination'] = $destination;
         }
         $accounts_amounts[] = $item;
@@ -978,7 +990,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['transactions'])){
+        if (!isset($call['transactions'])){
             return false;
         }
         return $call['transactions'];
@@ -996,7 +1008,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['transactions'])){
+        if (!isset($call['transactions'])){
             return false;
         }
         return $call['transactions'];
@@ -1080,7 +1092,7 @@ class TokenpassAPI implements TokenpassAPIInterface
             self::$errors[] = $e->getMessage();
             return false;
         }
-        if(!isset($call['result'])){
+        if (!isset($call['result'])){
             return false;
         }
         return $call['result'];
@@ -1160,7 +1172,6 @@ class TokenpassAPI implements TokenpassAPIInterface
 
       $data = $options;
       $data['json'] = $params;
-
       //generate a random nonce
       $nonce = hash_hmac('sha256', random_bytes(256).time(), $this->client_secret);
 
@@ -1173,13 +1184,13 @@ class TokenpassAPI implements TokenpassAPIInterface
       //send the request
       try {
         $response = $client->request($method, $this->tokenpass_url.'/'.ltrim($endpoint, '/'), $data);
-        if($response->getStatusCode() != 200){
+        if ($response->getStatusCode() != 200){
           throw new Exception('Invalid API endpoint status code');
         }
 
         //decode response
         $json = json_decode($response->getBody(), true);
-        if(!is_array($json)){
+        if (!is_array($json)){
           throw new Exception('Invalid JSON response');
         }
       }

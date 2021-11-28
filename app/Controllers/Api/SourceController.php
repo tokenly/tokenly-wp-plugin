@@ -3,16 +3,16 @@
 namespace Tokenly\Wp\Controllers\Api;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 
 /**
  * Handles the source REST API endpoints
  */
 class SourceController implements SourceControllerInterface {
 	public function __construct(
-		SourceRepositoryInterface $source_repository
+		SourceServiceInterface $source_service
 	) {
-		$this->source_repository = $source_repository;
+		$this->source_service = $source_service;
 	}
 	
 	/**
@@ -21,7 +21,7 @@ class SourceController implements SourceControllerInterface {
 	 * @return Source[]
 	 */
 	public function index( $request ) {
-		$sources = $this->source_repository->index();
+		$sources = $this->source_service->index();
 		return $sources;
 	}
 
@@ -32,7 +32,7 @@ class SourceController implements SourceControllerInterface {
 	 */
 	public function store( $request ) {
 		$params = $request->get_params();
-		$source = $this->source_repository->store( $params );
+		$source = $this->source_service->store( $params );
 		return $source;
 	}
 
@@ -49,7 +49,7 @@ class SourceController implements SourceControllerInterface {
 				'status' => "Not updated. No address supplied.",
 			);
 		}
-		$source = $this->source_repository->show( array( 'address' => $address ) );
+		$source = $this->source_service->show( array( 'address' => $address ) );
 		if ( !$source ) {
 			return array(
 				'status' => "Not updated. Source not found.",
@@ -71,7 +71,7 @@ class SourceController implements SourceControllerInterface {
 				'status' => "Not destroyed. No address supplied.",
 			);
 		}
-		$source = $this->source_repository->show( array( 'address' => $address ) );
+		$source = $this->source_service->show( array( 'address' => $address ) );
 		if ( !$source ) {
 			return array(
 				'status' => "Not destroyed. Address not found.",

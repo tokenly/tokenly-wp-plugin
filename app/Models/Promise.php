@@ -4,7 +4,8 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
-use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 
 class Promise implements PromiseInterface {
 	public $source;
@@ -25,13 +26,15 @@ class Promise implements PromiseInterface {
 	public $promise_id;
 	public $precision;
 	public $promise_meta;
-	protected $promise_repository;
+	protected $promise_meta_service;
 
 	public function __construct(
 		$promise_data = array(),
-		PromiseRepositoryInterface $promise_repository
+		PromiseServiceInterface $promise_service,
+		PromiseMetaServiceInterface $promise_meta_service
 	) {
-		$this->promise_repository = $promise_repository;
+		$this->promise_service = $promise_service;
+		$this->promise_meta_service = $promise_meta_service;
 		$this->from_array( $promise_data );
 	}
 
@@ -82,13 +85,31 @@ class Promise implements PromiseInterface {
 	}
 
 	public function update( $params = array() ) {
-		$this->promise_repository->update( $this->promise_id, $params );
+		$this->promise_service->update( $this->promise_id, $params );
 	}
 
+	/**
+	 * Deletes the promise and its meta
+	 */
 	public function destroy() {
 		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
 			$this->promise_meta->destroy();	
 		}
-		$this->promise_repository->destroy( $this->promise_id );
+		$this->promise_service->destroy( $this->promise_id );
+	}
+
+	/**
+	 * Adds promise meta post to the promise
+	 * @param array $promise_meta_data New promise meta data
+	 * @return PromiseMetaInterface
+	 */
+	public function add_meta( array $promise_meta_data ) {
+		$promise_meta_data['promise_id'] = $this->promise_id;
+		$promise_meta = $this->promise_meta_service->store( $promise_meta_data );
+		if ( !$promise_meta ) {
+			return false;
+		}
+		$this->promise_meta = $promise_meta;
+		return $promise_meta;
 	}
 }

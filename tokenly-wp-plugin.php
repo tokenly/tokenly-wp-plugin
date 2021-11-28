@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+
 define( 'TOKENLY_PLUGIN_DIR', plugin_dir_path( dirname( __FILE__ ) ) . '/tokenly-wp-plugin/' );
 define( 'TOKENLY_PLUGIN_TEMPLATE_DIR', TOKENLY_PLUGIN_DIR . 'resources/views/' );
 define( 'TOKENLY_PLUGIN_TEMPLATE_CACHE_DIR', TOKENLY_PLUGIN_DIR . 'build/template-cache/' );

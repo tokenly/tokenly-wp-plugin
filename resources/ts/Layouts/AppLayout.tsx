@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { ConfirmModal } from '../Admin/Components/ConfirmModal';
+import TcaRuleEditor from './../Admin/Components/TcaRuleEditor';
 import { ConfirmModalData } from '../Interfaces';
 import eventBus from "../EventBus";
 
@@ -10,23 +11,33 @@ import {
 
 interface AppLayoutProps {
 	children: any;
+	tcaEnabled: boolean;
+	tcaRules: any;
 }
 
 interface AppLayoutState {
 	confirmModalData: ConfirmModalData;
 	confirmModalShow: boolean;
+	postData: any;
+	tcaRules: []
 }
 
 export default class AppLayout extends Component<AppLayoutProps, AppLayoutState> {
 	state: AppLayoutState = {
 		confirmModalData: null,
 		confirmModalShow: false,
+		postData: {},
+		tcaRules: []
 	};
 	constructor( props: AppLayoutProps ) {
 		super( props );
 		this.onConfirmModalShow = this.onConfirmModalShow.bind( this );
 		this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
+		this.onPostDataUpdated = this.onPostDataUpdated.bind( this );
+		this.onTcaUpdate = this.onTcaUpdate.bind( this );
+		this.state.tcaRules = Object.assign( {}, this.props.tcaRules );
+		this.state.postData.tca_rules = this.state.tcaRules;
 	}
 
 	onConfirmModalRequestClose() {
@@ -53,15 +64,29 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 
 	componentDidMount() {
 		eventBus.on( 'confirmModalShow', this.onConfirmModalShow );
+		eventBus.on( 'postDataUpdated', this.onPostDataUpdated );
 	}
 	
 	componentWillUnmount() {
 		eventBus.remove( 'confirmModalShow', this.onConfirmModalShow );
 	}
 
+	onPostDataUpdated( newData: any ) {
+		let state = Object.assign( {}, this.state.postData );
+		state = Object.assign( state, newData );
+		this.setState( { postData: state } );
+	}
+
+	onTcaUpdate( rules: any ) {
+		this.onPostDataUpdated( {
+			tca_rules: rules,
+		} );
+	}
+
 	render() {
 		return (
 			<Fragment>
+				{ this.props.children }
 				{ this.state.confirmModalShow == true &&
 					<ConfirmModal
 						key={ this.state.confirmModalData.key }
@@ -71,7 +96,13 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 						onChoice={ this.onConfirmModalChoice }
 					/>
 				}
-				{ this.props.children }
+				{ this.props.tcaEnabled == true &&
+					<TcaRuleEditor
+						rules={ this.state.tcaRules }
+						onUpdate={ this.onTcaUpdate }
+					/>
+				}
+				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.postData as any ) } />
 			</Fragment>
 		)
 	}

@@ -1,3 +1,9 @@
 <div class="tokenpass-login-container">
-	<button class="button tokenpass-login"><span class='button-logo'>{{ logo | raw }}</span><span class='button-title'>{{ label }}</span></button>
+	<button class="tokenly-component-button with-icon with-loader tokenpass-login">
+		<div class="tokenly-loader-container">
+			<div class="tokenly-loader">Loading...</div>
+		</div>
+		<span class='icon'>{{ logo | raw }}</span>
+		<span class='title'>{{ label }}</span>
+	</button>
 </div>

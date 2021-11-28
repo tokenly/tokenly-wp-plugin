@@ -33,8 +33,7 @@ final class Bootstrap {
 
 	protected function build_container() {
 		$builder = new \DI\ContainerBuilder();
-		$builder->useAnnotations( true );
-		$builder->addDefinitions( TOKENLY_PLUGIN_DIR . '/config/phpdi.php' );
+		$builder->addDefinitions( __DIR__ . './../config/phpdi.php' );
 		$container = $builder->build();
 		return $container;
 	}

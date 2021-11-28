@@ -13,34 +13,17 @@ class PromiseFactory extends Factory implements PromiseFactoryInterface {
 	 * @return PromiseInterface
 	 */
 	public function create( $data, $args = array() ) {
-		$quantity = $data['quantity'] ?? null;
-		if ( $quantity ) {
+		if ( isset( $data['quantity'] ) && isset( $data['precision'] ) ) {
+			$quantity = $data['quantity'] ?? null;
 			$precision = $data['precision'] ?? null;
-			if ( $precision ) {
+			if ( $precision > 0 ) {
 				$divisor = intval( 1 . str_repeat( 0, $precision ) );
 				$quantity = $quantity / $divisor;
+				$data['quantity'] = $quantity;
 			}
 		}
 		$promise = $this->factory->create( array(
-			'promise_data' => array(
-				'source'       => $data['source']       ?? null,
-				'destination'  => $data['destination']  ?? null,
-				'asset'        => $data['asset']        ?? null,
-				'quantity'     => $quantity,
-				'quantity_sat' => $data['quantity']     ?? null,
-				'fingerprint'  => $data['fingerprint']  ?? null,
-				'txid'         => $data['txid']         ?? null,
-				'created_at'   => $data['created_at']   ?? null,
-				'updated_at'   => $data['updated_at']   ?? null,
-				'expiration'   => $data['expiration']   ?? null,
-				'ref'          => $data['ref']          ?? null,
-				'pseudo'       => $data['pseudo']       ?? null,
-				'note'         => $data['note']         ?? null,
-				'protocol'     => $data['protocol']     ?? null,
-				'chain'        => $data['chain']        ?? null,
-				'promise_id'   => $data['promise_id']   ?? null,
-				'precision'    => $data['precision']    ?? null,
-			),
+			'promise_data' => $data,
 		) );
 		return $promise;
 	}

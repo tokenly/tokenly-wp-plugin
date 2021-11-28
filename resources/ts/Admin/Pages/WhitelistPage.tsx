@@ -98,18 +98,19 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 								} }
 							/>
 						</PanelRow>
-					</PanelBody>
-				</Panel>
-				{ this.state.whitelistData.enabled == true &&
-					<Panel header="Token Whitelist Editor">
-						<PanelBody>
+						{ this.state.whitelistData.enabled == true &&
 							<PanelRow>
-								<Whitelist onUpdate={ this.onWhitelistChange } whitelist={ this.state.whitelistData.items } />		
+								<div style={{marginBottom: '12px'}}>
+									<h4>Token Whitelist Editor</h4>
+									<Whitelist onUpdate={ this.onWhitelistChange } whitelist={ this.state.whitelistData.items } />		
+								</div>
 							</PanelRow>
-						</PanelBody>
-					</Panel>
-				}
-				<SavePanel saving={ this.state.saving } onClick={ this.onSave } />
+						}
+						<PanelRow>
+							<SavePanel saving={ this.state.saving } onClick={ this.onSave } />
+						</PanelRow>
+					</PanelBody>					
+				</Panel>
 			</Page>
 		);
 	}

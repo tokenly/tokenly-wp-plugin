@@ -14,15 +14,15 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
  */
 class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	protected $client;
-	protected $meta_repository;
 	protected $promise_meta_collection_factory;
+	protected $string;
 	
 	public function __construct(
-		MetaRepositoryInterface $meta_repository,
-		PromiseMetaCollectionFactoryInterface $promise_meta_collection_factory
+		PromiseMetaCollectionFactoryInterface $promise_meta_collection_factory,
+		string $namespace
 	) {
-		$this->meta_repository = $meta_repository;
 		$this->promise_meta_collection_factory = $promise_meta_collection_factory;
+		$this->namespace = $namespace;
 	}
 
 	/**
@@ -32,16 +32,17 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 */
 	public function index( array $params = array() ) {
 		$query_args = array(
-			'post_type'   => 'tokenly_promise_meta',
+			'post_type'   => "{$this->namespace}_promise_meta",
 			'meta_query'  => array(),
 		);
 		if ( isset( $params['id'] ) ) {
 			$query_args['p'] = $params['id'];
 		}
 		if ( isset( $params['promise_ids'] ) ) {
+			$promise_ids = $params['promise_ids'] ?? null;
 			$query_args['meta_query'][] = array(
-				'key'     => $this->meta_repository->namespace_key( 'promise_id' ),
-				'value'   => $params['promise_ids'] ?? null,
+				'key'     => "{$this->namespace}_promise_id",
+				'value'   => $promise_ids,
 				'compare' => 'IN',
 			);
 		}
@@ -57,10 +58,19 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 * @return PromiseMetaInterface
 	 */
 	public function show( $params = array() ) {
-		$meta = $this->index( $params );
-		return $meta[0] ?? null;
+		$posts = $this->index( $params );
+		$post;
+		if ( isset( $posts[0] ) ) {
+			$post = $posts[0];
+		}
+		return $post;
 	}
 	
+	/**
+	 * Creates a new promise meta post
+	 * @param array $params New promise meta post data
+	 * @return PromiseMetaInterface
+	 */
 	public function store( array $params ) {
 		if ( !isset( $params['promise_id'] ) ) {
 			return;
@@ -72,7 +82,7 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		);
 		$meta_namespaced = array();
 		foreach ( $meta as $key => $value ) {
-			$key = $this->meta_repository->namespace_key( $key );
+			$key = "{$this->namespace}_{$key}";
 			$meta_namespaced[ $key ] = $value;
 		}
 		$common_params = array(
@@ -88,7 +98,7 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 			$post = $this->update( $update_params );
 		} else {
 			$store_params = array_merge( array(
-				'post_type'  => 'tokenly_promise_meta',
+				'post_type'  => "{$this->namespace}_promise_meta",
 			), $common_params );
 			$post = wp_insert_post( $store_params );
 		}
@@ -101,12 +111,8 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 * @param array $params New post data
 	 * @return void
 	 */
-	public function update( int $post_id, array $params = array() ) {
-		$update_params = array(
-			'ID' => $post_id,
-		);
-		$update_params = array_merge( $update_params, $params );
-		$post = wp_update_post( $update_params );
+	public function update( array $params = array() ) {
+		$post = wp_update_post( $params );
 	}
 	
 	/**

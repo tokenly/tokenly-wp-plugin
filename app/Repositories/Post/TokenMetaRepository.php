@@ -2,7 +2,6 @@
 
 namespace Tokenly\Wp\Repositories\Post;
 
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
@@ -12,15 +11,15 @@ use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
  * Manages token meta data
  */
 class TokenMetaRepository implements TokenMetaRepositoryInterface {
-	protected $meta_repository;
 	protected $token_meta_collection_factory;
+	protected $namespace;
 	
 	public function __construct(
-		MetaRepositoryInterface $meta_repository,
-		TokenMetaCollectionFactoryInterface $token_meta_collection_factory
+		TokenMetaCollectionFactoryInterface $token_meta_collection_factory,
+		string $namespace
 	) {
-		$this->meta_repository = $meta_repository;
 		$this->token_meta_collection_factory = $token_meta_collection_factory;
+		$this->namespace = $namespace;
 	}
 
 	/**
@@ -30,7 +29,7 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	 */
 	public function index( array $params = array() ) {
 		$query_args = array(
-			'post_type'   => 'tokenly_token_meta',
+			'post_type'   => "{$this->namespace}_token_meta",
 			'meta_query'  => array(),
 		);
 		if ( isset( $params['id'] ) ) {
@@ -38,7 +37,7 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 		if ( isset( $params['assets'] ) ) {
 			$query_args['meta_query'][] = array(
-				'key'     => $this->meta_repository->namespace_key( 'asset' ),
+				'key'     => "{$this->namespace}_asset",
 				'value'   => $params['assets'] ?? null,
 				'compare' => 'IN',
 			);
@@ -47,27 +46,5 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		$posts = $query_meta->posts;
 		$posts = $this->token_meta_collection_factory->create( $posts );
 		return $posts;
-	}
-	
-	/**
-	 * Retrieves a single token meta post
-	 * @param array $params Post search params
-	 * @return TokenMetaInterface
-	 */
-	public function show( $params = array() ) {
-		$meta = $this->index( $params );
-		return $meta[0] ?? null;
-	}
-	
-	/**
-	 * Updates the token-meta post by post ID
-	 * @param array $params New post data
-	 * @return void
-	 */
-	public function update( int $post_id, array $params = array() ) {
-		$this->meta_repository->update( $post_id, array(
-			'asset' => $params['asset'] ?? null,
-			'extra' => $params['extra'] ?? null,
-		) );
 	}
 }

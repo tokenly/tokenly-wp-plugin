@@ -6,22 +6,22 @@ use Tokenly\Wp\Blocks\ListCardTokenItemBlock;
 use Tokenly\Wp\Blocks\UserInfoBlock;
 use Tokenly\Wp\Views\View;
 use Twig\Environment;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
 class UserView extends View {
 	protected $balances = array();
-	protected $user_repository;
+	protected $user_service;
 
 	public function __construct(
 		Environment $twig,
 		UserInfoBlock $user_info_block,
 		ListCardTokenItemBlock $list_card_token_item_block,
-		UserRepositoryInterface $user_repository
+		UserServiceInterface $user_service
 	) {
 		parent::__construct( $twig );
 		$this->list_card_token_item_block = $list_card_token_item_block;
 		$this->user_info_block = $user_info_block;
-		$this->user_repository = $user_repository;
+		$this->user_service = $user_service;
 	}
 
 	public function render( $data ) {
@@ -33,7 +33,7 @@ class UserView extends View {
 				'balances' => $this->balances,
 			)
 		);
-		$user = $this->user_repository->show( array(
+		$user = $this->user_service->show( array(
 			'id' => get_query_var( 'tokenpass_user_id' ),
 		) );
 		$html_user_info_block = $this->user_info_block->render(
@@ -42,10 +42,10 @@ class UserView extends View {
 			)
 		);
 		$html = $this->twig->render( 'User.twig', array(
-			'header' => $html_header,
-			'footer' => $html_footer,
-			'list_card_token_block' => $html_list_card_token_item_block,
-			'user_info_block'       => $html_user_info_block,
+			'header'                 => $html_header,
+			'footer'                 => $html_footer,
+			'list_card_token_block'  => $html_list_card_token_item_block,
+			'user_info_block'        => $html_user_info_block,
 		) );
 		return $html;
 	}

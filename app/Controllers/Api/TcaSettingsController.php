@@ -2,18 +2,17 @@
 
 namespace Tokenly\Wp\Controllers\Api;
 
-use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 
 /**
- * Handles the settings REST API endpoints
+ * Handles the TCA settings REST API endpoints
  */
-class SettingsController implements SettingsControllerInterface {
-	protected $update_schema;
+class TcaSettingsController implements TcaSettingsControllerInterface {
 	protected $settings;
 	
 	public function __construct(
-		IntegrationSettingsInterface $settings
+		TcaSettingsInterface $settings
 	) {
 		$this->settings = $settings;
 	}
@@ -24,7 +23,8 @@ class SettingsController implements SettingsControllerInterface {
 	 * @return array
 	 */
 	public function show( $request ) {
-		return $this->settings->to_array(); 
+		$settings = $this->settings->to_array(); 
+		return $settings;
 	}
 
 	/**
