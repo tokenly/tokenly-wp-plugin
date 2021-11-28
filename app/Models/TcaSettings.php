@@ -8,9 +8,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\TcaSettingsServiceInterface;
 class TcaSettings implements TcaSettingsInterface {
 	public $post_types = array();
 	protected $tca_settings_service;
-	
+
 	public function __construct(
-		$settings_data = array(),
+		array $settings_data,
 		TcaSettingsServiceInterface $tca_settings_service
 	) {
 		$this->from_array( $settings_data );

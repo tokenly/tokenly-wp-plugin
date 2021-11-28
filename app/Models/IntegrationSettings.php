@@ -10,9 +10,9 @@ class IntegrationSettings implements IntegrationSettingsInterface {
 	public $client_secret = '';
 	public $settings_updated = false;
 	protected $integration_settings_service;
-	
+
 	public function __construct(
-		$settings_data = array(),
+		array $settings_data,
 		IntegrationSettingsServiceInterface $integration_settings_service
 	) {
 		$this->from_array( $settings_data );

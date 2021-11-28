@@ -11,9 +11,9 @@ class Whitelist implements WhitelistInterface {
 	public $items = array();
 	protected $whitelist_service;
 	protected $whitelist_item_factory;
-	
+
 	public function __construct(
-		$whitelist_data = array(),
+		array $whitelist_data,
 		WhitelistServiceInterface $whitelist_service,
 		WhitelistItemFactoryInterface $whitelist_item_factory
 	) {
@@ -21,7 +21,7 @@ class Whitelist implements WhitelistInterface {
 		$this->whitelist_item_factory = $whitelist_item_factory;
 		$this->from_array( $whitelist_data );
 	}
-	
+
 	public function update( $whitelist_data ) {
 		$this->from_array( $whitelist_data );
 		$this->save();
