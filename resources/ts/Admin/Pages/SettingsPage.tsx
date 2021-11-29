@@ -50,6 +50,8 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		},
 		tcaSettings: {
 			post_types: {},
+			filter_menu_items: false,
+			filter_post_results: false,
 		},
 		savingIntegrationSettings: false,
 		savingTcaSettings: false,

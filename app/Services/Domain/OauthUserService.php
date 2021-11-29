@@ -6,6 +6,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 
+/**
+ * Manages the OAuth users
+ */
 class OauthUserService implements OauthUserServiceInterface {
 	protected $oauth_user_cache = array();
 	protected $oauth_user_repository;

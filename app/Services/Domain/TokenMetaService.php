@@ -6,6 +6,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
+/**
+ * Manages the token meta
+ */
 class TokenMetaService implements TokenMetaServiceInterface {
 	protected $token_meta_repository;
 	protected $meta_repository;

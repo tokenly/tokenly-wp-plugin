@@ -67,6 +67,9 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		$this->register_routes();
 		add_action( 'template_redirect', array( $this, 'on_template_redirect' ) );
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
+		add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
+		add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
+		
 	}
 
 	/**
@@ -180,6 +183,10 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		}
 	}
 
+	/**
+	 * Prevents access to post if the TCA check was not passed
+	 * @return void
+	 */
 	public function on_template_redirect() {
 		$is_virtual = boolval( get_query_var( 'virtual' ) ) ?? false;
 		if ( $is_virtual === true ) {
@@ -191,5 +198,43 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		if ( $can_access === false ) {
 			wp_die( 'Access denied by TCA.' );
 		}
+	}
+
+	/**
+	 * Filters the reuslts of navigation menu item queries by checking
+	 * if the current user can access the post associated with it
+	 * @param array $item Navigation items
+	 * @param object $menu Navigation menu
+	 * @param array $args Additional arguments
+	 * @return array
+	 */
+	public function tca_on_get_nav_menu_items( array $items, object $menu, array $args ) {
+		$user_id = get_current_user_id();
+		foreach ( $items as $key => $item ) {
+			$post_id = $item->object_id;
+			$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+			if ( $can_access === false ) {
+				unset( $items[ $key ] );
+			}
+		}
+		return $items;
+	}
+
+	/**
+	 * Filters the results of post queries by checking
+	 * if the current user can access them
+	 * @param array $posts
+	 * @return array
+	 */
+	public function tca_on_posts_results( array $posts ) {
+		$user_id = get_current_user_id();
+		foreach ( $posts as $key => $post ) {
+			$post_id = $post->ID;
+			$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+			if ( $can_access === false ) {
+				unset( $posts[ $key ] );
+			}
+		}
+		return $posts;
 	}
 }

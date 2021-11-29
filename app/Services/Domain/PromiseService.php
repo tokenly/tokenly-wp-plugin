@@ -14,6 +14,9 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
+/**
+ * Manages the promises
+ */
 class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_cache = array();
 	protected $promise_collection_cache;

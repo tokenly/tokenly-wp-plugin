@@ -5,7 +5,16 @@ namespace Tokenly\Wp\Services\Domain;
 use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 
+/**
+ * Provides the base functions for the other domain services
+ */
 class DomainService implements DomainServiceInterface {
+	/**
+	 * Formats the relation names by decoupling the root and its relations
+	 * which allows to pass them further and load any other nested relations
+	 * @param string[] $relations Relations to format
+	 * @return string[]
+	 */
 	protected function format_relations( array $relations ) {
 		$relations_formatted = array();
 		foreach ( $relations as $relation ) {
@@ -22,6 +31,12 @@ class DomainService implements DomainServiceInterface {
 		return $relations_formatted;
 	}
 
+	/**
+	 * Loads the specified relations for the specified item
+	 * @param mixed $item Target item
+	 * @param array $relations List of relations to load
+	 * @return mixed 
+	 */
 	public function load( $item, array $relations ) {
 		$relations = $this->format_relations( $relations );
 		foreach ( $relations as $key => $relation ) {

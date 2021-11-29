@@ -4,6 +4,7 @@ import { Component } from 'react';
 import { 
 	Flex,
 	CheckboxControl,
+	ToggleControl,
 } from '@wordpress/components';
 
 interface TcaSettingsFormProps {
@@ -57,7 +58,43 @@ export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettings
 		});
 		return (
 			<div>
-				<div style={{marginBottom: '12px'}}>Enable TCA for the post types:</div>
+				<fieldset>
+					<Flex
+						//@ts-ignore
+						direction="column"
+					>	
+						<legend style={ { marginBottom: '8px' } }>
+							<strong>Filtering options</strong>
+							<div>Filtering the content can slow down page loading speed. <br />
+								The following options allow fine-grained control over what gets filtered.</div>
+						</legend>
+						<ToggleControl
+							label="Filter menu items"
+							help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
+							checked={ this.props.settings.filter_menu_items }
+							onChange={ ( value: boolean ) => {
+								let settings = Object.assign( {}, this.props.settings );
+								settings.filter_menu_items = value;
+								this.onChange( settings );
+							} }
+						/>
+						<ToggleControl
+							label="Filter post results"
+							help="Filters the post listings which are not controlable by the menu editor, like recent post list."
+							checked={ this.props.settings.filter_post_results }
+							onChange={ ( value: boolean ) => {
+								let settings = Object.assign( {}, this.props.settings );
+								settings.filter_post_results = value;
+								this.onChange( settings );
+							} }
+						/>
+					</Flex>
+				</fieldset>
+				<hr></hr>
+				<div>
+					<strong>TCA post types</strong>
+					<div>The selected post types will be able to use the TCA functions.</div>
+				</div>
 				<Flex
 					//@ts-ignore
 					direction="column"

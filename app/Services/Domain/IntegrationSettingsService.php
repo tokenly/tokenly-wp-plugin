@@ -8,7 +8,7 @@ use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 
 /**
- * Manages integration settings
+ * Manages the integration settings
  */
 class IntegrationSettingsService implements IntegrationSettingsServiceInterface {
 	protected $option_repository;

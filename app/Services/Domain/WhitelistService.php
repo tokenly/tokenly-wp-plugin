@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 
 /**
- * Manages token whitelist
+ * Manages the token whitelist
  */
 class WhitelistService implements WhitelistServiceInterface {
 	protected $option_repository;

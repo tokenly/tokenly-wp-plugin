@@ -12,15 +12,19 @@ class LifecycleService implements LifecycleServiceInterface {
 	public $version;
 	protected $option_repository;
 	protected $root_filepath;
+	protected $root_dir;
 
 	public function __construct(
+		OptionRepositoryInterface $option_repository,
 		string $version,
 		string $root_filepath,
-		OptionRepositoryInterface $option_repository
+		string $root_dir
 	) {
-		$this->version = $version;
 		$this->root_filepath = $root_filepath;
+		$this->root_dir = $root_dir;
 		$this->option_repository = $option_repository;
+		$this->version = $this->get_current_git_commit();
+		error_log( $this->version );
 	}
 
 	public function register() {
@@ -46,6 +50,14 @@ class LifecycleService implements LifecycleServiceInterface {
 
 	protected function refresh() {
 		flush_rewrite_rules();
+	}
+
+	protected function get_current_git_commit( string $branch = 'dev' ) {
+		if ( $hash = file_get_contents( "{$this->root_dir}/.git/refs/heads/{$branch}" ) ) {
+			return $hash;
+		} else {
+			return false;
+		}
 	}
 
 	/**

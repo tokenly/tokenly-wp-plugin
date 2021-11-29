@@ -9,6 +9,9 @@ use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 
+/**
+ * Manages the sources
+ */
 class SourceService extends DomainService implements SourceServiceInterface {
 	protected $source_cache;
 	protected $source_repository;

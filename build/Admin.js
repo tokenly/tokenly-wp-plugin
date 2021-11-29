@@ -6417,7 +6417,32 @@ class TcaSettingsForm extends react_1.Component {
             listItems.push(item);
         });
         return (React.createElement("div", null,
-            React.createElement("div", { style: { marginBottom: '12px' } }, "Enable TCA for the post types:"),
+            React.createElement("fieldset", null,
+                React.createElement(components_1.Flex
+                //@ts-ignore
+                , { 
+                    //@ts-ignore
+                    direction: "column" },
+                    React.createElement("legend", { style: { marginBottom: '8px' } },
+                        React.createElement("strong", null, "Filtering options"),
+                        React.createElement("div", null,
+                            "Filtering the content can slow down page loading speed. ",
+                            React.createElement("br", null),
+                            "The following options allow fine-grained control over what gets filtered.")),
+                    React.createElement(components_1.ToggleControl, { label: "Filter menu items", help: "Filters the menus made via Customizer. Note that the custom / external links will not be tested.", checked: this.props.settings.filter_menu_items, onChange: (value) => {
+                            let settings = Object.assign({}, this.props.settings);
+                            settings.filter_menu_items = value;
+                            this.onChange(settings);
+                        } }),
+                    React.createElement(components_1.ToggleControl, { label: "Filter post results", help: "Filters the post listings which are not controlable by the menu editor, like recent post list.", checked: this.props.settings.filter_post_results, onChange: (value) => {
+                            let settings = Object.assign({}, this.props.settings);
+                            settings.filter_post_results = value;
+                            this.onChange(settings);
+                        } }))),
+            React.createElement("hr", null),
+            React.createElement("div", null,
+                React.createElement("strong", null, "TCA post types"),
+                React.createElement("div", null, "The selected post types will be able to use the TCA functions.")),
             React.createElement(components_1.Flex
             //@ts-ignore
             , { 
@@ -7155,6 +7180,8 @@ class SettingsPage extends react_1.Component {
             },
             tcaSettings: {
                 post_types: {},
+                filter_menu_items: false,
+                filter_post_results: false,
             },
             savingIntegrationSettings: false,
             savingTcaSettings: false,

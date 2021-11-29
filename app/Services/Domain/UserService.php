@@ -12,7 +12,7 @@ use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 /**
- * User related functions
+ * Manages the users
  */
 class UserService implements UserServiceInterface {
 	protected $address_service;

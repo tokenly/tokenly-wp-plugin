@@ -37,7 +37,7 @@ class TcaService implements TcaServiceInterface {
 		}
 		$username = $oauth_user->username;
 		$rules = $this->format_rules( $rules );
-		$can_access = $this->client->checkTokenAccess( $username, $rules, $oauth_token ) ?? false;
+		$can_access = boolval( $this->client->checkTokenAccess( $username, $rules, $oauth_token ) ) ?? false;
 		return $can_access;
 	}
 

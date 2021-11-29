@@ -8,6 +8,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 
+/**
+ * Manages the addresses
+ */
 class AddressService extends DomainService implements AddressServiceInterface {
 	protected $address_cache = array();
 	protected $address_repository;
