@@ -210,7 +210,6 @@ return array(
 	//Variables
 	'general.name'             => 'tokenly-wp-plugin',
 	'general.namespace'        => 'tokenly',
-	'general.version'          => '0.3-alpha',
 	'general.root_dir'         => \DI\factory( function( string $name ) {
 		return WP_PLUGIN_DIR . '/' . $name;
 	} )->parameter( 'name', \DI\get( 'general.name' ) ),
@@ -269,7 +268,6 @@ return array(
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
 		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') ),
 	LifecycleServiceInterface::class               => \DI\autowire( LifecycleService::class )
-		->constructorParameter( 'version', \DI\get( 'general.version' ) )
 		->constructorParameter( 'root_filepath', \DI\get( 'general.root_filepath' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )

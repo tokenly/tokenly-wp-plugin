@@ -16,7 +16,6 @@ class LifecycleService implements LifecycleServiceInterface {
 
 	public function __construct(
 		OptionRepositoryInterface $option_repository,
-		string $version,
 		string $root_filepath,
 		string $root_dir
 	) {
