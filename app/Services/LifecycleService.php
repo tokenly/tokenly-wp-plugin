@@ -24,7 +24,6 @@ class LifecycleService implements LifecycleServiceInterface {
 		$this->root_dir = $root_dir;
 		$this->option_repository = $option_repository;
 		$this->version = $this->get_current_git_commit();
-		error_log( $this->version );
 	}
 
 	public function register() {
