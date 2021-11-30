@@ -271,6 +271,7 @@ return array(
 		->constructorParameter( 'root_filepath', \DI\get( 'general.root_filepath' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )
+		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) )
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	TcaServiceInterface::class                     => \DI\autowire( TcaService::class ),

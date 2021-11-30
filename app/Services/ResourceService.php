@@ -9,14 +9,17 @@ use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
  */
 class ResourceService implements ResourceServiceInterface {
 	protected $root_url;
+	protected $root_dir;
 	protected $build_url;
 	protected $namespace;
 
 	public function __construct(
 		string $root_url,
+		string $root_dir,
 		string $namespace
 	) {
 		$this->root_url = $root_url;
+		$this->root_dir = $root_dir;
 		$this->build_url = $this->root_url . '/build';
 		$this->namespace = $namespace;
 	}
@@ -37,10 +40,11 @@ class ResourceService implements ResourceServiceInterface {
 	 * @return void
 	 */
 	public function enqueue_frontend_scripts() {
+		$version = $this->get_version_for_build( 'Frontend' );
 		$label = "{$this->namespace}-frontend";
-		wp_register_script( $label, "{$this->build_url}/Frontend.js", array( 'wp-api' ), null, true );
+		wp_register_script( $label, "{$this->build_url}/Frontend.js", array( 'wp-api' ), $version, true );
 		wp_enqueue_script( $label );
-		wp_register_style( $label, "{$this->build_url}/Frontend.css" );
+		wp_register_style( $label, "{$this->build_url}/Frontend.css", $version );
 		wp_enqueue_style( $label );
 	}
 
@@ -51,10 +55,25 @@ class ResourceService implements ResourceServiceInterface {
 	 * @return void
 	 */
 	public function enqueue_admin_scripts() {
+		$version = $this->get_version_for_build( 'Admin' );
 		$label = "{$this->namespace}-admin";
-		wp_register_script( $label, "{$this->build_url}/Admin.js", array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), null, true );
+		wp_register_script( $label, "{$this->build_url}/Admin.js", array( 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ), $version, true );
 		wp_enqueue_script( $label );
-		wp_register_style( $label, "{$this->build_url}/Admin.css", array( 'wp-components' ) );
+		wp_register_style( $label, "{$this->build_url}/Admin.css", array( 'wp-components' ), $version );
 		wp_enqueue_style( $label );
+	}
+
+	/**
+	 * Extracts the version for the specified build from the build asset file
+	 * @param string $build_name Name of the build
+	 * @return string
+	 */
+	protected function get_version_for_build( string $build_name ) {
+		$meta = include( "{$this->root_dir}/build/{$build_name}.asset.php" );
+		$version = 1;
+		if ( $meta && isset( $meta['version'] ) ) {
+			$version = $meta['version'];
+		}
+		return $version;
 	}
 }
