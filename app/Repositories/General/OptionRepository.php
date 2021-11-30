@@ -2,14 +2,19 @@
 
 namespace Tokenly\Wp\Repositories\General;
 
-use Tokenly\Wp\Traits\NamespaceableTrait;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 
 /**
  * Helps to prefix all options being retrieved and saved by the plugin.
  */
 class OptionRepository implements OptionRepositoryInterface {
-	use NamespaceableTrait;
+	protected $namespace;
+
+	public function __construct(
+		string $namespace
+	) {
+		$this->namespace = $namespace;
+	}
 
 	/**
 	 * Retrieves the specified keys from the options
@@ -30,8 +35,8 @@ class OptionRepository implements OptionRepositoryInterface {
 	 * @return string
 	 */
 	public function show( $key ) {
-		$key_namespaced = $this->namespace_key( $key );
-		$option = get_option( $key_namespaced, null );
+		$key = "{$this->namespace}_{$key}";
+		$option = get_option( $key, null );
 		return $option;
 	}
 
@@ -42,8 +47,8 @@ class OptionRepository implements OptionRepositoryInterface {
 	 */
 	public function update( $payload ) {
 		foreach ( $payload as $key => $value ) {
-			$key_namespaced = $this->namespace_key( $key );
-			update_option( $key_namespaced, $value );
+			$key = "{$this->namespace}_{$key}";
+			update_option( $key, $value );
 		}
 	}
 }

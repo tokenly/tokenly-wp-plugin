@@ -67,8 +67,18 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		$this->register_routes();
 		add_action( 'template_redirect', array( $this, 'on_template_redirect' ) );
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
-		add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
-		add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
+		if (
+			isset( $this->tca_settings->filter_menu_items ) &&
+			$this->tca_settings->filter_menu_items == true
+		) {
+			add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
+		}
+		if (
+			isset( $this->tca_settings->filter_post_results ) &&
+			$this->tca_settings->filter_post_results == true
+		) {
+			add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -169,9 +179,11 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				};
 				$route['edit_callback'] = $callable;
 				add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
+					$meta_box_name = "{$this->namespace}_data";
+					$meta_box_title = ucfirst( $this->namespace );
 					add_meta_box(
-						'tokenpass_data',
-						__( 'Tokenpass', 'textdomain' ),
+						$meta_box_name,
+						__( $meta_box_title, 'textdomain' ),
 						$callable,
 						$name,
 						'advanced',
@@ -187,14 +199,19 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @return void
 	 */
 	public function on_template_redirect() {
-		$is_virtual = boolval( get_query_var( 'virtual' ) ) ?? false;
+		$is_virtual = boolval( get_query_var( "{$this->namespace}_virtual" ) ) ?? false;
 		if ( $is_virtual === true ) {
 			return;
 		}
 		$post_id = get_the_ID();
 		$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
 		if ( $can_access === false ) {
-			wp_die( 'Access denied by TCA.' );
+			if ( is_admin() === true ) {
+				wp_die( 'Access denied by TCA.' );
+			} else {
+				wp_redirect( "/{$this->namespace}/access-denied" );
+				exit;
+			}
 		}
 	}
 
@@ -223,11 +240,17 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @param array $posts
 	 * @return array
 	 */
-	public function tca_on_posts_results( array $posts ) {
+	public function tca_on_posts_results( array $posts, $query ) {
+		$current_post_id = 0;
+		$is_singular = $query->is_singular;
+		if ( $is_singular == true && isset( $query->posts[0] )) {
+			$post = $query->posts[0];
+			$current_post_id = $post->ID;
+		}
 		foreach ( $posts as $key => $post ) {
 			$post_id = $post->ID;
 			$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
-			if ( $can_access === false ) {
+			if ( $can_access === false && $current_post_id != $post_id ) {			
 				unset( $posts[ $key ] );
 			}
 		}

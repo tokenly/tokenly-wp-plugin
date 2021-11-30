@@ -5405,7 +5405,7 @@ class PromiseCard extends react_1.Component {
                     React.createElement("span", null,
                         React.createElement("span", null, "\u2116 "),
                         React.createElement("strong", null,
-                            React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+                            React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
                     ((_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.pseudo) == true &&
                         React.createElement("span", null,
                             React.createElement("span", { className: "tokenly-component-chip" }, "pseudo")))),
@@ -5422,8 +5422,8 @@ class PromiseCard extends react_1.Component {
                             React.createElement("strong", null, this.props.promise.quantity))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${this.props.promise.promise_id}` }, "Manage promise")))));
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${this.props.promise.promise_id}` }, "Manage promise")))));
     }
 }
 exports.PromiseCard = PromiseCard;
@@ -5658,12 +5658,12 @@ class PromiseParticipants extends react_1.Component {
             React.createElement("span", null, "Participants: "),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
             React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.destination }, ((_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.id)
-                ? React.createElement("a", { href: `/tokenpass-user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
+                ? React.createElement("a", { href: `/tokenly/user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
                 : React.createElement("span", null, "unknown")),
             React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
             React.createElement("strong", { title: (_o = (_m = this.props) === null || _m === void 0 ? void 0 : _m.promise) === null || _o === void 0 ? void 0 : _o.source }, ((_r = (_q = (_p = this.props.promise) === null || _p === void 0 ? void 0 : _p.promise_meta) === null || _q === void 0 ? void 0 : _q.destination_user) === null || _r === void 0 ? void 0 : _r.id)
-                ? React.createElement("a", { href: `/tokenpass-user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
+                ? React.createElement("a", { href: `/tokenly/user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
                 : React.createElement("span", null, "unknown"))));
     }
 }
@@ -5713,7 +5713,7 @@ class PromiseSourceInfo extends react_1.Component {
         return (React.createElement("div", null,
             React.createElement("span", null, "Source: "),
             this.sourceExists(this.props.promise)
-                ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.promise.source}` },
+                ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.promise.source}` },
                     React.createElement("strong", null, this.getPromiseSource(this.props.promise)))
                 : React.createElement("span", null,
                     React.createElement("strong", null, this.props.promise.source))));
@@ -6006,7 +6006,7 @@ class SourceCard extends react_1.Component {
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
                 React.createElement("div", { title: this.props.source.address },
-                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.source.address}` }, (_a = this.props.source.address_data) === null || _a === void 0 ? void 0 : _a.label))),
+                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.source.address}` }, (_a = this.props.source.address_data) === null || _a === void 0 ? void 0 : _a.label))),
             React.createElement(components_1.CardBody, { style: { width: '100%' } },
                 React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
                     React.createElement("div", { style: { flex: 1 } },
@@ -6015,9 +6015,9 @@ class SourceCard extends react_1.Component {
                             React.createElement("strong", null, this.getAssets()))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.source.address}` }, "Manage source"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.source.address}` }, "View details"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.props.source.address}` }, "View balances")))));
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-source-edit&source=${this.props.source.address}` }, "Manage source"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.source.address}` }, "View details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-balances-show&address=${this.props.source.address}` }, "View balances")))));
     }
 }
 exports.SourceCard = SourceCard;
@@ -6215,7 +6215,7 @@ class SourceStoreForm extends react_1.Component {
                                 React.createElement("span", null, this.getCurrentAddress())),
                             React.createElement("div", null,
                                 React.createElement("strong", null, "Assets: "),
-                                React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.getCurrentAddress()}` }, "View balances"))),
+                                React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-balances-show&address=${this.getCurrentAddress()}` }, "View balances"))),
                         React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised.", value: this.state.assets, onChange: (value) => {
                                 this.setState({ assets: value });
                             } })),
@@ -6634,7 +6634,7 @@ class BalancesShowPage extends react_1.Component {
         var _a, _b, _c, _d, _e;
         return (React.createElement(Page_1.default, { title: 'Address balances' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "To source list")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-source-index' }, "To source list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -6748,25 +6748,25 @@ class DashboardPage extends react_1.Component {
                     title: 'Inventory',
                     description: 'View the list of currently owned token assets.',
                     icon: 'money',
-                    url: '/tokenpass-user/me',
+                    url: '/tokenly/user/me',
                 },
                 connection: {
                     title: 'Connection',
                     description: 'Connect or disconnect to Tokenpass network.',
                     icon: 'admin-plugins',
-                    url: '/wp-admin/admin.php?page=tokenpass-connection',
+                    url: '/wp-admin/admin.php?page=tokenly-connection',
                 },
                 vendor: {
                     title: 'Vendor',
                     description: 'Manage token promises.',
                     icon: 'share',
-                    url: '/wp-admin/admin.php?page=tokenpass-vendor',
+                    url: '/wp-admin/admin.php?page=tokenly-vendor',
                 },
                 whitelist: {
                     title: 'Whitelist',
                     description: 'Configure a filter for tokens displayed on the inventory pages.',
                     icon: 'forms',
-                    url: '/wp-admin/admin.php?page=tokenpass-whitelist',
+                    url: '/wp-admin/admin.php?page=tokenly-whitelist',
                 },
                 meta: {
                     title: 'Token Meta',
@@ -6778,7 +6778,7 @@ class DashboardPage extends react_1.Component {
                     title: 'Settings',
                     description: 'Manage plugin settings.',
                     icon: 'admin-settings',
-                    url: '/wp-admin/admin.php?page=tokenpass-settings',
+                    url: '/wp-admin/admin.php?page=tokenly-settings',
                 },
             },
             offlineRoutesUser: [
@@ -6936,7 +6936,7 @@ class PromiseEditPage extends react_1.Component {
         this.onCancel = this.onCancel.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+        window.location = '/wp-admin/admin.php?page=tokenly-vendor';
     }
     onSave(promise) {
         this.setState({ saving: true });
@@ -6980,7 +6980,7 @@ class PromiseEditPage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Manage promise' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor"),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor"),
                 React.createElement("div", null,
                     React.createElement("span", null, "Promise ID: "),
                     React.createElement("strong", null, this.props.pageData.promise.promise_id))),
@@ -7033,7 +7033,7 @@ class PromiseShowPage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Promise details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, { header: `№ ${this.props.pageData.promise.promise_id}` },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7067,7 +7067,7 @@ class PromiseShowPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${this.props.pageData.promise.promise_id}` }, "Manage promise")))))));
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${this.props.pageData.promise.promise_id}` }, "Manage promise")))))));
     }
 }
 exports["default"] = PromiseShowPage;
@@ -7112,7 +7112,7 @@ class PromiseStorePage extends react_1.Component {
         this.onCancel = this.onCancel.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+        window.location = '/wp-admin/admin.php?page=tokenly-vendor';
     }
     onSubmit(params) {
         this.promiseRepository.store(params).then(result => {
@@ -7125,7 +7125,7 @@ class PromiseStorePage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Create a token promise' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7298,7 +7298,7 @@ class SourceEditPage extends react_1.Component {
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+        window.location = '/wp-admin/admin.php?page=tokenly-source-index';
     }
     onSave(source) {
         this.setState({ saving: true });
@@ -7347,7 +7347,7 @@ class SourceEditPage extends react_1.Component {
         }
         return (React.createElement(Page_1.default, { title: 'Manage source' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source list")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-source-index' }, "Back to source list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7355,7 +7355,7 @@ class SourceEditPage extends react_1.Component {
                             React.createElement("div", null,
                                 React.createElement("span", null, "Source: "),
                                 React.createElement("strong", null,
-                                    React.createElement("a", { style: { display: 'inline-block', marginBottom: '12px' }, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${source.address}` }, (_b = source === null || source === void 0 ? void 0 : source.address_data) === null || _b === void 0 ? void 0 : _b.label))),
+                                    React.createElement("a", { style: { display: 'inline-block', marginBottom: '12px' }, href: `/wp-admin/admin.php?page=tokenly-source-show&source=${source.address}` }, (_b = source === null || source === void 0 ? void 0 : source.address_data) === null || _b === void 0 ? void 0 : _b.label))),
                             React.createElement("div", null,
                                 React.createElement(SourceEditForm_1.SourceEditForm, { onSave: this.onSave, onDelete: this.onDelete, onCancel: this.onCancel, saving: this.state.saving, deleting: this.state.deleting, sourceData: source }))))))));
     }
@@ -7395,12 +7395,12 @@ class SourceIndexPage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Sources' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source"))))),
+                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenly-source-store' }, "Register source"))))),
             React.createElement(components_1.Panel, { header: "Registered sources" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7451,7 +7451,7 @@ class SourceShowPage extends react_1.Component {
         var _a;
         return (React.createElement(Page_1.default, { title: 'Source details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, { header: this.props.pageData.source.address_data.label },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7470,8 +7470,8 @@ class SourceShowPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: "flex-start", style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.pageData.source.address}` }, "Manage source"),
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.props.pageData.source.address}` }, "View balances")))))));
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-source-edit&source=${this.props.pageData.source.address}` }, "Manage source"),
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-balances-show&address=${this.props.pageData.source.address}` }, "View balances")))))));
     }
 }
 exports["default"] = SourceShowPage;
@@ -7516,7 +7516,7 @@ class SourceIndexPage extends react_1.Component {
         this.onAddressChange = this.onAddressChange.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+        window.location = '/wp-admin/admin.php?page=tokenly-source-index';
     }
     onSubmit(promise) {
         this.sourceRepository.store(promise).then((result) => {
@@ -7530,7 +7530,7 @@ class SourceIndexPage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Register source address' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source address list")),
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-source-index' }, "Back to source address list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7612,6 +7612,7 @@ class TokenMetaEditPage extends react_1.Component {
                             const state = Object.assign({}, this.state.meta);
                             state.asset = value;
                             this.setState({ meta: state });
+                            this.onPostUpdate(state);
                         }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
                     React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated })))));
     }
@@ -7684,8 +7685,8 @@ class VendorPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: "flex-start" },
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-promise-store', style: { marginRight: '8px' } }, "Create a promise"),
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses"))))),
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenly-promise-store', style: { marginRight: '8px' } }, "Create a promise"),
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenly-source-index' }, "Manage source addresses"))))),
             React.createElement(components_1.Panel, { header: "Current promises" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null, ((_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.promises) === null || _b === void 0 ? void 0 : _b.length) > 0
@@ -9197,7 +9198,10 @@ class AdminApp extends App_1.default {
         });
     }
     highlightMenu() {
-        const adminMenu = document.querySelector('#adminmenu #toplevel_page_tokenpass');
+        const adminMenu = document.querySelector('#adminmenu #toplevel_page_tokenly');
+        if (!adminMenu) {
+            return;
+        }
         adminMenu.classList.remove('wp-not-current-submenu');
         adminMenu.classList.add('wp-has-current-submenu', 'wp-menu-open');
     }

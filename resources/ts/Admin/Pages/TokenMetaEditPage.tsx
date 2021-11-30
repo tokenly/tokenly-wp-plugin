@@ -87,6 +87,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 								const state = Object.assign( {}, this.state.meta );
 								state.asset = value;
 								this.setState( { meta: state } );
+								this.onPostUpdate( state );
 							}}
 							style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
 						/>

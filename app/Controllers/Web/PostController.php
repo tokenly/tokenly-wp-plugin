@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Views\PostEditView;
+use Tokenly\Wp\Views\PostAccessDeniedView;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
@@ -12,15 +13,18 @@ use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
  */
 class PostController implements PostControllerInterface {
 	protected $post_edit_view;
+	protected $post_access_denied_view;
 	protected $post_service;
 	protected $tca_settings;
 
 	public function __construct(
 		PostEditView $post_edit_view,
+		PostAccessDeniedView $post_access_denied_view,
 		PostServiceInterface $post_service,
 		TcaSettingsInterface $tca_settings
 	) {
 		$this->post_edit_view = $post_edit_view;
+		$this->post_access_denied_view = $post_access_denied_view;
 		$this->post_service = $post_service;
 		$this->tca_settings = $tca_settings;
 	}
@@ -47,6 +51,13 @@ class PostController implements PostControllerInterface {
 		$render = $this->post_edit_view->render( array(
 			'tca_enabled' => $tca_enabled,
 			'tca_rules'   => $tca_rules,
+		) );
+		return $render;
+	}
+
+	public function denied() {
+		$render = $this->post_access_denied_view->render( array(
+			//
 		) );
 		return $render;
 	}

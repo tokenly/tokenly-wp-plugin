@@ -59,11 +59,10 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 */
 	public function show( $params = array() ) {
 		$posts = $this->index( $params );
-		$post;
 		if ( isset( $posts[0] ) ) {
-			$post = $posts[0];
+			return $posts[0];
 		}
-		return $post;
+		
 	}
 	
 	/**

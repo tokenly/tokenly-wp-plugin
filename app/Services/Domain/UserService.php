@@ -21,19 +21,22 @@ class UserService extends DomainService implements UserServiceInterface {
 	protected $oauth_user_service;
 	protected $user_repository;
 	protected $user_meta_repository;
+	protected $namespace;
 
 	public function __construct(
 		AddressServiceInterface $address_service,
 		BalanceServiceInterface $balance_service,
 		OauthUserServiceInterface $oauth_user_service,
 		UserRepositoryInterface $user_repository,
-		UserMetaRepositoryInterface $user_meta_repository
+		UserMetaRepositoryInterface $user_meta_repository,
+		string $namespace
 	) {
 		$this->address_service = $address_service;
 		$this->balance_service = $balance_service;
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_repository = $user_repository;
 		$this->user_meta_repository = $user_meta_repository;
+		$this->namespace = $namespace;
 	}
 	
 	/**
@@ -56,7 +59,7 @@ class UserService extends DomainService implements UserServiceInterface {
 			'id' => $user_id,
 		) );
 		if ( $user && $user->can_connect() ) {
-			$actions['token_inventory'] = "<a href='/tokenpass-user/{$user_id}' >Token inventory</a>";
+			$actions['token_inventory'] = "<a href='/{$this->namespace}/user/{$user_id}'>Token inventory</a>";
 		}
 		return $actions;
 	}

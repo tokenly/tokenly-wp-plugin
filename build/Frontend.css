@@ -14,7 +14,7 @@
 .tokenly-component-button {
   display: inline;
   background-color: #635BFF;
-  color: white;
+  color: white !important;
   cursor: pointer;
   border: none;
   font-size: 14px;
@@ -283,6 +283,17 @@
     -ms-grid-columns: (minmax(0, 1fr))[4];
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+.tokenly-page-denied .tokenly-access-denied {
+  min-height: 550px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.tokenly-page-denied .tokenly-access-denied .back-button {
+  margin-top: 24px;
 }
 
 .tokenly-block * {

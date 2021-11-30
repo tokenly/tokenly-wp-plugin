@@ -29,7 +29,7 @@ class TcaSettingsService extends DomainService implements TcaSettingsServiceInte
 			'tca_filter_post_results',
 		) );
 		return array(
-			'post_types'              => $settings['tca_post_types'] ?? null,
+			'post_types'          => $settings['tca_post_types'] ?? null,
 			'filter_menu_items'   => $settings['tca_filter_menu_items'] ?? null,
 			'filter_post_results' => $settings['tca_filter_post_results'] ?? null,
 		);

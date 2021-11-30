@@ -113,7 +113,10 @@ class AdminApp extends App {
 	}
 	
 	highlightMenu() {
-		const adminMenu = document.querySelector( '#adminmenu #toplevel_page_tokenpass' );
+		const adminMenu = document.querySelector( '#adminmenu #toplevel_page_tokenly' );
+		if ( !adminMenu ) {
+			return;
+		}
 		adminMenu.classList.remove( 'wp-not-current-submenu' );
 		adminMenu.classList.add( 'wp-has-current-submenu', 'wp-menu-open' );
 	}

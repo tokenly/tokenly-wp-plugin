@@ -50,25 +50,25 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 				title: 'Inventory',
 				description: 'View the list of currently owned token assets.',
 				icon: 'money',
-				url: '/tokenpass-user/me',
+				url: '/tokenly/user/me',
 			},
 			connection: {
 				title: 'Connection',
 				description: 'Connect or disconnect to Tokenpass network.',
 				icon: 'admin-plugins',
-				url: '/wp-admin/admin.php?page=tokenpass-connection',
+				url: '/wp-admin/admin.php?page=tokenly-connection',
 			},
 			vendor: {
 				title: 'Vendor',
 				description: 'Manage token promises.',
 				icon: 'share',
-				url: '/wp-admin/admin.php?page=tokenpass-vendor',
+				url: '/wp-admin/admin.php?page=tokenly-vendor',
 			},
 			whitelist: {
 				title: 'Whitelist',
 				description: 'Configure a filter for tokens displayed on the inventory pages.',
 				icon: 'forms',
-				url: '/wp-admin/admin.php?page=tokenpass-whitelist',
+				url: '/wp-admin/admin.php?page=tokenly-whitelist',
 			},
 			meta: {
 				title: 'Token Meta',
@@ -80,7 +80,7 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 				title: 'Settings',
 				description: 'Manage plugin settings.',
 				icon: 'admin-settings',
-				url: '/wp-admin/admin.php?page=tokenpass-settings',
+				url: '/wp-admin/admin.php?page=tokenly-settings',
 			},
 		},
 		offlineRoutesUser: [

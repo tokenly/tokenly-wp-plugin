@@ -41,7 +41,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		return (
 			<Page title={'Sources'}>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-vendor'>Back to vendor</a>
 				</div>
 				<Panel>
 					<PanelBody>
@@ -49,7 +49,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 							<Flex style={{width: '100%'}}>
 								<Button
 									isPrimary
-									href='/wp-admin/admin.php?page=tokenpass-source-store'
+									href='/wp-admin/admin.php?page=tokenly-source-store'
 								>
 									Register source
 								</Button>

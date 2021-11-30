@@ -76,7 +76,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( !$user ) {
 			return;
 		}
-		$user->connect( $oauth_user, $oauth_token );
+		$user->connect( $oauth_user, $oauth_user->oauth_token );
 		wp_set_auth_cookie( $user->ID );
 	}
 

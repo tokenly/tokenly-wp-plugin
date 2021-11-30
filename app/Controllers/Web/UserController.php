@@ -14,15 +14,18 @@ class UserController implements UserControllerInterface {
 	protected $user_service;
 	protected $user_view;
 	protected $current_user;
+	protected $namespace;
 
 	public function __construct(
 		UserServiceInterface $user_service,
 		CurrentUserInterface $current_user,
-		UserView $user_view
+		UserView $user_view,
+		string $namespace
 	) {
 		$this->user_service = $user_service;
 		$this->current_user = $current_user;
 		$this->user_view = $user_view;
+		$this->namespace = $namespace;
 	}
 	
 	/**
@@ -31,7 +34,7 @@ class UserController implements UserControllerInterface {
 	 * @return void
 	 */
 	public function show() {
-		$user_id = get_query_var( 'tokenpass_user_id' );
+		$user_id = get_query_var( "{$this->namespace}_user_id" );
 		if ( !$user_id ) {
 			return;
 		}
@@ -50,6 +53,7 @@ class UserController implements UserControllerInterface {
 		) );
 		$render = $this->user_view->render( array(
 			'balances' => $balances,
+			'user'     => $user,
 		) );
 		return $render;
 	}

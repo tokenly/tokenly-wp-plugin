@@ -5,6 +5,7 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
@@ -26,6 +27,7 @@ class WebRouter extends Router implements WebRouterInterface {
 	public function __construct(
 		UserControllerInterface $user_controller,
 		AuthControllerInterface $auth_controller,
+		PostControllerInterface $post_controller,
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
 		string $namespace
@@ -35,6 +37,7 @@ class WebRouter extends Router implements WebRouterInterface {
 		$this->controllers = array(
 			'auth' => $auth_controller,
 			'user' => $user_controller,
+			'post' => $post_controller,
 		);
 		$this->integration = $integration;
 		$this->current_user = $current_user;
@@ -88,6 +91,15 @@ class WebRouter extends Router implements WebRouterInterface {
 					'oauth_callback' => '1',
 				),
 				'callable'	=> array( $this->controllers['auth'], 'authorize_callback' ),
+			),
+			'access-denied' => array(
+				'rules'		=> array(
+					'access-denied/?$',
+				),
+				'vars'		=> array(
+					'access-denied' => '1',
+				),
+				'callable'	=> array( $this->controllers['post'], 'denied' ),
 			)
 		);
 		$routes = $this->prepare_routes( $routes );
@@ -96,10 +108,13 @@ class WebRouter extends Router implements WebRouterInterface {
 
 	protected function prepare_routes( array $routes ) {
 		foreach ( $routes as $key => &$route ) {
-			$vars = $this->process_vars( $route['vars'] );
+			$vars = $this->prefix_vars( $route['vars'] );
 			$rules = $this->process_rules( $route['rules'], $vars );
+			$vars = $this->process_vars( $vars );
 			$this->rules = array_merge( $this->rules, $rules ?? null );
 			$this->vars = array_merge( $this->vars, $vars ?? null );
+			$route['rules'] = $rules;
+			$route['vars'] = $vars;
 			if ( isset( $route['callable'] ) ) {
 				$callable = $route['callable'];
 				$route['callable'] = function() use ( $callable ) {
@@ -127,13 +142,22 @@ class WebRouter extends Router implements WebRouterInterface {
 		}
 		return $rules_processed;
 	}
+	
 	protected function process_vars( array $vars ) {
 		$vars_processed = array();
 		foreach ( $vars as $key => $var ) {
-			$new_key = "{$this->namespace}_{$key}";
-			$vars_processed[ $new_key ] = $var;
+			$vars_processed[] = $key;
 		}
 		return $vars_processed;
+	}
+
+	protected function prefix_vars( array $vars ) {
+		$vars_prefixed = array();
+		foreach ( $vars as $key => $var ) {
+			$new_key = "{$this->namespace}_{$key}";
+			$vars_prefixed[ $new_key ] = $var;
+		}
+		return $vars_prefixed;
 	}
 	/**
 	 * Merges the web route rewrite rules with the rest
@@ -144,7 +168,7 @@ class WebRouter extends Router implements WebRouterInterface {
 	public function merge_rewrite_rules( $wp_rewrite ) {
 		$rules_formatted = array();
 		foreach ( $this->rules as $key => $rule ) {
-			$rule = "{$rule}&virtual=1";
+			$rule = "{$rule}&{$this->namespace}_virtual=1";
 			$rules_formatted[ $key ] = $rule;
 		}
 		$wp_rewrite->rules = array_merge(
@@ -161,7 +185,7 @@ class WebRouter extends Router implements WebRouterInterface {
 	 */
 	public function merge_query_vars( $query_vars ) {
 		$query_vars = array_merge( $query_vars, $this->vars );
-		$query_vars[] = 'virtual';
+		$query_vars[] = "{$this->namespace}_virtual";
 		return $query_vars;
 	}
 

@@ -34,10 +34,10 @@ class TcaSettings implements TcaSettingsInterface {
 			$this->post_types = $settings_data['post_types'];
 		}
 		if ( isset( $settings_data['filter_menu_items'] ) ) {
-			$this->filter_menu_items = $settings_data['filter_menu_items'];
+			$this->filter_menu_items = boolval( $settings_data['filter_menu_items'] );
 		}
 		if ( isset( $settings_data['filter_post_results'] ) ) {
-			$this->filter_post_results = $settings_data['filter_post_results'];
+			$this->filter_post_results = boolval( $settings_data['filter_post_results'] );
 		}
 		return $this;
 	}

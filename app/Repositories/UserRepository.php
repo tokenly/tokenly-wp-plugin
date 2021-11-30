@@ -15,13 +15,16 @@ class UserRepository implements UserRepositoryInterface {
 	protected $user_meta_repository;
 	protected $user_factory;
 	protected $user_collection_factory;
+	protected $namespace;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		UserMetaRepositoryInterface $user_meta_repository,
 		UserFactoryInterface $user_factory,
-		UserCollectionFactoryInterface $user_collection_factory
+		UserCollectionFactoryInterface $user_collection_factory,
+		string $namespace
 	) {
+		$this->namespace = $namespace;
 		$this->client = $client;
 		$this->user_meta_repository = $user_meta_repository;
 		$this->user_factory = $user_factory;
@@ -36,14 +39,14 @@ class UserRepository implements UserRepositoryInterface {
 		);
 		if ( isset( $params['uuid'] ) ) {
 			$args['meta_query'][] = array(
-				'key'     => $this->user_meta_repository->namespace_key( 'uuid' ),
+				'key'     => "{$this->namespace}_uuid",
 				'value'   => $params['uuid'],
 				'compare' => '=',
 			);
 		}
 		elseif ( isset( $params['uuids'] ) ) {
 			$query_args['meta_query'][] = array(
-				'key'     => $this->user_meta_repository->namespace_key( 'uuid' ),
+				'key'     => "{$this->namespace}_uuid",
 				'value'   => $params['uuids'] ?? null,
 				'compare' => 'IN',
 			);

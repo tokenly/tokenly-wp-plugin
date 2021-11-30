@@ -49,7 +49,7 @@ class AuthController implements AuthControllerInterface {
 			return;
 		}
 		$result = $this->auth_service->authorize_callback( $state, $code );
-		wp_redirect( '/wp-admin/admin.php?page=tokenpass-connection' );
+		wp_redirect( '/wp-admin/admin.php?page=tokenly-connection' );
 		exit();
 	}
 	

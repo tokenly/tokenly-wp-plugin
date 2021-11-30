@@ -229,7 +229,10 @@ return array(
 	'twig.template_cache_dir'  => \DI\factory( function( string $root_dir ) {
 		return $root_dir . '/build/template-cache/';
 	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	'oauth.callback_route'     => get_site_url() . '/tokenpass-oauth-callback',
+	'oauth.callback_route'     => \DI\factory( function( string $namespace ) {
+		$site_url = get_site_url();
+		return "{$site_url}/{$namespace}/oauth-callback";
+	} )->parameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	'oauth.host'               => \DI\factory( function( string $api_host ) {
 		return $api_host . '/oauth/authorize';
 	} )->parameter( 'api_host', \DI\get( 'api.host' ) ),
@@ -241,7 +244,8 @@ return array(
 	//Controllers
 	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
 	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
-	UserControllerInterface::class                 => \DI\autowire( UserController::class ),
+	UserControllerInterface::class                 => \DI\autowire( UserController::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
@@ -288,12 +292,16 @@ return array(
 	PromiseServiceInterface::class                 => \DI\autowire( PromiseService::class ),
 	SourceServiceInterface::class                  => \DI\autowire( SourceService::class ),
 	TokenMetaServiceInterface::class               => \DI\autowire( TokenMetaService::class ),
-	UserServiceInterface::class                    => \DI\autowire( UserService::class ),
+	UserServiceInterface::class                    => \DI\autowire( UserService::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	WhitelistServiceInterface::class               => \DI\autowire( WhitelistService::class ),
 	//Repositories - General
-	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class ),
-	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class ),
-	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class ),
+	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Repositories - Domain
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
@@ -305,11 +313,15 @@ return array(
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
 	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class ),
+	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Routes
 	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
-		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
-	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class ),
+		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
+		->constructorParameter( 'api_host', DI\get( 'api.host' ) ),
+	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )

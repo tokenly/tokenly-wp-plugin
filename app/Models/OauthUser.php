@@ -18,11 +18,11 @@ class OauthUser implements OauthUserInterface {
 	protected $oauth_user_service;
 
 	public function __construct(
-		$oauth_user_data = array(),
 		TcaServiceInterface $tca_service,
-		OauthUserServiceInterface $oauth_user_service
+		OauthUserServiceInterface $oauth_user_service,
+		$oauth_user_data = array()
 	) {
-		$this->tca_serivce = $tca_service;
+		$this->tca_service = $tca_service;
 		$this->oauth_user_service = $oauth_user_service;
 		$this->from_array( $oauth_user_data );
 	}

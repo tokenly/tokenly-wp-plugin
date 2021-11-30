@@ -47,7 +47,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+		window.location = '/wp-admin/admin.php?page=tokenly-source-index';
 	}
 	
 	onSubmit( promise: SourceData ) {
@@ -65,7 +65,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		return (
 			<Page title={'Register source address'}>
 				<div style={ { marginBottom: '8px' } }>
-					<a href='/wp-admin/admin.php?page=tokenpass-source-index'>Back to source address list</a>
+					<a href='/wp-admin/admin.php?page=tokenly-source-index'>Back to source address list</a>
 				</div>
 				<Panel>
 					<PanelBody>

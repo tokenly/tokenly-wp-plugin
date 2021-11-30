@@ -1,0 +1,13 @@
+.tokenly-page-denied {
+	.tokenly-access-denied {
+		min-height: 550px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		.back-button {
+			margin-top: 24px;
+		}
+	}
+}
+

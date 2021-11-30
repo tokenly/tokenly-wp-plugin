@@ -16,7 +16,8 @@ use Tokenly\Wp\Routes\Router;
  * Manages routing for the REST API endpoints
  */
 class ApiRouter extends Router implements ApiRouterInterface {
-	protected $namespace = 'tokenly/v1';
+	protected $namespace;
+	protected $api_namespace;
 	protected $controllers = array();
 
 	public function __construct(
@@ -26,8 +27,11 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		WhitelistControllerInterface $whitelist_controller,
 		PromiseControllerInterface $promise_controller,
 		SourceControllerInterface $source_controller,
-		UserControllerInterface $user_controller
+		UserControllerInterface $user_controller,
+		string $namespace
 	) {
+		$this->namespace = $namespace;
+		$this->api_namespace = "{$this->namespace}/v1";
 		$this->controllers = array(
 			'auth'                   => $auth_controller,
 			'settings-integration'   => $settings_integration_controller,
@@ -37,8 +41,6 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'source'                 => $source_controller,
 			'user'                   => $user_controller,
 		);
-		global $tokenly_routes;
-		$tokenly_routes['api'] = $this->get_route_urls();
 	}
 
 	/**
@@ -60,7 +62,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			$args = $route['args'] ?? null;
 			$schema = $route['schema'] ?? null;
 			register_rest_route(
-				$this->namespace,
+				$this->api_namespace,
 				$path,
 				array(
 					$args,
@@ -265,19 +267,5 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 		);
-	}
-	
-	/**
-	 * Get all route urls
-	 * @return array
-	 */
-	protected function get_route_urls() {
-		$routes = $this->get_routes();
-		$urls = array();
-		$base = get_site_url() . '/wp-json/' . $this->namespace;
-		foreach ( $routes as $key => $route ) {
-			$urls[ $key ] = $base . $route['path'];
-		}
-		return $urls;
 	}
 }

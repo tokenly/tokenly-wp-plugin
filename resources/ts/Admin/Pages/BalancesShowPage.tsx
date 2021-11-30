@@ -37,7 +37,7 @@ export default class BalancesShowPage extends Component<BalancesShowPageProps, B
 		return (
 			<Page title={'Address balances'}>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-source-index'>To source list</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-source-index'>To source list</a>
 				</div>
 				<Panel>
 					<PanelBody>

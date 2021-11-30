@@ -26,6 +26,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected $auth_service;
 	protected $integration;
 	protected $root_dir;
+	protected $api_host;
 
 	public function __construct(
 		string $root_dir,
@@ -39,8 +40,12 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		PromiseControllerInterface $promise_controller,
 		SourceControllerInterface $source_controller,
 		IntegrationInterface $integration,
-		CurrentUserInterface $current_user
+		CurrentUserInterface $current_user,
+		string $namespace,
+		string $api_host
 	) {
+		$this->namespace = $namespace;
+		$this->api_host = $api_host;
 		$this->root_dir = $root_dir;
 		$this->integration = $integration;
 		$this->current_user = $current_user;
@@ -77,12 +82,12 @@ class AdminRouter extends Router implements AdminRouterInterface {
 			<script type='text/javascript'>
 				window.tokenpassRedirects = [
 					{
-						from: 'tokenpass-inventory',
-						to: '/tokenpass-user/me',
+						from: '{$this->namespace}-inventory',
+						to: '/{$this->namespace}/user/me',
 					},
 					{
-						from: 'tokenpass-dashboard',
-						to: 'https://tokenpass.tokenly.com/dashboard',
+						from: '{$this->namespace}-dashboard',
+						to: '{$this->api_host}/dashboard',
 					},
 				];
 			</script>
@@ -96,7 +101,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	 */
 	protected function get_offline_routes_integration() {
 		return array(
-			'tokenpass',
+			$this->namespace,
 			'settings',
 		);
 	}
@@ -134,11 +139,12 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	 * @return array
 	 */
 	protected function get_routes() {
+		$namespace_title = ucfirst( $this->namespace );
 		$routes = array(
-			'tokenpass' => array(
-				'page_title' => 'Tokenpass',
-				'menu_title' => 'Tokenpass',
-				'menu_slug'  => 'tokenpass',
+			$this->namespace => array(
+				'page_title' => $namespace_title,
+				'menu_title' => $namespace_title,
+				'menu_slug'  => $this->namespace,
 				'callable'   => array( $this->controllers['dashboard'], 'show' ),
 				'capability' => 'read',
 				'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' ) ),
