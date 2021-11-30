@@ -121,7 +121,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		}
 		$source_address = $source->address;
 		$destination = $params['destination'];
-		$destination_oauth_user = $this->oauth_user_service->show( $destination );
+		$destination_oauth_user = $this->oauth_user_service->show( array( 'id' => $destination ) );
 		if ( !$destination_oauth_user ) {
 			throw new \Exception( 'Destination oauth user not found.' );
 		}

@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
@@ -9,7 +10,7 @@ use Tokenly\Wp\Interfaces\Repositories\WhitelistRepositoryInterface;
 /**
  * Manages the token whitelist
  */
-class WhitelistService implements WhitelistServiceInterface {
+class WhitelistService extends DomainService implements WhitelistServiceInterface {
 	protected $option_repository;
 
 	public function __construct(
@@ -38,7 +39,7 @@ class WhitelistService implements WhitelistServiceInterface {
 	 * @param array $options New whitelist data
 	 * @return void
 	 */
-	public function update( $options ) {
+	public function update( array $options ) {
 		$this->option_repository->update( array(
 			'whitelist_enabled' => $options['enabled'] ?? false,
 			'whitelist_items'   => $options['items'] ?? array(),

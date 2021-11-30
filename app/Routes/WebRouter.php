@@ -21,13 +21,16 @@ class WebRouter extends Router implements WebRouterInterface {
 	protected $auth_controller;
 	protected $integration;
 	protected $current_user;
+	protected $namespace;
 
 	public function __construct(
 		UserControllerInterface $user_controller,
 		AuthControllerInterface $auth_controller,
 		IntegrationInterface $integration,
-		CurrentUserInterface $current_user
+		CurrentUserInterface $current_user,
+		string $namespace
 	) {
+		$this->namespace = $namespace;
 		$this->auth_controller = $auth_controller;
 		$this->controllers = array(
 			'auth' => $auth_controller,
@@ -59,30 +62,30 @@ class WebRouter extends Router implements WebRouterInterface {
 	 */
 	protected function get_routes() {
 		$routes = array(
-			'tokenly-user' => array(
+			'user' => array(
 				'rules'     => array(
-					'tokenpass-user/(\d+)\/?$' => 'index.php?tokenpass_user_id=$matches[1]',
+					'user/(\d+)\/?$',
 				),
 				'vars'		=> array(
-					'tokenpass_user_id',
+					'user_id' => '$matches[1]',
 				),
 				'callable'	=> array( $this->controllers['user'], 'show' ),
 			),
-			'tokenly-user-me' => array(
+			'user-me' => array(
 				'rules'     => array(
-					'tokenpass-user/me' => 'index.php?tokenpass_user_id=me',
+					'user/me',
 				),
 				'vars'		=> array(
-					'tokenpass_user_id',
+					'user_id' => 'me',
 				),
 				'callable'	=> array( $this->controllers['user'], 'show' ),
 			),
-			'tokenpass-oauth-callback' => array(
+			'oauth-callback' => array(
 				'rules'		=> array(
-					'tokenpass-oauth-callback/?$' => 'index.php?tokenpass-oauth-callback=1',
+					'oauth-callback/?$',
 				),
 				'vars'		=> array(
-					'tokenpass-oauth-callback',
+					'oauth_callback' => '1',
 				),
 				'callable'	=> array( $this->controllers['auth'], 'authorize_callback' ),
 			)
@@ -93,8 +96,10 @@ class WebRouter extends Router implements WebRouterInterface {
 
 	protected function prepare_routes( array $routes ) {
 		foreach ( $routes as $key => &$route ) {
-			$this->rules = array_merge( $this->rules, $route['rules'] ?? null );
-			$this->vars = array_merge( $this->vars, $route['vars'] ?? null );
+			$vars = $this->process_vars( $route['vars'] );
+			$rules = $this->process_rules( $route['rules'], $vars );
+			$this->rules = array_merge( $this->rules, $rules ?? null );
+			$this->vars = array_merge( $this->vars, $vars ?? null );
 			if ( isset( $route['callable'] ) ) {
 				$callable = $route['callable'];
 				$route['callable'] = function() use ( $callable ) {
@@ -105,6 +110,31 @@ class WebRouter extends Router implements WebRouterInterface {
 		return $routes;
 	}
 
+	protected function process_rules( array $rules, array $vars ) {
+		$rules_processed = array();
+		foreach ( $rules as $rule ) {
+			$new_key = "{$this->namespace}/{$rule}";
+			$new_rule = 'index.php';
+			if ( count( $vars ) > 0 ) {
+				$first = true;
+				foreach ( $vars as $key => $var ) {
+					$new_rule .= $first ? '?' : '&';
+					$new_rule = "{$new_rule}{$key}={$var}";
+					$first = false;
+				}
+			}
+			$rules_processed[ $new_key ] = $new_rule;
+		}
+		return $rules_processed;
+	}
+	protected function process_vars( array $vars ) {
+		$vars_processed = array();
+		foreach ( $vars as $key => $var ) {
+			$new_key = "{$this->namespace}_{$key}";
+			$vars_processed[ $new_key ] = $var;
+		}
+		return $vars_processed;
+	}
 	/**
 	 * Merges the web route rewrite rules with the rest
 	 * of WordPress rewrite rules

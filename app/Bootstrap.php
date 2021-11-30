@@ -12,22 +12,32 @@ final class Bootstrap {
 
 	public function __construct() {
 		$this->container = $this->build_container();
+		$this->providers = $this->get_providers();
 		$this->register_providers();
+		$this->boot_providers();
 	}
 
 	protected function get_providers() {
-		return array(
+		$providers = array(
 			AppServiceProviderInterface::class,
 			RouteServiceProviderInterface::class,
 			ShortcodeServiceProviderInterface::class
 		);
+		foreach ( $providers as &$provider ) {
+			$provider = $this->container->get( $provider );
+		}
+		return $providers;
 	}
 
 	protected function register_providers() {
-		$this->providers = $this->get_providers();
 		foreach ( $this->providers as $provider ) {
-			$provider = $this->container->get( $provider );
 			$provider->register();
+		}
+	}
+
+	protected function boot_providers() {
+		foreach ( $this->providers as $provider ) {
+			$provider->boot();
 		}
 	}
 

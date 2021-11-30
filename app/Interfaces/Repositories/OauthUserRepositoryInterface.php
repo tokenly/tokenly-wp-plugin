@@ -3,5 +3,5 @@
 namespace Tokenly\Wp\Interfaces\Repositories;
 
 interface OauthUserRepositoryInterface {
-	public function show( int $user_id );
+	public function show( string $oauth_token );
 }

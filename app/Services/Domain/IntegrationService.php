@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
@@ -10,7 +11,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 /**
  * Manages the integration
  */
-class IntegrationService implements IntegrationServiceInterface {
+class IntegrationService extends DomainService implements IntegrationServiceInterface {
 	protected $option_repository;
 	protected $source_service;
 

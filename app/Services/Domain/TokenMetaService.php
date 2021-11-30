@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
@@ -9,7 +10,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 /**
  * Manages the token meta
  */
-class TokenMetaService implements TokenMetaServiceInterface {
+class TokenMetaService extends DomainService implements TokenMetaServiceInterface {
 	protected $token_meta_repository;
 	protected $meta_repository;
 
@@ -36,7 +37,7 @@ class TokenMetaService implements TokenMetaServiceInterface {
 	 * @param array $params Post search params
 	 * @return TokenMetaInterface
 	 */
-	public function show( $params = array() ) {
+	public function show( array $params = array() ) {
 		$meta = $this->index( $params );
 		return $meta[0] ?? null;
 	}

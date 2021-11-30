@@ -4,11 +4,12 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
+use Tokenly\Wp\Services\Service;
 
 /**
  * Provides the base functions for the other domain services
  */
-class DomainService implements DomainServiceInterface {
+class DomainService extends Service implements DomainServiceInterface {
 	/**
 	 * Formats the relation names by decoupling the root and its relations
 	 * which allows to pass them further and load any other nested relations

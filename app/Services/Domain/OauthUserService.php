@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
@@ -9,7 +10,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 /**
  * Manages the OAuth users
  */
-class OauthUserService implements OauthUserServiceInterface {
+class OauthUserService extends DomainService implements OauthUserServiceInterface {
 	protected $oauth_user_cache = array();
 	protected $oauth_user_repository;
 	protected $user_meta_repository;
@@ -22,10 +23,17 @@ class OauthUserService implements OauthUserServiceInterface {
 		$this->user_meta_repository = $user_meta_repository;
 	}
 	
-	public function show( int $user_id ) {
-		$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
-		if ( !$oauth_token ) {
-			return;
+	public function show( array $params = array() ) {
+		$oauth_token;
+		if ( isset( $params['id'] ) ) {
+			$user_id = $params['id'];
+			$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
+			if ( !$oauth_token ) {
+				return;
+			}
+		}
+		if ( isset( $params['oauth_token'] ) ) {
+			$oauth_token = $params['oauth_token'];
 		}
 		$oauth_user;
 		if ( isset( $this->user_cache[ $oauth_token ] ) ) {

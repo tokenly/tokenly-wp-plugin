@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
@@ -9,7 +10,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 /**
  * Manages the promise meta
  */
-class PromiseMetaService implements PromiseMetaServiceInterface {
+class PromiseMetaService extends DomainService implements PromiseMetaServiceInterface {
 	protected $promise_meta_cache = array();
 	protected $promise_meta_repository;
 	protected $meta_repository;

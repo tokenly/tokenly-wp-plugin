@@ -2,15 +2,17 @@
 
 namespace Tokenly\Wp\Services;
 
+use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 /**
  * Handles version changes
  */
-class TcaService implements TcaServiceInterface {
+class TcaService extends Service implements TcaServiceInterface {
 	protected $client;
 	protected $user_service;
 
@@ -22,20 +24,12 @@ class TcaService implements TcaServiceInterface {
 		$this->user_service = $user_service;
 	}
 
-	public function check_token_access_user( int $user_id, TcaRuleCollectionInterface $rules ) {
-		$user = $this->user_service->show( array( 'id' => $user_id ) );
-		if ( !$user ) {
-			return false;
-		}
-		$oauth_user = $user->get_oauth_user();
-		if ( !$oauth_user ) {
-			return false;
-		}
-		$oauth_token = $user->get_oauth_token();
-		if ( !$oauth_token ) {
-			return false;
-		}
+	public function check_token_access_user( OauthUserInterface $oauth_user, TcaRuleCollectionInterface $rules ) {
 		$username = $oauth_user->username;
+		$oauth_token = $oauth_user->oauth_token;
+		if ( !$username || !$oauth_token ) {
+			return;
+		}
 		$rules = $this->format_rules( $rules );
 		$can_access = boolval( $this->client->checkTokenAccess( $username, $rules, $oauth_token ) ) ?? false;
 		return $can_access;

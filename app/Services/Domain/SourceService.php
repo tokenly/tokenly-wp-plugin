@@ -67,13 +67,17 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	 * @param array $source New source address data
 	 * @return boolean
 	 */
-	public function store( $source ) {
-		$client_id = $this->settings->client_id ?? null;
-		$hash = hash( 'sha256', $client_id );
-		$address = $source['address'] ?? null;
-		$type = $source['type'] ?? null;
-		$proof =  $address . '_' . $hash;
-		$assets = $source['assets'] ?? null;
+	public function store( array $params ) {
+		if (
+			!isset( $params['address'] ) ||
+			!isset( $params['type'] )
+		) {
+			return;
+		}
+		$address = $params['address'] ?? null;
+		$proof = $this->make_proof( $address );
+		$type = $params['type'];
+		$assets = $params['assets'] ?? null;
 		if ( empty( $assets ) ) {
 			$assets = null;
 		}
@@ -82,11 +86,10 @@ class SourceService extends DomainService implements SourceServiceInterface {
 
 	/**
 	 * Updates the exisiting source by address
-	 * @param string $address Address of source
 	 * @param array $params New source data
 	 * @return boolean
 	 */
-	public function update( $address, $params ) {
+	public function update( array $params ) {
 		return $this->store( $params );
 	}
 
@@ -95,8 +98,22 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	 * @param string $address
 	 * @return void
 	 */
-	public function destroy( $address ) {
+	public function destroy( string $address ) {
 		$this->source_repository->destroy( $address );
+	}
+
+	/**
+	 * Makes a proof for source storage
+	 * @param string $address Address to use for making a proof
+	 * @return string
+	 */
+	protected function make_proof( string $address ) {
+		if ( !isset( $this->settings->client_id ) ) {
+			return;
+		}
+		$hash = hash( 'sha256', $this->settings_client_id );
+		$proof =  "{$address}_{$hash}";
+		return $proof;
 	}
 
 	/**

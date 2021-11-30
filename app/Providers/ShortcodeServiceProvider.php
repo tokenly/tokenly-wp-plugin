@@ -11,15 +11,17 @@ use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
  * Registers shortcodes
  */
 class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServiceProviderInterface {
-	protected $shortcodes;
+	protected $namespace;
 
 	public function __construct(
 		LoginButtonShortcode $login_button_shortcode,
-		LogoutButtonShortcode $logout_button_shortcode
+		LogoutButtonShortcode $logout_button_shortcode,
+		string $namespace
 	) {
-		$this->shortcodes = array(
-			'tokenpass_login'  => $login_button_shortcode,
-			'tokenpass_logout' => $logout_button_shortcode,
+		$this->namespace = $namespace;
+		$this->services = array(
+			'login'  => $login_button_shortcode,
+			'logout' => $logout_button_shortcode,
 		);
 	}
 
@@ -28,8 +30,10 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	 * @return void
 	 */
 	public function register() {
-		foreach ( $this->shortcodes as $key => $shortcode ) {
-			add_shortcode( $key, array( $shortcode, 'shortcode_callback' ) );
+		foreach ( $this->services as $key => $service ) {
+			$name = "{$this->namespace}_{$key}";
+			add_shortcode( $name, array( $service, 'shortcode_callback' ) );
+			$service->register();
 		}
 	}
 }

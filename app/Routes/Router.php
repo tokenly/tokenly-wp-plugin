@@ -3,11 +3,12 @@
 namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Interfaces\Routes\RouterInterface;
+use Tokenly\Wp\Services\Service;
 
 /**
  * Base router
  */
-class Router implements RouterInterface {
+class Router extends Service implements RouterInterface {
 	protected $routes = array();
 
 	/**

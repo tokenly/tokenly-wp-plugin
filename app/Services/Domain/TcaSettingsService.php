@@ -2,13 +2,14 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\TcaSettingsServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 
 /**
  * Manages the TCA settings
  */
-class TcaSettingsService implements TcaSettingsServiceInterface {
+class TcaSettingsService extends DomainService implements TcaSettingsServiceInterface {
 	protected $option_repository;
 
 	public function __construct(

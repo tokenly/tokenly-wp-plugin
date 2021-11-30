@@ -236,7 +236,8 @@ return array(
 	//Providers
 	AppServiceProviderInterface::class             => \DI\autowire( AppServiceProvider::class ),
 	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class ),
-	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class ),
+	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Controllers
 	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
 	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
@@ -311,7 +312,8 @@ return array(
 	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class ),
 	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	WebRouterInterface::class                      => \DI\autowire( WebRouter::class ),
+	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Collections
 	CollectionInterface::class                     => \DI\autowire( Collection::class ),
 	AddressCollectionInterface::class              => \DI\autowire( AddressCollection::class ),

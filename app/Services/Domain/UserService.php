@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
@@ -14,7 +15,7 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 /**
  * Manages the users
  */
-class UserService implements UserServiceInterface {
+class UserService extends DomainService implements UserServiceInterface {
 	protected $address_service;
 	protected $balance_service;
 	protected $oauth_user_service;
@@ -49,7 +50,7 @@ class UserService implements UserServiceInterface {
 	 * @param \WP_user $user Current user
 	 * @return array $actions Modified actions
 	 */
-	public function add_view_inventory_user_action( $actions, $user ) {
+	public function add_view_inventory_user_action( array $actions, \WP_User $user ) {
 		$user_id = $user->ID;
 		$user = $this->user_repository->show( array(
 			'id' => $user_id,
@@ -133,8 +134,8 @@ class UserService implements UserServiceInterface {
 	 * Retrieves oauth user from the API
 	 * @return OauthUserInterface
 	 */
-	public function get_oauth_user( $id ) {
-		$oauth_user = $this->oauth_user_service->show( $id );
+	public function get_oauth_user( int $id ) {
+		$oauth_user = $this->oauth_user_service->show( array( 'id' => $id ) );
 		return $oauth_user;
 	}
 
@@ -147,7 +148,7 @@ class UserService implements UserServiceInterface {
 		return $oauth_token;
 	}
 
-	public function index( $params ) {
+	public function index( array $params ) {
 		$users = $this->user_repository->index( $params );
 		if ( isset( $params['suggestions'] ) ) {
 			$suggestions = $this->make_suggestions( $users );
@@ -156,7 +157,7 @@ class UserService implements UserServiceInterface {
 		return $users;
 	}
 
-	public function show( $params ) {
+	public function show( array $params ) {
 		$users = $this->index( $params );
 		return $users[0] ?? null;
 	}

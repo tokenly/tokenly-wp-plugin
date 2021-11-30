@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 
 class User implements UserInterface, CurrentUserInterface {
 	protected $_instance;
@@ -99,6 +100,15 @@ class User implements UserInterface, CurrentUserInterface {
 			$this->oauth_token = $this->user_service->get_oauth_token( $this->ID );
 		}
 		return $this->oauth_token;
+	}
+
+	public function check_token_access( TcaRuleCollectionInterface $rules ) {
+		$oauth_user = $this->get_oauth_user();
+		if ( !$oauth_user ) {
+			return false;
+		}
+		$can_access = $this->oauth_user->check_token_access( $rules );
+		return $can_access;
 	}
 	
 	public function is_guest() {

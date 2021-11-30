@@ -2,13 +2,14 @@
 
 namespace Tokenly\Wp\Services;
 
+use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 
 /**
  * Handles version changes
  */
-class LifecycleService implements LifecycleServiceInterface {
+class LifecycleService extends Service implements LifecycleServiceInterface {
 	public $version;
 	protected $option_repository;
 	protected $root_filepath;

@@ -2,43 +2,44 @@
 
 namespace Tokenly\Wp\Services;
 
-use Tokenly\TokenpassClient\TokenpassAPIInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 
 /**
  * Handles the Tokenpass authentication flow (OAuth)
  */
-class AuthService implements AuthServiceInterface {
-	protected $client;
-	protected $oauth_user_factory;
-	protected $user_service;
-	protected $settings;
-	protected $current_user;
+class AuthService extends Service implements AuthServiceInterface {
 	protected $button_login_component;
+	protected $client;
+	protected $current_user;
 	protected $oauth_callback_route;
-
+	protected $oauth_user_service;
+	protected $settings;
+	protected $user_service;
+	
 	public function __construct(
-		TokenpassAPIInterface $client,
-		OauthUserFactoryInterface $oauth_user_factory,
-		UserServiceInterface $user_service,
-		IntegrationSettingsInterface $settings,
-		CurrentUserInterface $current_user,
 		ButtonLoginComponentInterface $button_login_component,
+		CurrentUserInterface $current_user,
+		TokenpassAPIInterface $client,
+		OauthUserServiceInterface $oauth_user_service,
+		IntegrationSettingsInterface $settings,
+		UserServiceInterface $user_service,
 		string $oauth_callback_route
 	) {
-		$this->client = $client;
-		$this->oauth_user_factory = $oauth_user_factory;
-		$this->user_service = $user_service;
-		$this->settings = $settings;
-		$this->current_user = $current_user;
 		$this->button_login_component = $button_login_component;
+		$this->client = $client;
+		$this->current_user = $current_user;
 		$this->oauth_callback_route = $oauth_callback_route;
+		$this->oauth_user_service = $oauth_user_service;
+		$this->settings = $settings;
+		$this->user_service = $user_service;
 	}
 
 	public function register() {
@@ -56,15 +57,10 @@ class AuthService implements AuthServiceInterface {
 		if ( $is_valid === false ) {
 			return;
 		}
-		$access_token = $this->client->getOAuthAccessToken( $code );
-		if ( !$access_token ) {
+		$oauth_user = $this->get_oauth_user_from_code( $code );
+		if ( !$oauth_user ) {
 			return;
 		}
-		$oauth_user_data = $this->client->getUserByToken( $access_token );
-		if ( !$oauth_user_data ) {
-			return;
-		}
-		$oauth_user = $this->oauth_user_factory->create( $oauth_user_data );
 		if ( $this->current_user->is_guest() === false ) {
 			$user = $this->current_user;
 		} else {
@@ -80,7 +76,7 @@ class AuthService implements AuthServiceInterface {
 		if ( !$user ) {
 			return;
 		}
-		$user->connect( $oauth_user, $access_token );
+		$user->connect( $oauth_user, $oauth_token );
 		wp_set_auth_cookie( $user->ID );
 	}
 
@@ -118,6 +114,17 @@ class AuthService implements AuthServiceInterface {
 				'url' => $url,
 			);
 		}
+	}
+
+	protected function get_oauth_user_from_code( string $code ) {
+		$oauth_token = $this->client->getOAuthAccessToken( $code );
+		if ( !$oauth_token ) {
+			return;
+		}
+		$oauth_user = $this->oauth_user_service->show( array(
+			'oauth_token' => $oauth_token,
+		) );
+		return $oauth_user;
 	}
 
 	/**

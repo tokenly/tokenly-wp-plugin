@@ -11,6 +11,8 @@ use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterfac
 use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 
 /**
  * Manages the posts
@@ -87,20 +89,30 @@ class PostService extends DomainService implements PostServiceInterface {
 	}
 
 	/**
+	 * Main pipeline for post access check
+	 * @param int $post_id ID of the post to check
+	 * @param UserInterface $user User to check
+	 * @return bool
+	 */
+	public function can_access_post( int $post_id, UserInterface $user ) {
+		$cached_access = $this->get_cached_access( $post_id, $user->ID );
+		if ( $cached_access ) {
+			return $cached_access;
+		}
+		$can_access = $this->test_access( $post_id, $user );
+		$this->set_cached_access( $can_access, $post_id, $user->ID );
+		return $can_access;
+	}
+
+	/**
 	 * Check if the specified user is allowed to access
 	 * the specified post
 	 * @param int $post_id ID of the post to check
 	 * @param int $user_id ID of the user to check
 	 * @return bool
 	 */
-	public function can_access_post( int $post_id, int $user_id ) {
-		if ( current_user_can( 'administrator' ) ) {
-			return true;
-		}
-		$cached_access = $this->get_cached_access( $post_id, $user_id );
-		if ( $cached_access ) {
-			return $cached_access;
-		}
+	protected function test_access( int $post_id, UserInterface $user ) {
+		$can_access = false;
 		$post_type = get_post_type( $post_id );
 		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
 		if ( $tca_enabled === false ) {
@@ -110,8 +122,13 @@ class PostService extends DomainService implements PostServiceInterface {
 		if ( count( $tca_rules ) === 0 ) {
 			return true;
 		}
-		$tca_allowed = $this->tca_service->check_token_access_user( $user_id, $tca_rules ) ?? false;
-		$this->set_cached_access( $tca_allowed, $post_id, $user_id );
+		if ( $user instanceof GuestUserInterface === true ) {
+			return false;
+		}
+		if ( user_can( $user, 'administrator' ) ) {
+			return true;
+		}
+		$tca_allowed = $user->check_token_access( $tca_rules ) ?? false;
 		return $tca_allowed;
 	}
 

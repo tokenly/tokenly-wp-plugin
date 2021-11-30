@@ -69,7 +69,6 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
 		add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
 		add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
-		
 	}
 
 	/**
@@ -193,8 +192,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			return;
 		}
 		$post_id = get_the_ID();
-		$user_id = get_current_user_id();
-		$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+		$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
 		if ( $can_access === false ) {
 			wp_die( 'Access denied by TCA.' );
 		}
@@ -209,10 +207,9 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @return array
 	 */
 	public function tca_on_get_nav_menu_items( array $items, object $menu, array $args ) {
-		$user_id = get_current_user_id();
 		foreach ( $items as $key => $item ) {
 			$post_id = $item->object_id;
-			$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+			$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
 			if ( $can_access === false ) {
 				unset( $items[ $key ] );
 			}
@@ -227,10 +224,9 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @return array
 	 */
 	public function tca_on_posts_results( array $posts ) {
-		$user_id = get_current_user_id();
 		foreach ( $posts as $key => $post ) {
 			$post_id = $post->ID;
-			$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+			$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
 			if ( $can_access === false ) {
 				unset( $posts[ $key ] );
 			}
