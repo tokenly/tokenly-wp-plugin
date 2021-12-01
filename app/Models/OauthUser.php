@@ -2,12 +2,13 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 
-class OauthUser implements OauthUserInterface {
+class OauthUser extends Model implements OauthUserInterface {
 	public $id;
 	public $username;
 	public $email;
@@ -18,16 +19,16 @@ class OauthUser implements OauthUserInterface {
 	protected $oauth_user_service;
 
 	public function __construct(
+		array $data = array(),
 		TcaServiceInterface $tca_service,
-		OauthUserServiceInterface $oauth_user_service,
-		$oauth_user_data = array()
+		OauthUserServiceInterface $oauth_user_service
 	) {
 		$this->tca_service = $tca_service;
 		$this->oauth_user_service = $oauth_user_service;
-		$this->from_array( $oauth_user_data );
+		$this->fill( $data );
 	}
 
-	public function from_array( array $oauth_user_data ) {
+	public function fill( array $data ) {
 		if ( isset( $oauth_user_data['id'] ) ) {
 			$this->id = $oauth_user_data['id'];
 		}
@@ -46,6 +47,21 @@ class OauthUser implements OauthUserInterface {
 		if ( isset( $oauth_user_data['oauth_token'] ) ) {
 			$this->oauth_token = $oauth_user_data['oauth_token'];
 		}
+		return $this;
+	}
+
+	public function to_array() {
+		$array = array();
+		if ( isset( $this->id ) ) {
+			$array['id'] = $this->id;
+		}
+		if ( isset( $this->client_secret ) ) {
+			$array['client_secret'] = $this->client_secret;
+		}
+		if ( isset( $this->settings_updated ) ) {
+			$array['settings_updated'] = $this->settings_updated;
+		}
+		return $array;
 	}
 
 	/**
