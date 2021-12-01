@@ -69,18 +69,14 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 								<Button
 									isPrimary
 									disabled={ this.props.pageData.status }
-									onClick={ () => {
-										this.authService.connect();
-									}}
+									href="/tokenly/oauth/connect"
 								>
 									Connect to Tokenpass
 								</Button>
 								<Button
 									isPrimary
 									disabled={ !this.props.pageData.status }
-									onClick={ () => {
-										this.authService.disconnect();
-									}}
+									href="/tokenly/oauth/disconnect"
 								>
 									Disconnect from Tokenpass
 								</Button>

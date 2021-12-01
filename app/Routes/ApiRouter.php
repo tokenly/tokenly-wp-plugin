@@ -82,25 +82,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'path' => '/authorize',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['auth'], 'status' ),
-					'permission_callback' => function () {
-						return current_user_can( 'read' );
-					},
-				),
-			),
-			'authorize-connect' => array(
-				'path' => '/authorize',
-				'args' => array(
-					'methods'             => 'POST',
-					'callback'            => array( $this->controllers['auth'], 'authorize' ),
-					'permission_callback' => '__return_true',
-				),
-			),
-			'authorize-disconnect' => array(
-				'path' => '/authorize',
-				'args' => array(
-					'methods'             => 'DELETE',
-					'callback'            => array( $this->controllers['auth'], 'disconnect' ),
+					'callback'            => array( $this->controllers['auth'], 'show' ),
 					'permission_callback' => function () {
 						return current_user_can( 'read' );
 					},

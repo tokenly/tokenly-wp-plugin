@@ -6703,12 +6703,8 @@ class ConnectionPage extends react_1.Component {
                                         React.createElement("strong", null, `${(_c = (_b = this.props.pageData) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.name} (${(_e = (_d = this.props.pageData) === null || _d === void 0 ? void 0 : _d.user) === null || _e === void 0 ? void 0 : _e.username})`))))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: 'flex-start' },
-                            React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, onClick: () => {
-                                    this.authService.connect();
-                                } }, "Connect to Tokenpass"),
-                            React.createElement(components_1.Button, { isPrimary: true, disabled: !this.props.pageData.status, onClick: () => {
-                                    this.authService.disconnect();
-                                } }, "Disconnect from Tokenpass")))))));
+                            React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, href: "/tokenly/oauth/connect" }, "Connect to Tokenpass"),
+                            React.createElement(components_1.Button, { isPrimary: true, disabled: !this.props.pageData.status, href: "/tokenly/oauth/disconnect" }, "Disconnect from Tokenpass")))))));
     }
 }
 __decorate([

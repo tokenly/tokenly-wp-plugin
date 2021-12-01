@@ -3,8 +3,8 @@
 namespace Tokenly\Wp\Interfaces\Controllers\Api;
 
 interface AuthControllerInterface {
-	public function status();
-	public function authorize( $request );
-	public function authorize_callback();
-	public function disconnect();
+	public function show();
+	public function store();
+	public function destroy();
+	public function callback();
 }

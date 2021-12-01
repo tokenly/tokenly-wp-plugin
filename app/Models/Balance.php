@@ -2,9 +2,11 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
+use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 
-class Balance implements BalanceInterface {
+class Balance extends Model implements BalanceInterface {
 	public $asset;
 	public $name;
 	public $balance;
@@ -13,40 +15,26 @@ class Balance implements BalanceInterface {
 	public $meta;
 
 	public function __construct( 
-		$balance_data = array()
+		array $data = array()
 	) {
-		$this->from_array( $balance_data );
+		$this->fill( $data );
 	}
 
-	public function to_array() {
-		$array = array(
-			'asset'       => $this->asset,
-			'name'        => $this->name,
-			'balance'     => $this->balance,
-			'balance_sat' => $this->balance_sat,
-			'precision'   => $this->precision,
-		);
-		if ( isset( $this->meta ) ) {
-			$array['meta'] = $this->meta->to_array();
+	public function fill( array $data ) {
+		if ( isset( $data['asset'] ) ) {
+			$this->asset = $data['asset'] ?? null;
 		}
-		return $array;
-	}
-
-	protected function from_array( $balance_data ) {
-		if ( isset( $balance_data['asset'] ) ) {
-			$this->asset = $balance_data['asset'] ?? null;
+		if ( isset( $data['name'] ) ) {
+			$this->name = $data['name'] ?? null;
 		}
-		if ( isset( $balance_data['name'] ) ) {
-			$this->name = $balance_data['name'] ?? null;
+		if ( isset( $data['balance'] ) ) {
+			$this->balance = floatval( $data['balance'] ?? null );
 		}
-		if ( isset( $balance_data['balance'] ) ) {
-			$this->balance = floatval( $balance_data['balance'] ?? null );
+		if ( isset( $data['balance_sat'] ) ) {
+			$this->balance_sat = floatval( $data['balance_sat'] ?? null );
 		}
-		if ( isset( $balance_data['balance_sat'] ) ) {
-			$this->balance_sat = floatval( $balance_data['balance_sat'] ?? null );
-		}
-		if ( isset( $balance_data['precision'] ) ) {
-			$this->precision = intval( $balance_data['precision'] ?? null );
+		if ( isset( $data['precision'] ) ) {
+			$this->precision = intval( $data['precision'] ?? null );
 		}
 		if ( 
 			isset( $this->balance ) === false && 
@@ -55,6 +43,29 @@ class Balance implements BalanceInterface {
 		) {
 			$this->balance = $this->from_sat( $this->balance_sat, $this->precision );
 		}
+	}
+
+	public function to_array() {
+		$array = array();
+		if ( isset( $this->asset ) ) {
+			$array['asset'] = $this->asset;
+		}
+		if ( isset( $this->name ) ) {
+			$array['name'] = $this->name;
+		}
+		if ( isset( $this->balance ) ) {
+			$array['balance'] = $this->balance;
+		}
+		if ( isset( $this->balance_sat ) ) {
+			$array['balance_sat'] = $this->balance_sat;
+		}
+		if ( isset( $this->precision ) ) {
+			$array['precision'] = $this->precision;
+		}
+		if ( isset( $this->meta ) && $this->meta instanceof TokenMetaInterface ) {
+			$array['meta'] = $this->meta->to_array();
+		}
+		return $array;
 	}
 
 	public function from_sat( $value, $precision = 1 ) {

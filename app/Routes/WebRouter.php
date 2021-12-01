@@ -85,19 +85,37 @@ class WebRouter extends Router implements WebRouterInterface {
 			),
 			'oauth-callback' => array(
 				'rules'		=> array(
-					'oauth-callback/?$',
+					'oauth/callback/?$',
 				),
 				'vars'		=> array(
 					'oauth_callback' => '1',
 				),
-				'callable'	=> array( $this->controllers['auth'], 'authorize_callback' ),
+				'callable'	=> array( $this->controllers['auth'], 'callback' ),
+			),
+			'oauth-connect' => array(
+				'rules'		=> array(
+					'oauth/connect/?$',
+				),
+				'vars'		=> array(
+					'oauth_connect' => '1',
+				),
+				'callable'	=> array( $this->controllers['auth'], 'store' ),
+			),
+			'oauth-disconnect' => array(
+				'rules'		=> array(
+					'oauth/disconnect/?$',
+				),
+				'vars'		=> array(
+					'oauth_disconnect' => '1',
+				),
+				'callable'	=> array( $this->controllers['auth'], 'destroy' ),
 			),
 			'access-denied' => array(
 				'rules'		=> array(
 					'access-denied/?$',
 				),
 				'vars'		=> array(
-					'access-denied' => '1',
+					'access_denied' => '1',
 				),
 				'callable'	=> array( $this->controllers['post'], 'denied' ),
 			)
@@ -178,18 +196,6 @@ class WebRouter extends Router implements WebRouterInterface {
 	}
 
 	/**
-	 * Merges the web route query vars with the rest
-	 * of WordPress query vars
-	 * @wp-hook query_vars
-	 * @return array
-	 */
-	public function merge_query_vars( $query_vars ) {
-		$query_vars = array_merge( $query_vars, $this->vars );
-		$query_vars[] = "{$this->namespace}_virtual";
-		return $query_vars;
-	}
-
-	/**
 	 * Gets the template callback for
 	 * the current route
 	 * @wp-hook template_include
@@ -222,7 +228,6 @@ class WebRouter extends Router implements WebRouterInterface {
 	public function register_routes() {
 		$this->routes = $this->get_routes();
 		add_filter( 'generate_rewrite_rules', array( $this, 'merge_rewrite_rules' ) );
-		add_filter( 'query_vars', array( $this, 'merge_query_vars' ) );
 		add_filter( 'template_include', array( $this, 'find_template' ) );
 	}
 }

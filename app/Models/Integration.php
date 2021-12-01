@@ -2,11 +2,12 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
 
-class Integration implements IntegrationInterface {
+class Integration extends Model implements IntegrationInterface {
 	public $settings;
 	public $can_connect = false;
 	protected $integration_service;
@@ -44,7 +45,7 @@ class Integration implements IntegrationInterface {
 		$this->integration_service->update( $new_data );
 	}
 
-	protected function to_array() {
+	public function to_array() {
 		return array(
 			'integration_can_connect' => $this->can_connect ?? false,
 		);

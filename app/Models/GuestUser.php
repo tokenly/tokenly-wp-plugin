@@ -2,11 +2,12 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 
-class GuestUser implements UserInterface, GuestUserInterface, CurrentUserInterface {
+class GuestUser extends Model implements UserInterface, GuestUserInterface, CurrentUserInterface {
 	public $ID = 0;
 
 	public function __construct() {

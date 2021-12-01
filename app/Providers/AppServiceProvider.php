@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
@@ -33,6 +34,7 @@ class AppServiceProvider extends ServiceProvider implements AppServiceProviderIn
 		LifecycleServiceInterface $lifecycle_service,
 		ResourceServiceInterface $resource_service,
 		TcaServiceInterface $tca_service,
+		QueryServiceInterface $query_service,
 		AddressServiceInterface $address_service,
 		BalanceServiceInterface $balance_service,
 		IntegrationServiceInterface $integration_service,
@@ -52,6 +54,7 @@ class AppServiceProvider extends ServiceProvider implements AppServiceProviderIn
 			'lifecycle'             => $lifecycle_service,
 			'resource'              => $resource_service,
 			'tca'                   => $tca_service,
+			'query'                 => $query_service,
 			'address'               => $address_service,
 			'balance'               => $balance_service,
 			'integration'           => $integration_service,

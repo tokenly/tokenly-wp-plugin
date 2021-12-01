@@ -12,6 +12,10 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	protected $item_type;
 
 	public function __construct( array $items ) {
+		$this->fill( $items );
+	}
+
+	public function fill( array $items ) {
 		foreach ( $items as $item )
 		{
 			if ($item instanceof $this->item_type === FALSE )

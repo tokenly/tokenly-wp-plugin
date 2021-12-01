@@ -2,20 +2,21 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
 
-class IntegrationSettings implements IntegrationSettingsInterface {
+class IntegrationSettings extends Model implements IntegrationSettingsInterface {
 	public $client_id = '';
 	public $client_secret = '';
 	public $settings_updated = false;
 	protected $integration_settings_service;
 	
 	public function __construct(
-		$settings_data = array(),
-		IntegrationSettingsServiceInterface $integration_settings_service
+		IntegrationSettingsServiceInterface $integration_settings_service,
+		array $data = array()
 	) {
-		$this->from_array( $settings_data );
+		$this->fill( $data );
 		$this->integration_settings_service = $integration_settings_service;
 	}
 
@@ -24,29 +25,35 @@ class IntegrationSettings implements IntegrationSettingsInterface {
 		$this->integration_settings_service->update( $save_data );
 	}
 
-	public function update( $settings_data ) {
-		$this->from_array( $settings_data );
+	public function update( array $data ) {
+		$this->fill( $data );
 		$this->save();
 	}
 
-	public function from_array( $settings_data ) {
-		if ( isset( $settings_data['client_id'] ) ) {
-			$this->client_id = $settings_data['client_id'];
+	public function fill( array $data ) {
+		if ( isset( $data['client_id'] ) ) {
+			$this->client_id = $data['client_id'];
 		}
-		if ( isset( $settings_data['client_secret'] ) ) {
-			$this->client_secret = $settings_data['client_secret'];
+		if ( isset( $data['client_secret'] ) ) {
+			$this->client_secret = $data['client_secret'];
 		}
-		if ( isset( $settings_data['settings_updated'] ) ) {
-			$this->settings_updated = $settings_data['settings_updated'];
+		if ( isset( $data['settings_updated'] ) ) {
+			$this->settings_updated = $data['settings_updated'];
 		}
 		return $this;
 	}
 
 	public function to_array() {
-		return array(
-			'client_id'        => $this->client_id,
-			'client_secret'    => $this->client_secret,
-			'settings_updated' => $this->settings_updated,
-		);
+		$array = array();
+		if ( isset( $this->client_id ) ) {
+			$array['client_id'] = $this->client_id;
+		}
+		if ( isset( $this->client_secret ) ) {
+			$array['client_secret'] = $this->client_secret;
+		}
+		if ( isset( $this->settings_updated ) ) {
+			$array['settings_updated'] = $this->settings_updated;
+		}
+		return $array;
 	}
 }

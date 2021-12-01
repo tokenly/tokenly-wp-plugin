@@ -7,6 +7,7 @@ use Tokenly\Wp\Services\AuthService;
 use Tokenly\Wp\Services\LifecycleService;
 use Tokenly\Wp\Services\ResourceService;
 use Tokenly\Wp\Services\TcaService;
+use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
 use Tokenly\Wp\Services\Domain\IntegrationService;
@@ -108,6 +109,7 @@ use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
@@ -231,7 +233,7 @@ return array(
 	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	'oauth.callback_route'     => \DI\factory( function( string $namespace ) {
 		$site_url = get_site_url();
-		return "{$site_url}/{$namespace}/oauth-callback";
+		return "{$site_url}/{$namespace}/oauth/callback";
 	} )->parameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	'oauth.host'               => \DI\factory( function( string $api_host ) {
 		return $api_host . '/oauth/authorize';
@@ -256,7 +258,8 @@ return array(
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
 	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
 	//Controllers - API
-	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
+	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
 	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
 	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
@@ -265,19 +268,25 @@ return array(
 	WhitelistApiControllerInterface::class            => \DI\autowire( WhitelistApiController::class ),
 	//Components 
 	ButtonLoginComponentInterface::class           => \DI\autowire( ButtonLoginComponent::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
 	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
 	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
 	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
-		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') ),
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
+		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') )
+		->constructorParameter( 'api_host', DI\get( 'api.host' ) ),
 	LifecycleServiceInterface::class               => \DI\autowire( LifecycleService::class )
 		->constructorParameter( 'root_filepath', \DI\get( 'general.root_filepath' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) )
-		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
+		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) ),
+	QueryServiceInterface::class                   => \DI\autowire( QueryService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	TcaServiceInterface::class                     => \DI\autowire( TcaService::class ),
 	//Services - Domain

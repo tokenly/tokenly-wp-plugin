@@ -12,17 +12,23 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 class AuthController implements AuthControllerInterface {
 	protected $auth_service;
 	protected $current_user;
+	protected $namespace;
 
 	public function __construct(
 		AuthServiceInterface $auth_service,
-		CurrentUserInterface $current_user
+		CurrentUserInterface $current_user,
+		string $namespace
 	) {
 		$this->auth_service = $auth_service;
 		$this->current_user = $current_user;
+		$this->namespace = $namespace;
 	}
 
-	/** Responds with Tokenpass connection status */
-	public function status() {
+	/**
+	 * Responds the Tokenpass connection status
+	 * @return void
+	*/
+	public function show() {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
@@ -33,33 +39,36 @@ class AuthController implements AuthControllerInterface {
 	}
 
 	/**
-	 * Begins OAuth process
+	 * Initiates the OAuth process
+	 * @return void
 	 */
-	public function authorize( $request ) {
-		return $this->auth_service->authorize_begin();
+	public function store() {
+		$success_url = get_query_var( "{$this->namespace}_success_url" );
+		$this->auth_service->authorize_begin( $success_url );
 	}
 
 	/**
-	 * Handles OAuth callback
+	 * Disconnects the current user
+	 * @return array
 	 */
-	public function authorize_callback() {
-		$code = $_GET['code'] ?? null;
-		$state = $_GET['state'] ?? null;
-		if ( !$code || !$state ) {
-			return;
-		}
-		$result = $this->auth_service->authorize_callback( $state, $code );
-		wp_redirect( '/wp-admin/admin.php?page=tokenly-connection' );
-		exit();
-	}
-	
-	public function disconnect() {
+	public function destroy() {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
 		$this->current_user->disconnect();
-		return array(
-			'status' => 'Successfully disconnected!'
-		);
+		wp_redirect( '/wp-admin/admin.php?page=tokenly-connection' );
+		exit;
+	}
+
+	/**
+	 * Handles OAuth callback
+	 * @return void
+	 */
+	public function callback() {
+		if ( !isset( $_GET['code'] ) || !isset( $_GET['state'] ) ) {
+			wp_redirect( home_url() );
+			exit;
+		}
+		$this->auth_service->authorize_callback( $_GET['state'], $_GET['code'] );
 	}
 }
