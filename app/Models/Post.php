@@ -6,33 +6,39 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 
-class Post implements PostInterface {
-	protected $_instance;
-	protected $post_service;
+class Post extends Model implements PostInterface {
 	public $tca_rules;
+	protected $post;
+	protected $post_service;
+	protected $fillable = array(
+		'post',
+		'tca_rules',
+	);
 
 	public function __construct(
-		\WP_Post $post,
-		PostServiceInterface $post_service
+		PostServiceInterface $post_service,
+		array $data = array()
 	) {
-		$this->_instance = $post;
+		$this->post = $post;
 		$this->post_service = $post_service;
+		parent::__construct( $data );
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->_instance, $method ), $args );
+		return call_user_func_array( array( $this->post, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->_instance->$key;
+		return $this->post->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->_instance->$key = $val;
+		return $this->post->$key = $val;
 	}
 
 	public function get_tca_rules() {
@@ -45,13 +51,5 @@ class Post implements PostInterface {
 	public function set_tca_rules( TcaRuleCollectionInterface $rules ) {
 		$this->$tca_rules = $rules;
 		$this->post_service->set_tca_rules( $this->ID, $rules );
-	}
-
-	public function to_array() {
-		$tca_rules = $this->get_tca_rules();
-		$array = array(
-			'tca_rules' => $tca_rules,
-		);
-		return $array;
 	}
 }

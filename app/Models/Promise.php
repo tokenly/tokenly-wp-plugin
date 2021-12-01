@@ -2,12 +2,13 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 
-class Promise implements PromiseInterface {
+class Promise extends Model implements PromiseInterface {
 	public $source;
 	public $destination;
 	public $asset;
@@ -27,65 +28,38 @@ class Promise implements PromiseInterface {
 	public $precision;
 	public $promise_meta;
 	protected $promise_meta_service;
+	protected $fillable = array(
+		'source',
+		'destination',
+		'asset',
+		'quantity',
+		'quantity_sat',
+		'fingerprint',
+		'txid',
+		'created_at',
+		'expiration',
+		'ref',
+		'pseudo',
+		'note',
+		'protocol',
+		'chain',
+		'promise_id',
+		'precision',
+		'promise_meta',
+	);
 
 	public function __construct(
-		$promise_data = array(),
-		PromiseServiceInterface $promise_service,
-		PromiseMetaServiceInterface $promise_meta_service
+		PromiseServiceInterface $domain_service,
+		PromiseMetaServiceInterface $promise_meta_service,
+		array $data = array()
 	) {
-		$this->promise_service = $promise_service;
+		$this->domain_service = $domain_service;
 		$this->promise_meta_service = $promise_meta_service;
-		$this->from_array( $promise_data );
-	}
-
-	public function from_array( $promise_data ) {
-		$this->source = $promise_data['source'] ?? null;
-		$this->destination = $promise_data['destination'] ?? null;
-		$this->asset = $promise_data['asset'] ?? null;
-		$this->quantity = $promise_data['quantity'] ?? null;
-		$this->quantity_sat = $promise_data['quantity_sat'] ?? null;
-		$this->fingerprint = $promise_data['fingerprint'] ?? null;
-		$this->txid = $promise_data['txid'] ?? null;
-		$this->created_at = $promise_data['created_at'] ?? null;
-		$this->updated_at = $promise_data['updated_at'] ?? null;
-		$this->expiration = $promise_data['expiration'] ?? null;
-		$this->ref = $promise_data['ref'] ?? null;
-		$this->pseudo = $promise_data['pseudo'] ?? null;
-		$this->note = $promise_data['note'] ?? null;
-		$this->protocol = $promise_data['protocol'] ?? null;
-		$this->chain = $promise_data['chain'] ?? null;
-		$this->promise_id = $promise_data['promise_id'] ?? null;
-		$this->precision = $promise_data['precision'] ?? null;
-		$this->promise_meta = $promise_data['promise_meta'] ?? null;
-	}
-	
-	public function to_array() {
-		$array = array(
-			'source'       => $this->source,
-			'destination'  => $this->destination,
-			'asset'        => $this->asset,
-			'quantity'     => $this->quantity,
-			'fingerprint'  => $this->fingerprint,
-			'txid'         => $this->txid,
-			'created_at'   => $this->created_at,
-			'updated_at'   => $this->updated_at,
-			'expiration'   => $this->expiration,
-			'ref'          => $this->ref,
-			'pseudo'       => $this->pseudo,
-			'note'         => $this->note,
-			'protocol'     => $this->protocol,
-			'chain'        => $this->chain,
-			'promise_id'   => $this->promise_id,
-			'precision'    => $this->precision, 
-		);
-		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
-			$array['promise_meta'] = $this->promise_meta->to_array();
-		}
-		return $array;
+		parent::__construct( $data );
 	}
 
 	public function update( $params = array() ) {
-		$this->promise_service->update( $this->promise_id, $params );
+		$this->domain_service->update( $this->promise_id, $params );
 	}
 
 	/**
@@ -95,7 +69,7 @@ class Promise implements PromiseInterface {
 		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
 			$this->promise_meta->destroy();	
 		}
-		$this->promise_service->destroy( $this->promise_id );
+		$this->domain_service->destroy( $this->promise_id );
 	}
 
 	/**
@@ -113,3 +87,13 @@ class Promise implements PromiseInterface {
 		return $promise_meta;
 	}
 }
+
+// if ( isset( $data['quantity'] ) && isset( $data['precision'] ) ) {
+// 	$quantity = $data['quantity'] ?? null;
+// 	$precision = $data['precision'] ?? null;
+// 	if ( $precision > 0 ) {
+// 		$divisor = intval( 1 . str_repeat( 0, $precision ) );
+// 		$quantity = $quantity / $divisor;
+// 		$data['quantity'] = $quantity;
+// 	}
+// }

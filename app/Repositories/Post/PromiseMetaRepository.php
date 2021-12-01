@@ -15,13 +15,16 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	protected $client;
 	protected $promise_meta_collection_factory;
+	protected $meta_repository;
 	protected $string;
 	
 	public function __construct(
 		PromiseMetaCollectionFactoryInterface $promise_meta_collection_factory,
+		MetaRepositoryInterface $meta_repository,
 		string $namespace
 	) {
 		$this->promise_meta_collection_factory = $promise_meta_collection_factory;
+		$this->meta_repository = $meta_repository;
 		$this->namespace = $namespace;
 	}
 
@@ -48,7 +51,19 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		$collection = $this->promise_meta_collection_factory->create( $posts );
+		$posts_formatted = array();
+		foreach ( $posts as $post ) {
+			$array = array();
+			$meta = $this->meta_repository->index( $id, array(
+				'promise_id',
+				'source_user_id',
+				'destination_user_id',
+			) );
+			$array = array_merge( $array, $meta );
+			$array['post'] = $post;
+			$posts_formatted[] = $array;
+		}
+		$collection = $this->promise_meta_collection_factory->create( $posts_formatted );
 		return $collection;
 	}
 	

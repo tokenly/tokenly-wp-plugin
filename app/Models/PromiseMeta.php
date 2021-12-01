@@ -11,30 +11,38 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 
 class PromiseMeta implements PromiseMetaInterface {
-	protected $_instance;
+	public $source_user_id;
+	public $destination_user_id;
+	protected $post;
 	protected $user_service;
 	protected $promise_meta_service;
+	protected $fillable = array(
+		'post',
+		'promise_id',
+		'source_user_id',
+		'destination_user_id',
+	);
 
 	public function __construct(
-		\WP_Post $post,
 		UserServiceInterface $user_service,
-		PromiseMetaServiceInterface $promise_meta_service
+		PromiseMetaServiceInterface $promise_meta_service,
+		array $data = array()
 	) {
-		$this->_instance = $post;
 		$this->promise_meta_service = $promise_meta_service;
 		$this->user_service = $user_service;
+		parent::__construct( $data );
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->_instance, $method ), $args );
+		return call_user_func_array( array( $this->post, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->_instance->$key;
+		return $this->post->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->_instance->$key = $val;
+		return $this->post->$key = $val;
 	}
 	
 	public function to_array() {

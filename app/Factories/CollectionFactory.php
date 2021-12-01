@@ -3,9 +3,9 @@
 namespace Tokenly\Wp\Factories\Collections;
 
 use Tokenly\Wp\Interfaces\Factories\Collections\CollectionFactoryInterface;
-use Tokenly\Wp\Factories\Factory;
 
-class CollectionFactory extends Factory implements CollectionFactoryInterface {
+class CollectionFactory implements CollectionFactoryInterface {
+	protected $factory;
 	protected $item_factory;
 	public $class;
 
@@ -13,7 +13,7 @@ class CollectionFactory extends Factory implements CollectionFactoryInterface {
 		$factory,
 		$item_factory
 	) {
-		parent::__construct( $factory );
+		$this->factory = $factory;
 		$this->item_factory = $item_factory;
 		$this->class = $item_factory->class;
 	}

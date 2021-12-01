@@ -6,37 +6,40 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 
-class User implements UserInterface, CurrentUserInterface {
-	protected $_instance;
-	protected $oauth_user;
-	protected $oauth_token;
-	protected $addresses;
+class User extends Model implements UserInterface, CurrentUserInterface {
+	protected $user;
+	public $oauth_user;
 	protected $user_service;
+	protected $fillable = array(
+		'user',
+		'oauth_user',
+	);
 
 	public function __construct(
-		\WP_User $user,
-		UserServiceInterface $user_service
+		UserServiceInterface $user_service,
+		array $data = array()
 	) {
-		$this->_instance = $user;
+		$this->user = $user;
 		$this->user_service = $user_service;
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->_instance, $method ), $args );
+		return call_user_func_array( array( $this->user, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->_instance->$key;
+		return $this->user->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->_instance->$key = $val;
+		return $this->user->$key = $val;
 	}
 
 	/**

@@ -65,40 +65,6 @@ class UserService extends DomainService implements UserServiceInterface {
 	}
 
 	/**
-	 * Gets all addresses
-	 * @param array $params Address search parameters
-	 * @return AddressCollectionInterface Found addresses
-	 */
-	public function get_addresses( int $id, array $params = array() ) {
-		$oauth_user = $this->get_oauth_user( $id );
-		if ( !$oauth_user ) {
-			return;
-		}
-		$username = $oauth_user->username;
-		$params['username'] = $username;
-		$addresses = $this->address_service->index( $params );
-		return $addresses;
-	}
-
-	/**
-	 * Gets all balances
-	 * @param array $params Balance search parameters
-	 * @return BalanceCollectionInterface Found balances
-	 */
-	public function get_balances( int $id, array $params = array() ) {
-		$oauth_user = $this->get_oauth_user( $id );
-		if ( !$oauth_user ) {
-			return;
-		}
-		$oauth_token = $this->get_oauth_token( $id );
-		if ( !$oauth_token ) {
-			return;
-		}
-		$balance = $this->balance_service->index( $oauth_token, $params );
-		return $balance;
-	}
-
-	/**
 	 * Checks if the user is currently connected to Tokenpass
 	 * @return bool
 	 */
@@ -135,11 +101,13 @@ class UserService extends DomainService implements UserServiceInterface {
 
 	/**
 	 * Retrieves oauth user from the API
-	 * @return OauthUserInterface
+	 * @param UserInterface $user Target user
+	 * @return UserInterface
 	 */
-	public function get_oauth_user( int $id ) {
-		$oauth_user = $this->oauth_user_service->show( array( 'id' => $id ) );
-		return $oauth_user;
+	public function load_oauth_user( UserInterface $user ) {
+		$oauth_user = $this->oauth_user_service->show( array( 'id' => $user->ID ) );
+		$user->oauth_user = $oauth_user;
+		return $user;
 	}
 
 	/**

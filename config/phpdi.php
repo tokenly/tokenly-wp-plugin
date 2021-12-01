@@ -408,86 +408,46 @@ return array(
 		) );
 		return $whitelist;
 	} ),
-	//Factories - concrete - models
-	AddressFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', AddressInterface::class ),
-	BalanceFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', BalanceInterface::class ),
-	OauthUserFactoryConcrete::class              => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', OauthUserInterface::class ),
-	PostFactoryConcrete::class                   => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PostInterface::class ),
-	PromiseFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PromiseInterface::class ),
-	PromiseMetaFactoryConcrete::class            => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PromiseMetaInterface::class ),
-	SourceFactoryConcrete::class                 => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', SourceInterface::class ),
-	TokenMetaFactoryConcrete::class              => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', TokenMetaInterface::class ),
-	TcaRuleFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', TcaRuleInterface::class ),
-	UserFactoryConcrete::class                   => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', UserInterface::class ),
-	WhitelistItemFactoryConcrete::class          => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', WhitelistItemInterface::class ),
-	//Factories - concrete - collections
-	AddressCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
+	//Factories - collections
+	AddressCollectionFactoryConcrete::class      => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', AddressCollectionInterface::class ),
-	BalanceCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
+	BalanceCollectionFactoryConcrete::class      => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', BalanceCollectionInterface::class ),
-	PromiseCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
+	PromiseCollectionFactoryConcrete::class      => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', PromiseCollectionInterface::class ),
-	PromiseMetaCollectionFactoryConcrete::class  => \DI\autowire( RootFactory::class )
+	PromiseMetaCollectionFactoryConcrete::class  => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', PromiseMetaCollectionInterface::class ),
-	SourceCollectionFactoryConcrete::class       => \DI\autowire( RootFactory::class )
+	SourceCollectionFactoryConcrete::class       => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', SourceCollectionInterface::class ),
-	TokenMetaCollectionFactoryConcrete::class    => \DI\autowire( RootFactory::class )
+	TokenMetaCollectionFactoryConcrete::class    => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', TokenMetaCollectionInterface::class ),
-	TcaRuleCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
+	TcaRuleCollectionFactoryConcrete::class      => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', TcaRuleCollectionInterface::class ),
-	UserCollectionFactoryConcrete::class         => \DI\autowire( RootFactory::class )
+	UserCollectionFactoryConcrete::class         => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', UserCollectionInterface::class ),
-	//Factories - abstract - models
-	AddressFactoryInterface::class               => \DI\autowire( AddressFactory::class )
-		->constructorParameter( 'factory', \Di\get( AddressFactoryConcrete::class ) ),
-	BalanceFactoryInterface::class               => \DI\autowire( BalanceFactory::class )
-		->constructorParameter( 'factory', \Di\get( BalanceFactoryConcrete::class ) ),
-	OauthUserFactoryInterface::class             => \DI\autowire( OauthUserFactory::class )
-		->constructorParameter( 'factory', \Di\get( OauthUserFactoryConcrete::class ) ),
-	PostFactoryInterface::class                  => \DI\autowire( PostFactory::class )
-		->constructorParameter( 'factory', \Di\get( PostFactoryConcrete::class ) ),
-	PromiseFactoryInterface::class               => \DI\autowire( PromiseFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
-	PromiseMetaFactoryInterface::class           => \DI\autowire( PromiseMetaFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseMetaFactoryConcrete::class ) ),
-	SourceFactoryInterface::class                => \DI\autowire( SourceFactory::class )
-		->constructorParameter( 'factory', \Di\get( SourceFactoryConcrete::class ) ),
-	TokenMetaFactoryInterface::class             => \DI\autowire( TokenMetaFactory::class )
-		->constructorParameter( 'factory', \Di\get( TokenMetaFactoryConcrete::class ) ),
-	TcaRuleFactoryInterface::class               => \DI\autowire( TcaRuleFactory::class )
-		->constructorParameter( 'factory', \Di\get( TcaRuleFactoryConcrete::class ) ),
-	UserFactoryInterface::class                  => \DI\autowire( UserFactory::class )
-		->constructorParameter( 'factory', \Di\get( UserFactoryConcrete::class ) ),
-	WhitelistItemFactoryInterface::class         => \DI\autowire( WhitelistItemFactory::class )
-		->constructorParameter( 'factory', \Di\get( WhitelistItemFactoryConcrete::class ) ),
-	//Factories - abstract - collections
-	AddressCollectionFactoryInterface::class     => \DI\autowire( AddressCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( AddressCollectionFactoryConcrete::class ) ),
-	BalanceCollectionFactoryInterface::class     => \DI\autowire( BalanceCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( BalanceCollectionFactoryConcrete::class ) ),
-	PromiseCollectionFactoryInterface::class     => \DI\autowire( PromiseCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseCollectionFactoryConcrete::class ) ),
-	PromiseMetaCollectionFactoryInterface::class => \DI\autowire( PromiseMetaCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseMetaCollectionFactoryConcrete::class ) ),
-	SourceCollectionFactoryInterface::class      => \DI\autowire( SourceCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( SourceCollectionFactoryConcrete::class ) ),
-	TokenMetaCollectionFactoryInterface::class   => \DI\autowire( TokenMetaCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
-	TcaRuleCollectionFactoryInterface::class   => \DI\autowire( TcaRuleCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( TcaRuleCollectionFactoryConcrete::class ) ),
-	UserCollectionFactoryInterface::class        => \DI\autowire( UserCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( UserCollectionFactoryConcrete::class ) ),
+	//Factories - models
+	AddressFactoryInterface::class               => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', AddressInterface::class ),
+	BalanceFactoryInterface::class               => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', BalanceInterface::class ),
+	OauthUserFactoryInterface::class             => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', OauthUserInterface::class ),
+	PostFactoryInterface::class                  => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', PostInterface::class ),
+	PromiseFactoryInterface::class               => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', PromiseInterface::class ),
+	PromiseMetaFactoryInterface::class           => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', PromiseMetaInterface::class ),
+	SourceFactoryInterface::class                => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', SourceInterface::class ),
+	TokenMetaFactoryInterface::class             => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', TokenMetaInterface::class ),
+	TcaRuleFactoryInterface::class               => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', TcaRuleInterface::class ),
+	UserFactoryInterface::class                  => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', UserInterface::class ),
+	WhitelistItemFactoryInterface::class         => \DI\autowire( ConcreteFactory::class )
+		->constructorParameter( 'class', WhitelistItemInterface::class ),
 	//Third-party
 	TokenpassAPI::class => \DI\factory( function ( 
 		ContainerInterface $container,
@@ -537,7 +497,7 @@ return array(
 		->parameter( 'twig_template_cache_dir', \DI\get( 'twig.template_cache_dir' ) ),
 );
 
-class RootFactory {
+class ConcreteFactory {
 	protected $container;
 	public $class;
 

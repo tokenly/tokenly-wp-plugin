@@ -11,6 +11,9 @@ class Integration extends Model implements IntegrationInterface {
 	public $settings;
 	public $can_connect = false;
 	protected $integration_service;
+	protected $fillable = array(
+		'settings',
+	);
 	
 	public function __construct(
 		IntegrationSettingsInterface $settings,
@@ -43,11 +46,5 @@ class Integration extends Model implements IntegrationInterface {
 	public function update() {
 		$new_data = $this->to_array();
 		$this->integration_service->update( $new_data );
-	}
-
-	public function to_array() {
-		return array(
-			'integration_can_connect' => $this->can_connect ?? false,
-		);
 	}
 }

@@ -15,53 +15,29 @@ class OauthUser extends Model implements OauthUserInterface {
 	public $name;
 	public $email_is_confirmed;
 	public $oauth_token;
+	public $balances;
+	public $addresses;
 	protected $tca_service;
 	protected $oauth_user_service;
+	protected $fillable = array(
+		'id',
+		'username',
+		'email',
+		'name',
+		'email_is_confirmed',
+		'oauth_token',
+		'balances',
+		'addresses',
+	);
 
 	public function __construct(
-		array $data = array(),
 		TcaServiceInterface $tca_service,
-		OauthUserServiceInterface $oauth_user_service
+		OauthUserServiceInterface $domain_service,
+		array $data = array()
 	) {
 		$this->tca_service = $tca_service;
-		$this->oauth_user_service = $oauth_user_service;
-		$this->fill( $data );
-	}
-
-	public function fill( array $data ) {
-		if ( isset( $oauth_user_data['id'] ) ) {
-			$this->id = $oauth_user_data['id'];
-		}
-		if ( isset( $oauth_user_data['username'] ) ) {
-			$this->username = $oauth_user_data['username'];
-		}
-		if ( isset( $oauth_user_data['email'] ) ) {
-			$this->email = $oauth_user_data['email'];
-		}
-		if ( isset( $oauth_user_data['name'] ) ) {
-			$this->name = $oauth_user_data['name'];
-		}
-		if ( isset( $oauth_user_data['email_is_confirmed'] ) ) {
-			$this->email_is_confirmed = $oauth_user_data['email_is_confirmed'];
-		}
-		if ( isset( $oauth_user_data['oauth_token'] ) ) {
-			$this->oauth_token = $oauth_user_data['oauth_token'];
-		}
-		return $this;
-	}
-
-	public function to_array() {
-		$array = array();
-		if ( isset( $this->id ) ) {
-			$array['id'] = $this->id;
-		}
-		if ( isset( $this->client_secret ) ) {
-			$array['client_secret'] = $this->client_secret;
-		}
-		if ( isset( $this->settings_updated ) ) {
-			$array['settings_updated'] = $this->settings_updated;
-		}
-		return $array;
+		$this->domain_service = $domain_service;
+		parent::__construct( $data );
 	}
 
 	/**
@@ -78,6 +54,11 @@ class OauthUser extends Model implements OauthUserInterface {
 		return true;
 	}
 
+	/**
+	 * Checks if the user can pass TCA with the specified rules
+	 * @param TcaRuleCollectionInterface $rules TCA rules
+	 * @return bool
+	 */
 	public function check_token_access( TcaRuleCollectionInterface $rules ) {
 		$can_access = $this->tca_service->check_token_access_user( $this, $rules );
 		return $can_access;

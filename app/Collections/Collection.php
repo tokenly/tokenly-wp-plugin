@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 
 class Collection extends \ArrayObject implements CollectionInterface {
 	protected $item_type;
+	protected $domain_service;
 
 	public function __construct( array $items ) {
 		$this->fill( $items );
@@ -24,6 +25,10 @@ class Collection extends \ArrayObject implements CollectionInterface {
 			}
 		}
 		$this->exchangeArray( $items );
+	}
+
+	public function load() {
+		
 	}
 
 	/**
