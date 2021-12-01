@@ -23,15 +23,6 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 		$this->meta_repository = $meta_repository;
 	}
 
-	public function get_promise_meta( int $id ) {
-		$meta = $this->meta_repository->index( $id, array(
-			'promise_id',
-			'source_user_id',
-			'destination_user_id',
-		) );
-		return $meta;
-	}
-
 	/**
 	 * Queries all the post meta matching the params
 	 * @param array $params Search params
@@ -84,6 +75,18 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 */
 	public function destroy( int $post_id ) {
 		$this->promise_meta_repository->destroy( $post_id );
+	}
+
+	protected function load_source_user( PromiseMetaInterface $promise_meta, array $relation ) {
+		$source_user = $this->promise_meta_service->show( array(
+			'with'        => $relation,
+			'promise_ids' => array( $promise->promise_id ), 
+		) );
+		if ( !$promise_meta ) {
+			return $promise;
+		}
+		$promise->promise_meta = $promise_meta;
+		return $promise;
 	}
 }
 
