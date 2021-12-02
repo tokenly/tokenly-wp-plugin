@@ -174,26 +174,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		return $promise;
 	}
 	
-	/**
-	 * Destroys the existing promise
-	 * @param integer $promise_id Tokenpass promise index
-	 * @return void
-	 */
-	public function destroy( int $promise_id ) {
-		$this->promise_repository->destroy( $promise_id );
-	}
 
-	protected function load_promise_meta( PromiseInterface $promise, array $relation ) {
-		$promise_meta = $this->promise_meta_service->show( array(
-			'with'        => $relation,
-			'promise_ids' => array( $promise->promise_id ), 
-		) );
-		if ( !$promise_meta ) {
-			return $promise;
-		}
-		$promise->promise_meta = $promise_meta;
-		return $promise;
-	}
 
 	protected function load_promise_meta_collection( PromiseCollectionInterface $promise_collection, array $relation ) {
 		$promise_ids = array_map( function( $promise ) {
