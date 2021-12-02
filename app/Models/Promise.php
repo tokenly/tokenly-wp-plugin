@@ -53,7 +53,7 @@ class Promise extends Model implements PromiseInterface {
 	public function __construct(
 		PromiseServiceInterface $domain_service,
 		PromiseMetaServiceInterface $promise_meta_service,
-		PromiseRepositoryInterfacec $promise_repository,
+		PromiseRepositoryInterface $promise_repository,
 		array $data = array()
 	) {
 		$this->domain_service = $domain_service;

@@ -18,6 +18,7 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	
 	public function __construct(
 		TokenMetaCollectionFactoryInterface $token_meta_collection_factory,
+		MetaRepositoryInterface $meta_repository,
 		string $namespace
 	) {
 		$this->token_meta_collection_factory = $token_meta_collection_factory;
@@ -47,7 +48,13 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		$posts = $this->token_meta_collection_factory->create( $posts );
+		$posts_formatted = array();
+		foreach ( $posts as $post ) {
+			$posts_formatted[] = array(
+				'post' => $post,
+			);
+		}
+		$posts = $this->token_meta_collection_factory->create( $posts_formatted );
 		return $posts;
 	}
 

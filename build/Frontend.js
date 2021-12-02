@@ -5921,6 +5921,9 @@ let AdminApiService = class AdminApiService {
         });
     }
     whitelistUpdate(params) {
+        //@ts-ignore
+        params.items = JSON.stringify(params.items);
+        console.log(params);
         return new Promise((resolve, reject) => {
             this.makeRequest('PUT', '/whitelist', params).then(result => {
                 resolve(result);

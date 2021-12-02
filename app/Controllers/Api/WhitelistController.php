@@ -13,11 +13,15 @@ class WhitelistController implements WhitelistControllerInterface {
 	}
 
 	public function show( $request ) {
-		return $this->whitelist->to_array();
+		$whitelist = $this->whitelist->to_array();
+		return $whitelist;
 	}
 
 	public function update( $request ) {
 		$params = $request->get_params();
+		if ( isset( $params['items'] ) ) {
+			$params['items'] = json_decode( $params['items'], true );
+		}
 		$this->whitelist->update( $params );
 		return array(
 			'status' => 'Whitelist was updated successfully.',

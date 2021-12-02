@@ -6,6 +6,7 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\SourceInterface;
 
 /**
  * Manages sources for promise type transactions

@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\ModelInterface;
+use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 
 class Model implements ModelInterface {
 	protected $fillable = array();
@@ -78,18 +79,22 @@ class Model implements ModelInterface {
 	 * @return array
 	 */
 	public function to_array() {
-		$reflection = new \ReflectionClass( $this );
-		$public = $reflection->getProperties( \ReflectionProperty::IS_PUBLIC );
-		foreach( $public as $key => &$property ) {
+		$array = array();
+		foreach( (array) $this as $key => $property ) {
 			if ( !in_array( $key, $this->fillable ) ) {
-				unset( $public[ $key ] );
-			} 
-			if ( !is_object( $property ) ) {
 				continue;
+			} 
+			if ( is_object( $property ) ) {
+				if ( $property instanceof ModelInterface || $property instanceof CollectionInterface ) {
+					$array[ $key ] = $property->to_array();
+					continue;
+				} else {
+					continue;
+				}
 			}
-			$property = $property->to_array();
+			$array[ $key ] = $property;
 		}
-		return $public;
+		return $array;
 	}
 
 	/**

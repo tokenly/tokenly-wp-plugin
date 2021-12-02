@@ -3,5 +3,5 @@
 namespace Tokenly\Wp\Interfaces\Repositories;
 
 interface BalanceRepositoryInterface {
-	public function index( interger $user_id, array $params );
+	public function index( string $oauth_token, array $params = array() );
 }

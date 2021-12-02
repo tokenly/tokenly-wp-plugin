@@ -15,7 +15,6 @@ class Source extends Model implements SourceInterface {
 	public $assets;
 	public $type;
 	protected $source_service;
-	protected $source_repository;
 	protected $address_service;
 	protected $current_user;
 	protected $fillable = array(
@@ -27,13 +26,13 @@ class Source extends Model implements SourceInterface {
 
 	public function __construct(
 		SourceServiceInterface $source_service,
-		SourceRepositoryInterface $source_repository,
+		SourceRepositoryInterface $domain_repository,
 		AddressServiceInterface $address_service,
 		CurrentUserInterface $current_user,
 		array $data = array()
 	) {
 		$this->source_service = $source_service;
-		$this->source_repository = $source_repository;
+		$this->domain_repository = $domain_repository;
 		$this->address_service = $address_service;
 		$this->current_user = $current_user;
 		parent::__construct( $data );
@@ -55,21 +54,13 @@ class Source extends Model implements SourceInterface {
 		return $this;
 	}
 
-		/**
-	 * Updates the exisiting source by address
-	 * @param array $params New source data
-	 * @return boolean
-	 */
-	public function update( array $params ) {
-		return $this->source_service->store( $params );
-	}
-
 	/**
-	 * Destroys the existing source by address
-	 * @param string $address
-	 * @return void
+	 * Saves the source
+	 * @return self
 	 */
-	public function destroy( string $address ) {
-		$this->source_repository->destroy( $address );
+	public function save() {
+		$save_data = $this->to_array();
+		$this->source_service->store( $save_data );
+		return $this;
 	}
 }

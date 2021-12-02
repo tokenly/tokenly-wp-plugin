@@ -4,8 +4,8 @@ namespace Tokenly\Wp\Providers;
 
 use Tokenly\Wp\Providers\ServiceProvider;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
-use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
-use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
+use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
+use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
 
 /**
  * Registers shortcodes
@@ -14,9 +14,9 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	protected $namespace;
 
 	public function __construct(
-		LoginButtonShortcode $login_button_shortcode,
-		LogoutButtonShortcode $logout_button_shortcode,
-		string $namespace
+		string $namespace,
+		LoginButtonShortcodeInterface $login_button_shortcode,
+		LogoutButtonShortcodeInterface $logout_button_shortcode
 	) {
 		$this->namespace = $namespace;
 		$this->services = array(

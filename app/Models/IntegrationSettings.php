@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 
 class IntegrationSettings extends Model implements IntegrationSettingsInterface {
 	public $client_id = '';

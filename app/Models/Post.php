@@ -12,10 +12,14 @@ use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 
 class Post extends Model implements PostInterface {
 	public $tca_rules;
-	protected $post;
+	protected $post = null;
+	protected $meta_repository;
+	protected $tca_settings;
 	protected $fillable = array(
 		'post',
 		'tca_rules',
@@ -24,11 +28,12 @@ class Post extends Model implements PostInterface {
 	public function __construct(
 		PostServiceInterface $domain_repository,
 		MetaRepositoryInterface $meta_repository,
+		TcaSettingsInterface $tca_settings,
 		array $data = array()
 	) {
-		$this->post = $post;
 		$this->domain_repository = $domain_repository;
 		$this->meta_repository = $meta_repository;
+		$this->tca_settings = $tca_settings;
 		parent::__construct( $data );
 	}
 
@@ -65,13 +70,12 @@ class Post extends Model implements PostInterface {
 	protected function test_access( UserInterface $user ) {
 		$post_id = $this->ID;
 		$can_access = false;
-		$post_type = get_post_type( $post_id );
+		$post_type = $this->post_type;
 		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
 		if ( $tca_enabled === false ) {
 			return true;
 		}
-		$tca_rules = $this->get_tca_rules( $post_id );
-		if ( count( $tca_rules ) === 0 ) {
+		if ( count( (array) $this->tca_rules ) === 0 ) {
 			return true;
 		}
 		if ( $user instanceof GuestUserInterface === true ) {
@@ -80,7 +84,7 @@ class Post extends Model implements PostInterface {
 		if ( user_can( $user, 'administrator' ) ) {
 			return true;
 		}
-		$tca_allowed = $user->check_token_access( $tca_rules ) ?? false;
+		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;
 		return $tca_allowed;
 	}
 }

@@ -6,6 +6,7 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 class GuestUser extends Model implements UserInterface, GuestUserInterface, CurrentUserInterface {
 	public $ID = 0;
@@ -17,15 +18,15 @@ class GuestUser extends Model implements UserInterface, GuestUserInterface, Curr
 	public function is_guest() {
 		return true;
 	}
+
+	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
+		return false;
+	}
+	public function disconnect() {
+		return false;
+	}
 	
 	public function can_connect() {
 		return false;
-	}
-
-	public function get_addresses( array $params = array() ) {
-		return array();
-	}
-	public function get_balances( array $params = array() ) {
-		return array();
 	}
 }

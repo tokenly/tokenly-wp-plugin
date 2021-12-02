@@ -30,7 +30,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		UserMetaRepositoryInterface $user_meta_repository,
 		array $data = array()
 	) {
-		$this->user = $user;
+		parent::__construct( $data );
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_meta_repository = $user_meta_repository;
 	}
@@ -45,15 +45,6 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 
 	public function __set( $key, $val ) {
 		return $this->user->$key = $val;
-	}
-
-	public function check_token_access( TcaRuleCollectionInterface $rules ) {
-		$this->load( 'oauth_user' );
-		if ( !isset( $this->oauth_user ) ) {
-			return false;
-		}
-		$can_access = $this->oauth_user->check_token_access( $rules );
-		return $can_access;
 	}
 	
 	public function is_guest() {
@@ -105,14 +96,5 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		$oauth_user = $this->oauth_user_service->show( array( 'id' => $this->ID ) );
 		$this->oauth_user = $oauth_user;
 		return $this;
-	}
-
-	/**
-	 * Retrieves oauth token from the options
-	 * @return string
-	 */
-	public function get_oauth_token() {
-		$oauth_token = $this->user_meta_repository->show( $this->ID, 'oauth_token' );
-		return $oauth_token;
 	}
 }

@@ -2,10 +2,11 @@
 
 namespace Tokenly\Wp\Shortcodes;
 
-use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
 use Tokenly\Wp\Shortcodes\Shortcode;
+use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
+use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
 
-class LogoutButtonShortcode extends Shortcode {
+class LogoutButtonShortcode extends Shortcode implements LogoutButtonShortcodeInterface {
 	protected $button_logout_component;
 
 	public function __construct(
@@ -15,7 +16,6 @@ class LogoutButtonShortcode extends Shortcode {
 	}
 
 	public function shortcode_callback() {
-		$render = parent::shortcode_callback();
 		return $this->button_logout_component->render();
 	}
 }

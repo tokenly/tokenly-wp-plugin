@@ -14,6 +14,7 @@ use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 
 /**
  * Manages routing for the post type views
@@ -38,6 +39,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		CurrentUserInterface $current_user,
 		TcaSettingsInterface $tca_settings,
 		TcaServiceInterface $tca_service,
+		PostCollectionFactoryInterface $post_collection_factory,
 		string $namespace
 	) {
 		$this->integration = $integration;
@@ -46,6 +48,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		$this->tca_service = $tca_service;
 		$this->namespace = $namespace;
 		$this->post_service = $post_service;
+		$this->post_collection_factory = $post_collection_factory;
 		$this->post_types = array(
 			'token_meta' => array(
 				'post_type'  => $token_meta_post_type,
@@ -204,7 +207,13 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			return;
 		}
 		$post_id = get_the_ID();
-		$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
+		$post = $this->post_service->show( array(
+			'id' => $post_id,
+		) );
+		if ( !$post ) {
+			return;
+		}
+		$can_access = $post->can_access_post( $this->current_user );
 		if ( $can_access === false ) {
 			if ( is_admin() === true ) {
 				wp_die( 'Access denied by TCA.' );
@@ -226,7 +235,10 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	public function tca_on_get_nav_menu_items( array $items, object $menu, array $args ) {
 		foreach ( $items as $key => $item ) {
 			$post_id = $item->object_id;
-			$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
+			$post = $this->post_service->show( array(
+				'id' => $post_id,
+			) );
+			$can_access = $post->can_access_post( $this->current_user );
 			if ( $can_access === false ) {
 				unset( $items[ $key ] );
 			}
@@ -241,15 +253,22 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @return array
 	 */
 	public function tca_on_posts_results( array $posts, $query ) {
+		$post_collection = array();
+		foreach( $posts as $post ) {
+			$post_collection[] = array(
+				'post' => $post,
+			);
+		}
+		$post_collection = $this->post_collection_factory->create( $post_collection );
 		$current_post_id = 0;
 		$is_singular = $query->is_singular;
 		if ( $is_singular == true && isset( $query->posts[0] )) {
 			$post = $query->posts[0];
 			$current_post_id = $post->ID;
 		}
-		foreach ( $posts as $key => $post ) {
+		foreach ( (array) $post_collection as $key => $post ) {
 			$post_id = $post->ID;
-			$can_access = $this->post_service->can_access_post( $post_id, $this->current_user );
+			$can_access = $post->can_access_post( $this->current_user );
 			if ( $can_access === false && $current_post_id != $post_id ) {			
 				unset( $posts[ $key ] );
 			}

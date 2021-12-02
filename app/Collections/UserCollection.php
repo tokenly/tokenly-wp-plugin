@@ -16,8 +16,8 @@ class UserCollection extends Collection implements UserCollectionInterface {
 	protected $user_meta_repository;
 	
 	public function __construct(
-		array $items,
-		UserMetaRepositoryInterface $user_meta_repository
+		UserMetaRepositoryInterface $user_meta_repository,
+		array $items = array()
 	) {
 		parent::__construct( $items );
 		$this->user_meta_repository = $user_meta_repository;
