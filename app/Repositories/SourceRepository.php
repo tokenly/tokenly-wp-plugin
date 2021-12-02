@@ -68,20 +68,21 @@ class SourceRepository implements SourceRepositoryInterface {
 
 	/**
 	 * Updates the exisiting source by address
-	 * @param string $address Address of source
+	 * @param SourceInterface $source Source to update
 	 * @param array $params New source data
-	 * @return boolean
+	 * @return SourceInterface
 	 */
-	public function update( $address, $params ) {
+	public function update( SourceInterface $source, array $params ) {
+		$params['address'] = $source->address;
 		return $this->store( $params );
 	}
 
 	/**
-	 * Destroys the existing source by address
-	 * @param string $address
+	 * Destroys the existing source
+	 * @param SourceInterface $source Source to destroy
 	 * @return void
 	 */
-	public function destroy( $address ) {
-		$this->client->deleteProvisionalSource( $address );
+	public function destroy( SourceInterface $source ) {
+		$this->client->deleteProvisionalSource( $source->address );
 	}
 }

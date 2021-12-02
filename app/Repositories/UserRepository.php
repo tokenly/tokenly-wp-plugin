@@ -101,4 +101,18 @@ class UserRepository implements UserRepositoryInterface {
 		$user = $this->user_factory->create( $user );
 		return $user;
 	}
+
+	public function update( UserInterface $user, array $params ) {
+		$update_params = array();
+		if ( isset( $params['uuid'] ) ) {
+			$update_params['uuid'] = $params['uuid'];
+		}
+		if ( isset( $params['oauth_token'] ) ) {
+			$update_params['oauth_token'] = $params['oauth_token'];
+		}
+		if ( isset( $params['can_connect'] ) ) {
+			$update_params['can_connect'] = $params['can_connect'];
+		}
+		$this->user_meta_repository->update( $user->ID, $update_params );
+	}
 }

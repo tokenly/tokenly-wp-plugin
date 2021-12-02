@@ -10,9 +10,6 @@ use Tokenly\Wp\Services\TcaService;
 use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
-use Tokenly\Wp\Services\Domain\IntegrationService;
-use Tokenly\Wp\Services\Domain\IntegrationSettingsService;
-use Tokenly\Wp\Services\Domain\TcaSettingsService;
 use Tokenly\Wp\Services\Domain\OauthUserService;
 use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
@@ -20,7 +17,6 @@ use Tokenly\Wp\Services\Domain\PromiseService;
 use Tokenly\Wp\Services\Domain\SourceService;
 use Tokenly\Wp\Services\Domain\TokenMetaService;
 use Tokenly\Wp\Services\Domain\UserService;
-use Tokenly\Wp\Services\Domain\WhitelistService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
@@ -112,9 +108,6 @@ use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TcaSettingsServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
@@ -122,7 +115,6 @@ use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
@@ -292,9 +284,6 @@ return array(
 	//Services - Domain
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
-	IntegrationServiceInterface::class             => \DI\autowire( IntegrationService::class ),
-	IntegrationSettingsServiceInterface::class     => \DI\autowire( IntegrationSettingsService::class ),
-	TcaSettingsServiceInterface::class             => \DI\autowire( TcaSettingsService::class ),
 	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
 	PostServiceInterface::class                    => \DI\autowire( PostService::class ),
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
@@ -336,29 +325,19 @@ return array(
 	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Collections
-	CollectionInterface::class                     => \DI\autowire( Collection::class ),
-	AddressCollectionInterface::class              => \DI\autowire( AddressCollection::class ),
-	BalanceCollectionInterface::class              => \DI\autowire( BalanceCollection::class ),
-	PromiseCollectionInterface::class              => \DI\autowire( PromiseCollection::class ),
-	PromiseMetaCollectionInterface::class          => \DI\autowire( PromiseMetaCollection::class ),
-	SourceCollectionInterface::class               => \DI\autowire( SourceCollection::class ),
-	TokenMetaCollectionInterface::class            => \DI\autowire( TokenMetaCollection::class ),
-	TcaRuleCollectionInterface::class              => \DI\autowire( TcaRuleCollection::class ),
-	UserCollectionInterface::class                 => \DI\autowire( UserCollection::class ),
+	CollectionInterface::class             => \DI\autowire( Collection::class ),
+	AddressCollectionInterface::class      => \DI\autowire( AddressCollection::class ),
+	BalanceCollectionInterface::class      => \DI\autowire( BalanceCollection::class ),
+	PromiseCollectionInterface::class      => \DI\autowire( PromiseCollection::class ),
+	PromiseMetaCollectionInterface::class  => \DI\autowire( PromiseMetaCollection::class ),
+	SourceCollectionInterface::class       => \DI\autowire( SourceCollection::class ),
+	TokenMetaCollectionInterface::class    => \DI\autowire( TokenMetaCollection::class ),
+	TcaRuleCollectionInterface::class      => \DI\autowire( TcaRuleCollection::class ),
+	UserCollectionInterface::class         => \DI\autowire( UserCollection::class ),
 	//Models
-	AddressInterface::class                        => \DI\autowire( Address::class ),
-	BalanceInterface::class                        => \DI\autowire( Balance::class ),
-	OauthUserInterface::class                      => \DI\autowire( OauthUser::class ),
-	PostInterface::class                           => \DI\autowire( Post::class ),
-	PromiseInterface::class                        => \DI\autowire( Promise::class ),
-	PromiseMetaInterface::class                    => \DI\autowire( PromiseMeta::class ), 
-	SourceInterface::class                         => \DI\autowire( Source::class ), 
-	TokenMetaInterface::class                      => \DI\autowire( TokenMeta::class ), 
-	TcaRuleInterface::class                        => \DI\autowire( TcaRule::class ), 
-	UserInterface::class                           => \DI\autowire( User::class ),
-	WhitelistItemInterface::class                  => \DI\autowire( WhitelistItem::class ),
-	//Models - single instance
-	CurrentUserInterface::class                => \DI\factory( function (
+	AddressInterface::class                => \DI\autowire( Address::class ),
+	BalanceInterface::class                => \DI\autowire( Balance::class ),
+	CurrentUserInterface::class            => \DI\factory( function (
 		ContainerInterface $container,
 		UserServiceInterface $user_service
 	) {
@@ -372,42 +351,19 @@ return array(
 		}
 		return $user;
 	} ),
-	IntegrationInterface::class                => \DI\factory( function ( 
-		ContainerInterface $container
-	) {
-		$integration = $container->make( Integration::class );
-		return $integration;
-	} ),
-	IntegrationSettingsInterface::class        => \DI\factory( function ( 
-		ContainerInterface $container,
-		IntegrationSettingsServiceInterface $integration_settings_service
-	) {
-		$settings_data = $integration_settings_service->show();
-		$settings = $container->make( IntegrationSettings::class, array(
-			'settings_data' => $settings_data,
-		) );
-		return $settings;
-	} ),
-	TcaSettingsInterface::class        => \DI\factory( function ( 
-		ContainerInterface $container,
-		TcaSettingsServiceInterface $tca_settings_service
-	) {
-		$settings_data = $tca_settings_service->show();
-		$settings = $container->make( TcaSettings::class, array(
-			'settings_data' => $settings_data,
-		) );
-		return $settings;
-	} ),
-	WhitelistInterface::class                  => \DI\factory( function ( 
-		ContainerInterface $container,
-		WhitelistServiceInterface $whitelist_service
-	) {
-		$whitelist_data = $whitelist_service->show();
-		$whitelist = $container->make( Whitelist::class, array(
-			'whitelist_data' => $whitelist_data,
-		) );
-		return $whitelist;
-	} ),
+	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
+	PostInterface::class                   => \DI\autowire( Post::class ),
+	PromiseInterface::class                => \DI\autowire( Promise::class ),
+	PromiseMetaInterface::class            => \DI\autowire( PromiseMeta::class ), 
+	SourceInterface::class                 => \DI\autowire( Source::class ), 
+	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
+	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
+	UserInterface::class                   => \DI\autowire( User::class ),
+	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
+	IntegrationInterface::class            => \DI\autowire( Integration::class ),
+	IntegrationSettingsInterface::class    => \DI\autowire( IntegrationSettings::class ),
+	TcaSettingsInterface::class            => \DI\autowire( TcaSettings::class ),
+	WhitelistInterface::class              => \DI\autowire( Whitelist::class ),
 	//Factories - collections
 	AddressCollectionFactoryConcrete::class      => \DI\autowire( ConcreteFactory::class )
 		->constructorParameter( 'class', AddressCollectionInterface::class ),

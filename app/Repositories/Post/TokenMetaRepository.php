@@ -6,12 +6,14 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 /**
  * Manages token meta data
  */
 class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	protected $token_meta_collection_factory;
+	protected $meta_repository;
 	protected $namespace;
 	
 	public function __construct(
@@ -19,6 +21,7 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		string $namespace
 	) {
 		$this->token_meta_collection_factory = $token_meta_collection_factory;
+		$this->meta_repository = $meta_repository;
 		$this->namespace = $namespace;
 	}
 
@@ -46,5 +49,16 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		$posts = $query_meta->posts;
 		$posts = $this->token_meta_collection_factory->create( $posts );
 		return $posts;
+	}
+
+	public function update( TokenMetaInterface $post, array $params = array() ) {
+		$update_params = array();
+		if ( isset( $params['asset'] ) ) {
+			$update_params['asset'] = $params['asset'];
+		}
+		if ( isset( $params['extra'] ) ) {
+			$update_params['extra'] = $params['extra'];
+		}
+		$this->meta_repository->update( $post->ID, $update_params );
 	}
 }

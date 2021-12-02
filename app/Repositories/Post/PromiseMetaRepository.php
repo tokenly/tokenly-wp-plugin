@@ -77,7 +77,6 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		if ( isset( $posts[0] ) ) {
 			return $posts[0];
 		}
-		
 	}
 	
 	/**
@@ -121,20 +120,21 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	
 	/**
 	 * Updates the token-meta post by post ID
-	 * @param int $post_id Post index
+	 * @param PromiseMetaInterface $post Post to update
 	 * @param array $params New post data
 	 * @return void
 	 */
-	public function update( array $params = array() ) {
+	public function update( PromiseMetaInterface $post, array $params = array() ) {
+		$params['ID'] = $post->ID; 
 		$post = wp_update_post( $params );
 	}
 	
 	/**
 	 * Deletes the existing promise meta post
-	 * @param int $post_id Post index
+	 * @param PromiseMetaInterface $post Post to delete
 	 * @return void 
 	 */
-	public function destroy( int $post_id ) {
-		wp_update_post( $post_id );
+	public function destroy( PromiseMetaInterface $post ) {
+		wp_delete_post( $post->ID );
 	}
 }

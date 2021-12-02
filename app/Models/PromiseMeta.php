@@ -8,14 +8,16 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepository;
 
 class PromiseMeta implements PromiseMetaInterface {
 	public $source_user_id;
+	public $source_user;
 	public $destination_user_id;
+	public $destination_user;
 	protected $post;
 	protected $user_service;
-	protected $promise_meta_service;
+	protected $promise_meta_repository;
 	protected $fillable = array(
 		'post',
 		'promise_id',
@@ -25,11 +27,11 @@ class PromiseMeta implements PromiseMetaInterface {
 
 	public function __construct(
 		UserServiceInterface $user_service,
-		PromiseMetaServiceInterface $promise_meta_service,
+		PromiseMetaRepositoryInterface $promise_meta_repository,
 		array $data = array()
 	) {
-		$this->promise_meta_service = $promise_meta_service;
 		$this->user_service = $user_service;
+		$this->promise_meta_repository = $promise_meta_repository;
 		parent::__construct( $data );
 	}
 
@@ -44,43 +46,46 @@ class PromiseMeta implements PromiseMetaInterface {
 	public function __set( $key, $val ) {
 		return $this->post->$key = $val;
 	}
-	
-	public function to_array() {
-		$meta = $this->promise_meta_service->get_promise_meta( $this->ID );
-		$uuids = array();
-		if ( isset( $meta['source_user_id'] ) ) {
-			$uuids[] = $meta['source_user_id'];
-		}
-		if ( isset( $meta['destination_user_id'] ) ) {
-			$uuids[] = $meta['destination_user_id'];
-		}
-		$users = $this->user_service->index( array(
-			'uuids' => $uuids,
+
+	protected function load_source_user( array $relation ) {
+		$user = $this->user_service->show( array(
+			'uuid' => $source_user_id,
+			'with' => $relation,
 		) );
-		$users->key_by_uuid();
-		$source_user = null;
-		if ( isset( $meta['source_user_id'] ) && isset( $users[ $meta['source_user_id'] ] ) ) {
-			$source_user = $users[ $meta['source_user_id'] ];
-			$source_user = $source_user->to_array();
-		}
-		$destination_user = null;
-		if ( isset( $meta['destination_user_id'] ) && isset( $users[ $meta['destination_user_id'] ] ) ) {
-			$destination_user = $users[ $meta['destination_user_id'] ];
-			$destination_user = $destination_user->to_array();
-		}
-		$array = array(
-			'promise_id'       => $meta['promise_id'] ?? null, 
-			'source_user'      => $source_user,
-			'destination_user' => $destination_user,
+		$this->source_user = $user;
+		return $this;
+	}
+
+	protected function load_destination_user( array $relation ) {
+		$user = $this->user_service->show( array(
+			'uuid' => $destination_user_id,
+			'with' => $relation,
+		) );
+		$this->destination_user = $user;
+		return $this;
+	}
+
+	/**
+	 * Updates the token-meta post by post ID
+	 * @param int $post_id Post index
+	 * @param array $params New post data
+	 * @return self
+	 */
+	public function update( array $params = array() ) {
+		$update_params = array(
+			'ID' => $this->ID,
 		);
-		return $array;
+		$update_params = array_merge( $update_params, $params );
+		$post = $this->promise_meta_repository->update( $update_params );
+		return $this;
 	}
 	
-	public function update( $params = array() ) {
-		$this->promise_meta_service->update( $this->ID, $params );
-	}
-	
+	/**
+	 * Deletes the existing promise meta post
+	 * @param int $post_id Post index
+	 * @return void 
+	 */
 	public function destroy() {
-		$this->promise_meta_service->destroy( $this->ID );
+		$this->promise_meta_repository->destroy( $this->ID );
 	}
 }

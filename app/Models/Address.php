@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 
 class Address extends Model implements AddressInterface {
@@ -12,7 +12,6 @@ class Address extends Model implements AddressInterface {
 	public $type = '';
 	public $label = 'Unnamed';
 	public $balances;
-	protected $domain_service;
 	protected $fillable = array(
 		'address',
 		'type',
@@ -21,22 +20,10 @@ class Address extends Model implements AddressInterface {
 	);
 
 	public function __construct(
-		SourceServiceInterface $domain_service,
+		SourceRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
-		$this->domain_service = $domain_service;
+		$this->domain_repository = $domain_repository;
 		parent::__construct( $data );
-	}
-
-	public function register( string $assets = '' ) {
-		if ( !isset( $this->address ) || !isset( $this->type ) ) {
-			return;
-		}
-		$payload = array(
-			'address' => $this->address,
-			'type'    => $this->type,
-			'assets'  => $assets,
-		);
-		$this->domain_service->store( $payload );
 	}
 }

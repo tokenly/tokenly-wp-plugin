@@ -25,11 +25,20 @@ class OauthUserRepository implements OauthUserRepositoryInterface {
 	 * @return OauthUserInterface
 	 */
 	public function show( string $oauth_token ) {
-		$oauth_user = $this->client->getUserByToken( $oauth_token );
+		$oauth_user;
+		if ( isset( $params['oauth_token'] ) ) {
+			$oauth_token = $params['oauth_token'];
+			$oauth_user = $this->client->getUserByToken( $oauth_token );
+			if ( is_array( $oauth_user ) ) {
+				$oauth_user['oauth_token'] = $oauth_token;
+			}
+		} elseif ( isset( $params['address'] ) ) {
+			$address = '14eRVGNPQChSmSmNLH6RPjdwsNPc7rH2Z7';
+			$oauth_user = $this->client->lookupUserByAddress( $address );
+		}
 		if ( !$oauth_user ) {
 			return;
 		}
-		$oauth_user['oauth_token'] = $oauth_token;
 		$oauth_user = $this->oauth_user_factory->create( $oauth_user );
 		return $oauth_user;
 	}

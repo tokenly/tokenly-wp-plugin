@@ -10,22 +10,25 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 
 class Post extends Model implements PostInterface {
 	public $tca_rules;
 	protected $post;
-	protected $post_service;
 	protected $fillable = array(
 		'post',
 		'tca_rules',
 	);
 
 	public function __construct(
-		PostServiceInterface $post_service,
+		PostServiceInterface $domain_repository,
+		MetaRepositoryInterface $meta_repository,
 		array $data = array()
 	) {
 		$this->post = $post;
-		$this->post_service = $post_service;
+		$this->domain_repository = $domain_repository;
+		$this->meta_repository = $meta_repository;
 		parent::__construct( $data );
 	}
 
@@ -41,15 +44,43 @@ class Post extends Model implements PostInterface {
 		return $this->post->$key = $val;
 	}
 
-	public function get_tca_rules() {
-		if ( !isset( $this->tca_rules ) ) {
-			$this->tca_rules = $this->post_service->get_tca_rules( $this->ID );
-		}
-		return $this->tca_rules;
+	/**
+	 * Main pipeline for post access check
+	 * @param int $post_id ID of the post to check
+	 * @param UserInterface $user User to check
+	 * @return bool
+	 */
+	public function can_access_post( UserInterface $user ) {
+		$can_access = $this->test_access( $user );
+		return $can_access;
 	}
 
-	public function set_tca_rules( TcaRuleCollectionInterface $rules ) {
-		$this->$tca_rules = $rules;
-		$this->post_service->set_tca_rules( $this->ID, $rules );
+	/**
+	 * Check if the specified user is allowed to access
+	 * the specified post
+	 * @param int $post_id ID of the post to check
+	 * @param int $user_id ID of the user to check
+	 * @return bool
+	 */
+	protected function test_access( UserInterface $user ) {
+		$post_id = $this->ID;
+		$can_access = false;
+		$post_type = get_post_type( $post_id );
+		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
+		if ( $tca_enabled === false ) {
+			return true;
+		}
+		$tca_rules = $this->get_tca_rules( $post_id );
+		if ( count( $tca_rules ) === 0 ) {
+			return true;
+		}
+		if ( $user instanceof GuestUserInterface === true ) {
+			return false;
+		}
+		if ( user_can( $user, 'administrator' ) ) {
+			return true;
+		}
+		$tca_allowed = $user->check_token_access( $tca_rules ) ?? false;
+		return $tca_allowed;
 	}
 }

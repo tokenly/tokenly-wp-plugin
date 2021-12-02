@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
 class Promise extends Model implements PromiseInterface {
 	public $source;
@@ -28,6 +29,7 @@ class Promise extends Model implements PromiseInterface {
 	public $precision;
 	public $promise_meta;
 	protected $promise_meta_service;
+	protected $promise_repository;
 	protected $fillable = array(
 		'source',
 		'destination',
@@ -51,25 +53,17 @@ class Promise extends Model implements PromiseInterface {
 	public function __construct(
 		PromiseServiceInterface $domain_service,
 		PromiseMetaServiceInterface $promise_meta_service,
+		PromiseRepositoryInterfacec $promise_repository,
 		array $data = array()
 	) {
 		$this->domain_service = $domain_service;
 		$this->promise_meta_service = $promise_meta_service;
+		$this->promise_repository = $promise_repository;
 		parent::__construct( $data );
 	}
 
 	public function update( $params = array() ) {
 		$this->domain_service->update( $this->promise_id, $params );
-	}
-
-	/**
-	 * Deletes the promise and its meta
-	 */
-	public function destroy() {
-		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
-			$this->promise_meta->destroy();	
-		}
-		$this->domain_service->destroy( $this->promise_id );
 	}
 
 	/**
@@ -85,6 +79,29 @@ class Promise extends Model implements PromiseInterface {
 		}
 		$this->promise_meta = $promise_meta;
 		return $promise_meta;
+	}
+
+	/**
+	 * Destroys the existing promise
+	 * @param integer $promise_id Tokenpass promise index
+	 * @return void
+	 */
+	public function destroy() {
+		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
+			$this->promise_meta->destroy();	
+		}
+		$this->promise_repository->destroy( $this->promise_id );
+	}
+
+	protected function load_promise_meta( array $relations ) {
+		$promise_meta = $this->promise_meta_service->show( array(
+			'with'        => $relations,
+			'promise_ids' => array( $this->promise_id ), 
+		) );
+		if ( $promise_meta ) {
+			$this->promise_meta = $promise_meta;
+		}
+		return $this;
 	}
 }
 

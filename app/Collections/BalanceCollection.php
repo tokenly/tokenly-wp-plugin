@@ -48,4 +48,37 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 			$this->exchangeArray( $balances_filtered );
 		}
 	}
+
+	/**
+	 * Embeds the WordPress token meta post data into the balance objects
+	 * @param array $relation Other relations to load
+	 * @return BalanceCollectionInterface
+	 */
+	protected function load_token_meta_collection( array $relation ) {
+		$assets = array_map( function( $balance ) {
+			return $balance->name;
+		}, ( array ) $this );
+		$meta = $this->token_meta_service->index( array(
+			'assets' => $assets,
+			'with'   => $relation,
+		) );
+		$balances = $this->key_by_field( 'asset' );
+		$meta_keyed = array();
+		foreach ( ( array ) $meta as $meta_item ) {
+			$asset = $meta_item->tokenly_asset;
+			$meta_keyed[ $asset ] = $meta_item;
+		}
+		foreach ( (array) $balances as &$balance ) {
+			$asset = $balance->asset;
+			if ( !$asset ) {
+				continue;
+			}
+			$meta = $meta_keyed[ $asset ] ?? null;
+			if ( !$meta ) {
+				continue;
+			}
+			$balance->meta = $meta;
+		}
+		return $balances;
+	}
 }

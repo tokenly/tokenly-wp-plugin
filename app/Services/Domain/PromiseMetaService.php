@@ -38,7 +38,7 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 * @param integer $params Post search params
 	 * @return PromiseMetaInterface
 	 */
-	public function show( $params = array() ) {
+	public function show( array $params = array() ) {
 		$meta = $this->index( $params );
 		return $meta[0] ?? null;
 	}
@@ -51,42 +51,6 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	public function store( array $params ) {
 		$post = $this->promise_meta_repository->store( $params );
 		return $post;
-	}
-	
-	/**
-	 * Updates the token-meta post by post ID
-	 * @param int $post_id Post index
-	 * @param array $params New post data
-	 * @return void
-	 */
-	public function update( int $post_id, array $params = array() ) {
-		$update_params = array(
-			'ID' => $post_id,
-		);
-		$update_params = array_merge( $update_params, $params );
-		$post = $this->promise_meta_repository->update( $update_params );
-		return $post;
-	}
-	
-	/**
-	 * Deletes the existing promise meta post
-	 * @param int $post_id Post index
-	 * @return void 
-	 */
-	public function destroy( int $post_id ) {
-		$this->promise_meta_repository->destroy( $post_id );
-	}
-
-	protected function load_source_user( PromiseMetaInterface $promise_meta, array $relation ) {
-		$source_user = $this->promise_meta_service->show( array(
-			'with'        => $relation,
-			'promise_ids' => array( $promise->promise_id ), 
-		) );
-		if ( !$promise_meta ) {
-			return $promise;
-		}
-		$promise->promise_meta = $promise_meta;
-		return $promise;
 	}
 }
 

@@ -81,20 +81,20 @@ class PromiseRepository implements PromiseRepositoryInterface {
 
 	/**
 	 * Updates the existing promised transaction
-	 * @param integer $promise_id Tokenpass promise index
+	 * @param PromiseInterface $promise Promise to update
 	 * @param $params New promise properties
 	 * @return array
 	 */
-	public function update( int $promise_id, array $params = array() ) {
-		$response = $this->client->updatePromisedTransaction( $promise_id, $params );
+	public function update( PromiseInterface $promise, array $params = array() ) {
+		$response = $this->client->updatePromisedTransaction( $promise->promise_id, $params );
 	}
 
 	/**
 	 * Destroys the existing promise
-	 * @param integer $promise_id Tokenpass promise index
+	 * @param PromiseInterface $promise Promise to destroy
 	 * @return void
 	 */
-	public function destroy( int $promise_id ) {
-		$this->client->deletePromisedTransaction( $promise_id );
+	public function destroy( PromiseInterface $promise ) {
+		$this->client->deletePromisedTransaction( $promise->promise_id );
 	}
 }

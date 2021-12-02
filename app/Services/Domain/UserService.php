@@ -48,82 +48,18 @@ class UserService extends DomainService implements UserServiceInterface {
 	}
 
 	/**
-	 * Adds an inventory link to WordPress admin user list
-	 * @param array $actions Current actions
-	 * @param \WP_user $user Current user
-	 * @return array $actions Modified actions
+	 * Gets a list of users
+	 * @param array $params Search parameters
+	 * @return UserCollectionInterface
 	 */
-	public function add_view_inventory_user_action( array $actions, \WP_User $user ) {
-		$user_id = $user->ID;
-		$user = $this->user_repository->show( array(
-			'id' => $user_id,
-		) );
-		if ( $user && $user->can_connect() ) {
-			$actions['token_inventory'] = "<a href='/{$this->namespace}/user/{$user_id}'>Token inventory</a>";
-		}
-		return $actions;
-	}
-
-	/**
-	 * Checks if the user is currently connected to Tokenpass
-	 * @return bool
-	 */
-	public function can_connect( int $user_id ) {
-		$can_connect =  $this->user_meta_repository->show( $user_id, 'can_connect' ) ?? false;
-		return $can_connect;
-	}
-
-	public function connect( int $user_id, OauthUserInterface $oauth_user, string $oauth_token ) {
-		$this->user_meta_repository->update( $user_id, array(
-			'uuid'        => $oauth_user->id,
-			'oauth_token' => $oauth_token,
-			'can_connect' => true,
-		) );
-		$user = get_user_by( 'ID', $user_id );
-		if ( !$user ) {
-			return;
-		}
-		$user->add_cap( 'use_tokenpass' );
-	}
-
-	/**
-	 * Disconnects the user from Tokenpass
-	 * @return void
-	 */
-	public function disconnect( int $id ) {
-		$this->user_meta_repository->destroy( $id, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
-		$user = get_user_by( 'ID', $id );
-		if ( !$user ) {
-			return;
-		}
-		$user->remove_cap( 'use_tokenpass');
-	}
-
-	/**
-	 * Retrieves oauth user from the API
-	 * @param UserInterface $user Target user
-	 * @return UserInterface
-	 */
-	public function load_oauth_user( UserInterface $user ) {
-		$oauth_user = $this->oauth_user_service->show( array( 'id' => $user->ID ) );
-		$user->oauth_user = $oauth_user;
-		return $user;
-	}
-
-	/**
-	 * Retrieves oauth token from the options
-	 * @return string
-	 */
-	public function get_oauth_token( int $id ) {
-		$oauth_token = $this->user_meta_repository->show( $id, 'oauth_token' );
-		return $oauth_token;
-	}
-
 	public function index( array $params ) {
 		$users = $this->user_repository->index( $params );
 		if ( isset( $params['suggestions'] ) ) {
 			$suggestions = $this->make_suggestions( $users );
 			return $suggestions;
+		}
+		if ( isset( $params['with'] ) ) {
+			$users = $users->load( $params['with'] );
 		}
 		return $users;
 	}
@@ -163,6 +99,23 @@ class UserService extends DomainService implements UserServiceInterface {
 			}
 		}
 		return $suggestions;
+	}
+
+	/**
+	 * Adds an inventory link to WordPress admin user list
+	 * @param array $actions Current actions
+	 * @param \WP_user $user Current user
+	 * @return array $actions Modified actions
+	 */
+	public function add_view_inventory_user_action( array $actions, \WP_User $user ) {
+		$user_id = $user->ID;
+		$user = $this->show( array(
+			'id' => $user_id,
+		) );
+		if ( $user && $user->can_connect() ) {
+			$actions["{$this->namespace}_inventory"] = "<a href='/{$this->namespace}/user/{$user_id}'>Token inventory</a>";
+		}
+		return $actions;
 	}
 
 }

@@ -5,34 +5,49 @@ namespace Tokenly\Wp\Models;
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 
 class Integration extends Model implements IntegrationInterface {
 	public $settings;
 	public $can_connect = false;
-	protected $integration_service;
+	protected $option_repository;
+	protected $source_repository;
 	protected $fillable = array(
-		'settings',
+		'can_connect',
 	);
 	
 	public function __construct(
 		IntegrationSettingsInterface $settings,
-		IntegrationServiceInterface $integration_service
+		OptionRepositoryInterface $option_repository,
+		SourceRepositoryInterface $source_repository
 	) {
 		$this->settings = $settings;
-		$this->integration_service = $integration_service;
+		$integration_data = $this->option_repository->index(
+			'integration_can_connect',
+		);
+		$fill_data = array(
+			'can_connect' => $integration_data['integration_can_connect'],
+		);
+		parent::__construct( $fill_data );
 		if ( isset( $this->settings->settings_updated ) && $this->settings->settings_updated == true ) {
 			$this->check_connection();
 		}
 	}
 
 	public function check_connection() {
-		$can_connect = $this->integration_service->check_connection();
+		$can_connect = false;
+		$result = $this->source_repository->index();
+		if ( $result == false ) {
+			$can_connect = false;
+		} else {
+			$can_connect = true;
+		}
 		$this->settings->update( array(
 			'settings_updated' => false,
 		) );
 		$this->can_connect = $can_connect;
-		$this->update();
+		$this->save();
 	}
 	
 	/**
@@ -43,8 +58,12 @@ class Integration extends Model implements IntegrationInterface {
 		return $this->can_connect ?? false;
 	}
 
-	public function update() {
-		$new_data = $this->to_array();
-		$this->integration_service->update( $new_data );
+	public function save() {
+		$save_data = $this->to_array();
+		$save_data_formatted = array();
+		foreach ( $save_data as $key => $save_data_item ) {
+			$save_data_formatted[ "integration_{$key}" ] = $save_data_item;
+		}
+		$this->option_repository->update( $save_data_formatted );
 	}
 }
