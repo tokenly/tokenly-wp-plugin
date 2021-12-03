@@ -29,8 +29,9 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 * @return PromiseMetaCollectionInterface
 	 */
 	public function index( array $params = array() ) {
-		$promise_collection = $this->promise_meta_repository->index( $params );
-		return $promise_collection;
+		$promises = $this->promise_meta_repository->index( $params );
+		$promises = $this->index_after( $promises, $params );
+		return $promises;
 	}
 	
 	/**
@@ -39,8 +40,9 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 * @return PromiseMetaInterface
 	 */
 	public function show( array $params = array() ) {
-		$meta = $this->index( $params );
-		return $meta[0] ?? null;
+		$meta = $this->promise_meta_repository->show( $params );
+		$meta = $this->show_after( $meta, $params );
+		return $meta;
 	}
 	
 	/**

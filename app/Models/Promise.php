@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
 class Promise extends Model implements PromiseInterface {
+	public $source_id;
 	public $source;
 	public $destination;
 	public $asset;
@@ -32,6 +33,7 @@ class Promise extends Model implements PromiseInterface {
 	protected $promise_repository;
 	protected $fillable = array(
 		'source',
+		'source_id',
 		'destination',
 		'asset',
 		'quantity',
@@ -62,23 +64,17 @@ class Promise extends Model implements PromiseInterface {
 		parent::__construct( $data );
 	}
 
-	public function update( $params = array() ) {
-		$this->domain_service->update( $this->promise_id, $params );
-	}
-
 	/**
-	 * Adds promise meta post to the promise
-	 * @param array $promise_meta_data New promise meta data
-	 * @return PromiseMetaInterface
+	 * Associates promise meta with the promise
+	 * @param PromiseMetaInterface $promise_meta_data Promise meta to associate
+	 * @return self
 	 */
-	public function add_meta( array $promise_meta_data ) {
-		$promise_meta_data['promise_id'] = $this->promise_id;
-		$promise_meta = $this->promise_meta_service->store( $promise_meta_data );
-		if ( !$promise_meta ) {
-			return false;
-		}
+	public function associate_meta( PromiseMetaInterface $promise_meta ) {
+		$promise_meta->update( array(
+			'promise_id' => $this->promise_id,
+		) );
 		$this->promise_meta = $promise_meta;
-		return $promise_meta;
+		return $this;
 	}
 
 	/**
@@ -87,10 +83,10 @@ class Promise extends Model implements PromiseInterface {
 	 * @return void
 	 */
 	public function destroy() {
-		if ( isset( $this->promise_meta ) && is_a( $this->promise_meta, PromiseMetaInterface::class ) ) {
+		if ( isset( $this->promise_meta ) ) {
 			$this->promise_meta->destroy();	
 		}
-		$this->promise_repository->destroy( $this->promise_id );
+		$this->promise_repository->destroy( $this );
 	}
 
 	protected function load_promise_meta( array $relations ) {

@@ -33,7 +33,6 @@ class Whitelist extends Model implements WhitelistInterface {
 		} else {
 			$whitelist['whitelist_items'] = null;
 		}
-		
 		$data = array(
 			'enabled' => $whitelist['whitelist_enabled'] ?? false,
 			'items'   => $whitelist['whitelist_items'],

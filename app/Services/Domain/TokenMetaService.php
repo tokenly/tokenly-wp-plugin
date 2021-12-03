@@ -25,6 +25,7 @@ class TokenMetaService extends DomainService implements TokenMetaServiceInterfac
 	 */
 	public function index( array $params = array() ) {
 		$posts = $this->token_meta_repository->index( $params ); 
+		$posts = $this->index_after( $posts, $params );
 		return $posts;
 	}
 	
@@ -34,8 +35,9 @@ class TokenMetaService extends DomainService implements TokenMetaServiceInterfac
 	 * @return TokenMetaInterface
 	 */
 	public function show( array $params = array() ) {
-		$meta = $this->index( $params );
-		return $meta[0] ?? null;
+		$meta = $this->token_meta_repository->index( $params ); 
+		$meta = $this->show_after( $meta, $params );
+		return $meta;
 	}
 }
 

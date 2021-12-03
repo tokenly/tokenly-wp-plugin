@@ -72,12 +72,16 @@ class SourceController implements SourceControllerInterface {
 		if ( !isset( $this->current_user ) ) {
 			return;
 		}
-		$addresses = $this->current_user->get_addresses(
-			array(
-				'with' => array( 'balances.token_meta' ),
-			)
-		);
-		$addresses = $addresses->to_array();
+		$this->current_user->load( array( 'oauth_user' ) );
+		if ( !isset( $this->current_user->oauth_user ) ) {
+			return;
+		}
+		$oauth_user = $this->current_user->oauth_user;
+		$oauth_user->load( array( 'address.balance.token_meta' ) );
+		$addresses = array();
+		if ( isset( $oauth_user->addresses ) ) {
+			$addresses = $oauth_user->addresses->to_array();
+		}
 		$render = $this->source_store_view->render( array(
 			'addresses' => $addresses,
 		) );

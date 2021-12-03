@@ -15,13 +15,13 @@ class AddressCollection extends Collection implements AddressCollectionInterface
 	protected $item_type = AddressInterface::class;
 
 	/**
-	 * Loads balances for each address
-	 * @param array $relation Relations
-	 * @return AddressCollectionInterface Modified addresses
+	 * Loads the balance relation
+	 * @param array $relations Further relations
+	 * @return self
 	 */
-	protected function load_balances( array $relation ) {
+	protected function load_balance( array $relations ) {
 		foreach( (array) $this as &$address ) {
-			$address->balances = $address->balances->load( $relation );
+			$address->balances = $address->balances->load( $relations );
 		}
 		return $this;
 	}

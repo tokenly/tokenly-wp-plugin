@@ -24,6 +24,7 @@ class Integration extends Model implements IntegrationInterface {
 	) {
 		$this->settings = $settings;
 		$this->option_repository = $option_repository;
+		$this->source_repository = $source_repository;
 		$integration_data = $this->option_repository->index( array(
 				'integration_can_connect',
 			)

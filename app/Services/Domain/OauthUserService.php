@@ -36,6 +36,7 @@ class OauthUserService extends DomainService implements OauthUserServiceInterfac
 			$params['oauth_token'] = $oauth_token;
 		}
 		$oauth_user = $this->oauth_user_repository->show( $params );
+		$oauth_user = $this->show_after( $oauth_user, $params );
 		if ( !$oauth_user ) {
 			return;
 		}

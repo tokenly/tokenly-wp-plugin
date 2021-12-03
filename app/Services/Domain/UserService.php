@@ -3,8 +3,6 @@
 namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
@@ -16,26 +14,17 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
  * Manages the users
  */
 class UserService extends DomainService implements UserServiceInterface {
-	protected $address_service;
-	protected $balance_service;
 	protected $oauth_user_service;
 	protected $user_repository;
-	protected $user_meta_repository;
 	protected $namespace;
 
 	public function __construct(
-		AddressServiceInterface $address_service,
-		BalanceServiceInterface $balance_service,
 		OauthUserServiceInterface $oauth_user_service,
 		UserRepositoryInterface $user_repository,
-		UserMetaRepositoryInterface $user_meta_repository,
 		string $namespace
 	) {
-		$this->address_service = $address_service;
-		$this->balance_service = $balance_service;
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_repository = $user_repository;
-		$this->user_meta_repository = $user_meta_repository;
 		$this->namespace = $namespace;
 	}
 	
@@ -48,7 +37,7 @@ class UserService extends DomainService implements UserServiceInterface {
 	}
 
 	/**
-	 * Gets a list of users
+	 * Retrieves a collection of users
 	 * @param array $params Search parameters
 	 * @return UserCollectionInterface
 	 */
@@ -58,19 +47,23 @@ class UserService extends DomainService implements UserServiceInterface {
 			$suggestions = $this->make_suggestions( $users );
 			return $suggestions;
 		}
-		if ( isset( $params['with'] ) ) {
-			$users = $users->load( $params['with'] );
-		}
+		$users = $this->index_after( $users, $params );
 		return $users;
 	}
 
+	/**
+	 * Retrieves a single user
+	 * @param array $params Search params
+	 * @return UserInterface
+	 */
 	public function show( array $params ) {
-		$users = $this->index( $params );
-		return $users[0] ?? null;
+		$user = $this->user_repository->show( $params );
+		$user = $this->show_after( $user, $params );
+		return $user;
 	}
 
 	/**
-	 * Generates a new WordPress user using Tokenpass data
+	 * Generates a new WordPress user using OAuth user data
 	 * @param OauthUserInterface $oauth_user Reference user
 	 * @return UserInterface New user
 	 */

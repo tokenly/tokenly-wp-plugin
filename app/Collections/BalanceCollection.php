@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Collections\Collection;
 
 class BalanceCollection extends Collection implements BalanceCollectionInterface {
@@ -18,11 +19,13 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	public function __construct(
 		WhitelistInterface $whitelist,
 		BalanceFactoryInterface $balance_factory,
+		TokenMetaServiceInterface $token_meta_service,
 		array $items
 	) {
-		parent::__construct( $items );
 		$this->whitelist = $whitelist;
 		$this->balance_factory = $balance_factory;
+		$this->token_meta_service = $token_meta_service;
+		parent::__construct( $items );
 	}
 
 	/**
@@ -50,25 +53,24 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	}
 
 	/**
-	 * Embeds the WordPress token meta post data into the balance objects
-	 * @param array $relation Other relations to load
-	 * @return BalanceCollectionInterface
+	 * Loads the token meta relation
+	 * @param array $relation Further relations
+	 * @return self
 	 */
-	protected function load_token_meta_collection( array $relation ) {
-		$assets = array_map( function( $balance ) {
+	protected function load_token_meta( array $relations ) {
+		$assets = array_map( function( BalanceInterface $balance ) {
 			return $balance->name;
 		}, ( array ) $this );
 		$meta = $this->token_meta_service->index( array(
 			'assets' => $assets,
-			'with'   => $relation,
+			'with'   => $relations,
 		) );
-		$balances = $this->key_by_field( 'asset' );
 		$meta_keyed = array();
 		foreach ( ( array ) $meta as $meta_item ) {
 			$asset = $meta_item->tokenly_asset;
 			$meta_keyed[ $asset ] = $meta_item;
 		}
-		foreach ( (array) $balances as &$balance ) {
+		foreach ( (array) $this as &$balance ) {
 			$asset = $balance->asset;
 			if ( !$asset ) {
 				continue;
@@ -79,6 +81,6 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 			}
 			$balance->meta = $meta;
 		}
-		return $balances;
+		return $this;
 	}
 }

@@ -25,6 +25,7 @@ class PostService extends DomainService implements PostServiceInterface {
 	 */
 	public function show( array $params = array() ) {
 		$post = $this->post_repository->show( $params );
+		$post = $this->show_after( $post, $params );
 		return $post;
 	}
 }

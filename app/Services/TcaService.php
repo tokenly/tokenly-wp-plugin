@@ -24,6 +24,13 @@ class TcaService extends Service implements TcaServiceInterface {
 		$this->user_service = $user_service;
 	}
 
+	/**
+	 * Checks if the user can pass TCA check with
+	 * the specified rules
+	 * @param OauthUserInterface $oauth_user OAuth user to test
+	 * @param TcaRuleCollectionInterface $rules Rules to use
+	 * @return bool
+	 */
 	public function check_token_access_user( OauthUserInterface $oauth_user, TcaRuleCollectionInterface $rules ) {
 		$username = $oauth_user->username;
 		$oauth_token = $oauth_user->oauth_token;
@@ -35,6 +42,11 @@ class TcaService extends Service implements TcaServiceInterface {
 		return $can_access;
 	}
 
+	/**
+	 * Formats the TCA rules for request
+	 * @param TcaRuleCollectionInterface $rules
+	 * @return array
+	 */
 	protected function format_rules( TcaRuleCollectionInterface $rules ) {
 		$rules_formatted = array();
 		foreach ( $rules as $key => $rule ) {

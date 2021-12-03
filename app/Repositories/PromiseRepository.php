@@ -31,6 +31,9 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 */
 	public function index() {
 		$promises = $this->client->getPromisedTransactionList();
+		foreach ( $promises as &$promise ) {
+			$promise = $this->remap_fields( $promise );
+		}
 		$promises = $this->promise_collection_factory->create( $promises );
 		return $promises;
 	}
@@ -45,6 +48,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 		if ( !$promise ) {
 			return false;
 		}
+		$promise = $this->remap_fields( $promise );
 		$promise = $this->promise_factory->create( $promise );
 		return $promise;
 	}
@@ -96,5 +100,11 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 */
 	public function destroy( PromiseInterface $promise ) {
 		$this->client->deletePromisedTransaction( $promise->promise_id );
+	}
+
+	protected function remap_fields( array $promise ) {
+		$promise['source_id'] = $promise['source'];
+		unset( $promise['source'] );
+		return $promise;
 	}
 }

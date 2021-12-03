@@ -35,9 +35,7 @@ class AddressService extends DomainService implements AddressServiceInterface {
 		}
 		$username = $params['username'] ?? null;
 		$addresses = $this->address_repository->index( $params );
-		if ( isset( $params['with'] ) ) {
-			$addreses = $addresses->load( $params['with'] );
-		}
+		$addresses = $this->index_after( $addresses, $params );
 		return $addresses;
 	}
 
@@ -51,8 +49,9 @@ class AddressService extends DomainService implements AddressServiceInterface {
 		if ( !$oauth_user ) {
 			return;
 		}
-		$params['oauth_token'] = $oauth_user->get_oauth_token();
+		$params['username'] = $oauth_user->username;
 		$address = $this->address_repository->show( $params );
+		$address = $this->show_after( $address, $params );
 		return $address;
 	}
 }

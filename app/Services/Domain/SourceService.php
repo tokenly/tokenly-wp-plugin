@@ -31,29 +31,22 @@ class SourceService extends DomainService implements SourceServiceInterface {
 			$sources = $this->source_cache;
 		} else {
 			$sources = $this->source_repository->index();
-			if ( $sources == false ) {
-				return false;
-			}
 			$this->source_cache = $sources;
 		}
-		if ( isset( $params['with'] ) ) {
-			$sources = $this->load( $sources, $params['with'] );
-		}
+		$sources = $this->index_after( $sources, $params );
 		return $sources;
 	}
 
 	/**
 	 * Gets the source data by address
 	 * @param string $address Source address
-	 * @return array
+	 * @return SourceInterface
 	 */
 	public function show( array $params = array() ) {
 		$source = $this->source_repository->show( $params );
+		$source = $this->show_after( $source, $params );
 		if ( !$source ) {
 			return;
-		}
-		if ( isset( $params['with'] ) ) {
-			$source = $this->load( $source, $params['with'] );
 		}
 		return $source;
 	}
@@ -61,7 +54,7 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	/**
 	 * Registers the source address for the current integration
 	 * @param array $source New source address data
-	 * @return boolean
+	 * @return SourceInterface
 	 */
 	public function store( array $params ) {
 		if (
@@ -77,7 +70,8 @@ class SourceService extends DomainService implements SourceServiceInterface {
 		if ( empty( $assets ) ) {
 			$assets = null;
 		}
-		$this->source_repository->store( $address, $type, $proof, $assets );
+		$source = $this->source_repository->store( $address, $type, $proof, $assets );
+		return $source;
 	}
 
 	/**

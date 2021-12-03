@@ -24,6 +24,22 @@ class SourceRepository implements SourceRepositoryInterface {
 	}
 
 	/**
+	 * Gets the list of registered source addresses
+	 * @return array
+	 */
+	public function index( array $params = array() ) {
+		$sources = $this->client->getProvisionalSourceList();
+		if ( $sources == false ) {
+			return false;
+		}
+		foreach ( $sources as &$source ) {
+			$source = $this->remap_fields( $source );
+		}
+		$sources = $this->source_collection_factory->create( $sources );
+		return $sources;
+	}
+
+	/**
 	 * Gets the source data by address
 	 * @param string $address Source address
 	 * @return array
@@ -38,18 +54,7 @@ class SourceRepository implements SourceRepositoryInterface {
 		return $source;
 	}
 
-	/**
-	 * Gets the list of registered source addresses
-	 * @return array
-	 */
-	public function index( array $params = array() ) {
-		$sources = $this->client->getProvisionalSourceList();
-		if ( $sources == false ) {
-			return false;
-		}
-		$sources = $this->source_collection_factory->create( $sources );
-		return $sources;
-	}
+
 	
 	/**
 	 * Registers the source address for the current integration
@@ -74,7 +79,7 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return SourceInterface
 	 */
 	public function update( SourceInterface $source, array $params ) {
-		$params['address'] = $source->address;
+		$params['address'] = $source->address_id;
 		return $this->store( $params );
 	}
 
@@ -84,6 +89,12 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return void
 	 */
 	public function destroy( SourceInterface $source ) {
-		$this->client->deleteProvisionalSource( $source->address );
+		$this->client->deleteProvisionalSource( $source->address_id );
+	}
+
+	protected function remap_fields( array $source ) {
+		$source['address_id'] = $source['address'];
+		unset( $source['address'] );
+		return $source; 
 	}
 }

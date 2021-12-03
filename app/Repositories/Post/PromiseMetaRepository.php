@@ -54,7 +54,8 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		$posts_formatted = array();
 		foreach ( $posts as $post ) {
 			$array = array();
-			$meta = $this->meta_repository->index( $id, array(
+			$post_id = $post->ID;
+			$meta = $this->meta_repository->index( $post_id, array(
 				'promise_id',
 				'source_user_id',
 				'destination_user_id',

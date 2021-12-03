@@ -32,7 +32,7 @@ class ButtonLoginComponent extends Component implements ButtonLoginComponentInte
 			return;
 		}
 		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
-		$url = "/{$this->namespace}/oauth/connect?{$this->namespace}_success_url={{success_url}}";
+		$url = "/{$this->namespace}/oauth/connect?{$this->namespace}_success_url=/wp-admin/";
 		$html = $this->twig->render( 'components/ButtonLoginComponent.twig', array(
 			'label' => 'Login with Tokenpass',
 			'logo'  => $logo,

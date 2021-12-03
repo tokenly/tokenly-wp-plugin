@@ -9,6 +9,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 
 class UserRepository implements UserRepositoryInterface {
 	protected $client;
@@ -31,6 +32,11 @@ class UserRepository implements UserRepositoryInterface {
 		$this->user_collection_factory = $user_collection_factory;
 	}
 
+	/**
+	 * Retrieves a collection of users
+	 * @param array $params Search paramters
+	 * @return UserCollectionInterface
+	 */
 	public function index( array $params = array() ) {
 		$args = array(
 			'orderby'    => 'ID',
@@ -84,9 +90,15 @@ class UserRepository implements UserRepositoryInterface {
 		return $users;
 	}
 
-	public function show( $params ) {
+	/**
+	 * Retrieves a single user
+	 * @param array $params Search parameters
+	 * @return UserInterface
+	 */
+	public function show( array $params = array() ) {
 		$users = $this->index( $params );
-		return $users[0] ?? null;
+		$user = $users[0] ?? null;
+		return $user;
 	}
 
 	/**
@@ -94,7 +106,7 @@ class UserRepository implements UserRepositoryInterface {
 	 * @param OauthUserInterface $oauth_user Reference user
 	 * @return UserInterface New user
 	 */
-	public function store( $username, $password, $email ) {
+	public function store( string $username, string $password, string $email ) {
 		$user_id = wp_create_user( $username, $password, $email );
 		if ( is_numeric( $user_id ) === false ) {
 			return false;

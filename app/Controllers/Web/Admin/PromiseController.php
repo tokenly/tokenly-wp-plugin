@@ -32,17 +32,11 @@ class PromiseController implements PromiseControllerInterface {
 		$this->source_service = $source_service;
 		$this->promise_service = $promise_service;
 	}
-
-	public function index() {
-		$promises = $this->promise_service->index( array(
-			'with'    => array( 'address' ),
-		) );
-	}
 	
 	public function show() {
 		$promise_id = intval( $_GET['promise'] ?? null );
 		$promise = $this->promise_service->show( $promise_id, array(
-			'with'    => array(
+			'with' => array(
 				'promise_meta',
 			),
 		) );

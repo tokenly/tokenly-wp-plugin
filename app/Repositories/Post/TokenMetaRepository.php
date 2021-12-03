@@ -58,6 +58,18 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		return $posts;
 	}
 
+	/**
+	 * Retrieves a single token meta post
+	 * @param integer $params Post search params
+	 * @return TokenMetaInterface
+	 */
+	public function show( array $params = array() ) {
+		$posts = $this->index( $params );
+		if ( isset( $posts[0] ) ) {
+			return $posts[0];
+		}
+	}
+
 	public function update( TokenMetaInterface $post, array $params = array() ) {
 		$update_params = array();
 		if ( isset( $params['asset'] ) ) {

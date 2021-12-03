@@ -59,12 +59,12 @@ class AddressRepository implements AddressRepositoryInterface {
 	 */
 	public function show( array $params = array() ) {
 		if (
-			!isset( $params['addresss'] ) ||
-			!isset( $params['oauth_token'] )
+			!isset( $params['address'] ) ||
+			!isset( $params['username'] )
 		) {
 			return;
 		}
-		$address = $api->getAddressDetailsForAuthenticatedUser( $params['addresss'], $params['oauth_token'] );
+		$address = $this->client->getPublicAddressDetails( $params['username'], $params['address'] );
 		if( !$address ){
 			return;
 		}

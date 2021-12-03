@@ -336,13 +336,15 @@ return array(
 		ContainerInterface $container,
 		UserServiceInterface $user_service
 	) {
+		$user = null;
 		$user_id = get_current_user_id();
-		if ( $user_id == 0 ) {
-			$user = $container->make( GuestUserInterface::class );
-		} else {
+		if ( $user_id != 0 ) {
 			$user = $user_service->show( array(
 				'id' => $user_id,
 			) );
+		}
+		if ( !$user || $user_id == 0 ) {
+			$user = $container->make( GuestUserInterface::class );
 		}
 		return $user;
 	} ),

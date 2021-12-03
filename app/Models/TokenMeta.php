@@ -15,7 +15,7 @@ class TokenMeta extends Model implements TokenMetaInterface {
 	public $asset;
 	public $extra;
 	protected $post;
-	protected $token_meta_repository;
+	protected $domain_repository;
 	protected $fillable = array(
 		'post',
 		'asset',
@@ -23,11 +23,11 @@ class TokenMeta extends Model implements TokenMetaInterface {
 	);
 
 	public function __construct(
-		TokenMetaServiceInterface $token_meta_repository,
+		TokenMetaServiceInterface $domain_repository,
 		MetaRepositoryInterface $meta_repository,
 		array $data = array()
 	) {
-		$this->token_meta_repository = $token_meta_repository;
+		$this->domain_repository = $domain_repository;
 		parent::__construct( $data );
 	}
 
@@ -48,15 +48,5 @@ class TokenMeta extends Model implements TokenMetaInterface {
 		$array['name'] = $this->post_title;
 		$array['description'] = $this->post_excerpt;
 		return $array;
-	}
-
-		/**
-	 * Updates the token-meta post by post ID
-	 * @param array $params New post data
-	 * @return void
-	 */
-	public function update( array $params = array() ) {
-		$this->fill( $params );
-		$this->token_meta_repository->update( $params );
 	}
 }

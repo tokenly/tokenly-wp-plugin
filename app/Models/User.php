@@ -14,25 +14,34 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 class User extends Model implements UserInterface, CurrentUserInterface {
-	protected $user;
+	public $user;
 	public $oauth_user;
+	public $oauth_token;
+	public $uuid;
+	public $can_connect;
 	protected $oauth_user_service;
 	protected $user_meta_repository;
 	protected $fillable = array(
 		'user',
 		'oauth_user',
+		'oauth_token',
+		'uuid',
+		'can_connect',
 	);
 
 	public function __construct(
 		OauthUserServiceInterface $oauth_user_service,
 		UserMetaRepositoryInterface $user_meta_repository,
+		UserRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
-		parent::__construct( $data );
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_meta_repository = $user_meta_repository;
+		$this->domain_repository = $domain_repository;
+		parent::__construct( $data );
 	}
 
 	public function __call( $method, $args ) {
@@ -52,10 +61,12 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	}
 	
 	public function to_array() {
-		return array(
+		$array = parent::to_array();
+		$array = array_merge( $array, array(
 			'id'   => $this->ID,
 			'name' => $this->user_nicename,
-		);
+		) );
+		return $array;
 	}
 
 	/**
@@ -89,11 +100,16 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	 * Retrieves oauth user from the API
 	 * @return self
 	 */
-	protected function load_oauth_user() {
+	protected function load_oauth_user( array $relations ) {
 		if ( isset( $this->oauth_user ) ) {
 			return $this;
 		}
-		$oauth_user = $this->oauth_user_service->show( array( 'id' => $this->ID ) );
+		$oauth_user = $this->oauth_user_service->show(
+			array(
+				'id'   => $this->ID,
+				'with' => $relations,
+			)
+		);
 		$this->oauth_user = $oauth_user;
 		return $this;
 	}

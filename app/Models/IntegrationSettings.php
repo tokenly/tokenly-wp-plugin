@@ -22,6 +22,12 @@ class IntegrationSettings extends Model implements IntegrationSettingsInterface 
 		array $data = array()
 	) {
 		$this->option_repository = $option_repository;
+		$data = $this->option_repository->index( array(
+				'client_id',
+				'client_secret',
+				'settings_updated',
+			)
+		);
 		parent::__construct( $data );
 	}
 

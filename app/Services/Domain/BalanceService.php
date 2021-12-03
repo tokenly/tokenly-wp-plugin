@@ -34,9 +34,7 @@ class BalanceService extends DomainService implements BalanceServiceInterface {
 			$balances = $this->balance_repository->index( $oauth_token );
 			$this->balances_cache[ $oauth_token ] = $balances;
 		}
-		if ( isset( $params['with'] ) ) {
-			$balances = $this->load( $balances, $params['with'] );
-		}
+		$balances = $this->index_after( $balances, $params );
 		return $balances;
 	}
 }

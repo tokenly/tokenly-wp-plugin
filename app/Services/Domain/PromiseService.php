@@ -42,20 +42,19 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 
 	/**
 	 * Fetches all currently promised transactions
-	 * @return PromiseInterface[] Promises found
+	 * @param array $params Search parameters
+	 * @return PromiseCollectionInterface Promises found
 	 */
 	public function index( array $params = array() ) {
-		$promise_collection;
+		$promises;
 		if ( isset( $this->promise_collection_cache ) ) {
-			$promise_collection = $this->promise_collection_cache;
+			$promises = $this->promise_collection_cache;
 		} else {
-			$promise_collection = $this->promise_repository->index();
-			$this->promise_collection_cache = $promise_collection;
+			$promises = $this->promise_repository->index();
+			$this->promise_collection_cache = $promises;
 		}
-		if ( isset( $params['with'] ) ) {
-			$promise_collection = $this->load( $promise_collection, $params['with'] );
-		}
-		return $promise_collection;
+		$promises = $this->index_after( $promises, $params );
+		return $promises;
 	}
 
 	/**
@@ -70,11 +69,9 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			$promise = $this->promise_repository->show( $promise_id );
 			$this->promise_cache[ $promise_id ] = $promise;
 		}
+		$promise = $this->show_after( $promise, $params );
 		if ( !$promise ) {
 			return false;
-		}
-		if ( isset( $params['with'] ) ) {
-			$promise = $this->load( $promise, $params['with'] );
 		}
 		return $promise;
 	}
@@ -114,12 +111,12 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			'with'    => array( 'address' ),
 		) );
 		if ( !$source ||
-			!isset( $source->address_data ) ||
-			!isset( $source->address )
+			!isset( $source->address) ||
+			!isset( $source->address_id )
 		) {
 			throw new \Exception( 'Source not found or no address data.' );
 		}
-		$source_address = $source->address;
+		$source_address = $source->address_id;
 		$destination = $params['destination'];
 		$destination_oauth_user = $this->oauth_user_service->show( array( 'id' => $destination ) );
 		if ( !$destination_oauth_user ) {
@@ -129,7 +126,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		if ( !$destination ) {
 			throw new \Exception( 'Destination is invalid.' );
 		}
-		$address_data = $source->address_data;
+		$address_data = $source->address;
 		if (
 			!isset( $address_data->type ) ||
 			!isset( $address_data->balances )
@@ -160,36 +157,17 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			'note'        => $note,
 		) );
 		$promise_meta_data = array();
-		$current_oauth_user = $this->current_user->get_oauth_user();
+		$this->current_user->load( array( 'oauth_user' ) );
+		$current_oauth_user = $this->current_user->oauth_user;
 		if ( isset( $current_oauth_user->id ) ) {
 			$promise_meta_data['source_user_id'] = $current_oauth_user->id;
 		}
 		if ( isset( $destination_oauth_user->id ) ) {
 			$promise_meta_data['destination_user_id'] = $destination_oauth_user->id;
 		}
-		$promise_meta = $promise->add_meta( $promise_meta_data );
-		if ( !$promise_meta ) {
-			throw new \Exception( 'Promise meta was not added.' );
-		}
+		$promise_meta = $this->promise_meta_service->store( $promise_meta_data );
+		$promise->associate_meta( $promise_meta );
 		return $promise;
-	}
-	
-
-
-	protected function load_promise_meta_collection( PromiseCollectionInterface $promise_collection, array $relation ) {
-		$promise_ids = array_map( function( $promise ) {
-			return $promise->promise_id;	
-		}, ( array ) $promise_collection );
-		$promise_meta = $this->promise_meta_service->index( array(
-			'with'        => $relation,
-			'promise_ids' => $promise_ids, 
-		) );
-		$promise_meta->key_by_promise_id();
-		foreach ( ( array ) $promise_collection as &$promise ) {
-			$promise_id = $promise->promise_id;
-			$promise->promise_meta = $promise_meta[ $promise_id ] ?? array();
-		}
-		return $promise_collection;
 	}
 
 	/**
