@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\IntegrationSettingsControllerInterface
 use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
 use Tokenly\Wp\Routes\Router;
@@ -26,6 +27,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		TcaSettingsControllerInterface $settings_tca_controller,
 		WhitelistControllerInterface $whitelist_controller,
 		PromiseControllerInterface $promise_controller,
+		CreditGroupControllerInterface $credit_group,
 		SourceControllerInterface $source_controller,
 		UserControllerInterface $user_controller,
 		string $namespace
@@ -37,6 +39,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'settings-integration'   => $settings_integration_controller,
 			'settings-tca'           => $settings_tca_controller,
 			'whitelist'              => $whitelist_controller,
+			'credit-group'           => $credit_group,
 			'promise'                => $promise_controller,
 			'source'                 => $source_controller,
 			'user'                   => $user_controller,
@@ -183,6 +186,36 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'args' => array(
 					'methods'             => 'DELETE',
 					'callback'            => array( $this->controllers['promise'], 'destroy' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-group-index' => array(
+				'path' => '/credit-group',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['credit-group'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-group-store' => array(
+				'path' => '/credit-group',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['credit-group'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-group-update' => array(
+				'path' => '/credit-group',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['credit-group'], 'update' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

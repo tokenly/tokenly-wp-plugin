@@ -65,6 +65,36 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
+	creditGroupIndex(): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/credit-group' ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditGroupStore( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'POST', '/credit-group', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditGroupUpdate( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', '/credit-group/', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
 	sourceIndex(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/source' ).then( result => {

@@ -116,7 +116,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		) {
 			throw new \Exception( 'Source not found or no address data.' );
 		}
-		$source_address = $source->address_id;
+		$address_id = $source->address_id;
 		$destination = $params['destination'];
 		$destination_oauth_user = $this->oauth_user_service->show( array( 'id' => $destination ) );
 		if ( !$destination_oauth_user ) {
@@ -126,15 +126,15 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		if ( !$destination ) {
 			throw new \Exception( 'Destination is invalid.' );
 		}
-		$address_data = $source->address;
+		$address = $source->address;
 		if (
-			!isset( $address_data->type ) ||
-			!isset( $address_data->balances )
+			!isset( $address->type ) ||
+			!isset( $address->balances )
 		) {
-			throw new \Exception( 'Address data is incomplete.' );
+			throw new \Exception( 'Address is incomplete.' );
 		}
-		$type = $address_data->type;
-		$balances = $address_data->balances;
+		$type = $address->type;
+		$balances = $address->balances;
 		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balances );
 		$ref = $params['ref'] ?? '';
 		$note = $params['note'] ?? '';
@@ -143,7 +143,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$fingerprint = null;
 		$protocol = 'counterparty';
 		$promise = $this->promise_repository->store( array(
-			'address'     => $source_address,
+			'address'     => $address_id,
 			'destination' => $destination,
 			'asset'       => $asset,
 			'quantity'    => $quantity,

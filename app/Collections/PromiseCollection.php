@@ -28,19 +28,19 @@ class PromiseCollection extends Collection implements PromiseCollectionInterface
 	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	protected function load_promise_meta( array $relations ) {
-		$promise_ids = array_map( function( PromiseInterface $promise ) {
-			return $promise->promise_id;	
-		}, ( array ) $this );
-		$promises_meta = $this->promise_meta_service->index( array(
-			'with'        => $relations,
-			'promise_ids' => $promise_ids, 
-		) );
-		$promises_meta->key_by_promise_id();
-		foreach ( ( array ) $this as &$promise ) {
-			$promise_id = $promise->promise_id;
-			$promise->promise_meta = $promises_meta[ $promise_id ] ?? array();
-		}
-		return $this;
-	}
+	// protected function load_promise_meta( array $relations ) {
+	// 	$promise_ids = array_map( function( PromiseInterface $promise ) {
+	// 		return $promise->promise_id;	
+	// 	}, ( array ) $this );
+	// 	$promises_meta = $this->promise_meta_service->index( array(
+	// 		'with'        => $relations,
+	// 		'promise_ids' => $promise_ids, 
+	// 	) );
+	// 	$promises_meta->key_by_promise_id();
+	// 	foreach ( ( array ) $this as &$promise ) {
+	// 		$promise_id = $promise->promise_id;
+	// 		$promise->promise_meta = $promises_meta[ $promise_id ] ?? array();
+	// 	}
+	// 	return $this;
+	// }
 }

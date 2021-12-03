@@ -8,7 +8,7 @@ import {
 } from '@wordpress/components';
 
 interface BalanceListProps {
-	balances: any;
+	balance: any;
 }
 
 interface BalanceListState {
@@ -22,7 +22,7 @@ export class BalanceList extends Component<BalanceListProps, BalanceListState> {
 	}
 
 	render() {
-		let listItems = Object.keys( this.props.balances ).map( ( key: any ) => this.props.balances[ key ] ) as any;
+		let listItems = Object.keys( this.props.balance ).map( ( key: any ) => this.props.balance[ key ] ) as any;
 		listItems = listItems.map( ( balanceItem: any, i: number ) => {
 			return (
 				<div style={ { width: '100%' } }>

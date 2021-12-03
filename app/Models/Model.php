@@ -86,17 +86,20 @@ class Model implements ModelInterface {
 	 * @return self
 	 */
 	public function load( array $relations = array() ) {
-		$relations = $this->format_relations( $relations );
 		foreach ( $relations as $key => $relation ) {
-			$load_relations = array();
-			if ( !empty( $relation ) ) {
-				$load_relations = array( $relation );
-			}
-			if ( isset( $this->{$key} ) && is_object( $this->{$key} ) ) {
-				$this->{$key}->load( $load_relations );
+			if ( !$relation ) {
 				continue;
 			}
-			call_user_func( array( $this, "load_{$key}" ), $load_relations );
+			$relation_formatted = $this->format_relation( $relation );
+			
+			if ( isset( $this->{$relation_formatted['root']} ) && is_object( $this->{$relation_formatted['root']} ) ) {
+				$this->{$relation_formatted['root']}->load( array( $relation_formatted['relations'] ) );
+				continue;
+			}
+			$method = "load_{$relation_formatted['root']}";
+			if ( method_exists( $this, $method ) ) {
+				call_user_func( array( $this, $method ), array( $relation_formatted['relations'] ) );
+			}
 		}
 		return $this;
 	}

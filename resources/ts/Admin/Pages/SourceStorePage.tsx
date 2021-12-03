@@ -17,29 +17,29 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface SourceIndexPageData {
+interface SourceStorePageData {
 	addresses: Array<any>;
 }
 
-interface SourceIndexPageProps {
-	pageData: SourceIndexPageData;
+interface SourceStorePageProps {
+	pageData: SourceStorePageData;
 	saving: boolean;
 }
 
-interface SourceIndexPageState {
+interface SourceStorePageState {
 	storingSource: boolean;
 	address: any;
 }
 
-export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
+export default class SourceStorePage extends Component<SourceStorePageProps, SourceStorePageState> {
 	@resolve( TYPES.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
-	state: SourceIndexPageState = {
+	state: SourceStorePageState = {
 		storingSource: false,
 		address: null,
 	}
-	constructor( props: SourceIndexPageProps ) {
+	constructor( props: SourceStorePageProps ) {
 		super( props );
 		console.log(this.props.pageData);
 		this.onSubmit = this.onSubmit.bind( this );

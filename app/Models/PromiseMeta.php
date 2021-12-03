@@ -24,9 +24,9 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 		'promise_id',
 		'promise',
 		'source_user_id',
-		'source',
+		'source_user',
 		'destination_user_id',
-		'destination',
+		'destination_user',
 	);
 
 	public function __construct(
@@ -53,7 +53,7 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 
 	protected function load_source_user( array $relations ) {
 		$user = $this->user_service->show( array(
-			'uuid' => $source_user_id,
+			'uuid' => $this->source_user_id,
 			'with' => $relations,
 		) );
 		$this->source_user = $user;
@@ -62,7 +62,7 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 
 	protected function load_destination_user( array $relations ) {
 		$user = $this->user_service->show( array(
-			'uuid' => $destination_user_id,
+			'uuid' => $this->destination_user_id,
 			'with' => $relations,
 		) );
 		$this->destination_user = $user;

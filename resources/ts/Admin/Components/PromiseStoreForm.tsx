@@ -91,7 +91,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	getSourceOptions() {
 		const options = [] as any;
 		Object.keys( this.props.sources ).forEach( ( key: any ) => {
-			const label = this.props.sources[ key ].address_data.label ?? this.props.sources[ key ].address ?? null;
+			const label = this.props.sources[ key ].address.label ?? this.props.sources[ key ].address_id ?? null;
 			options.push( {
 				label: label,
 				value: this.props.sources[ key ].address ?? null,
@@ -105,7 +105,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( !this.state.source ) {
 			return [];
 		}
-		const balances = this.state.source?.address_data?.balances;
+		const balances = this.state.source?.address?.balances;
 		if ( !balances ) {
 			return [];
 		}
@@ -124,7 +124,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( asset == '' ) {
 			return null;
 		}
-		let balances = this.state.source.address_data.balances;
+		let balances = this.state.source.address.balances;
 		balances = Object.values( balances );
 		balances = balances.filter( ( balance: any ) => {
 			return balance.asset === this.state.promise.asset;

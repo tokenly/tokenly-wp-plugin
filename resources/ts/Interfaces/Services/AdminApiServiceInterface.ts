@@ -19,6 +19,9 @@ export interface AdminApiServiceInterface {
 	sourceStore( params: SourceData ): Promise<any>;
 	sourceUpdate( address: string, params: SourceData ): Promise<any>;
 	sourceDestroy( address: string ): Promise<any>;
+	creditGroupIndex(): Promise<Array<any>>;
+	creditGroupStore( params: any ): Promise<any>;
+	creditGroupUpdate( params: any ): Promise<any>;
 	promiseIndex(): Promise<Array<PromiseData>>;
 	promiseStore( params: PromiseStoreParams ): Promise<any>;
 	promiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any>;

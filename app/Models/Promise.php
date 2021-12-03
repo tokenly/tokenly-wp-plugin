@@ -41,6 +41,7 @@ class Promise extends Model implements PromiseInterface {
 		'fingerprint',
 		'txid',
 		'created_at',
+		'updated_at',
 		'expiration',
 		'ref',
 		'pseudo',

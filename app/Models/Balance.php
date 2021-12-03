@@ -32,7 +32,7 @@ class Balance extends Model implements BalanceInterface {
 		parent::__construct( $data );
 	}
 
-	public function fill( array $data ) {
+	public function fill( array $data = array() ) {
 		parent::fill( $data );
 		if ( 
 			isset( $this->balance ) === false && 

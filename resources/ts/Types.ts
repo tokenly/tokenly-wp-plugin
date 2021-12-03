@@ -2,6 +2,7 @@ const TYPES = {
 	AuthServiceInterface                    : Symbol.for( 'AuthServiceInterface' ),
 	AdminApiServiceInterface                : Symbol.for( 'AdminApiServiceInterface' ),
 	PromiseRepositoryInterface              : Symbol.for( 'PromiseRepositoryInterface' ),
+	CreditGroupRepositoryInterface          : Symbol.for( 'CreditGroupRepositoryInterface' ),
 	IntegrationSettingsRepositoryInterface  : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
 	TcaSettingsRepositoryInterface          : Symbol.for( 'TcaSettingsRepositoryInterface' ),
 	SourceRepositoryInterface               : Symbol.for( 'SourceRepositoryInterface' ),

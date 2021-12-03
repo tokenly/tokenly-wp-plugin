@@ -12,6 +12,10 @@ import WhitelistPage from './Admin/Pages/WhitelistPage';
 import PromiseShowPage from './Admin/Pages/PromiseShowPage';
 import PromiseStorePage from './Admin/Pages/PromiseStorePage';
 import PromiseEditPage from './Admin/Pages/PromiseEditPage';
+import CreditGroupIndexPage from './Admin/Pages/CreditGroupIndexPage';
+import CreditGroupShowPage from './Admin/Pages/CreditGroupShowPage';
+import CreditGroupStorePage from './Admin/Pages/CreditGroupStorePage';
+import CreditGroupEditPage from './Admin/Pages/CreditGroupEditPage';
 import SourceIndexPage from './Admin/Pages/SourceIndexPage';
 import SourceShowPage from './Admin/Pages/SourceShowPage';
 import SourceStorePage from './Admin/Pages/SourceStorePage';
@@ -61,21 +65,25 @@ class AdminApp extends App {
 	
 	getViews() {
 		return {
-			'balances-show'   : BalancesShowPage,
-			'settings'        : SettingsPage,
-			'connection'      : ConnectionPage,
-			'vendor'          : VendorPage,
-			'whitelist'       : WhitelistPage,
-			'promise-show'    : PromiseShowPage,
-			'promise-store'   : PromiseStorePage,
-			'promise-edit'    : PromiseEditPage,
-			'source-index'    : SourceIndexPage,
-			'source-show'     : SourceShowPage,
-			'source-store'    : SourceStorePage,
-			'source-edit'     : SourceEditPage,
-			'post-edit'       : PostEditPage,
-			'token-meta-edit' : TokenMetaEditPage,
-			'dashboard'       : DashboardPage,
+			'balances-show'       : BalancesShowPage,
+			'settings'            : SettingsPage,
+			'connection'          : ConnectionPage,
+			'vendor'              : VendorPage,
+			'whitelist'           : WhitelistPage,
+			'promise-show'        : PromiseShowPage,
+			'promise-store'       : PromiseStorePage,
+			'promise-edit'        : PromiseEditPage,
+			'credit-group-index'  : CreditGroupIndexPage,
+			'credit-group-show'   : CreditGroupShowPage,
+			'credit-group-store'  : CreditGroupStorePage,
+			'credit-group-edit'   : CreditGroupEditPage,
+			'source-index'        : SourceIndexPage,
+			'source-show'         : SourceShowPage,
+			'source-store'        : SourceStorePage,
+			'source-edit'         : SourceEditPage,
+			'post-edit'           : PostEditPage,
+			'token-meta-edit'     : TokenMetaEditPage,
+			'dashboard'           : DashboardPage,
 		} as any;
 	}
 	

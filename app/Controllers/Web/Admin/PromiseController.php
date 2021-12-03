@@ -37,7 +37,8 @@ class PromiseController implements PromiseControllerInterface {
 		$promise_id = intval( $_GET['promise'] ?? null );
 		$promise = $this->promise_service->show( $promise_id, array(
 			'with' => array(
-				'promise_meta',
+				'promise_meta.source_user',
+				'promise_meta.destination_user'
 			),
 		) );
 		if ( !$promise ) {

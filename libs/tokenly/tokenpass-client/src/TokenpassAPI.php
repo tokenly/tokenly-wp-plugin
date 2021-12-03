@@ -850,7 +850,7 @@ class TokenpassAPI implements TokenpassAPIInterface
         try {
             $params = array();
             if (isset($data['name'])){
-                $params['name'] = $name;
+                $params['name'] = $data['name'];
             }
             if (isset($data['app_whitelist'])){
                 if (is_string($data['app_whitelist'])){

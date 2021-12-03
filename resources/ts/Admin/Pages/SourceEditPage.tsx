@@ -54,7 +54,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 
 	onSave( source: SourceData ) {
 		this.setState( { saving: true } );
-		this.sourceRepository.update( this.props.pageData.source.address, source ).then( ( result: any ) => {
+		this.sourceRepository.update( this.props.pageData.source.address_id, source ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});
@@ -74,7 +74,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 
 	deleteSource() {
 		this.setState( { deleting: true } );
-		this.sourceRepository.destroy( this.props.pageData.source.address ).then( ( result: any ) => {
+		this.sourceRepository.destroy( this.props.pageData.source.address_id ).then( ( result: any ) => {
 			this.setState( { deleting: false } );
 			this.return();
 		});
@@ -113,7 +113,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 						<PanelRow>
 							<div>
 								<div><span>Source: </span><strong>
-									<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ source.address }` }>{ source?.address_data?.label }</a>
+									<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ source.address_id }` }>{ source?.address?.label }</a>
 								</strong></div>
 								<div>
 									<SourceEditForm

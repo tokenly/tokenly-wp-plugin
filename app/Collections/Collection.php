@@ -56,26 +56,14 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * @return self
 	 */
 	public function load( array $relations = array() ) {
-		$relations_formatted = $this->format_relations( $relations );
-		foreach ( $relations_formatted as $key => $relation ) {
-			$load_relations = array();
-			if ( !empty( $relation ) ) {
-				$load_relations = array( $relation );
-			}
-			if ( isset( $this[ $key ] ) ) {
-				$this[ $key ]->load( array( $load_relations ) );
-				continue;
-			}
-			$method = "load_{$key}";
+		foreach ( $relations as $key => $relation ) {
+			$relation_formatted = $this->format_relation( $relation );
+			$method = "load_{$relation_formatted['root']}";
 			if ( method_exists( $this, $method ) ) {
-				call_user_func( array( $this, $method ), $load_relations );
+				call_user_func( array( $this, $method ), array( $relation_formatted['relations'] ) );
 			} else {
 				foreach ( (array) $this as $item ) {
-					$load_relations = $key;
-					if ( !empty( $relation ) ) {
-						$load_relations = "{$key}.{$relation}";
-					}
-					$item->load( array( $load_relations ) );
+					$item->load( array( $relation ) );
 				}
 			}
 		}

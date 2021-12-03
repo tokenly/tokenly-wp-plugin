@@ -4,23 +4,23 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 
 class Address extends Model implements AddressInterface {
 	public $address = '';
 	public $type = '';
 	public $label = 'Unnamed';
-	public $balances;
+	public $balance;
 	protected $fillable = array(
 		'address',
 		'type',
 		'label',
-		'balances',
+		'balance',
 	);
 
 	public function __construct(
-		SourceRepositoryInterface $domain_repository,
+		AddressRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
@@ -33,8 +33,8 @@ class Address extends Model implements AddressInterface {
 	 * @return self
 	 */
 	protected function load_balance( array $relations ) {
-		if ( isset( $this->balances ) ) {
-			$this->balances->load( $relations );
+		if ( isset( $this->balance ) ) {
+			$this->balance->load( $relations );
 		}
 		return $this;
 	}

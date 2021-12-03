@@ -40,9 +40,9 @@ export class SourceCard extends Component<SourceCardProps, SourceCardState> {
 				<CardHeader>
 					<div title={ this.props.source.address }>
 						<a 
-							href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ this.props.source.address }` }
+							href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ this.props.source.address_id }` }
 						>
-							{ this.props.source.address_data?.label }
+							{ this.props.source.address?.label }
 						</a>
 					</div>
 				</CardHeader>
@@ -58,21 +58,21 @@ export class SourceCard extends Component<SourceCardProps, SourceCardState> {
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-source-edit&source=${ this.props.source.address }` }
+							href={ `/wp-admin/admin.php?page=tokenly-source-edit&source=${ this.props.source.address_id }` }
 						>
 							Manage source
 						</Button>
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ this.props.source.address }` }
+							href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ this.props.source.address_id }` }
 						>
 							View details
 						</Button>
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.props.source.address }` }
+							href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.props.source.address_id }` }
 						>
 							View balances
 						</Button>

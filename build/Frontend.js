@@ -5172,6 +5172,7 @@ const Types_1 = __webpack_require__(/*! ./Types */ "./resources/ts/Types.ts");
 const AuthService_1 = __webpack_require__(/*! ./Services/AuthService */ "./resources/ts/Services/AuthService.ts");
 const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/IntegrationSettingsRepository */ "./resources/ts/Repositories/IntegrationSettingsRepository.ts");
 const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/TcaSettingsRepository */ "./resources/ts/Repositories/TcaSettingsRepository.ts");
+const CreditGroupRepository_1 = __webpack_require__(/*! ./Repositories/CreditGroupRepository */ "./resources/ts/Repositories/CreditGroupRepository.ts");
 const PromiseRepository_1 = __webpack_require__(/*! ./Repositories/PromiseRepository */ "./resources/ts/Repositories/PromiseRepository.ts");
 const UserRepository_1 = __webpack_require__(/*! ./Repositories/UserRepository */ "./resources/ts/Repositories/UserRepository.ts");
 const SourceRepository_1 = __webpack_require__(/*! ./Repositories/SourceRepository */ "./resources/ts/Repositories/SourceRepository.ts");
@@ -5187,6 +5188,7 @@ exports.container = container;
 container.bind(Types_1.TYPES.AuthServiceInterface).to(AuthService_1.AuthService);
 container.bind(Types_1.TYPES.AdminApiServiceInterface).to(AdminApiService_1.AdminApiService);
 // Repositories
+container.bind(Types_1.TYPES.CreditGroupRepositoryInterface).to(CreditGroupRepository_1.CreditGroupRepository);
 container.bind(Types_1.TYPES.PromiseRepositoryInterface).to(PromiseRepository_1.PromiseRepository);
 container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
 container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
@@ -5301,6 +5303,72 @@ ServiceProvider = __decorate([
     __metadata("design:paramtypes", [])
 ], ServiceProvider);
 exports.ServiceProvider = ServiceProvider;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/CreditGroupRepository.ts":
+/*!************************************************************!*\
+  !*** ./resources/ts/Repositories/CreditGroupRepository.ts ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditGroupRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let CreditGroupRepository = class CreditGroupRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    index() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditGroupIndex().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditGroupStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditGroupUpdate(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+CreditGroupRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], CreditGroupRepository);
+exports.CreditGroupRepository = CreditGroupRepository;
 
 
 /***/ }),
@@ -5803,6 +5871,33 @@ let AdminApiService = class AdminApiService {
             });
         });
     }
+    creditGroupIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/credit-group').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditGroupStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/credit-group', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditGroupUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/credit-group/', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
     sourceIndex() {
         return new Promise((resolve, reject) => {
             this.makeRequest('GET', '/source').then(result => {
@@ -6068,6 +6163,7 @@ const TYPES = {
     AuthServiceInterface: Symbol.for('AuthServiceInterface'),
     AdminApiServiceInterface: Symbol.for('AdminApiServiceInterface'),
     PromiseRepositoryInterface: Symbol.for('PromiseRepositoryInterface'),
+    CreditGroupRepositoryInterface: Symbol.for('CreditGroupRepositoryInterface'),
     IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
     TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
     SourceRepositoryInterface: Symbol.for('SourceRepositoryInterface'),
