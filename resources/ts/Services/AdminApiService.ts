@@ -25,9 +25,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		}
 	}
 	
-	settingsIntegrationShow(): Promise<SettingsData> {
+	settingsShow( type: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/settings/integration' ).then( ( result: SettingsData ) => {
+			this.makeRequest( 'GET', `/settings/${type}` ).then( ( result: any ) => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -35,29 +35,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	settingsIntegrationUpdate( params: SettingsData ): Promise<any> {
+	settingsUpdate( type: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/settings/integration', params ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	settingsTcaShow(): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/settings/tca' ).then( ( result: any ) => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	settingsTcaUpdate( params: any ): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/settings/tca', params ).then( result => {
+			this.makeRequest( 'PUT', `/settings/${type}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -208,29 +188,6 @@ export class AdminApiService implements AdminApiServiceInterface {
 	userShow( userId: number, params: UserShowParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/user/${userId}`, params ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	whitelistShow(): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/whitelist' ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	whitelistUpdate( params: WhitelistData ): Promise<any> {
-		//@ts-ignore
-		params.items = JSON.stringify( params.items );
-		console.log(params);
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/whitelist', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );

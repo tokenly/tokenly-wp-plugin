@@ -6,7 +6,7 @@ use Tokenly\Wp\Views\PostEditView;
 use Tokenly\Wp\Views\PostAccessDeniedView;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 /**
  * Serves the token meta views

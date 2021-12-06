@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface CreditGroupInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface CreditGroupInterface extends ModelInterface {
 	//
 }

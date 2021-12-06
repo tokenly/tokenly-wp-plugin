@@ -1,15 +1,21 @@
 const TYPES = {
+	// Services
 	AuthServiceInterface                    : Symbol.for( 'AuthServiceInterface' ),
 	AdminApiServiceInterface                : Symbol.for( 'AdminApiServiceInterface' ),
+	// Repositories
 	PromiseRepositoryInterface              : Symbol.for( 'PromiseRepositoryInterface' ),
 	CreditGroupRepositoryInterface          : Symbol.for( 'CreditGroupRepositoryInterface' ),
-	IntegrationSettingsRepositoryInterface  : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
-	TcaSettingsRepositoryInterface          : Symbol.for( 'TcaSettingsRepositoryInterface' ),
 	SourceRepositoryInterface               : Symbol.for( 'SourceRepositoryInterface' ),
 	TokenMetaRepositoryInterface            : Symbol.for( 'TokenMetaRepositoryInterface' ),
 	UserRepositoryInterface                 : Symbol.for( 'UserRepositoryInterface' ),
-	WhitelistRepositoryInterface            : Symbol.for( 'WhitelistRepositoryInterface' ),
+	// Repositories - Settings
+	OauthSettingsRepositoryInterface        : Symbol.for( 'OauthSettingsRepositoryInterface' ),
+	IntegrationSettingsRepositoryInterface  : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
+	TcaSettingsRepositoryInterface          : Symbol.for( 'TcaSettingsRepositoryInterface' ),
+	WhitelistSettingsRepositoryInterface    : Symbol.for( 'WhitelistSettingsRepositoryInterface' ),
+	// Service providers
 	ComponentServiceProviderInterface       : Symbol.for( 'ComponentServiceProviderInterface' ),
+	// Components
 	ButtonLoginComponentInterface           : Symbol.for( 'ButtonLoginComponentInterface' ),
 	CardTokenItemComponentInterface         : Symbol.for( 'CardTokenItemComponentInterface' ),
 };

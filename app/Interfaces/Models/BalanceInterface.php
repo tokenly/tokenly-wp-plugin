@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface BalanceInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface BalanceInterface extends ModelInterface {
 	//
 }

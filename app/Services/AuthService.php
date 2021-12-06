@@ -8,7 +8,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
-use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 

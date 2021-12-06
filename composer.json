@@ -6,7 +6,6 @@
 		"tokenly/api-client": "dev-master",
 		"tokenly/tokenpass-client": "dev-main",
 		"php-di/php-di": "^6.3",
-		"doctrine/annotations": "^1.13",
 		"twig/twig": "^3"
 	},
 	"autoload": {
@@ -14,12 +13,22 @@
 			"Tokenly\\Wp\\": "app/"
 		}
 	},
+	"autoload-dev": {
+        "files": [
+            "config/kint.php"
+        ]
+    },
 	"repositories": [
 		{
 			"type": "path",
 			"url": "libs/tokenly/tokenpass-client"
 		}
 	],
+	"config": {
+		"platform": {
+			"php": "7.3.5"
+		}
+	},
 	"version": "dev-master",
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.6",

@@ -5,7 +5,7 @@ import { Whitelist } from '../Components/Whitelist';
 import { SavePanel } from '../Components/SavePanel';
 import { Component } from 'react';
 import { WhitelistData, WhitelistItem } from '../../Interfaces';
-import { WhitelistRepositoryInterface } from '../../Interfaces/Repositories/WhitelistRepositoryInterface';
+import { WhitelistSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
 import { 
 	Panel,
@@ -28,8 +28,8 @@ interface WhitelistPageState {
 }
 
 export default class WhitelistPage extends Component<WhitelistPageProps, WhitelistPageState> {
-	@resolve( TYPES.WhitelistRepositoryInterface )
-	whitelistRepository: WhitelistRepositoryInterface;
+	@resolve( TYPES.WhitelistSettingsRepositoryInterface )
+	whitelistSettingsRepository: WhitelistSettingsRepositoryInterface;
 	
 	state: WhitelistPageState = {
 		whitelistData: {
@@ -69,9 +69,9 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	
 	onSave() {
 		this.setState( { saving: true } );
-		this.whitelistRepository.update( this.state.whitelistData ).then( result => {
+		this.whitelistSettingsRepository.update( this.state.whitelistData ).then( ( result: any ) => {
 			this.setState( { saving: false } );
-		} ).catch( error => {
+		} ).catch( ( error: any ) => {
 			console.log( error );
 		})
 	}

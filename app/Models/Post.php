@@ -13,7 +13,7 @@ use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 class Post extends Model implements PostInterface {
 	public $tca_rules;

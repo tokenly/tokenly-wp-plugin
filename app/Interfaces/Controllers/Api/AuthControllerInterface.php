@@ -3,8 +3,8 @@
 namespace Tokenly\Wp\Interfaces\Controllers\Api;
 
 interface AuthControllerInterface {
-	public function show();
-	public function store();
-	public function destroy();
+	public function show( \WP_REST_Request $request );
+	public function store( \WP_REST_Request $request );
+	public function destroy( \WP_REST_Request $request );
 	public function callback();
 }

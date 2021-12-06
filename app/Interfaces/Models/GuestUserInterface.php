@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface GuestUserInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface GuestUserInterface extends UserInterface {
 	//
 }

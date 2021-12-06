@@ -1,13 +1,13 @@
 import { injectable, inject } from 'inversify';
-import { WhitelistData } from '../Interfaces';
-import { WhitelistRepositoryInterface } from './../Interfaces/Repositories/WhitelistRepositoryInterface';
+import { SettingsRepositoryInterface } from './../Interfaces/Repositories/SettingsRepositoryInterface';
 import { AdminApiServiceInterface } from '../Interfaces/Services/AdminApiServiceInterface';
-import { TYPES } from '../Types';
+import { TYPES } from './../Types';
 
 @injectable()
-export class WhitelistRepository implements WhitelistRepositoryInterface {
+export class SettingsRepository implements SettingsRepositoryInterface {
 	adminApiService;
-
+	settingsType: string;
+	
 	constructor(
 		@inject( TYPES.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
 	) {
@@ -16,17 +16,17 @@ export class WhitelistRepository implements WhitelistRepositoryInterface {
 	
 	show(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.whitelistShow().then( result => {
+			this.adminApiService.settingsShow( this.settingsType ).then( ( result: any ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		} );
+		});
 	}
 	
-	update( params: WhitelistData ): Promise<any> {
+	update( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.whitelistUpdate( params ).then( result => {
+			this.adminApiService.settingsUpdate( this.settingsType, params ).then( ( result: any ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

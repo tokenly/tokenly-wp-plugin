@@ -8,7 +8,7 @@ namespace Tokenly\Wp\Collections;
 
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
-use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Collections\Collection;
@@ -17,7 +17,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	protected $item_type = BalanceInterface::class;
 
 	public function __construct(
-		WhitelistInterface $whitelist,
+		WhitelistSettingsInterface $whitelist,
 		BalanceFactoryInterface $balance_factory,
 		TokenMetaServiceInterface $token_meta_service,
 		array $items

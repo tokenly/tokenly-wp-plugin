@@ -6,6 +6,7 @@ use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 
+
 final class Bootstrap {
 	private $container;
 	private $providers;

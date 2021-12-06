@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface TokenMetaInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface TokenMetaInterface extends ModelInterface {
 	//
 }

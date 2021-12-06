@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface PromiseInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface PromiseInterface extends ModelInterface {
 	//
 }

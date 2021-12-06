@@ -1,5 +1,4 @@
 import {
-	SettingsData,
 	SourceData,
 	PromiseData,
 	PromiseStoreParams,
@@ -11,10 +10,8 @@ import {
 } from './../../Interfaces';
 
 export interface AdminApiServiceInterface {
-	settingsIntegrationShow(): Promise<SettingsData>;
-	settingsIntegrationUpdate( params: SettingsData ): Promise<any>;
-	settingsTcaShow(): Promise<any>;
-	settingsTcaUpdate( params: any ): Promise<any>;
+	settingsShow( type: string ): Promise<any>;
+	settingsUpdate( type: string, params: any ): Promise<any>;
 	sourceIndex(): Promise<Array<SourceData>>;
 	sourceStore( params: SourceData ): Promise<any>;
 	sourceUpdate( address: string, params: SourceData ): Promise<any>;
@@ -30,7 +27,5 @@ export interface AdminApiServiceInterface {
 	tokenMetaUpdate( postId: number, params: TokenMetaData ): Promise<any>;
 	userIndex( params: UserIndexParams ): Promise<any>;
 	userShow( userId: number, params: UserShowParams ): Promise<any>;
-	whitelistShow(): Promise<any>;
-	whitelistUpdate( params: WhitelistData ): Promise<any>;
 	makeRequest( method: string, route: string, args: object ): Promise<any>;
 }

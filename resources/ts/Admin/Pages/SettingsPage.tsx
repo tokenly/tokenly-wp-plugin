@@ -7,8 +7,9 @@ import { IntegrationSettingsForm } from '../Components/IntegrationSettingsForm';
 import { IntegrationSettingsHelp } from '../Components/IntegrationSettingsHelp';
 import { TcaSettingsForm } from '../Components/TcaSettingsForm';
 import { SettingsData } from '../../Interfaces';
-import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/IntegrationSettingsRepositoryInterface';
-import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/TcaSettingsRepositoryInterface';
+import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
+import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
+import { OauthSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
 
 import { 
@@ -42,6 +43,8 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	integrationSettingsRepository: IntegrationSettingsRepositoryInterface;
 	@resolve( TYPES.TcaSettingsRepositoryInterface )
 	tcaSettingsRepository: TcaSettingsRepositoryInterface;
+	@resolve( TYPES.OauthSettingsRepositoryInterface )
+	oauthSettingsRepository: OauthSettingsRepositoryInterface;
 	
 	state: SettingsPageState = {
 		integrationSettings: {
@@ -80,10 +83,10 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	
 	onIntegrationSettingsSave() {
 		this.setState( { savingIntegrationSettings: true } );
-		this.integrationSettingsRepository.update( this.state.integrationSettings ).then( result => {
+		this.integrationSettingsRepository.update( this.state.integrationSettings ).then( ( result: any ) => {
 			this.setState( { savingIntegrationSettings: false } );
 			window.location.reload();
-		} ).catch( error => {
+		} ).catch( ( error: any ) => {
 			console.log( error );
 		})
 	}

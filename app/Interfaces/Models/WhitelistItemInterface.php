@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface WhitelistItemInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface WhitelistItemInterface extends ModelInterface {
 	//
 }

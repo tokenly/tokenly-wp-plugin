@@ -28,7 +28,7 @@ class AuthController implements AuthControllerInterface {
 	 * Responds the Tokenpass connection status
 	 * @return void
 	*/
-	public function show() {
+	public function show( \WP_REST_Request $request ) {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}
@@ -42,7 +42,7 @@ class AuthController implements AuthControllerInterface {
 	 * Initiates the OAuth process
 	 * @return void
 	 */
-	public function store() {
+	public function store( \WP_REST_Request $request ) {
 		$success_url = get_query_var( "{$this->namespace}_success_url" );
 		$this->auth_service->authorize_begin( $success_url );
 	}
@@ -51,7 +51,7 @@ class AuthController implements AuthControllerInterface {
 	 * Disconnects the current user
 	 * @return array
 	 */
-	public function destroy() {
+	public function destroy( \WP_REST_Request $request ) {
 		if ( $this->current_user->is_guest() === true ) {
 			return;
 		}

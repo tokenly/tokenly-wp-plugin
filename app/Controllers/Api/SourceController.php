@@ -17,20 +17,20 @@ class SourceController implements SourceControllerInterface {
 	
 	/**
 	 * Responds with registered sources
-	 * @param array $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return Source[]
 	 */
-	public function index( $request ) {
+	public function index( \WP_REST_Request $request ) {
 		$sources = $this->source_service->index();
 		return $sources;
 	}
 
 	/**
 	 * Creates a new source
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return Source
 	 */
-	public function store( $request ) {
+	public function store( \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$source = $this->source_service->store( $params );
 		return $source;
@@ -38,10 +38,10 @@ class SourceController implements SourceControllerInterface {
 
 	/**
 	 * Updates a registered source
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return Source 
 	 */
-	public function update( $request ) {
+	public function update( \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$address = $params['address'] ?? null;
 		if ( !$address ) {
@@ -61,10 +61,10 @@ class SourceController implements SourceControllerInterface {
 
 	/**
 	 * Destroys a registered source
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( $request ) {
+	public function destroy( \WP_REST_Request $request ) {
 		$address = $request->get_param( 'address' );
 		if ( !$address ) {
 			return array(

@@ -1,4 +1,5 @@
 <?php
+
 use Psr\Container\ContainerInterface;
 use Tokenly\Wp\Providers\AppServiceProvider;
 use Tokenly\Wp\Providers\RouteServiceProvider;
@@ -53,11 +54,13 @@ use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
 use Tokenly\Wp\Controllers\Api\AuthController as AuthApiController;
 use Tokenly\Wp\Controllers\Api\CreditGroupController as CreditGroupApiController;
 use Tokenly\Wp\Controllers\Api\PromiseController as PromiseApiController;
-use Tokenly\Wp\Controllers\Api\IntegrationSettingsController as IntegrationSettingsApiController;
-use Tokenly\Wp\Controllers\Api\TcaSettingsController as TcaSettingsApiController;
 use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\WhitelistController as WhitelistApiController;
+use Tokenly\Wp\Controllers\Api\Settings\OauthSettingsController as OauthSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Settings\IntegrationSettingsController as IntegrationSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Settings\TcaSettingsController as TcaSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Settings\WhitelistSettingsController as WhitelistSettingsApiController;
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\AddressCollection;
 use Tokenly\Wp\Collections\BalanceCollection;
@@ -78,15 +81,16 @@ use Tokenly\Wp\Models\Promise;
 use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Models\PromiseMeta;
 use Tokenly\Wp\Models\Integration;
-use Tokenly\Wp\Models\IntegrationSettings;
-use Tokenly\Wp\Models\TcaSettings;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
 use Tokenly\Wp\Models\TcaRule;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Models\GuestUser;
-use Tokenly\Wp\Models\Whitelist;
 use Tokenly\Wp\Models\WhitelistItem;
+use Tokenly\Wp\Models\Settings\OauthSettings;
+use Tokenly\Wp\Models\Settings\IntegrationSettings;
+use Tokenly\Wp\Models\Settings\TcaSettings;
+use Tokenly\Wp\Models\Settings\WhitelistSettings;
 use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
@@ -139,11 +143,12 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface as CreditGroupApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface as PromiseApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\IntegrationSettingsControllerInterface as IntegrationSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface as TcaSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as WhitelistApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthSettingsControllerInterface as OauthSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationSettingsControllerInterface as IntegrationSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaSettingsControllerInterface as TcaSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerInterface as WhitelistSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupFactoryInterface;
@@ -187,14 +192,15 @@ use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
 use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
@@ -260,11 +266,13 @@ return array(
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
 	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
-	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
-	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
 	SourceApiControllerInterface::class               => \DI\autowire( SourceApiController::class ),
 	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
-	WhitelistApiControllerInterface::class            => \DI\autowire( WhitelistApiController::class ),
+	//Controllers - API - Settings
+	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
+	OauthSettingsApiControllerInterface::class        => \DI\autowire( OauthSettingsApiController::class ),
+	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
+	WhitelistSettingsApiControllerInterface::class    => \DI\autowire( WhitelistSettingsApiController::class ),
 	//Shortcodes
 	LoginButtonShortcodeInterface::class              => \DI\autowire( LoginButtonShortcode::class ),
 	LogoutButtonShortcodeInterface::class             => \DI\autowire( LogoutButtonShortcode::class ),
@@ -379,9 +387,11 @@ return array(
 	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
 	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
 	IntegrationInterface::class            => \DI\autowire( Integration::class ),
+	//Models - Settings
+	OauthSettingsInterface::class          => \DI\autowire( OauthSettings::class ),
 	IntegrationSettingsInterface::class    => \DI\autowire( IntegrationSettings::class ),
 	TcaSettingsInterface::class            => \DI\autowire( TcaSettings::class ),
-	WhitelistInterface::class              => \DI\autowire( Whitelist::class ),
+	WhitelistSettingsInterface::class      => \DI\autowire( WhitelistSettings::class ),
 	//Factories
 	AddressFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, AddressInterface::class ) extends ConcreteFactory implements AddressFactoryInterface {};

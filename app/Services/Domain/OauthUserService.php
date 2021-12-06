@@ -29,6 +29,7 @@ class OauthUserService extends DomainService implements OauthUserServiceInterfac
 	 * @return OauthUserInterface 
 	 */
 	public function show( array $params = array() ) {
+		$this->show_before();
 		$oauth_token;
 		if ( isset( $params['id'] ) ) {
 			$user_id = $params['id'];

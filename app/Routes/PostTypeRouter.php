@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;

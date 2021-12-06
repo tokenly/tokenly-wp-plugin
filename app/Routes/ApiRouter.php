@@ -2,16 +2,17 @@
 
 namespace Tokenly\Wp\Routes;
 
+use Tokenly\Wp\Routes\Router;
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\IntegrationSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
-use Tokenly\Wp\Routes\Router;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerInterface;
 
 /**
  * Manages routing for the REST API endpoints
@@ -23,26 +24,28 @@ class ApiRouter extends Router implements ApiRouterInterface {
 
 	public function __construct(
 		AuthControllerInterface $auth_controller,
-		IntegrationSettingsControllerInterface $settings_integration_controller,
-		TcaSettingsControllerInterface $settings_tca_controller,
-		WhitelistControllerInterface $whitelist_controller,
 		PromiseControllerInterface $promise_controller,
 		CreditGroupControllerInterface $credit_group,
 		SourceControllerInterface $source_controller,
 		UserControllerInterface $user_controller,
+		IntegrationSettingsControllerInterface $settings_integration_controller,
+		TcaSettingsControllerInterface $settings_tca_controller,
+		OauthSettingsControllerInterface $settings_oauth_controller,
+		WhitelistSettingsControllerInterface $settings_whitelist_controller,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
 		$this->api_namespace = "{$this->namespace}/v1";
 		$this->controllers = array(
 			'auth'                   => $auth_controller,
-			'settings-integration'   => $settings_integration_controller,
-			'settings-tca'           => $settings_tca_controller,
-			'whitelist'              => $whitelist_controller,
 			'credit-group'           => $credit_group,
 			'promise'                => $promise_controller,
 			'source'                 => $source_controller,
 			'user'                   => $user_controller,
+			'settings-integration'   => $settings_integration_controller,
+			'settings-tca'           => $settings_tca_controller,
+			'settings-oauth'         => $settings_oauth_controller,
+			'settings-whitelist'     => $settings_whitelist_controller,
 		);
 	}
 
@@ -80,7 +83,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 	 * @return array
 	 */
 	protected function get_routes() {
-		return array(
+		$routes = array(
 			'authorize-status' => array(
 				'path' => '/authorize',
 				'args' => array(
@@ -88,66 +91,6 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					'callback'            => array( $this->controllers['auth'], 'show' ),
 					'permission_callback' => function () {
 						return current_user_can( 'read' );
-					},
-				),
-			),
-			'settings-integration-show' => array(
-				'path' => '/settings/integration',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['settings-integration'], 'show' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'settings-integration-update' => array(
-				'path' => '/settings/integration',
-				'args' => array(
-					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['settings-integration'], 'update' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'settings-tca-show' => array(
-				'path' => '/settings/tca',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['settings-tca'], 'show' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'settings-tca-update' => array(
-				'path' => '/settings/tca',
-				'args' => array(
-					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['settings-tca'], 'update' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'whitelist-show' => array(
-				'path' => '/whitelist',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['whitelist'], 'show' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'whitelist-update' => array(
-				'path' => '/whitelist',
-				'args' => array(
-					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['whitelist'], 'update' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
 					},
 				),
 			),
@@ -282,5 +225,54 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 		);
+		$routes = array_merge( $routes, $this->get_settings_routes() );
+		return $routes;
+	}
+
+	/**
+	 * Retrieves the settings categories
+	 * @return array
+	 */
+	protected function get_settings_sections() {
+		return array(
+			'tca',
+			'integration',
+			'oauth',
+			'whitelist',
+		);
+	}
+
+	/**
+	 * Get settings route definitions
+	 * @return array
+	 */
+	protected function get_settings_routes() {
+		$sections = $this->get_settings_sections();
+		$routes = array();
+		foreach ( $sections as $section ) {
+			$routes = array_merge( $routes, array(
+				"settings-{$section}-show" => array(
+					'path' => "/settings/{$section}",
+					'args' => array(
+						'methods'             => 'GET',
+						'callback'            => array( $this->controllers["settings-{$section}"], 'show' ),
+						'permission_callback' => function () {
+							return current_user_can( 'manage_options' );
+						},
+					),
+				),
+				"settings-{$section}-update" => array(
+					'path' => "/settings/{$section}",
+					'args' => array(
+						'methods'             => 'PUT',
+						'callback'            => array( $this->controllers["settings-{$section}"], 'update' ),
+						'permission_callback' => function () {
+							return current_user_can( 'manage_options' );
+						},
+					),
+				),
+			) );
+		}
+		return $routes;
 	}
 }
