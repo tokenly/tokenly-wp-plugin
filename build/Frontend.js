@@ -5060,7 +5060,6 @@ let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Compon
     register(selector) {
         this.element.addEventListener('click', () => {
             this.element.classList.add('loading');
-            this.authService.connect();
         });
     }
 };
@@ -5241,7 +5240,7 @@ let ComponentServiceProvider = class ComponentServiceProvider extends ServicePro
         return [
             {
                 name: 'buttonLoginComponent',
-                selector: 'button.tokenpass-login',
+                selector: 'a.tokenpass-login',
             },
             {
                 name: 'cardTokenItemComponent',

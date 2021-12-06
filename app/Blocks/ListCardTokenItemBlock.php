@@ -18,9 +18,13 @@ class ListCardTokenItemBlock extends Component {
 	}
 
 	public function render( $data ) {
-		$balances = $data['balances'] ?? null;
+
+		if ( !isset( $data['balance'] ) ) {
+			return false;
+		}
 		$html_token_items = '';
-		foreach ( ( array ) $balances as $balance ) {
+		$balance = $data['balance'];
+		foreach ( ( array ) $balance as $balance ) {
 			$html_token_items .= $this->card_token_item_component->render( array( 'balance' => $balance, ) );
 		}
 		$html = $this->twig->render( 'blocks/ListCardTokenItemBlock.twig', array(

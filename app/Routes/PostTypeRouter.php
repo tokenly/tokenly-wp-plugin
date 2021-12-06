@@ -95,13 +95,19 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	public function on_post_save( int $post_id, \WP_Post $post, bool $update ) {
 		$post_type = $post->post_type;
 		$post_type_key = str_replace( "{$this->namespace}_", '', $post_type );
-		$params = $_POST["{$this->namespace}_data"] ?? array();
+		$params = $_POST[ "{$this->namespace}_data" ] ?? array();
 		if ( $params ) {
 			$params = wp_unslash( $params );
 			$params = json_decode( $params, true );
 		}
-		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['save_callback'] ) ) {
-			call_user_func( $this->routes[ $post_type_key ]['save_callback'], $post_id, $params );
+		if ( isset( $this->routes[ $post_type_key ] ) ) {
+			$post = call_user_func(
+				$this->routes[ $post_type_key ]['show_callback'],
+				array(
+					'id' => $post_id,
+				)
+			);
+			$post->update( $params );
 		}
 	}
 	
@@ -120,7 +126,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				'slug'          => 'token-meta',
 				'post_type'     => $this->post_types['token_meta']['post_type'],
 				'edit_callback' => array( $this->post_types['token_meta']['controller'], 'edit' ),
-				'save_callback' => array( $this->post_types['token_meta']['service'], 'update' ),
+				'show_callback' => array( $this->post_types['token_meta']['service'], 'show' ),
 			),
 			'promise_meta'   => array(
 				'name'          => 'promise_meta',
@@ -157,7 +163,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			$routes[ $key ] = array(
 				'name'          => $key,
 				'edit_callback' => array( $this->post_types['post']['controller'], 'edit' ),
-				'save_callback' => array( $this->post_types['post']['service'], 'update' ),
+				'show_callback' => array( $this->post_types['post']['service'], 'show' ),
 			);
 		}
 		return $routes;

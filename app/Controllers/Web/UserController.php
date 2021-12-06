@@ -36,7 +36,7 @@ class UserController implements UserControllerInterface {
 	public function show() {
 		$user_id = get_query_var( "{$this->namespace}_user_id" );
 		if ( !$user_id ) {
-			return;
+			return false;
 		}
 		if ( $user_id == 'me' ) {
 			$user = $this->current_user;
@@ -46,13 +46,15 @@ class UserController implements UserControllerInterface {
 			) );
 		}
 		if ( !$user ) {
-			return;
+			return false;
 		}
-		$balances = $user->get_balances( array(
-			'with' => array( 'token_meta' ),
-		) );
+		$user->load( array( 'oauth_user' ) );
+		if ( !isset( $user->oauth_user ) ) {
+			return false;
+		}
+		$user->oauth_user->load( array( 'balance.token_meta' ) );
 		$render = $this->user_view->render( array(
-			'balances' => $balances,
+			'balance' => $user->oauth_user->balance,
 			'user'     => $user,
 		) );
 		return $render;

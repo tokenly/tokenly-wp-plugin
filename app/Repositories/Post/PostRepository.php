@@ -54,6 +54,12 @@ class PostRepository implements PostRepositoryInterface {
 		return $post;
 	}
 
+	/**
+	 * Updates the specific post
+	 * @param PostInterface $post Target post
+	 * @param array $params New data
+	 * @return void
+	 */
 	public function update( PostInterface $post, array $params = array() ) {
 		$update_params = array();
 		if ( isset( $params['tca_rules'] ) ) {

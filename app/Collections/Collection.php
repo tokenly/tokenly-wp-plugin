@@ -19,6 +19,11 @@ class Collection extends \ArrayObject implements CollectionInterface {
 		$this->fill( $items );
 	}
 
+	/**
+	 * Fills the collection with data
+	 * @param array $items Items to add
+	 * @return self
+	 */
 	public function fill( array $items ) {
 		foreach ( $items as $item )
 		{
@@ -28,6 +33,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 			}
 		}
 		$this->exchangeArray( $items );
+		return $this;
 	}
 
 	/**
@@ -41,6 +47,11 @@ class Collection extends \ArrayObject implements CollectionInterface {
 		return $array;
 	}
 
+	/**
+	 * Keys the collection by its field
+	 * @param string $field Field name
+	 * @return self
+	 */
 	public function key_by_field( string $field ) {
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
@@ -52,11 +63,14 @@ class Collection extends \ArrayObject implements CollectionInterface {
 
 	/**
 	 * Loads the specified relations
-	 * @param array $relations List of relations to load
+	 * @param string[] $relations List of relations to load
 	 * @return self
 	 */
 	public function load( array $relations = array() ) {
 		foreach ( $relations as $key => $relation ) {
+			if ( !$relation ) {
+				continue;
+			}
 			$relation_formatted = $this->format_relation( $relation );
 			$method = "load_{$relation_formatted['root']}";
 			if ( method_exists( $this, $method ) ) {

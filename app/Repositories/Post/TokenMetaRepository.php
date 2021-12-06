@@ -50,9 +50,13 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		$posts = $query_meta->posts;
 		$posts_formatted = array();
 		foreach ( $posts as $post ) {
-			$posts_formatted[] = array(
+			$meta = $this->meta_repository->index( $post->ID, array(
+				'asset',
+				'extra',
+			) );
+			$posts_formatted[] = array_merge( $meta, array(
 				'post' => $post,
-			);
+			) );
 		}
 		$posts = $this->token_meta_collection_factory->create( $posts_formatted );
 		return $posts;
@@ -70,6 +74,12 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 	}
 
+	/**
+	 * Updates the specific token meta post
+	 * @param TokenMetaInterface $post Target post
+	 * @param array $params Update parameters
+	 * @return void
+	 */
 	public function update( TokenMetaInterface $post, array $params = array() ) {
 		$update_params = array();
 		if ( isset( $params['asset'] ) ) {

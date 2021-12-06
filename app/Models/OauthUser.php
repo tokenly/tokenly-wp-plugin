@@ -16,8 +16,8 @@ class OauthUser extends Model implements OauthUserInterface {
 	public $name;
 	public $email_is_confirmed;
 	public $oauth_token;
-	public $balances;
-	public $addresses;
+	public $balance;
+	public $address;
 	protected $tca_service;
 	protected $address_service;
 	protected $balance_service;
@@ -69,26 +69,30 @@ class OauthUser extends Model implements OauthUserInterface {
 	}
 
 	/**
-	 * Gets all addresses
-	 * @param array $params Loading parameters
+	 * Retrieves the collection of user addresses
+	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	public function load_address( array $params = array() ) {
+	public function load_address( array $relations = array() ) {
 		$username = $this->username;
 		$params['username'] = $username;
-		$addresses = $this->address_service->index( $params );
-		$this->addresses = $addresses;
+		$address = $this->address_service->index( array(
+			'with' => $relations,
+		) );
+		$this->address = $address;
 		return $this;
 	}
 
 	/**
-	 * Gets all balances
-	 * @param array $params Balance search parameters
+	 * Retrieves the collection of user balances
+	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	public function load_balance( array $params = array() ) {
-		$balances = $this->balance_service->index( $this->oauth_token, $params );
-		$this->balances = $balances;
+	public function load_balance( array $relations = array() ) {
+		$balance = $this->balance_service->index( $this->oauth_token, array(
+			'with' => $relations,
+		) );
+		$this->balance = $balance;
 		return $this;
 	}
 }

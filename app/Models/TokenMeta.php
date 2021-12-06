@@ -8,8 +8,7 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 
 class TokenMeta extends Model implements TokenMetaInterface {
 	public $asset;
@@ -23,8 +22,7 @@ class TokenMeta extends Model implements TokenMetaInterface {
 	);
 
 	public function __construct(
-		TokenMetaServiceInterface $domain_repository,
-		MetaRepositoryInterface $meta_repository,
+		TokenMetaRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
