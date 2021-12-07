@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services;
 
-interface QueryServiceInterface {
+use Tokenly\Wp\Interfaces\Services\ServiceInterface;
+
+interface QueryServiceInterface extends ServiceInterface {
 	//
 }

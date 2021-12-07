@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services;
 
-interface TcaServiceInterface {
+use Tokenly\Wp\Interfaces\Services\ServiceInterface;
+
+interface TcaServiceInterface extends ServiceInterface {
 	//
 }

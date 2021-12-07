@@ -31,7 +31,6 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	constructor( props: SourceShowPageProps ) {
 		super( props );
 		this.getAssetNames = this.getAssetNames.bind( this );
-		console.log(this.props.pageData);
 	}
 
 	getAssetNames() {

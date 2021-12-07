@@ -33,7 +33,6 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 	}
 	constructor( props: PromiseShowPageProps ) {
 		super( props );
-		console.log(this.props.pageData);
 	}
 	
 	dateFormatted( date: Date ) {

@@ -4,7 +4,6 @@ import Page from './Page';
 import { Component } from 'react';
 import { SourceRepositoryInterface } from '../../Interfaces/Repositories/SourceRepositoryInterface';
 import { SourceStoreForm } from '../Components/SourceStoreForm';
-import { BalanceList } from '../Components/BalanceList';
 import { SourceData } from '../../Interfaces';
 import { TYPES } from '../../Types';
 
@@ -41,7 +40,6 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	}
 	constructor( props: SourceStorePageProps ) {
 		super( props );
-		console.log(this.props.pageData);
 		this.onSubmit = this.onSubmit.bind( this );
 		this.onAddressChange = this.onAddressChange.bind( this );
 	}
@@ -57,7 +55,6 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	}
 	
 	onAddressChange( address: any ) {
-		console.log(address);
 		this.setState( { address: address } );
 	}
 	

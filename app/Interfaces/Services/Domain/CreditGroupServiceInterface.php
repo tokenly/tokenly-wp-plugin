@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services\Domain;
 
-interface CreditGroupServiceInterface {
+use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
+
+interface CreditGroupServiceInterface extends DomainServiceInterface {
 	//
 }

@@ -12,7 +12,6 @@ use Tokenly\Wp\Interfaces\Models\SourceInterface;
  * Manages the sources
  */
 class SourceService extends DomainService implements SourceServiceInterface {
-	protected $source_cache;
 	protected $source_repository;
 
 	public function __construct(
@@ -25,15 +24,8 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	 * Gets the list of registered source addresses
 	 * @return array
 	 */
-	public function index( array $params = array() ) {	
-		$sources;
-		if ( isset( $this->source_cache ) ) {
-			$sources = $this->source_cache;
-		} else {
-			$sources = $this->source_repository->index();
-			$this->source_cache = $sources;
-		}
-		$sources = $this->index_after( $sources, $params );
+	protected function _index( array $params = array() ) {	
+		$sources = $this->source_repository->index();
 		return $sources;
 	}
 
@@ -42,12 +34,8 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	 * @param string $address Source address
 	 * @return SourceInterface
 	 */
-	public function show( array $params = array() ) {
+	protected function _show( array $params = array() ) {
 		$source = $this->source_repository->show( $params );
-		$source = $this->show_after( $source, $params );
-		if ( !$source ) {
-			return;
-		}
 		return $source;
 	}
 	

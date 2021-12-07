@@ -18,8 +18,6 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
  * Manages the promises
  */
 class PromiseService extends DomainService implements PromiseServiceInterface {
-	protected $promise_cache = array();
-	protected $promise_collection_cache;
 	protected $promise_repository;
 	protected $promise_meta_service;
 	protected $source_service;
@@ -45,15 +43,8 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	 * @param array $params Search parameters
 	 * @return PromiseCollectionInterface Promises found
 	 */
-	public function index( array $params = array() ) {
-		$promises;
-		if ( isset( $this->promise_collection_cache ) ) {
-			$promises = $this->promise_collection_cache;
-		} else {
-			$promises = $this->promise_repository->index();
-			$this->promise_collection_cache = $promises;
-		}
-		$promises = $this->index_after( $promises, $params );
+	protected function _index( array $params = array() ) {
+		$promises = $this->promise_repository->index();
 		return $promises;
 	}
 
@@ -62,28 +53,12 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return PromiseInterface Promise found
 	 */
-	public function show( int $promise_id, array $params = array() ) {
-		if ( isset( $this->promise_cache[ $promise_id ] ) ) {
-			$promise = $this->promise_cache[ $promise_id ];
-		} else {
-			$promise = $this->promise_repository->show( $promise_id );
-			$this->promise_cache[ $promise_id ] = $promise;
-		}
-		$promise = $this->show_after( $promise, $params );
-		if ( !$promise ) {
+	protected function _show( array $params = array() ) {
+		if ( !isset( $params['promise_id'] ) ) {
 			return false;
 		}
-		return $promise;
-	}
-
-	/**
-	 * Updates the existing promised transaction
-	 * @param integer $promise_id Tokenpass promise index
-	 * @param $params New promise properties
-	 * @return PromiseInterface
-	 */
-	public function update( int $promise_id, array $params = array() ) {
-		$promise = $this->promise_repository->update( $promise_id, $params );
+		$promise_id = $params['promise_id'];
+		$promise = $this->promise_repository->show( $promise_id );
 		return $promise;
 	}
 	

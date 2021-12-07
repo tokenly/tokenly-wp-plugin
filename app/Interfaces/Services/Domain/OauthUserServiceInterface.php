@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services\Domain;
 
-interface OauthUserServiceInterface {
-	public function show( array $params = array() );
+use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
+
+interface OauthUserServiceInterface extends DomainServiceInterface {
+	//
 }

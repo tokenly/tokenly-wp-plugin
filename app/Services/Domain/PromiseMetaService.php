@@ -11,7 +11,6 @@ use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
  * Manages the promise meta
  */
 class PromiseMetaService extends DomainService implements PromiseMetaServiceInterface {
-	protected $promise_meta_cache = array();
 	protected $promise_meta_repository;
 	protected $meta_repository;
 
@@ -28,9 +27,8 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 * @param array $params Search params
 	 * @return PromiseMetaCollectionInterface
 	 */
-	public function index( array $params = array() ) {
+	protected function _index( array $params = array() ) {
 		$promises = $this->promise_meta_repository->index( $params );
-		$promises = $this->index_after( $promises, $params );
 		return $promises;
 	}
 	
@@ -39,9 +37,8 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 * @param integer $params Post search params
 	 * @return PromiseMetaInterface
 	 */
-	public function show( array $params = array() ) {
+	protected function _show( array $params = array() ) {
 		$meta = $this->promise_meta_repository->show( $params );
-		$meta = $this->show_after( $meta, $params );
 		return $meta;
 	}
 	

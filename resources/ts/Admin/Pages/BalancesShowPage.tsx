@@ -30,7 +30,6 @@ export default class BalancesShowPage extends Component<BalancesShowPageProps, B
 	}
 	constructor( props: BalancesShowPageProps ) {
 		super( props );
-		console.log(this.props.pageData.address);
 	}
 	
 	render() {

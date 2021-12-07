@@ -12,7 +12,6 @@ use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
  * Manages the addresses
  */
 class AddressService extends DomainService implements AddressServiceInterface {
-	protected $address_cache = array();
 	protected $address_repository;
 	protected $oauth_user_service;
 
@@ -29,17 +28,15 @@ class AddressService extends DomainService implements AddressServiceInterface {
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface
 	 */
-	public function index( array $params = array() ) {
+	protected function _index( array $params = array() ) {
 		if ( !isset( $params['username'] ) ) {
 			return;
 		}
-		$username = $params['username'] ?? null;
-		$addresses = $this->address_repository->index( $params );
-		$addresses = $this->index_after( $addresses, $params );
-		return $addresses;
+		$address = $this->address_repository->index( $params );
+		return $address;
 	}
 
-	public function show( array $params = array() ) {
+	protected function _show( array $params = array() ) {
 		if ( !isset( $params['address'] ) ) {
 			return;
 		}
@@ -51,7 +48,6 @@ class AddressService extends DomainService implements AddressServiceInterface {
 		}
 		$params['username'] = $oauth_user->username;
 		$address = $this->address_repository->show( $params );
-		$address = $this->show_after( $address, $params );
 		return $address;
 	}
 }

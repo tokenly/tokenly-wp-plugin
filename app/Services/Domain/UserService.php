@@ -41,13 +41,12 @@ class UserService extends DomainService implements UserServiceInterface {
 	 * @param array $params Search parameters
 	 * @return UserCollectionInterface
 	 */
-	public function index( array $params ) {
+	protected function _index( array $params = array() ) {
 		$users = $this->user_repository->index( $params );
 		if ( isset( $params['suggestions'] ) ) {
 			$suggestions = $this->make_suggestions( $users );
 			return $suggestions;
 		}
-		$users = $this->index_after( $users, $params );
 		return $users;
 	}
 
@@ -56,9 +55,8 @@ class UserService extends DomainService implements UserServiceInterface {
 	 * @param array $params Search params
 	 * @return UserInterface
 	 */
-	public function show( array $params ) {
+	protected function _show( array $params = array() ) {
 		$user = $this->user_repository->show( $params );
-		$user = $this->show_after( $user, $params );
 		return $user;
 	}
 

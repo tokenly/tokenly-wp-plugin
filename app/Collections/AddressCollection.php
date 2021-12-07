@@ -21,7 +21,7 @@ class AddressCollection extends Collection implements AddressCollectionInterface
 	 */
 	protected function load_balance( array $relations ) {
 		foreach( (array) $this as &$address ) {
-			$address->balances = $address->balances->load( $relations );
+			$address->balance = $address->balance->load( $relations );
 		}
 		return $this;
 	}

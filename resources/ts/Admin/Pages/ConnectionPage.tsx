@@ -35,7 +35,6 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 	
 	constructor( props: ConnectionPageProps ) {
 		super( props );
-		console.log(this.props.pageData);
 	}
 	
 	getStatusText() {

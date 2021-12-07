@@ -74,10 +74,9 @@ class OauthUser extends Model implements OauthUserInterface {
 	 * @return self
 	 */
 	public function load_address( array $relations = array() ) {
-		$username = $this->username;
-		$params['username'] = $username;
 		$address = $this->address_service->index( array(
-			'with' => $relations,
+			'username' => $this->username,
+			'with'     => $relations,
 		) );
 		$this->address = $address;
 		return $this;
@@ -89,8 +88,9 @@ class OauthUser extends Model implements OauthUserInterface {
 	 * @return self
 	 */
 	public function load_balance( array $relations = array() ) {
-		$balance = $this->balance_service->index( $this->oauth_token, array(
-			'with' => $relations,
+		$balance = $this->balance_service->index( array(
+			'oauth_token' => $this->oauth_token,
+			'with'        => $relations,
 		) );
 		$this->balance = $balance;
 		return $this;

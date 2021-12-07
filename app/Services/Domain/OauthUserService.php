@@ -11,7 +11,6 @@ use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
  * Manages the OAuth users
  */
 class OauthUserService extends DomainService implements OauthUserServiceInterface {
-	protected $oauth_user_cache = array();
 	protected $oauth_user_repository;
 	protected $user_meta_repository;
 
@@ -28,8 +27,7 @@ class OauthUserService extends DomainService implements OauthUserServiceInterfac
 	 * @param array $params Search parameters
 	 * @return OauthUserInterface 
 	 */
-	public function show( array $params = array() ) {
-		$this->show_before();
+	protected function _show( array $params = array() ) {
 		$oauth_token;
 		if ( isset( $params['id'] ) ) {
 			$user_id = $params['id'];
@@ -37,7 +35,6 @@ class OauthUserService extends DomainService implements OauthUserServiceInterfac
 			$params['oauth_token'] = $oauth_token;
 		}
 		$oauth_user = $this->oauth_user_repository->show( $params );
-		$oauth_user = $this->show_after( $oauth_user, $params );
 		if ( !$oauth_user ) {
 			return;
 		}

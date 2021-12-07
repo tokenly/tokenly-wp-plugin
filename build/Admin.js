@@ -6828,7 +6828,6 @@ class BalancesShowPage extends react_1.Component {
         this.state = {
         //
         };
-        console.log(this.props.pageData.address);
     }
     render() {
         var _a, _b, _c, _d, _e;
@@ -6878,7 +6877,6 @@ const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpres
 class ConnectionPage extends react_1.Component {
     constructor(props) {
         super(props);
-        console.log(this.props.pageData);
     }
     getStatusText() {
         var _a;
@@ -7458,7 +7456,6 @@ class PromiseShowPage extends react_1.Component {
         this.state = {
         //
         };
-        console.log(this.props.pageData);
     }
     dateFormatted(date) {
         if (date) {
@@ -7830,7 +7827,6 @@ class SourceIndexPage extends react_1.Component {
             sourceData: [],
             storingPromise: false,
         };
-        console.log(this.props.pageData.sources);
     }
     render() {
         return (React.createElement(Page_1.default, { title: 'Sources' },
@@ -7872,7 +7868,6 @@ class SourceShowPage extends react_1.Component {
         //
         };
         this.getAssetNames = this.getAssetNames.bind(this);
-        console.log(this.props.pageData);
     }
     getAssetNames() {
         var _a, _b, _c;
@@ -7951,7 +7946,6 @@ class SourceStorePage extends react_1.Component {
             storingSource: false,
             address: null,
         };
-        console.log(this.props.pageData);
         this.onSubmit = this.onSubmit.bind(this);
         this.onAddressChange = this.onAddressChange.bind(this);
     }
@@ -7964,7 +7958,6 @@ class SourceStorePage extends react_1.Component {
         });
     }
     onAddressChange(address) {
-        console.log(address);
         this.setState({ address: address });
     }
     render() {
@@ -8102,7 +8095,6 @@ class VendorPage extends react_1.Component {
         };
         this.onDetails = this.onDetails.bind(this);
         this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind(this);
-        console.log(this.props.pageData);
     }
     onDetailsModalRequestClose() {
         this.setState({
