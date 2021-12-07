@@ -26,6 +26,7 @@ class PromiseController implements PromiseControllerInterface {
 	 */
 	public function index( \WP_REST_Request $request ) {
 		$promises = $this->promise_service->index();
+		$promises = $promises->to_array();
 		return $promises;
 	}
 

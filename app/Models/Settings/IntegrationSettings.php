@@ -15,4 +15,10 @@ class IntegrationSettings extends Settings implements IntegrationSettingsInterfa
 		'client_secret',
 		'settings_updated',
 	);
+
+	public function save( array $settings = array() ) {
+		$settings['settings_updated'] = true;
+		parent::save( $settings );
+		return $this;
+	}
 }

@@ -34,9 +34,13 @@ class PromiseController implements PromiseControllerInterface {
 	}
 	
 	public function show() {
-		$promise_id = intval( $_GET['promise'] ?? null );
-		$promise = $this->promise_service->show( $promise_id, array(
-			'with' => array(
+		if ( !isset( $_GET['promise'] ) ) {
+			return false;
+		}
+		$promise_id = intval( $_GET['promise'] );
+		$promise = $this->promise_service->show( array(
+			'promise_id' => $promise_id, 
+			'with'       => array(
 				'promise_meta.source_user',
 				'promise_meta.destination_user'
 			),
@@ -60,6 +64,7 @@ class PromiseController implements PromiseControllerInterface {
 		$sources = $this->source_service->index( array(
 			'with'    => array( 'address' ),
 		) );
+		$sources = $sources->to_array();
 		$render = $this->promise_store_view->render( array(
 			'sources' => $sources,
 		) );
@@ -67,11 +72,17 @@ class PromiseController implements PromiseControllerInterface {
 	}
 
 	public function edit() {
-		$promise_id = $_GET['promise'] ?? null;
-		$promise = $this->promise_service->show( $promise_id );
-		if ( $promise ) {
-			$promise = $promise->to_array();
+		if ( !isset( $_GET['promise'] ) ) {
+			return false;
 		}
+		$promise_id = intval( $_GET['promise'] );
+		$promise = $this->promise_service->show( array(
+			'promise_id' => $promise_id,
+		) );
+		if ( !$promise ) {
+			return false;
+		}
+		$promise = $promise->to_array();
 		$render = $this->promise_edit_view->render( array(
 			'promise' => $promise,
 		) );

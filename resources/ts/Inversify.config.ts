@@ -8,6 +8,7 @@ import { AuthService } from './Services/AuthService';
 import { AdminApiService } from './Services/AdminApiService';
 // Implementations - Repositories
 import { CreditGroupRepository } from './Repositories/CreditGroupRepository';
+import { CreditTransactionRepository } from './Repositories/CreditTransactionRepository';
 import { PromiseRepository } from './Repositories/PromiseRepository';
 import { UserRepository } from './Repositories/UserRepository';
 import { SourceRepository } from './Repositories/SourceRepository';
@@ -28,6 +29,7 @@ import { AuthServiceInterface } from './Interfaces/Services/AuthServiceInterface
 import { AdminApiServiceInterface } from './Interfaces/Services/AdminApiServiceInterface';
 // Interfaces - Repositories
 import { CreditGroupRepositoryInterface } from './Interfaces/Repositories/CreditGroupRepositoryInterface';
+import { CreditTransactionRepositoryInterface } from './Interfaces/Repositories/CreditTransactionRepositoryInterface';
 import { PromiseRepositoryInterface } from './Interfaces/Repositories/PromiseRepositoryInterface';
 import { SourceRepositoryInterface } from './Interfaces/Repositories/SourceRepositoryInterface';
 import { TokenMetaRepositoryInterface } from './Interfaces/Repositories/TokenMetaRepositoryInterface';
@@ -49,6 +51,7 @@ container.bind<AuthServiceInterface>( TYPES.AuthServiceInterface ).to( AuthServi
 container.bind<AdminApiServiceInterface>( TYPES.AdminApiServiceInterface ).to( AdminApiService );
 // Repositories
 container.bind<CreditGroupRepositoryInterface>( TYPES.CreditGroupRepositoryInterface ).to( CreditGroupRepository );
+container.bind<CreditTransactionRepositoryInterface>( TYPES.CreditTransactionRepositoryInterface ).to( CreditTransactionRepository );
 container.bind<PromiseRepositoryInterface>( TYPES.PromiseRepositoryInterface ).to( PromiseRepository );
 container.bind<SourceRepositoryInterface>( TYPES.SourceRepositoryInterface ).to( SourceRepository );
 container.bind<TokenMetaRepositoryInterface>( TYPES.TokenMetaRepositoryInterface ).to( TokenMetaRepository );

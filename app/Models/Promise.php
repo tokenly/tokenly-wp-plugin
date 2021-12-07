@@ -101,13 +101,3 @@ class Promise extends Model implements PromiseInterface {
 		return $this;
 	}
 }
-
-// if ( isset( $data['quantity'] ) && isset( $data['precision'] ) ) {
-// 	$quantity = $data['quantity'] ?? null;
-// 	$precision = $data['precision'] ?? null;
-// 	if ( $precision > 0 ) {
-// 		$divisor = intval( 1 . str_repeat( 0, $precision ) );
-// 		$quantity = $quantity / $divisor;
-// 		$data['quantity'] = $quantity;
-// 	}
-// }

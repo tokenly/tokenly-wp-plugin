@@ -22,6 +22,7 @@ class SourceController implements SourceControllerInterface {
 	 */
 	public function index( \WP_REST_Request $request ) {
 		$sources = $this->source_service->index();
+		$sources = $sources->to_array();
 		return $sources;
 	}
 

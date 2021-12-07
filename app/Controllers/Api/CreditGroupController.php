@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
  * Defines promise-related endpoints
  */
 class CreditGroupController implements CreditGroupControllerInterface {
-	protected $credit_group_interface;
+	protected $credit_group_service;
 
 	public function __construct(
 		CreditGroupServiceInterface $credit_group_service
@@ -20,20 +20,21 @@ class CreditGroupController implements CreditGroupControllerInterface {
 	
 	/**
 	 * Retrieves a collection of credit groups
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return CreditGroupCollectionInterface
 	 */
-	public function index( $request ) {
+	public function index( \WP_REST_Request $request ) {
 		$credit_groups = $this->credit_group_service->index();
+		$credit_groups = $credit_groups->to_array();
 		return $credit_groups;
 	}
 
 	/**
 	 * Creates a new credit group
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function store( $request ) {
+	public function store( \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$credit_group = $this->credit_group_service->store( $params );
 		return array(
@@ -44,12 +45,14 @@ class CreditGroupController implements CreditGroupControllerInterface {
 
 	/**
 	 * Updates an existing credit group
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function update( $request ) {
+	public function update( \WP_REST_Request $request ) {
 		$credit_group_id = $request->get_param( 'uuid' );
-		$credit_group = $this->credit_group_service->show( $credit_group_id );
+		$credit_group = $this->credit_group_service->show( array(
+			'uuid' => $credit_group_id,
+		) );
 		if ( !$credit_group_id ) {
 			return;
 		}
@@ -62,10 +65,10 @@ class CreditGroupController implements CreditGroupControllerInterface {
 
 	/**
 	 * Destroys an existing credit group
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( $request ) {
+	public function destroy( \WP_REST_Request $request ) {
 		$credit_group = $this->get_credit_group( $request );
 		if ( !$credit_group ) {
 			return;
@@ -78,10 +81,10 @@ class CreditGroupController implements CreditGroupControllerInterface {
 	
 	/**
 	 * Retrieves queried credit group
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return PromiseInterface
 	 */
-	protected function get_credit_group( $request ) {
+	protected function get_credit_group( \WP_REST_Request $request ) {
 		$credit_group_id = $request->get_param( 'credit_group' );
 		if ( !$credit_group_id ) {
 			return;

@@ -100,7 +100,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			$params = wp_unslash( $params );
 			$params = json_decode( $params, true );
 		}
-		if ( isset( $this->routes[ $post_type_key ] ) ) {
+		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['show_callback'] ) ) {
 			$post = call_user_func(
 				$this->routes[ $post_type_key ]['show_callback'],
 				array(

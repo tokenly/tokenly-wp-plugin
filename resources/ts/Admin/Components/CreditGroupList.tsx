@@ -41,7 +41,7 @@ export class CreditGroupList extends Component<CreditGroupListProps, CreditGroup
 				{ listItems.length > 0
 					//@ts-ignore
 					? <Flex direction="column" style={ { width: '100%' } }>{ listItems }</Flex>
-					: <div style={ { opacity: 0.5 } }>There are no registered sources</div>
+					: <div style={ { opacity: 0.5 } }>There are no registered credit groups</div>
 				}
 			</div>
 		);

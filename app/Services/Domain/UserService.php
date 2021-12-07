@@ -43,10 +43,6 @@ class UserService extends DomainService implements UserServiceInterface {
 	 */
 	protected function _index( array $params = array() ) {
 		$users = $this->user_repository->index( $params );
-		if ( isset( $params['suggestions'] ) ) {
-			$suggestions = $this->make_suggestions( $users );
-			return $suggestions;
-		}
 		return $users;
 	}
 
@@ -71,25 +67,6 @@ class UserService extends DomainService implements UserServiceInterface {
 		$email = $oauth_user->email ?? null;
 		$user = $this->user_repository->store( $username, $password, $email );
 		return $user;
-	}
-
-	/**
-	 * Creates an array of suggestions out of users
-	 * (used for real-time search in combobox inputs)
-	 * @param UserCollectionInterface $users
-	 * @return array Suggestions
-	 */
-	protected function make_suggestions( UserCollectionInterface $users ) {
-		$suggestions = array();
-		if ( !empty( $users ) ) {
-			foreach ( $users as $user ) {
-				$suggestions[] = array(
-					'id'   => $user->ID, 
-					'name' => $user->nickname,
-				);
-			}
-		}
-		return $suggestions;
 	}
 
 	/**

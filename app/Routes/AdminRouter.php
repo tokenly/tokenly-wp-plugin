@@ -6,6 +6,7 @@ use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
@@ -35,6 +36,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		BalancesControllerInterface $balances_controller,
 		DashboardControllerInterface $dashboard_controller,
 		CreditGroupControllerInterface $credit_group_controller,
+		CreditTransactionControllerInterface $credit_transaction_controller,
 		VendorControllerInterface $vendor_controller,
 		WhitelistControllerInterface $whitelist_controller,
 		ConnectionControllerInterface $connection_controller,
@@ -53,15 +55,16 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		$this->current_user = $current_user;
 		$this->auth_service = $auth_service;
 		$this->controllers = array(
-			'dashboard'     => $dashboard_controller,
-			'credit-group'  => $credit_group_controller,
-			'vendor'        => $vendor_controller,
-			'whitelist'     => $whitelist_controller,
-			'connection'    => $connection_controller,
-			'settings'      => $settings_controller,
-			'promise'       => $promise_controller,
-			'source'        => $source_controller,
-			'balances'      => $balances_controller,
+			'dashboard'           => $dashboard_controller,
+			'credit-transaction'  => $credit_transaction_controller,
+			'credit-group'        => $credit_group_controller,
+			'vendor'              => $vendor_controller,
+			'whitelist'           => $whitelist_controller,
+			'connection'          => $connection_controller,
+			'settings'            => $settings_controller,
+			'promise'             => $promise_controller,
+			'source'              => $source_controller,
+			'balances'            => $balances_controller,
 		);
 	}
 
@@ -212,8 +215,8 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'capability'  => 'manage_options',
 					),
 					'credit-group-index' => array(
-						'page_title'  => 'Credit Groups',
-						'menu_title'  => 'Credit Groups',
+						'page_title'  => 'App Credits',
+						'menu_title'  => 'App Credits',
 						'menu_slug'   => 'credit-group-index',
 						'callable'    => array( $this->controllers['credit-group'], 'index' ),
 						'capability'  => 'manage_options',
@@ -240,6 +243,22 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'menu_title'  => 'Credit group details',
 						'menu_slug'   => 'credit-group-show',
 						'callable'    => array( $this->controllers['credit-group'], 'show' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-transaction-index' => array(
+						'parent_slug' => null,
+						'page_title'  => 'App Credits list',
+						'menu_title'  => 'App Credits list',
+						'menu_slug'   => 'credit-transaction-index',
+						'callable'    => array( $this->controllers['credit-transaction'], 'index' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-transaction-store' => array(
+						'parent_slug' => null,
+						'page_title'  => 'App Credits create transaction',
+						'menu_title'  => 'App Credits create transaction',
+						'menu_slug'   => 'credit-transaction-store',
+						'callable'    => array( $this->controllers['credit-transaction'], 'store' ),
 						'capability'  => 'manage_options',
 					),
 					'source-index' => array(

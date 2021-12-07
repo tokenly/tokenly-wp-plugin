@@ -5,6 +5,7 @@ const TYPES = {
 	// Repositories
 	PromiseRepositoryInterface              : Symbol.for( 'PromiseRepositoryInterface' ),
 	CreditGroupRepositoryInterface          : Symbol.for( 'CreditGroupRepositoryInterface' ),
+	CreditTransactionRepositoryInterface    : Symbol.for( 'CreditTransactionRepositoryInterface' ),
 	SourceRepositoryInterface               : Symbol.for( 'SourceRepositoryInterface' ),
 	TokenMetaRepositoryInterface            : Symbol.for( 'TokenMetaRepositoryInterface' ),
 	UserRepositoryInterface                 : Symbol.for( 'UserRepositoryInterface' ),

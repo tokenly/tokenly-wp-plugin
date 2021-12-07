@@ -70,7 +70,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	public function store( array $params = array() ) {
 		if (
 			!isset( $params['asset'] ) || 
-			!isset( $params['source'] ) ||
+			!isset( $params['source_id'] ) ||
 			!isset( $params['destination'] ) ||
 			!isset( $params['quantity'] ) ||
 			!isset( $params['pseudo'] )
@@ -80,9 +80,10 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$asset = $params['asset'];
 		$quantity = floatval( $params['quantity'] );
 		$pseudo = boolval( $params['pseudo'] );
-		$source = $params['source'];
+		$source_id = $params['source_id'];
+		error_log(d( $quantity ));
 		$source = $this->source_service->show( array(
-			'address' => $params['source'],
+			'address' => $source_id,
 			'with'    => array( 'address' ),
 		) );
 		if ( !$source ||
@@ -104,13 +105,13 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$address = $source->address;
 		if (
 			!isset( $address->type ) ||
-			!isset( $address->balances )
+			!isset( $address->balance )
 		) {
 			throw new \Exception( 'Address is incomplete.' );
 		}
 		$type = $address->type;
-		$balances = $address->balances;
-		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balances );
+		$balance = $address->balance;
+		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balance );
 		$ref = $params['ref'] ?? '';
 		$note = $params['note'] ?? '';
 		$expiration = null;
@@ -132,6 +133,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			'note'        => $note,
 		) );
 		$promise_meta_data = array();
+		$promise_meta_data['promise_id'] = $promise->promise_id;
 		$this->current_user->load( array( 'oauth_user' ) );
 		$current_oauth_user = $this->current_user->oauth_user;
 		if ( isset( $current_oauth_user->id ) ) {
@@ -159,20 +161,20 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	}
 
 	/**
-	 * Searches for the specified asset in balances to get its precision then
+	 * Searches for the specified asset in balance to get its precision then
 	 * applies the precision to the specified quantity
 	 * @param int $quantity Quantity to apply precision to
 	 * @param string $asset Asset name to get precision from
-	 * @param BalanceCollectionInterface $balances Collection of balances where
+	 * @param BalanceCollectionInterface $balance Collection of balance where
 	 * the asset data will be searched
 	 * @return int
 	 */
-	protected function apply_precision_to_quantity( int $quantity, string $asset, BalanceCollectionInterface $balances ) {
-		$balances = $balances->key_by_field( 'asset' );
-		if ( !isset( $balances[ $asset ] ) ) {
+	protected function apply_precision_to_quantity( int $quantity, string $asset, BalanceCollectionInterface $balance ) {
+		$balance = $balance->key_by_field( 'asset' );
+		if ( !isset( $balance[ $asset ] ) ) {
 			return $quantity;
 		}
-		$balance = $balances[ $asset ];
+		$balance = $balance[ $asset ];
 		if ( !isset( $balance->precision ) ) {
 			return $quantity;
 		}

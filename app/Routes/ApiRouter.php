@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationSettingsControllerInterface;
@@ -25,7 +26,8 @@ class ApiRouter extends Router implements ApiRouterInterface {
 	public function __construct(
 		AuthControllerInterface $auth_controller,
 		PromiseControllerInterface $promise_controller,
-		CreditGroupControllerInterface $credit_group,
+		CreditGroupControllerInterface $credit_group_controller,
+		CreditTransactionControllerInterface $credit_transaction_controller,
 		SourceControllerInterface $source_controller,
 		UserControllerInterface $user_controller,
 		IntegrationSettingsControllerInterface $settings_integration_controller,
@@ -38,7 +40,8 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		$this->api_namespace = "{$this->namespace}/v1";
 		$this->controllers = array(
 			'auth'                   => $auth_controller,
-			'credit-group'           => $credit_group,
+			'credit-group'           => $credit_group_controller,
+			'credit-transaction'     => $credit_transaction_controller,
 			'promise'                => $promise_controller,
 			'source'                 => $source_controller,
 			'user'                   => $user_controller,
@@ -159,6 +162,26 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'args' => array(
 					'methods'             => 'PUT',
 					'callback'            => array( $this->controllers['credit-group'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-transaction-index' => array(
+				'path' => '/credit-transaction',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['credit-transaction'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-transaction-store' => array(
+				'path' => '/credit-transaction',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['credit-transaction'], 'store' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

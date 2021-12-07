@@ -8,6 +8,8 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
 	public $id;
@@ -21,6 +23,8 @@ class OauthUser extends Model implements OauthUserInterface {
 	protected $tca_service;
 	protected $address_service;
 	protected $balance_service;
+	protected $oauth_user_service;
+	protected $credit_transaction_repository;
 	protected $fillable = array(
 		'id',
 		'username',
@@ -36,11 +40,15 @@ class OauthUser extends Model implements OauthUserInterface {
 		TcaServiceInterface $tca_service,
 		AddressServiceInterface $address_service,
 		BalanceServiceInterface $balance_service,
+		CreditTransactionRepositoryInterface $credit_transaction_repository,
+		UserServiceInterface $user_service,
 		array $data = array()
 	) {
 		$this->tca_service = $tca_service;
 		$this->address_service = $address_service;
 		$this->balance_service = $balance_service;
+		$this->user_service = $user_service;
+		$this->credit_transaction_repository = $credit_transaction_repository;
 		parent::__construct( $data );
 	}
 
@@ -68,12 +76,47 @@ class OauthUser extends Model implements OauthUserInterface {
 		return $can_access;
 	}
 
+	public function credit_app_credits( array $parameters = array() ) {
+		$this->make_transaction( 'credit', $parameters );
+	}
+
+	public function debit_app_credits( array $parameters = array() ) {
+		$this->make_transaction( 'debit', $parameters );
+	}
+
+	protected function make_transaction( string $type, array $parameters = array() ) {
+		$parameters['type'] = $type;
+		$parameters['account'] = $this;
+		if ( isset( $parameters['source'] ) ) {
+			$parameters['source'] = $this->get_transaction_source( $parameters['source'] );
+		}
+		$transactions = $this->credit_transaction_repository->store( $parameters );
+		return $transactions;
+	}
+
+	protected function get_transaction_source( string $source ) {
+		$user = null;
+		$user = $this->user_service->show( array(
+			'id'   => $source,
+			'with' => array(
+				'oauth_user',
+			),
+		) );
+		if ( !$user ) {
+			return;
+		}
+		if ( !isset( $user->oauth_user ) ) {
+			return;
+		}
+		return $user->oauth_user;
+	}
+
 	/**
 	 * Retrieves the collection of user addresses
 	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	public function load_address( array $relations = array() ) {
+	protected function load_address( array $relations = array() ) {
 		$address = $this->address_service->index( array(
 			'username' => $this->username,
 			'with'     => $relations,
@@ -87,7 +130,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	public function load_balance( array $relations = array() ) {
+	protected function load_balance( array $relations = array() ) {
 		$balance = $this->balance_service->index( array(
 			'oauth_token' => $this->oauth_token,
 			'with'        => $relations,

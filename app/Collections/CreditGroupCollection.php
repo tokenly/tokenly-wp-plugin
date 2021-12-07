@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Collection of Promise objects
+ * Collection of Credit group objects
  */
 
 namespace Tokenly\Wp\Collections;

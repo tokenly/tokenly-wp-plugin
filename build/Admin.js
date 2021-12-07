@@ -5311,8 +5311,9 @@ class CreditGroupCard extends react_1.Component {
                             React.createElement("strong", null, this.props.creditGroup.active ? 'Yes' : 'No'))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${this.props.creditGroup.uuid}` }, "Manage group"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-show&credit_group=${this.props.creditGroup.uuid}` }, "View details")))));
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-transaction-index&credit_group=${this.props.creditGroup.uuid}` }, "View transactions"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-show&credit_group=${this.props.creditGroup.uuid}` }, "View details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${this.props.creditGroup.uuid}` }, "Manage group")))));
     }
 }
 exports.CreditGroupCard = CreditGroupCard;
@@ -5411,7 +5412,7 @@ class CreditGroupList extends react_1.Component {
         return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
             //@ts-ignore
             ? React.createElement(components_1.Flex, { direction: "column", style: { width: '100%' } }, listItems)
-            : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered sources")));
+            : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered credit groups")));
     }
 }
 exports.CreditGroupList = CreditGroupList;
@@ -5478,6 +5479,203 @@ class CreditGroupStoreForm extends react_1.Component {
     }
 }
 exports.CreditGroupStoreForm = CreditGroupStoreForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditTransactionCard.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditTransactionCard.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionCard = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionCard extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+            React.createElement(components_1.CardHeader, null,
+                React.createElement("div", null, this.props.creditTransaction.uuid)),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } },
+                React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", null,
+                            React.createElement("span", null, "UUID: "),
+                            React.createElement("strong", null, this.props.creditTransaction.account_uuid)),
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Amount: "),
+                            React.createElement("strong", null, this.props.creditTransaction.amount)))))));
+    }
+}
+exports.CreditTransactionCard = CreditTransactionCard;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditTransactionList.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditTransactionList.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionList = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditTransactionCard_1 = __webpack_require__(/*! ./CreditTransactionCard */ "./resources/ts/Admin/Components/CreditTransactionCard.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionList extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let listItems = Object.keys(this.props.creditTransactions).map((key) => this.props.creditTransactions[key]);
+        listItems = listItems.map((creditTransaction, i) => {
+            return (React.createElement("div", { style: { width: '100%' } },
+                React.createElement(CreditTransactionCard_1.CreditTransactionCard, { creditTransaction: creditTransaction })));
+        });
+        return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
+            //@ts-ignore
+            ? React.createElement(components_1.Flex, { direction: "column", style: { width: '100%' } }, listItems)
+            : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered transactions")));
+    }
+}
+exports.CreditTransactionList = CreditTransactionList;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditTransactionStoreForm.tsx":
+/*!**********************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditTransactionStoreForm.tsx ***!
+  \**********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionStoreForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const UserSearchField_1 = __webpack_require__(/*! ./UserSearchField */ "./resources/ts/Admin/Components/UserSearchField.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionStoreForm extends react_1.Component {
+    constructor(props) {
+        var _a, _b;
+        super(props);
+        this.state = {
+            creditGroupOptions: [],
+            transaction: {
+                group: null,
+                type: 'debit',
+                account: null,
+                amount: 0,
+                ref: '',
+                source: null,
+            }
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+        this.getCreditGroupOptions = this.getCreditGroupOptions.bind(this);
+        this.state.creditGroupOptions = this.getCreditGroupOptions();
+        if ((_a = this.state.creditGroupOptions[0]) !== null && _a !== void 0 ? _a : null) {
+            this.state.transaction.group = (_b = this.state.creditGroupOptions[0]) === null || _b === void 0 ? void 0 : _b.value;
+        }
+    }
+    onSubmit() {
+        const transaction = Object.assign({}, this.state.transaction);
+        console.log(transaction);
+        this.props.onSubmit(transaction);
+    }
+    onCancel() {
+        this.props.onCancel();
+    }
+    getCreditGroupOptions() {
+        const options = [];
+        this.props.creditGroups.forEach((creditGroup) => {
+            options.push({
+                label: creditGroup.name,
+                value: creditGroup.uuid,
+            });
+        });
+        return options;
+    }
+    render() {
+        return (React.createElement("form", { style: { width: '100%', maxWidth: "400px" } },
+            React.createElement("div", null,
+                React.createElement(components_1.Flex
+                //@ts-ignore
+                , { 
+                    //@ts-ignore
+                    direction: "column" },
+                    React.createElement("div", { style: { marginBottom: '12px' } },
+                        React.createElement(components_1.SelectControl, { label: "Credit group", value: this.state.transaction.group, options: this.state.creditGroupOptions, onChange: (value) => {
+                                let newState = Object.assign({}, this.state.transaction);
+                                newState.group = value;
+                                this.setState({ transaction: newState });
+                            } })),
+                    React.createElement("div", { style: { marginBottom: '12px' } },
+                        React.createElement(components_1.SelectControl, { label: "Transaction type", value: this.state.transaction.type, options: [
+                                { label: 'Debit', value: 'debit' },
+                                { label: 'Credit', value: 'credit' },
+                            ], onChange: (value) => {
+                                let newState = Object.assign({}, this.state.transaction);
+                                newState.type = value;
+                                this.setState({ transaction: newState });
+                            } })),
+                    React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Account",
+                            React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username."),
+                            React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                                    const state = Object.assign({}, this.state.transaction);
+                                    state.account = value;
+                                    this.setState({ transaction: state });
+                                } }))),
+                    React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Source",
+                            React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. (optional)"),
+                            React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                                    const state = Object.assign({}, this.state.transaction);
+                                    state.source = value;
+                                    this.setState({ transaction: state });
+                                } }))),
+                    React.createElement(components_1.TextControl, { label: "Amount", 
+                        // @ts-ignore
+                        type: "number", value: this.state.transaction.amount, onChange: (value) => {
+                            const state = Object.assign({}, this.state.transaction);
+                            state.amount = value;
+                            this.setState({ transaction: state });
+                        } }),
+                    React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.transaction.ref, onChange: (value) => {
+                            const state = Object.assign({}, this.state.transaction);
+                            state.ref = value;
+                            this.setState({ transaction: state });
+                        } })),
+                React.createElement(components_1.Flex, { style: { marginTop: '12px' }, justify: "flex-start" },
+                    React.createElement(components_1.Button, { isPrimary: true, onClick: () => {
+                            this.onSubmit();
+                        } }, "Make transaction"),
+                    this.props.saving === true &&
+                        React.createElement(components_1.Spinner, null),
+                    React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
+                            this.onCancel();
+                        } }, "Cancel"),
+                    this.props.saving === true &&
+                        React.createElement(components_1.Spinner, null)))));
+    }
+}
+exports.CreditTransactionStoreForm = CreditTransactionStoreForm;
 
 
 /***/ }),
@@ -5945,7 +6143,7 @@ class PromiseStoreForm extends react_1.Component {
         super(props);
         this.state = {
             promise: {
-                source: null,
+                source_id: null,
                 destination: null,
                 asset: null,
                 pseudo: false,
@@ -5968,7 +6166,7 @@ class PromiseStoreForm extends react_1.Component {
         if (Object.keys(this.props.sources).length > 0) {
             const key = Object.keys(this.props.sources)[0];
             this.state.source = Object.assign({}, (_a = this.props.sources[key]) !== null && _a !== void 0 ? _a : null);
-            this.state.promise.source = this.state.source.address;
+            this.state.promise.source_id = this.state.source.address_id;
         }
     }
     onSubmit() {
@@ -5980,7 +6178,7 @@ class PromiseStoreForm extends react_1.Component {
     onSourceChange(value) {
         var _a;
         const state = Object.assign({}, this.state.promise);
-        state.source = value;
+        state.source_id = value;
         state.asset = null;
         state.quantity = 0;
         const source = Object.assign({}, (_a = this.props.sources[value]) !== null && _a !== void 0 ? _a : null);
@@ -5997,11 +6195,11 @@ class PromiseStoreForm extends react_1.Component {
     getSourceOptions() {
         const options = [];
         Object.keys(this.props.sources).forEach((key) => {
-            var _a, _b, _c;
+            var _a, _b;
             const label = (_b = (_a = this.props.sources[key].address.label) !== null && _a !== void 0 ? _a : this.props.sources[key].address_id) !== null && _b !== void 0 ? _b : null;
             options.push({
                 label: label,
-                value: (_c = this.props.sources[key].address) !== null && _c !== void 0 ? _c : null,
+                value: key,
             });
         });
         return options;
@@ -6012,12 +6210,12 @@ class PromiseStoreForm extends react_1.Component {
         if (!this.state.source) {
             return [];
         }
-        const balances = (_b = (_a = this.state.source) === null || _a === void 0 ? void 0 : _a.address) === null || _b === void 0 ? void 0 : _b.balances;
-        if (!balances) {
+        const balance = (_b = (_a = this.state.source) === null || _a === void 0 ? void 0 : _a.address) === null || _b === void 0 ? void 0 : _b.balance;
+        if (!balance) {
             return [];
         }
-        Object.keys(balances).forEach((key) => {
-            let asset = balances[key].asset;
+        Object.keys(balance).forEach((key) => {
+            let asset = balance[key].asset;
             options.push(asset);
         });
         return options;
@@ -6031,22 +6229,24 @@ class PromiseStoreForm extends react_1.Component {
         if (asset == '') {
             return null;
         }
-        let balances = this.state.source.address.balances;
-        balances = Object.values(balances);
-        balances = balances.filter((balance) => {
+        let balance = this.state.source.address.balance;
+        balance = Object.values(balance);
+        balance = balance.filter((balance) => {
             return balance.asset === this.state.promise.asset;
         });
-        if (balances.length == 0) {
+        if (balance.length == 0) {
             return null;
         }
-        return balances[0];
+        return balance[0];
     }
     getMaxCount() {
         const asset = this.getCurrentAsset();
         if (!asset) {
             return null;
         }
-        return asset.balance;
+        const balance = parseFloat(asset.balance);
+        console.log(balance);
+        return balance;
     }
     isAssetValid() {
         var _a, _b;
@@ -6063,7 +6263,7 @@ class PromiseStoreForm extends react_1.Component {
             , { 
                 //@ts-ignore
                 direction: "column", style: { width: '100%' } },
-                React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source, options: this.getSourceOptions(), onChange: (value) => {
+                React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source_id, options: this.getSourceOptions(), onChange: (value) => {
                         this.onSourceChange(value);
                     }, help: "Source address to use." }),
                 React.createElement("div", null,
@@ -6112,7 +6312,7 @@ class PromiseStoreForm extends react_1.Component {
                                     React.createElement("span", null,
                                         React.createElement("span", null, "of / "),
                                         React.createElement("span", { title: this.getMaxCount() },
-                                            React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
+                                            React.createElement("strong", null, this.getMaxCount().toFixed(4)))))),
                         React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
                                 const state = Object.assign({}, this.state.promise);
                                 state.ref = value;
@@ -7010,7 +7210,8 @@ class CreditGroupIndexPage extends react_1.Component {
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(components_1.Flex, { style: { width: '100%' } },
+                        React.createElement(components_1.Flex, { justify: "flex-start", style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenly-credit-transaction-store' }, "Make transaction"),
                             React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenly-credit-group-store' }, "Register credit group"))))),
             React.createElement(components_1.Panel, { header: "Registered credit groups" },
                 React.createElement(components_1.PanelBody, null,
@@ -7150,6 +7351,103 @@ __decorate([
     __metadata("design:type", Object)
 ], CreditGroupStorePage.prototype, "creditGroupRepository", void 0);
 exports["default"] = CreditGroupStorePage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditTransactionIndexPage.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditTransactionIndexPage.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditTransactionList_1 = __webpack_require__(/*! ../Components/CreditTransactionList */ "./resources/ts/Admin/Components/CreditTransactionList.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionIndexPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Credit Transactions' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, { header: "Transactions" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(CreditTransactionList_1.CreditTransactionList, { creditTransactions: this.props.pageData.credit_transactions }))))));
+    }
+}
+exports["default"] = CreditTransactionIndexPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditTransactionStorePage.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditTransactionStorePage.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditTransactionStoreForm_1 = __webpack_require__(/*! ../Components/CreditTransactionStoreForm */ "./resources/ts/Admin/Components/CreditTransactionStoreForm.tsx");
+const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionStorePage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            storingCreditTransaction: false,
+            address: null,
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+    return() {
+        window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+    }
+    onSubmit(creditGroup) {
+        this.creditGroupRepository.store(creditGroup).then((result) => {
+            this.return();
+        });
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Make App Credits transaction' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(CreditTransactionStoreForm_1.CreditTransactionStoreForm, { onSubmit: this.onSubmit, onCancel: this.return, saving: this.state.storingCreditTransaction, style: { marginBottom: '12px' }, creditGroups: this.props.pageData.credit_groups }))))));
+    }
+}
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.CreditTransactionRepositoryInterface),
+    __metadata("design:type", Object)
+], CreditTransactionStorePage.prototype, "creditGroupRepository", void 0);
+exports["default"] = CreditTransactionStorePage;
 
 
 /***/ }),
@@ -8437,6 +8735,7 @@ const AuthService_1 = __webpack_require__(/*! ./Services/AuthService */ "./resou
 const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
 // Implementations - Repositories
 const CreditGroupRepository_1 = __webpack_require__(/*! ./Repositories/CreditGroupRepository */ "./resources/ts/Repositories/CreditGroupRepository.ts");
+const CreditTransactionRepository_1 = __webpack_require__(/*! ./Repositories/CreditTransactionRepository */ "./resources/ts/Repositories/CreditTransactionRepository.ts");
 const PromiseRepository_1 = __webpack_require__(/*! ./Repositories/PromiseRepository */ "./resources/ts/Repositories/PromiseRepository.ts");
 const UserRepository_1 = __webpack_require__(/*! ./Repositories/UserRepository */ "./resources/ts/Repositories/UserRepository.ts");
 const SourceRepository_1 = __webpack_require__(/*! ./Repositories/SourceRepository */ "./resources/ts/Repositories/SourceRepository.ts");
@@ -8458,6 +8757,7 @@ container.bind(Types_1.TYPES.AuthServiceInterface).to(AuthService_1.AuthService)
 container.bind(Types_1.TYPES.AdminApiServiceInterface).to(AdminApiService_1.AdminApiService);
 // Repositories
 container.bind(Types_1.TYPES.CreditGroupRepositoryInterface).to(CreditGroupRepository_1.CreditGroupRepository);
+container.bind(Types_1.TYPES.CreditTransactionRepositoryInterface).to(CreditTransactionRepository_1.CreditTransactionRepository);
 container.bind(Types_1.TYPES.PromiseRepositoryInterface).to(PromiseRepository_1.PromiseRepository);
 container.bind(Types_1.TYPES.SourceRepositoryInterface).to(SourceRepository_1.SourceRepository);
 container.bind(Types_1.TYPES.TokenMetaRepositoryInterface).to(TokenMetaRepository_1.TokenMetaRepository);
@@ -8724,6 +9024,63 @@ CreditGroupRepository = __decorate([
     __metadata("design:paramtypes", [Object])
 ], CreditGroupRepository);
 exports.CreditGroupRepository = CreditGroupRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/CreditTransactionRepository.ts":
+/*!******************************************************************!*\
+  !*** ./resources/ts/Repositories/CreditTransactionRepository.ts ***!
+  \******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let CreditTransactionRepository = class CreditTransactionRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    index() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditTransactionIndex().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditTransactionStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+CreditTransactionRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], CreditTransactionRepository);
+exports.CreditTransactionRepository = CreditTransactionRepository;
 
 
 /***/ }),
@@ -9249,6 +9606,24 @@ let AdminApiService = class AdminApiService {
             });
         });
     }
+    creditTransactionIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/credit-transaction').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditTransactionStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/credit-transaction', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
     sourceIndex() {
         return new Promise((resolve, reject) => {
             this.makeRequest('GET', '/source').then(result => {
@@ -9496,6 +9871,7 @@ const TYPES = {
     // Repositories
     PromiseRepositoryInterface: Symbol.for('PromiseRepositoryInterface'),
     CreditGroupRepositoryInterface: Symbol.for('CreditGroupRepositoryInterface'),
+    CreditTransactionRepositoryInterface: Symbol.for('CreditTransactionRepositoryInterface'),
     SourceRepositoryInterface: Symbol.for('SourceRepositoryInterface'),
     TokenMetaRepositoryInterface: Symbol.for('TokenMetaRepositoryInterface'),
     UserRepositoryInterface: Symbol.for('UserRepositoryInterface'),
@@ -9644,6 +10020,8 @@ const CreditGroupIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroup
 const CreditGroupShowPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupShowPage */ "./resources/ts/Admin/Pages/CreditGroupShowPage.tsx");
 const CreditGroupStorePage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupStorePage */ "./resources/ts/Admin/Pages/CreditGroupStorePage.tsx");
 const CreditGroupEditPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupEditPage */ "./resources/ts/Admin/Pages/CreditGroupEditPage.tsx");
+const CreditTransactionIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditTransactionIndexPage */ "./resources/ts/Admin/Pages/CreditTransactionIndexPage.tsx");
+const CreditTransactionStorePage_1 = __webpack_require__(/*! ./Admin/Pages/CreditTransactionStorePage */ "./resources/ts/Admin/Pages/CreditTransactionStorePage.tsx");
 const SourceIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceIndexPage */ "./resources/ts/Admin/Pages/SourceIndexPage.tsx");
 const SourceShowPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceShowPage */ "./resources/ts/Admin/Pages/SourceShowPage.tsx");
 const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage */ "./resources/ts/Admin/Pages/SourceStorePage.tsx");
@@ -9692,6 +10070,8 @@ class AdminApp extends App_1.default {
             'credit-group-show': CreditGroupShowPage_1.default,
             'credit-group-store': CreditGroupStorePage_1.default,
             'credit-group-edit': CreditGroupEditPage_1.default,
+            'credit-transaction-index': CreditTransactionIndexPage_1.default,
+            'credit-transaction-store': CreditTransactionStorePage_1.default,
             'source-index': SourceIndexPage_1.default,
             'source-show': SourceShowPage_1.default,
             'source-store': SourceStorePage_1.default,

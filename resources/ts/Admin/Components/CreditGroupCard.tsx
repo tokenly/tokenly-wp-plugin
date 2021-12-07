@@ -42,9 +42,9 @@ export class CreditGroupCard extends Component<CreditGroupCardProps, CreditGroup
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${ this.props.creditGroup.uuid }` }
+							href={ `/wp-admin/admin.php?page=tokenly-credit-transaction-index&credit_group=${ this.props.creditGroup.uuid }` }
 						>
-							Manage group
+							View transactions
 						</Button>
 						<Button
 							isSecondary
@@ -52,6 +52,13 @@ export class CreditGroupCard extends Component<CreditGroupCardProps, CreditGroup
 							href={ `/wp-admin/admin.php?page=tokenly-credit-group-show&credit_group=${ this.props.creditGroup.uuid }` }
 						>
 							View details
+						</Button>
+						<Button
+							isSecondary
+							isSmall
+							href={ `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${ this.props.creditGroup.uuid }` }
+						>
+							Manage group
 						</Button>
 					</Flex>
 				</CardFooter>

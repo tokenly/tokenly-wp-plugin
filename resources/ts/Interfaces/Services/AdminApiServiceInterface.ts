@@ -6,7 +6,6 @@ import {
 	TokenMetaData,
 	UserIndexParams,
 	UserShowParams,
-	WhitelistData
 } from './../../Interfaces';
 
 export interface AdminApiServiceInterface {
@@ -19,6 +18,8 @@ export interface AdminApiServiceInterface {
 	creditGroupIndex(): Promise<Array<any>>;
 	creditGroupStore( params: any ): Promise<any>;
 	creditGroupUpdate( params: any ): Promise<any>;
+	creditTransactionIndex(): Promise<Array<any>>;
+	creditTransactionStore( params: any ): Promise<any>;
 	promiseIndex(): Promise<Array<PromiseData>>;
 	promiseStore( params: PromiseStoreParams ): Promise<any>;
 	promiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any>;

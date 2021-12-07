@@ -47,7 +47,7 @@ class PromiseMetaService extends DomainService implements PromiseMetaServiceInte
 	 * @param array $params New promise meta post data
 	 * @return PromiseMetaInterface
 	 */
-	public function store( array $params ) {
+	public function store( array $params = array() ) {
 		$post = $this->promise_meta_repository->store( $params );
 		return $post;
 	}

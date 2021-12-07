@@ -12,6 +12,7 @@ use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
 use Tokenly\Wp\Services\Domain\CreditGroupService;
+use Tokenly\Wp\Services\Domain\CreditTransactionService;
 use Tokenly\Wp\Services\Domain\OauthUserService;
 use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
@@ -22,6 +23,7 @@ use Tokenly\Wp\Services\Domain\UserService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
 use Tokenly\Wp\Repositories\CreditGroupRepository;
+use Tokenly\Wp\Repositories\CreditTransactionRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
@@ -45,6 +47,7 @@ use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
 use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
 use Tokenly\Wp\Controllers\Web\Admin\CreditGroupController;
+use Tokenly\Wp\Controllers\Web\Admin\CreditTransactionController;
 use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
 use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
 use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
@@ -53,6 +56,7 @@ use Tokenly\Wp\Controllers\Web\Admin\VendorController;
 use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
 use Tokenly\Wp\Controllers\Api\AuthController as AuthApiController;
 use Tokenly\Wp\Controllers\Api\CreditGroupController as CreditGroupApiController;
+use Tokenly\Wp\Controllers\Api\CreditTransactionController as CreditTransactionApiController;
 use Tokenly\Wp\Controllers\Api\PromiseController as PromiseApiController;
 use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
@@ -65,6 +69,7 @@ use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\AddressCollection;
 use Tokenly\Wp\Collections\BalanceCollection;
 use Tokenly\Wp\Collections\CreditGroupCollection;
+use Tokenly\Wp\Collections\CreditTransactionCollection;
 use Tokenly\Wp\Collections\PromiseCollection;
 use Tokenly\Wp\Collections\PromiseMetaCollection;
 use Tokenly\Wp\Collections\PostCollection;
@@ -76,6 +81,7 @@ use Tokenly\Wp\Collections\WhitelistItemCollection;
 use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
 use Tokenly\Wp\Models\CreditGroup;
+use Tokenly\Wp\Models\CreditTransaction;
 use Tokenly\Wp\Models\OauthUser;
 use Tokenly\Wp\Models\Promise;
 use Tokenly\Wp\Models\Post;
@@ -104,6 +110,7 @@ use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditTransactionServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
@@ -114,6 +121,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditGroupRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
@@ -134,6 +142,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
@@ -142,6 +151,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface as CreditGroupApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\CreditTransactionControllerInterface as CreditTransactionApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface as PromiseApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
@@ -152,6 +162,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerIn
 use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditTransactionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
@@ -164,6 +175,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\CreditGroupCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditTransactionCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
@@ -176,6 +188,7 @@ use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\CreditGroupCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\CreditTransactionCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
@@ -187,6 +200,7 @@ use Tokenly\Wp\Interfaces\Collections\WhitelistItemCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
+use Tokenly\Wp\Interfaces\Models\CreditTransactionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
@@ -249,6 +263,7 @@ return array(
 	//Controllers
 	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
 	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
+	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
 	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
 	UserControllerInterface::class                 => \DI\autowire( UserController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
@@ -265,6 +280,7 @@ return array(
 	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
+	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
 	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
 	SourceApiControllerInterface::class               => \DI\autowire( SourceApiController::class ),
 	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
@@ -302,6 +318,7 @@ return array(
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
 	CreditGroupServiceInterface::class             => \DI\autowire( CreditGroupService::class ),
+	CreditTransactionServiceInterface::class       => \DI\autowire( CreditTransactionService::class ),
 	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
 	PostServiceInterface::class                    => \DI\autowire( PostService::class ),
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
@@ -322,6 +339,7 @@ return array(
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
 	CreditGroupRepositoryInterface::class          => \DI\autowire( CreditGroupRepository::class ),
+	CreditTransactionRepositoryInterface::class    => \DI\autowire( CreditTransactionRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
 	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
@@ -344,22 +362,23 @@ return array(
 	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Collections
-	CollectionInterface::class               => \DI\autowire( Collection::class ),
-	AddressCollectionInterface::class        => \DI\autowire( AddressCollection::class ),
-	BalanceCollectionInterface::class        => \DI\autowire( BalanceCollection::class ),
-	CreditGroupCollectionInterface::class    => \DI\autowire( CreditGroupCollection::class ),
-	PromiseCollectionInterface::class        => \DI\autowire( PromiseCollection::class ),
-	PromiseMetaCollectionInterface::class    => \DI\autowire( PromiseMetaCollection::class ),
-	PostCollectionInterface::class           => \DI\autowire( PostCollection::class ),
-	SourceCollectionInterface::class         => \DI\autowire( SourceCollection::class ),
-	TokenMetaCollectionInterface::class      => \DI\autowire( TokenMetaCollection::class ),
-	TcaRuleCollectionInterface::class        => \DI\autowire( TcaRuleCollection::class ),
-	UserCollectionInterface::class           => \DI\autowire( UserCollection::class ),
-	WhitelistItemCollectionInterface::class  => \DI\autowire( WhitelistItemCollection::class ),
+	CollectionInterface::class                   => \DI\autowire( Collection::class ),
+	AddressCollectionInterface::class            => \DI\autowire( AddressCollection::class ),
+	BalanceCollectionInterface::class            => \DI\autowire( BalanceCollection::class ),
+	CreditGroupCollectionInterface::class        => \DI\autowire( CreditGroupCollection::class ),
+	CreditTransactionCollectionInterface::class  => \DI\autowire( CreditTransactionCollection::class ),
+	PromiseCollectionInterface::class            => \DI\autowire( PromiseCollection::class ),
+	PromiseMetaCollectionInterface::class        => \DI\autowire( PromiseMetaCollection::class ),
+	PostCollectionInterface::class               => \DI\autowire( PostCollection::class ),
+	SourceCollectionInterface::class             => \DI\autowire( SourceCollection::class ),
+	TokenMetaCollectionInterface::class          => \DI\autowire( TokenMetaCollection::class ),
+	TcaRuleCollectionInterface::class            => \DI\autowire( TcaRuleCollection::class ),
+	UserCollectionInterface::class               => \DI\autowire( UserCollection::class ),
+	WhitelistItemCollectionInterface::class      => \DI\autowire( WhitelistItemCollection::class ),
 	//Models
-	AddressInterface::class                  => \DI\autowire( Address::class ),
-	BalanceInterface::class                  => \DI\autowire( Balance::class ),
-	CurrentUserInterface::class              => \DI\factory( function (
+	AddressInterface::class                      => \DI\autowire( Address::class ),
+	BalanceInterface::class                      => \DI\autowire( Balance::class ),
+	CurrentUserInterface::class                  => \DI\factory( function (
 		ContainerInterface $container,
 		UserServiceInterface $user_service
 	) {
@@ -376,6 +395,7 @@ return array(
 		return $user;
 	} ),
 	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
+	CreditTransactionInterface::class      => \DI\autowire( CreditTransaction::class ),
 	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
 	PostInterface::class                   => \DI\autowire( Post::class ),
 	PromiseInterface::class                => \DI\autowire( Promise::class ),
@@ -401,6 +421,9 @@ return array(
 	} ),
 	CreditGroupFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditGroupInterface::class ) extends ConcreteFactory implements CreditGroupFactoryInterface {};
+	} ),
+	CreditTransactionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditTransactionInterface::class ) extends ConcreteFactory implements CreditTransactionFactoryInterface {};
 	} ),
 	OauthUserFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, OauthUserInterface::class ) extends ConcreteFactory implements OauthUserFactoryInterface {};
@@ -439,6 +462,9 @@ return array(
 	CreditGroupCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditGroupCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditGroupCollectionFactoryInterface {};
 	} ),
+	CreditTransactionCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditTransactionFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, CreditTransactionCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditTransactionCollectionFactoryInterface {};
+	} ),
 	PromiseCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
 	} ),
@@ -471,11 +497,11 @@ return array(
 		string $oauth_callback_route
 	) {
 		$settings = $option_repository->index( array(
-			'client_id',
-			'client_secret',
+			'integration_client_id',
+			'integration_client_secret',
 		) );
-		$client_id = $settings['client_id'] ?? null;
-		$client_secret = $settings['client_secret'] ?? null;
+		$client_id = $settings['integration_client_id'] ?? null;
+		$client_secret = $settings['integration_client_secret'] ?? null;
 		$privileged_client_id = $client_id;
 		$privileged_client_secret = $client_secret;
 		$oauth_client_id = $client_id;

@@ -10,7 +10,7 @@ use Tokenly\Wp\Views\Admin\CreditGroupEditView;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
 
 /**
- * Serves the admin promise views
+ * Serves the admin credit group views
  */
 class CreditGroupController implements CreditGroupControllerInterface {
 	protected $credit_group_index_view;
@@ -43,10 +43,15 @@ class CreditGroupController implements CreditGroupControllerInterface {
 	}
 	
 	public function show() {
-		$credit_group_id = $_GET['credit_group'] ?? null;
-		$credit_group = $this->credit_group_service->show( $credit_group_id );
+		if ( !isset( $_GET['credit_group'] ) ) {
+			return false;
+		}
+		$credit_group_uuid = $_GET['credit_group'];
+		$credit_group = $this->credit_group_service->show( array(
+			'uuid' => $credit_group_uuid,
+		) );
 		if ( !$credit_group ) {
-			return;
+			return false;
 		}
 		$credit_group = $credit_group->to_array();
 		$render = $this->credit_group_show_view->render( array(
@@ -61,10 +66,15 @@ class CreditGroupController implements CreditGroupControllerInterface {
 	}
 
 	public function edit() {
-		$credit_group_id = $_GET['credit_group'] ?? null;
-		$credit_group = $this->credit_group_service->show( $credit_group_id );
+		if ( !isset( $_GET['credit_group'] ) ) {
+			return false;
+		}
+		$credit_group_uuid = $_GET['credit_group'];
+		$credit_group = $this->credit_group_service->show( array(
+			'uuid' => $credit_group_uuid,
+		) );
 		if ( !$credit_group ) {
-			return;
+			return false;
 		}
 		$credit_group = $credit_group->to_array();
 		$render = $this->credit_group_edit_view->render( array(

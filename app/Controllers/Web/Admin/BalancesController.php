@@ -22,19 +22,20 @@ class BalancesController implements BalancesControllerInterface {
 	}
 
 	public function show() {
-		$address = $_GET['address'] ?? null;
 		if ( !isset( $_GET['address'] ) ) {
 			return;
 		}
+		$address_id = $_GET['address'];
 		$address = $this->address_service->show(
 			array(
-				'address' => $_GET['address'],
+				'address' => $address_id,
 				'with'    => array( 'balance.token_meta' ),
 			)
 		);
 		if ( !$address ) {
 			return;
 		}
+		$address = $address->to_array();
 		$render = $this->balances_show_view->render( array(
 			'address' => $address,
 		) );

@@ -39,7 +39,16 @@ export default class CreditGroupIndexPage extends Component<CreditGroupIndexPage
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex style={{width: '100%'}}>
+							<Flex
+								justify="flex-start"
+								style={ { width: '100%' } }
+							>
+								<Button
+									isPrimary
+									href='/wp-admin/admin.php?page=tokenly-credit-transaction-store'
+								>
+									Make transaction
+								</Button>
 								<Button
 									isPrimary
 									href='/wp-admin/admin.php?page=tokenly-credit-group-store'

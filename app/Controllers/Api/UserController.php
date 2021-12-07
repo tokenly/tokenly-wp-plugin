@@ -17,11 +17,15 @@ class UserController implements UserControllerInterface {
 	/**
 	 * Responds with a collection of users
 	 * @param \WP_REST_Request $request Request
-	 * @return UsersCollectionInterface
+	 * @return array
 	 */
-	public function index( $request ) {
+	public function index( \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$users = $this->user_service->index( $params );
+		if ( isset( $params['suggestions'] ) ) {
+			return $users->to_suggestions();
+		}
+		$users = $users->to_array();
 		return $users;
 	}
 
@@ -30,12 +34,13 @@ class UserController implements UserControllerInterface {
 	 * @param \WP_REST_Request $request Request
 	 * @return UserInterface
 	 */
-	public function show( $request ) {
+	public function show( \WP_REST_Request $request ) {
 		$id = (string) $request['id'];
 		if ( !$id ) {
 			return;
 		}
 		$user = $this->user_service->show( $id );
+		$user = $user->to_array();
 		return $user;
 	}
 }

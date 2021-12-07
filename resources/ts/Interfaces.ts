@@ -62,7 +62,7 @@ export interface UserIndexParams {
 }
 
 export interface PromiseStoreParams {
-	source: string;
+	source_id: string;
 	destination: number;
 	asset: string;
 	quantity: number;

@@ -33,7 +33,7 @@ interface PromiseStoreFormState {
 export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseStoreFormState> {
 	state: PromiseStoreFormState = {
 		promise: {
-			source: null,
+			source_id: null,
 			destination: null,
 			asset: null,
 			pseudo: false,
@@ -58,7 +58,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( Object.keys( this.props.sources ).length > 0 ) {
 			const key = Object.keys( this.props.sources )[0] as any;
 			this.state.source = Object.assign( {}, this.props.sources[ key ] ?? null );
-			this.state.promise.source = this.state.source.address;
+			this.state.promise.source_id = this.state.source.address_id;
 		}
 	}
 	
@@ -72,7 +72,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 
 	onSourceChange( value: any ) {
 		const state = Object.assign( {}, this.state.promise );
-		state.source = value;
+		state.source_id = value;
 		state.asset = null;
 		state.quantity = 0;
 		const source = Object.assign( {}, this.props.sources[ value ] ?? null );
@@ -94,7 +94,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 			const label = this.props.sources[ key ].address.label ?? this.props.sources[ key ].address_id ?? null;
 			options.push( {
 				label: label,
-				value: this.props.sources[ key ].address ?? null,
+				value: key,
 			} );
 		});
 		return options;
@@ -105,12 +105,12 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( !this.state.source ) {
 			return [];
 		}
-		const balances = this.state.source?.address?.balances;
-		if ( !balances ) {
+		const balance = this.state.source?.address?.balance;
+		if ( !balance ) {
 			return [];
 		}
-		Object.keys( balances ).forEach( ( key: any ) => {
-			let asset = balances[ key ].asset;
+		Object.keys( balance ).forEach( ( key: any ) => {
+			let asset = balance[ key ].asset;
 			options.push( asset );
 		} );
 		return options;
@@ -124,15 +124,15 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( asset == '' ) {
 			return null;
 		}
-		let balances = this.state.source.address.balances;
-		balances = Object.values( balances );
-		balances = balances.filter( ( balance: any ) => {
+		let balance = this.state.source.address.balance;
+		balance = Object.values( balance );
+		balance = balance.filter( ( balance: any ) => {
 			return balance.asset === this.state.promise.asset;
 		} );
-		if ( balances.length == 0 ) {
+		if ( balance.length == 0 ) {
 			return null;
 		}
-		return balances[0];
+		return balance[0];
 		
 	}
 
@@ -141,7 +141,9 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( !asset ) {
 			return null;
 		}
-		return asset.balance;
+		const balance = parseFloat( asset.balance );
+		console.log(balance);
+		return balance;
 	}
 
 	isAssetValid() {
@@ -162,7 +164,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 				>
 					<SelectControl
 						label="Source"
-						value={ this.state.promise.source }
+						value={ this.state.promise.source_id }
 						options={ this.getSourceOptions() }
 						onChange={ ( value: any ) => {
 							this.onSourceChange( value );
@@ -238,8 +240,8 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 									{ this.state.promise.pseudo == false &&
 										<span>
 											<span>of / </span>
-											<span title={ this.getMaxCount() }>
-												<strong>{ parseFloat( this.getMaxCount().toFixed( 4 ) ) }</strong>
+											<span title={ this.getMaxCount() as any }>
+												<strong>{ this.getMaxCount().toFixed( 4 ) }</strong>
 											</span>
 										</span>
 									}

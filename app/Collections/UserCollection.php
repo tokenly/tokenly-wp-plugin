@@ -34,4 +34,20 @@ class UserCollection extends Collection implements UserCollectionInterface {
 		}
 		$this->exchangeArray( $keyed );
 	}
+
+	/**
+	 * Creates an array of suggestions out of users
+	 * (used for real-time search in combobox inputs)
+	 * @return array
+	 */
+	public function to_suggestions() {
+		$suggestions = array();
+		foreach (  (array ) $this as $user ) {
+			$suggestions[] = array(
+				'id'   => $user->ID, 
+				'name' => $user->nickname,
+			);
+		}
+		return $suggestions;
+	}
 }

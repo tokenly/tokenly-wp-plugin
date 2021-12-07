@@ -25,7 +25,6 @@ class SettingsController implements SettingsControllerInterface {
 	 * @return array
 	 */
 	public function update( \WP_REST_Request $request ) {
-		d('update');
 		$params = $request->get_params();
 		$this->settings->update( $params );
 		return array(

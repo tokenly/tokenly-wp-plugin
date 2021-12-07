@@ -75,6 +75,26 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
+	creditTransactionIndex(): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/credit-transaction' ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditTransactionStore( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'POST', '/credit-transaction', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
 	sourceIndex(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/source' ).then( result => {
