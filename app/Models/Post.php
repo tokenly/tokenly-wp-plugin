@@ -8,8 +8,9 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
@@ -20,20 +21,23 @@ class Post extends Model implements PostInterface {
 	protected $post = null;
 	protected $meta_repository;
 	protected $tca_settings;
+	protected $tca_rule_collection_factory;
 	protected $fillable = array(
 		'post',
 		'tca_rules',
 	);
 
 	public function __construct(
-		PostServiceInterface $domain_repository,
+		PostRepositoryInterface $domain_repository,
 		MetaRepositoryInterface $meta_repository,
 		TcaSettingsInterface $tca_settings,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
 		$this->meta_repository = $meta_repository;
 		$this->tca_settings = $tca_settings;
+		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
 		parent::__construct( $data );
 	}
 
@@ -86,5 +90,15 @@ class Post extends Model implements PostInterface {
 		}
 		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;
 		return $tca_allowed;
+	}
+	
+	protected function load_meta( array $relations = array() ) {
+		$tca_rules = $this->meta_repository->show( $this->ID, 'tca_rules' );
+		if ( !$tca_rules ) {
+			$tca_rules = array();
+		}
+		$tca_rules = $this->tca_rule_collection_factory->create( $tca_rules );
+		$this->tca_rules = $tca_rules;
+		return $this;
 	}
 }

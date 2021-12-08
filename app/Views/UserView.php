@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Views;
 
 use Tokenly\Wp\Blocks\ListCardTokenItemBlock;
+use Tokenly\Wp\Blocks\ListCardAppCreditItemBlock;
 use Tokenly\Wp\Blocks\UserInfoBlock;
 use Tokenly\Wp\Views\WebView;
 use Twig\Environment;
@@ -13,10 +14,12 @@ class UserView extends WebView {
 	public function __construct(
 		Environment $twig,
 		UserInfoBlock $user_info_block,
-		ListCardTokenItemBlock $list_card_token_item_block
+		ListCardTokenItemBlock $list_card_token_item_block,
+		ListCardAppCreditItemBlock $list_card_app_credit_item_block
 	) {
 		parent::__construct( $twig );
 		$this->list_card_token_item_block = $list_card_token_item_block;
+		$this->list_card_app_credit_item_block = $list_card_app_credit_item_block;
 		$this->user_info_block = $user_info_block;
 	}
 
@@ -29,6 +32,18 @@ class UserView extends WebView {
 				)
 			);
 		}
+		$html_list_card_app_credit_item_block = '';
+		if (
+			isset( $data['credit_accounts'] ) &&
+			isset( $data['credit_groups'] )
+		) {
+			$html_list_card_app_credit_item_block = $this->list_card_app_credit_item_block->render(
+				array(
+					'credit_accounts' => $data['credit_accounts'],
+					'credit_groups'   => $data['credit_groups'],
+				)
+			);
+		}
 		$html_user_info_block = '';
 		if ( isset( $data['user'] ) ) {
 			$html_user_info_block = $this->user_info_block->render(
@@ -38,8 +53,9 @@ class UserView extends WebView {
 			);
 		}
 		$html = $this->twig->render( 'User.twig', array(
-			'list_card_token_block'  => $html_list_card_token_item_block,
-			'user_info_block'        => $html_user_info_block,
+			'list_card_token_block'       => $html_list_card_token_item_block,
+			'list_card_app_credit_block'  => $html_list_card_app_credit_item_block,
+			'user_info_block'             => $html_user_info_block,
 		) );
 		return $html;
 	}

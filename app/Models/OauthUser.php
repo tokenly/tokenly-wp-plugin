@@ -10,6 +10,12 @@ use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditAccountServiceInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
 	public $id;
@@ -18,13 +24,23 @@ class OauthUser extends Model implements OauthUserInterface {
 	public $name;
 	public $email_is_confirmed;
 	public $oauth_token;
+	/**
+	 * @var BalanceCollectionInterface $balance Collection of token balances assigned to this account
+	 */
 	public $balance;
+	/**
+	 * @var AddressCollectionInterface $address Collection of blockchain addresses assigned to this account
+	 */
 	public $address;
+	public $credit_account;
 	protected $tca_service;
 	protected $address_service;
 	protected $balance_service;
 	protected $oauth_user_service;
+	protected $credit_group_service;
+	protected $credit_account_service;
 	protected $credit_transaction_repository;
+	protected $credit_account_collection_factory;
 	protected $fillable = array(
 		'id',
 		'username',
@@ -32,16 +48,20 @@ class OauthUser extends Model implements OauthUserInterface {
 		'name',
 		'email_is_confirmed',
 		'oauth_token',
-		'balances',
-		'addresses',
+		'balance',
+		'address',
+		'credit_group',
 	);
 
 	public function __construct(
 		TcaServiceInterface $tca_service,
 		AddressServiceInterface $address_service,
 		BalanceServiceInterface $balance_service,
+		CreditGroupServiceInterface $credit_group_service,
 		CreditTransactionRepositoryInterface $credit_transaction_repository,
 		UserServiceInterface $user_service,
+		CreditAccountCollectionFactoryInterface $credit_account_collection_factory,
+		CreditAccountServiceInterface $credit_account_service,
 		array $data = array()
 	) {
 		$this->tca_service = $tca_service;
@@ -49,6 +69,9 @@ class OauthUser extends Model implements OauthUserInterface {
 		$this->balance_service = $balance_service;
 		$this->user_service = $user_service;
 		$this->credit_transaction_repository = $credit_transaction_repository;
+		$this->credit_account_collection_factory = $credit_account_collection_factory;
+		$this->credit_group_service = $credit_group_service;
+		$this->credit_account_service = $credit_account_service;
 		parent::__construct( $data );
 	}
 
@@ -112,7 +135,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	}
 
 	/**
-	 * Retrieves the collection of user addresses
+	 * Loads the address relation
 	 * @param string[] $relations Further relations
 	 * @return self
 	 */
@@ -124,18 +147,30 @@ class OauthUser extends Model implements OauthUserInterface {
 		$this->address = $address;
 		return $this;
 	}
-
+	
 	/**
-	 * Retrieves the collection of user balances
+	 * Loads the credit account relation
 	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	protected function load_balance( array $relations = array() ) {
-		$balance = $this->balance_service->index( array(
-			'oauth_token' => $this->oauth_token,
-			'with'        => $relations,
-		) );
-		$this->balance = $balance;
+	protected function load_credit_account( array $relations = array() ) {
+		$credit_groups = $this->credit_group_service->index();
+		$group_uuids = array_map( function( CreditGroupInterface $credit_group ) {
+			return $credit_group->uuid;
+		}, ( array ) $credit_groups );
+		$accounts = array();;
+		foreach ( $group_uuids as $group_uuid ) {
+			$account = $this->credit_account_service->show( array(
+				'group_uuid'   => $group_uuid,
+				'account_uuid' => $this->id,
+			) );
+			if ( !$account ) {
+				continue;
+			}
+			$accounts[ $group_uuid ] = $account;
+		}
+		$accounts = $this->credit_account_collection_factory->create( $accounts );
+		$this->credit_account = $accounts;
 		return $this;
 	}
 }

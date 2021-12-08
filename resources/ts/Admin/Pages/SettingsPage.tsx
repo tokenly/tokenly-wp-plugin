@@ -33,7 +33,11 @@ interface SettingsPageProps {
 
 interface SettingsPageState {
 	integrationSettings: SettingsData;
-	tcaSettings: any;
+	tcaSettings: {
+		post_types: object,
+		filter_menu_items: boolean,
+		filter_post_results: boolean,
+	};
 	savingIntegrationSettings: boolean,
 	savingTcaSettings: boolean,
 }
@@ -67,6 +71,9 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		this.onTcaSettingsChange = this.onTcaSettingsChange.bind( this );
 		this.state.integrationSettings = Object.assign( this.state.integrationSettings, this.props.pageData.integration_settings );
 		this.state.tcaSettings = Object.assign( {}, this.props.pageData?.tca_settings );
+		if ( !this.state.tcaSettings.post_types ) {
+			this.state.tcaSettings.post_types = {};
+		}
 	}
 	
 	setClientId( value: string ) {

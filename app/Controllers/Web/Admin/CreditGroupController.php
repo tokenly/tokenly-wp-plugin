@@ -71,7 +71,7 @@ class CreditGroupController implements CreditGroupControllerInterface {
 		}
 		$credit_group_uuid = $_GET['credit_group'];
 		$credit_group = $this->credit_group_service->show( array(
-			'uuid' => $credit_group_uuid,
+			'group_uuid' => $credit_group_uuid,
 		) );
 		if ( !$credit_group ) {
 			return false;

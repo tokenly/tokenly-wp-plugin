@@ -67,7 +67,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 		) );
 		$meta_keyed = array();
 		foreach ( ( array ) $meta as $meta_item ) {
-			$asset = $meta_item->tokenly_asset;
+			$asset = $meta_item->asset;
 			$meta_keyed[ $asset ] = $meta_item;
 		}
 		foreach ( (array) $this as &$balance ) {
@@ -79,7 +79,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 			if ( !$meta ) {
 				continue;
 			}
-			$balance->meta = $meta;
+			$balance->token_meta = $meta;
 		}
 		return $this;
 	}

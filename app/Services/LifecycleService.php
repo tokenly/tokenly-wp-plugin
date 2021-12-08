@@ -29,6 +29,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	public function register() {
 		register_activation_hook( $this->root_filepath, array( self::class, 'on_activation' ) );
 		register_uninstall_hook( $this->root_filepath, array( self::class, 'on_uninstall' ) );
+		$this->check_version();
 	}
 
 	/**
@@ -36,7 +37,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @return void
 	 */
 	public static function on_activation() {
-		$this->refresh();
+		$this->check_version();
 	}
 
 	/**
@@ -44,7 +45,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @return void
 	 */
 	public static function on_uninstall() {
-		$this->refresh();
+		$this->check_version();
 	}
 
 	protected function refresh() {

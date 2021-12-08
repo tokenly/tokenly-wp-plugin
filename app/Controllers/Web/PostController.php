@@ -43,10 +43,10 @@ class PostController implements PostControllerInterface {
 		$post = $this->post_service->show( array(
 			'id' => $post_id,
 		) );
+		error_log(d( $post ));
 		$tca_rules = array();
-		if ( $post ) {
-			$tca_rules = $post->get_tca_rules();
-			$tca_rules = $tca_rules->to_array();
+		if ( $post && isset( $post->tca_rules ) && is_object( $post->tca_rules ) ) {
+			$tca_rules = $post->tca_rules->to_array();
 		}
 		$render = $this->post_edit_view->render( array(
 			'tca_enabled' => $tca_enabled,

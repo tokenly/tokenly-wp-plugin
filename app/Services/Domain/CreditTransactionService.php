@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\CreditTransactionServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 
 /**
- * Manages the promises
+ * Manages credit transactions
  */
 class CreditTransactionService extends DomainService implements CreditTransactionServiceInterface {
 

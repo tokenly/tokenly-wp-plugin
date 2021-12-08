@@ -11,6 +11,7 @@ use Tokenly\Wp\Services\TcaService;
 use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
+use Tokenly\Wp\Services\Domain\CreditAccountService;
 use Tokenly\Wp\Services\Domain\CreditGroupService;
 use Tokenly\Wp\Services\Domain\CreditTransactionService;
 use Tokenly\Wp\Services\Domain\OauthUserService;
@@ -22,6 +23,7 @@ use Tokenly\Wp\Services\Domain\TokenMetaService;
 use Tokenly\Wp\Services\Domain\UserService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
+use Tokenly\Wp\Repositories\CreditAccountRepository;
 use Tokenly\Wp\Repositories\CreditGroupRepository;
 use Tokenly\Wp\Repositories\CreditTransactionRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
@@ -41,6 +43,7 @@ use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\Wp\Components\ButtonLogoutComponent;
 use Tokenly\Wp\Components\CardTokenItemComponent;
+use Tokenly\Wp\Components\CardAppCreditItemComponent;
 use Tokenly\Wp\Controllers\Web\AuthController;
 use Tokenly\Wp\Controllers\Web\PostController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
@@ -69,6 +72,7 @@ use Tokenly\Wp\Controllers\Api\Settings\WhitelistSettingsController as Whitelist
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\AddressCollection;
 use Tokenly\Wp\Collections\BalanceCollection;
+use Tokenly\Wp\Collections\CreditAccountCollection;
 use Tokenly\Wp\Collections\CreditGroupCollection;
 use Tokenly\Wp\Collections\CreditTransactionCollection;
 use Tokenly\Wp\Collections\PromiseCollection;
@@ -81,6 +85,7 @@ use Tokenly\Wp\Collections\UserCollection;
 use Tokenly\Wp\Collections\WhitelistItemCollection;
 use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
+use Tokenly\Wp\Models\CreditAccount;
 use Tokenly\Wp\Models\CreditGroup;
 use Tokenly\Wp\Models\CreditTransaction;
 use Tokenly\Wp\Models\OauthUser;
@@ -110,6 +115,7 @@ use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditAccountServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditTransactionServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
@@ -121,6 +127,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditAccountRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditGroupRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
@@ -163,7 +170,10 @@ use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaSettingsControllerInterfac
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerInterface as WhitelistSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditAccountFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditAccountHistoryFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupHistoryFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\CreditTransactionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
@@ -176,6 +186,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\CreditGroupCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\CreditTransactionCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
@@ -189,6 +200,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\WhitelistItemCollectionFactoryIn
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\CreditAccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\CreditGroupCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\CreditTransactionCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
@@ -201,7 +213,10 @@ use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\WhitelistItemCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
+use Tokenly\Wp\Interfaces\Models\CreditAccountInterface;
+use Tokenly\Wp\Interfaces\Models\CreditAccountHistoryInterface;
 use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
+use Tokenly\Wp\Interfaces\Models\CreditGroupHistoryInterface;
 use Tokenly\Wp\Interfaces\Models\CreditTransactionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
@@ -219,6 +234,7 @@ use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
+use Tokenly\Wp\Interfaces\Components\CardAppCreditItemComponentInterface;
 use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
@@ -302,6 +318,7 @@ return array(
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	CardAppCreditItemComponentInterface::class     => \DI\autowire( CardAppCreditItemComponent::class ),
 	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
 	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
@@ -321,6 +338,7 @@ return array(
 	//Services - Domain
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
+	CreditAccountServiceInterface::class           => \DI\autowire( CreditAccountService::class ),
 	CreditGroupServiceInterface::class             => \DI\autowire( CreditGroupService::class ),
 	CreditTransactionServiceInterface::class       => \DI\autowire( CreditTransactionService::class ),
 	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
@@ -342,6 +360,7 @@ return array(
 	//Repositories - Domain
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
+	CreditAccountRepositoryInterface::class        => \DI\autowire( CreditAccountRepository::class ),
 	CreditGroupRepositoryInterface::class          => \DI\autowire( CreditGroupRepository::class ),
 	CreditTransactionRepositoryInterface::class    => \DI\autowire( CreditTransactionRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
@@ -369,6 +388,7 @@ return array(
 	CollectionInterface::class                   => \DI\autowire( Collection::class ),
 	AddressCollectionInterface::class            => \DI\autowire( AddressCollection::class ),
 	BalanceCollectionInterface::class            => \DI\autowire( BalanceCollection::class ),
+	CreditAccountCollectionInterface::class        => \DI\autowire( CreditAccountCollection::class ),
 	CreditGroupCollectionInterface::class        => \DI\autowire( CreditGroupCollection::class ),
 	CreditTransactionCollectionInterface::class  => \DI\autowire( CreditTransactionCollection::class ),
 	PromiseCollectionInterface::class            => \DI\autowire( PromiseCollection::class ),
@@ -398,7 +418,10 @@ return array(
 		}
 		return $user;
 	} ),
+	CreditAccountInterface::class          => \DI\autowire( CreditAccount::class ),
+	CreditAccountHistoryInterface::class   => \DI\autowire( CreditAccountHistory::class ),
 	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
+	CreditGroupHistoryInterface::class     => \DI\autowire( CreditGroupHistory::class ),
 	CreditTransactionInterface::class      => \DI\autowire( CreditTransaction::class ),
 	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
 	PostInterface::class                   => \DI\autowire( Post::class ),
@@ -423,8 +446,17 @@ return array(
 	BalanceFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, BalanceInterface::class ) extends ConcreteFactory implements BalanceFactoryInterface {};
 	} ),
+	CreditAccountFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditAccountInterface::class ) extends ConcreteFactory implements CreditAccountFactoryInterface {};
+	} ),
+	CreditAccountHistoryFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditAccountHistoryInterface::class ) extends ConcreteFactory implements CreditAccountHistoryFactoryInterface {};
+	} ),
 	CreditGroupFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditGroupInterface::class ) extends ConcreteFactory implements CreditGroupFactoryInterface {};
+	} ),
+	CreditGroupHistoryFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditGroupHistoryInterface::class ) extends ConcreteFactory implements CreditGroupHistoryFactoryInterface {};
 	} ),
 	CreditTransactionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditTransactionInterface::class ) extends ConcreteFactory implements CreditTransactionFactoryInterface {};
@@ -456,12 +488,15 @@ return array(
 	WhitelistItemFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, WhitelistItemInterface::class ) extends ConcreteFactory implements WhitelistItemFactoryInterface {};
 	} ),
-	//Factories - abstract - collections
+	//Factories - collections
 	AddressCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, AddressCollectionInterface::class ) extends ConcreteCollectionFactory implements AddressCollectionFactoryInterface {};
 	} ),
 	BalanceCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, BalanceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, BalanceCollectionInterface::class ) extends ConcreteCollectionFactory implements BalanceCollectionFactoryInterface {};
+	} ),
+	CreditAccountCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, CreditAccountCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditAccountCollectionFactoryInterface {};
 	} ),
 	CreditGroupCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditGroupCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditGroupCollectionFactoryInterface {};
@@ -472,7 +507,7 @@ return array(
 	PromiseCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
 	} ),
-	PostCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
+	PostCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PostCollectionInterface::class ) extends ConcreteCollectionFactory implements PostCollectionFactoryInterface {};
 	} ),
 	PromiseMetaCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
@@ -552,6 +587,9 @@ class ConcreteFactory {
 	}
 
 	public function create( $data ) {
+		if ( is_a( $data, $this->class ) ) {
+			return $data;
+		}
 		return $this->container->make( $this->class, array(
 			'data' => $data,
 		) );
@@ -575,9 +613,7 @@ class ConcreteCollectionFactory {
 
 	public function create( array $data, $args = array() ) {
 		foreach ( $data as &$item ) {
-			if ( is_a( $item, $this->class ) === false ) {
-				$item = $this->item_factory->create( $item );
-			}
+			$item = $this->item_factory->create( $item );
 		};
 		$collection = $this->container->make( $this->class, array(
 			'items' => $data,

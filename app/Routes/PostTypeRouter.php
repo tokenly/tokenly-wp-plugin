@@ -27,6 +27,8 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $current_user;
 	protected $tca_settings;
 	protected $tca_service;
+	protected $post_service;
+	protected $post_collection_factory;
 	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
@@ -266,6 +268,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			);
 		}
 		$post_collection = $this->post_collection_factory->create( $post_collection );
+		$post_collection->load( array( 'meta' ) );
 		$current_post_id = 0;
 		$is_singular = $query->is_singular;
 		if ( $is_singular == true && isset( $query->posts[0] )) {

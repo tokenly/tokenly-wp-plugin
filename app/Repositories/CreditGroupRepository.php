@@ -8,21 +8,24 @@ use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
 use Tokenly\Wp\Interfaces\Collections\CreditGroupCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\CreditGroupCollectionFactoryInterface;
-
+use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupHistoryFactoryInterface;
 
 class CreditGroupRepository implements CreditGroupRepositoryInterface {
 	protected $client;
 	protected $credit_group_factory;
 	protected $credit_group_collection_factory;
+	protected $credit_group_history_factory;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		CreditGroupFactoryInterface $credit_group_factory,
-		CreditGroupCollectionFactoryInterface $credit_group_collection_factory
+		CreditGroupCollectionFactoryInterface $credit_group_collection_factory,
+		CreditGroupHistoryFactoryInterface $credit_group_history_factory
 	) {
 		$this->client = $client;
 		$this->credit_group_factory = $credit_group_factory;
 		$this->credit_group_collection_factory = $credit_group_collection_factory;
+		$this->credit_group_history_factory = $credit_group_history_factory;
 	}
 
 	/**
@@ -37,11 +40,14 @@ class CreditGroupRepository implements CreditGroupRepositoryInterface {
 
 	/**
 	 * Retrieves a single credit group
-	 * @param int $uuid Credit group uui
+	 * @param array $params Search parameters
 	 * @return CreditGroupInterface Credit group found
 	 */
-	public function show( string $uuid ) {
-		// $credit_group = $this->client->getAppCreditGroup( $uuid );
+	public function show( array $params = array() ) {
+		if ( !isset( $params['group_uuid'] ) ) {
+			return;
+		}
+		$uuid = $params['group_uuid'];
 		$credit_groups = $this->index();
 		$credit_group = null;
 		foreach( (array) $credit_groups as $credit_group_item ) {
@@ -51,9 +57,27 @@ class CreditGroupRepository implements CreditGroupRepositoryInterface {
 			}
 		}
 		if ( !$credit_group ) {
-			return false;
+			return;
 		}
 		return $credit_group;
+	}
+	
+	/**
+	 * Retrieves credit group history for the specified group
+	 * @param array $params Search parameters
+	 * @return CreditGroupHistoryInterface Credit group found
+	 */
+	public function show_history( array $params = array() ) {
+		if ( !isset( $params['group_uuid'] ) ) {
+			return;
+		}
+		$group_uuid = $params['group_uuid'];
+		$history = $this->client->getAppCreditGroupHistory( $group_uuid );
+		if ( !$history ) {
+			return;
+		}
+		$history = $this->credit_group_history_factory->create( $history );
+		return $history;
 	}
 	
 	/**

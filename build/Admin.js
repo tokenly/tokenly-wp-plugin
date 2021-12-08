@@ -6794,6 +6794,7 @@ class TcaSettingsForm extends react_1.Component {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
+        console.log(this.props);
     }
     onChange(newSettings) {
         this.props.onChange(newSettings);
@@ -6812,9 +6813,7 @@ class TcaSettingsForm extends react_1.Component {
             const label = this.props.data.post_types[key];
             const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
                     let settings = Object.assign({}, this.props.settings);
-                    if (settings.post_types && typeof settings.post_types == 'object') {
-                        settings.post_types[key] = value;
-                    }
+                    settings.post_types[key] = value;
                     this.onChange(settings);
                 } }));
             listItems.push(item);
@@ -7926,6 +7925,9 @@ class SettingsPage extends react_1.Component {
         this.onTcaSettingsChange = this.onTcaSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
         this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
+        if (!this.state.tcaSettings.post_types) {
+            this.state.tcaSettings.post_types = {};
+        }
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);

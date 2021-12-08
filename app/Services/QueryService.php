@@ -12,6 +12,7 @@ class QueryService extends Service implements QueryServiceInterface {
 	protected $namespace;
 	protected $query_variables = array(
 		//General
+		'virtual',
 		'promise',
 		'source',
 		'address',

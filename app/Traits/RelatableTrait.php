@@ -9,25 +9,6 @@ trait RelatableTrait {
 	 * @param string[] $relations Relations to format
 	 * @return string[]
 	 */
-	protected function format_relations( array $relations = array() ) {
-		$relations_formatted = array();
-		foreach ( $relations as $relation ) {
-			$relation = explode( '.', $relation );
-			$relation_parent = $relation[0] ?? null;
-			if ( count( $relation ) > 1 ) {
-				unset( $relation[0] );
-				$relation = implode( '.', $relation );
-			} else {
-				$relation = null;
-			}
-			if ( !isset( $relations_formatted[ $relation_parent ] ) ) {
-				$relations_formatted[ $relation_parent ] = array();
-			}
-			$relations_formatted[ $relation_parent ][] = $relation;
-		}
-		return $relations_formatted;
-	}
-
 	protected function format_relation( string $relation ) {
 		$has_nested = $this->str_contains( $relation, '.' );
 		if ( !$has_nested ) {

@@ -29,23 +29,20 @@ class CardTokenItemComponent extends Component implements CardTokenItemComponent
 		$description = 'No description.';
 		$image = '';
 		$extra = array();
-		if ( isset( $balance->meta ) ) {
-			$post_id = $balance->meta->ID;
-			$name = get_the_title( $post_id );
+		if ( isset( $balance->token_meta ) ) {
+			$meta = $balance->token_meta;
+			$post_id = $meta->ID;
+			$name = $meta->post_title;
 			$image = get_the_post_thumbnail( $post_id, 'full' );
 			$excerpt = get_the_excerpt( $post_id );
 			if ( !empty( $description ) ) {
 				$description = $excerpt;
 			}
-			$additional_meta = $this->meta_repository->index( $post_id, array(
-				'asset',
-				'extra',
-			) );
-			if ( isset( $additional_meta['asset'] ) ) {
-				$asset = $additional_meta['asset'];
+			if ( isset( $meta->asset ) ) {
+				$asset = $meta->asset;
 			}
-			if ( isset( $additional_meta['extra'] ) ) {
-				$extra = $additional_meta['extra'];
+			if ( isset( $meta->extra ) ) {
+				$extra = $meta->extra;
 			}
 		}
 		$html = $this->twig->render( 'components/CardTokenItemComponent.twig', array(

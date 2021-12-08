@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditGroupRepositoryInterface;
 
 /**
- * Manages the promises
+ * Manages credit groups
  */
 class CreditGroupService extends DomainService implements CreditGroupServiceInterface {
 
@@ -33,11 +33,7 @@ class CreditGroupService extends DomainService implements CreditGroupServiceInte
 	 * @return CreditGroupInterface Credit group found
 	 */
 	protected function _show( array $params = array() ) {
-		if ( !isset( $params['uuid'] ) ) {
-			return false;
-		}
-		$uuid = $params['uuid'];
-		$credit_group = $this->credit_group_repository->show( $uuid );
+		$credit_group = $this->credit_group_repository->show( $params );
 		return $credit_group;
 	}
 	

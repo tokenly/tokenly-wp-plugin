@@ -54,7 +54,7 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 			!isset( $params['group'] ) ||
 			!isset( $params['account'] )
 		) {
-			return false;
+			return;
 		}
 		$group_uuid = $params['group'];
 		$account_user = $params['account'];
@@ -82,7 +82,7 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 				break;
 		}
 		if ( !$transactions ) {
-			return false;
+			return;
 		}
 		if ( isset( $transactions['debit'] ) ) {
 			$transactions_debit = $transactions['debit'];
