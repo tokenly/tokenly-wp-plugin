@@ -72,8 +72,6 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 			$this->ensure_account_exists( $group_uuid, $source );
 		}
 		$accounts = array( $account );
-		error_log( d( $accounts ) );
-		
 		$transactions = null;
 		switch( $type ) {
 			case 'debit':
@@ -83,7 +81,6 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 				$transactions = $this->client->giveAppCredit( $group_uuid, $account_user->id, $amount, null, $source );
 				break;
 		}
-		error_log( d( $transactions ) );
 		if ( !$transactions ) {
 			return false;
 		}

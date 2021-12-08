@@ -81,7 +81,6 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$quantity = floatval( $params['quantity'] );
 		$pseudo = boolval( $params['pseudo'] );
 		$source_id = $params['source_id'];
-		error_log(d( $quantity ));
 		$source = $this->source_service->show( array(
 			'address' => $source_id,
 			'with'    => array( 'address' ),

@@ -87,7 +87,9 @@ class PromiseController implements PromiseControllerInterface {
 		if ( !$promise_id ) {
 			return;
 		}
-		$promise = $this->promise_service->show( $promise_id );
+		$promise = $this->promise_service->show( array(
+			'promise_id' => $promise_id,
+		) );
 		return $promise;
 	}
 }

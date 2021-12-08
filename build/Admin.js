@@ -5038,6 +5038,7 @@ class AssetSearchField extends react_1.Component {
         this.onKeywordsChange = this.onKeywordsChange.bind(this);
         this.onAssetChange = this.onAssetChange.bind(this);
         this.getAssetsAvailable = this.getAssetsAvailable.bind(this);
+        console.log(this.props.assets);
     }
     onKeywordsChange(keywords) {
         if (!keywords || keywords == '') {
@@ -5078,7 +5079,7 @@ class AssetSearchField extends react_1.Component {
     render() {
         return (React.createElement("div", { style: { marginBottom: '12px' } },
             React.createElement("div", { style: { height: '40px' } },
-                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.props.value, onChange: (value) => {
+                React.createElement(components_1.ComboboxControl, { label: this.props.label, value: this.props.value, onChange: (value) => {
                         this.onAssetChange(value);
                     }, options: this.state.assets, onFilterValueChange: (keywords) => {
                         this.onKeywordsChange(keywords);
@@ -6286,7 +6287,9 @@ class PromiseStoreForm extends react_1.Component {
                 React.createElement("div", null,
                     React.createElement("label", null,
                         "Asset",
-                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
+                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } },
+                            React.createElement("div", null, "Name of the asset that will be promised."),
+                            React.createElement("div", null, "Note: Only the whitelisted assets are searchable.")),
                         this.state.promise.pseudo == false
                             ? React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), value: this.state.promise.asset, onChange: (value) => {
                                     const state = Object.assign({}, this.state.promise);

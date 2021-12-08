@@ -7,6 +7,9 @@ use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 
 class Settings extends Model implements SettingsInterface {
+	/**
+	 * @var string $option_prefix Prefix to add when saving or retrieving the options
+	 */
 	protected $option_prefix;
 	
 	public function __construct(

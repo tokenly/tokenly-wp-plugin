@@ -13,8 +13,6 @@ use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
  * Registers routers
  */
 class RouteServiceProvider extends ServiceProvider implements RouteServiceProviderInterface{
-	protected $services;
-
 	public function __construct(
 		AdminRouterInterface $admin_router,
 		ApiRouterInterface $api_router,

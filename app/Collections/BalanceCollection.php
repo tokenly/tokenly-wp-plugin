@@ -26,6 +26,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 		$this->balance_factory = $balance_factory;
 		$this->token_meta_service = $token_meta_service;
 		parent::__construct( $items );
+		$this->apply_whitelist();
 	}
 
 	/**
@@ -35,10 +36,9 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	public function apply_whitelist() {
 		if ( $this->whitelist->enabled == true ) {
 			$items = $this->whitelist->items ?? null;
-			
 			$balances_filtered = array();
 			if ( $items ) {
-				foreach ( $items as $item ) {
+				foreach ( ( array ) $items as $item ) {
 					$whitelist_rule = implode( ':', array_filter( array( $item->address, $item->index ) ) );
 					$assets = array_column( (array) $this, 'asset' );
 					

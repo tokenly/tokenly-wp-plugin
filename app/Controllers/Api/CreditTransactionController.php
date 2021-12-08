@@ -64,7 +64,6 @@ class CreditTransactionController implements CreditTransactionControllerInterfac
 				$transactions = $user->oauth_user->credit_app_credits( $params );
 				break;
 		}
-		error_log(d( $transactions ));
 		return array(
 			'transactions' => $transactions,
 		);

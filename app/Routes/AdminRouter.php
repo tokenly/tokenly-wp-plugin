@@ -27,11 +27,15 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected $controllers = array();
 	protected $auth_service;
 	protected $integration;
+	protected $current_user;
 	protected $root_dir;
 	protected $api_host;
+	protected $namespace;
 
 	public function __construct(
 		string $root_dir,
+		string $namespace,
+		string $api_host,
 		AuthServiceInterface $auth_service,
 		BalancesControllerInterface $balances_controller,
 		DashboardControllerInterface $dashboard_controller,
@@ -44,9 +48,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		PromiseControllerInterface $promise_controller,
 		SourceControllerInterface $source_controller,
 		IntegrationInterface $integration,
-		CurrentUserInterface $current_user,
-		string $namespace,
-		string $api_host
+		CurrentUserInterface $current_user
 	) {
 		$this->namespace = $namespace;
 		$this->api_host = $api_host;

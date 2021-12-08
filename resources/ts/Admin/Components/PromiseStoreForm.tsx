@@ -199,7 +199,10 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 					</div>
 					<div>
 						<label>Asset
-							<div style={{opacity:0.8, marginBottom: '12px'}}>Name of the asset that will be promised.</div>
+							<div style={ { opacity: 0.8, marginBottom: '12px' } }>
+								<div>Name of the asset that will be promised.</div>
+								<div>Note: Only the whitelisted assets are searchable.</div>
+							</div>
 							{ this.state.promise.pseudo == false
 								?	<AssetSearchField
 										assets={ this.getAssetOptions() }

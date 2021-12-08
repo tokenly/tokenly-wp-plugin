@@ -41,6 +41,7 @@ use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\Wp\Components\ButtonLogoutComponent;
 use Tokenly\Wp\Components\CardTokenItemComponent;
+use Tokenly\Wp\Controllers\Web\AuthController;
 use Tokenly\Wp\Controllers\Web\PostController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
@@ -136,6 +137,7 @@ use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
@@ -260,25 +262,8 @@ return array(
 	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class ),
 	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	//Controllers
-	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
-	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
-	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
-	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
-	UserControllerInterface::class                 => \DI\autowire( UserController::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
-	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
-	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
-	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
-	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
-		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
-	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
-	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
-	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
 	//Controllers - API
-	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
 	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
 	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
 	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
@@ -289,6 +274,25 @@ return array(
 	OauthSettingsApiControllerInterface::class        => \DI\autowire( OauthSettingsApiController::class ),
 	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
 	WhitelistSettingsApiControllerInterface::class    => \DI\autowire( WhitelistSettingsApiController::class ),
+	//Controllers - Admin
+	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
+	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
+	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
+	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
+	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
+	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
+	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
+		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
+	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
+	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
+	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
+	//Controllers - Web
+	AuthControllerInterface::class                 => \DI\autowire( AuthController::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
+	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
+	UserControllerInterface::class                 => \DI\autowire( UserController::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Shortcodes
 	LoginButtonShortcodeInterface::class              => \DI\autowire( LoginButtonShortcode::class ),
 	LogoutButtonShortcodeInterface::class             => \DI\autowire( LogoutButtonShortcode::class ),
@@ -353,8 +357,8 @@ return array(
 	//Routes
 	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
-		->constructorParameter( 'api_host', DI\get( 'api.host' ) ),
+		->constructorParameter( 'api_host', DI\get( 'api.host' ) )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
