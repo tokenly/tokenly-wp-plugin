@@ -34,7 +34,8 @@ class ConnectionController implements ConnectionControllerInterface {
 			return;
 		}
 		$status = $this->current_user->can_connect();
-		$oauth_user = $this->current_user->get_oauth_user();
+		$this->current_user->load( array( 'oauth_user' ) );
+		$oauth_user = $this->current_user->oauth_user;
 		$user_data = null;
 		if ( $oauth_user ) {
 			$user_data = array(

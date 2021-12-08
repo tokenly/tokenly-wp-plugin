@@ -3,8 +3,8 @@
 namespace Tokenly\Wp\Interfaces\Controllers\Api;
 
 interface PromiseControllerInterface {
-	public function index( $request );
-	public function store( $request );
-	public function update( $request );
-	public function destroy( $request );
+	public function index( \WP_REST_Request $request );
+	public function store( \WP_REST_Request $request );
+	public function update( \WP_REST_Request $request );
+	public function destroy( \WP_REST_Request $request );
 }

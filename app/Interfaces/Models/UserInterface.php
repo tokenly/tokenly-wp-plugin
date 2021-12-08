@@ -2,7 +2,10 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface UserInterface {
-	public function get_addresses( array $params = array() );
-	public function get_balances( array $params = array() );
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface UserInterface extends ModelInterface {
+	public function can_connect();
+	public function connect( OauthUserInterface $oauth_user, string $oauth_token );
+	public function disconnect();
 }

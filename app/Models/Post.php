@@ -6,52 +6,99 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
-class Post implements PostInterface {
-	protected $_instance;
-	protected $post_service;
+class Post extends Model implements PostInterface {
 	public $tca_rules;
+	protected $post = null;
+	protected $meta_repository;
+	protected $tca_settings;
+	protected $tca_rule_collection_factory;
+	protected $fillable = array(
+		'post',
+		'tca_rules',
+	);
 
 	public function __construct(
-		\WP_Post $post,
-		PostServiceInterface $post_service
+		PostRepositoryInterface $domain_repository,
+		MetaRepositoryInterface $meta_repository,
+		TcaSettingsInterface $tca_settings,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
+		array $data = array()
 	) {
-		$this->_instance = $post;
-		$this->post_service = $post_service;
+		$this->domain_repository = $domain_repository;
+		$this->meta_repository = $meta_repository;
+		$this->tca_settings = $tca_settings;
+		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
+		parent::__construct( $data );
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->_instance, $method ), $args );
+		return call_user_func_array( array( $this->post, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->_instance->$key;
+		return $this->post->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->_instance->$key = $val;
+		return $this->post->$key = $val;
 	}
 
-	public function get_tca_rules() {
-		if ( !isset( $this->tca_rules ) ) {
-			$this->tca_rules = $this->post_service->get_tca_rules( $this->ID );
+	/**
+	 * Main pipeline for post access check
+	 * @param int $post_id ID of the post to check
+	 * @param UserInterface $user User to check
+	 * @return bool
+	 */
+	public function can_access_post( UserInterface $user ) {
+		$can_access = $this->test_access( $user );
+		return $can_access;
+	}
+
+	/**
+	 * Check if the specified user is allowed to access
+	 * the specified post
+	 * @param int $post_id ID of the post to check
+	 * @param int $user_id ID of the user to check
+	 * @return bool
+	 */
+	protected function test_access( UserInterface $user ) {
+		$post_id = $this->ID;
+		$can_access = false;
+		$post_type = $this->post_type;
+		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
+		if ( $tca_enabled === false ) {
+			return true;
 		}
-		return $this->tca_rules;
+		if ( count( (array) $this->tca_rules ) === 0 ) {
+			return true;
+		}
+		if ( $user instanceof GuestUserInterface === true ) {
+			return false;
+		}
+		if ( user_can( $user, 'administrator' ) ) {
+			return true;
+		}
+		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;
+		return $tca_allowed;
 	}
-
-	public function set_tca_rules( TcaRuleCollectionInterface $rules ) {
-		$this->$tca_rules = $rules;
-		$this->post_service->set_tca_rules( $this->ID, $rules );
-	}
-
-	public function to_array() {
-		$tca_rules = $this->get_tca_rules();
-		$array = array(
-			'tca_rules' => $tca_rules,
-		);
-		return $array;
+	
+	protected function load_meta( array $relations = array() ) {
+		$tca_rules = $this->meta_repository->show( $this->ID, 'tca_rules' );
+		if ( !$tca_rules ) {
+			$tca_rules = array();
+		}
+		$tca_rules = $this->tca_rule_collection_factory->create( $tca_rules );
+		$this->tca_rules = $tca_rules;
+		return $this;
 	}
 }

@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface AddressInterface {
-	public function to_array();
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface AddressInterface extends ModelInterface {
+	//
 }

@@ -4,7 +4,6 @@ import Page from './Page';
 import { Component } from 'react';
 import { SourceRepositoryInterface } from '../../Interfaces/Repositories/SourceRepositoryInterface';
 import { SourceStoreForm } from '../Components/SourceStoreForm';
-import { BalanceList } from '../Components/BalanceList';
 import { SourceData } from '../../Interfaces';
 import { TYPES } from '../../Types';
 
@@ -17,37 +16,36 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface SourceIndexPageData {
+interface SourceStorePageData {
 	addresses: Array<any>;
 }
 
-interface SourceIndexPageProps {
-	pageData: SourceIndexPageData;
+interface SourceStorePageProps {
+	pageData: SourceStorePageData;
 	saving: boolean;
 }
 
-interface SourceIndexPageState {
+interface SourceStorePageState {
 	storingSource: boolean;
 	address: any;
 }
 
-export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
+export default class SourceStorePage extends Component<SourceStorePageProps, SourceStorePageState> {
 	@resolve( TYPES.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
-	state: SourceIndexPageState = {
+	state: SourceStorePageState = {
 		storingSource: false,
 		address: null,
 	}
-	constructor( props: SourceIndexPageProps ) {
+	constructor( props: SourceStorePageProps ) {
 		super( props );
-		console.log(this.props.pageData);
 		this.onSubmit = this.onSubmit.bind( this );
 		this.onAddressChange = this.onAddressChange.bind( this );
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+		window.location = '/wp-admin/admin.php?page=tokenly-source-index';
 	}
 	
 	onSubmit( promise: SourceData ) {
@@ -57,7 +55,6 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	}
 	
 	onAddressChange( address: any ) {
-		console.log(address);
 		this.setState( { address: address } );
 	}
 	
@@ -65,7 +62,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		return (
 			<Page title={'Register source address'}>
 				<div style={ { marginBottom: '8px' } }>
-					<a href='/wp-admin/admin.php?page=tokenpass-source-index'>Back to source address list</a>
+					<a href='/wp-admin/admin.php?page=tokenly-source-index'>Back to source address list</a>
 				</div>
 				<Panel>
 					<PanelBody>

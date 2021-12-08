@@ -18,8 +18,6 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
  * Manages the promises
  */
 class PromiseService extends DomainService implements PromiseServiceInterface {
-	protected $promise_cache = array();
-	protected $promise_collection_cache;
 	protected $promise_repository;
 	protected $promise_meta_service;
 	protected $source_service;
@@ -42,20 +40,12 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 
 	/**
 	 * Fetches all currently promised transactions
-	 * @return PromiseInterface[] Promises found
+	 * @param array $params Search parameters
+	 * @return PromiseCollectionInterface Promises found
 	 */
-	public function index( array $params = array() ) {
-		$promise_collection;
-		if ( isset( $this->promise_collection_cache ) ) {
-			$promise_collection = $this->promise_collection_cache;
-		} else {
-			$promise_collection = $this->promise_repository->index();
-			$this->promise_collection_cache = $promise_collection;
-		}
-		if ( isset( $params['with'] ) ) {
-			$promise_collection = $this->load( $promise_collection, $params['with'] );
-		}
-		return $promise_collection;
+	protected function _index( array $params = array() ) {
+		$promises = $this->promise_repository->index();
+		return $promises;
 	}
 
 	/**
@@ -63,30 +53,12 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return PromiseInterface Promise found
 	 */
-	public function show( int $promise_id, array $params = array() ) {
-		if ( isset( $this->promise_cache[ $promise_id ] ) ) {
-			$promise = $this->promise_cache[ $promise_id ];
-		} else {
-			$promise = $this->promise_repository->show( $promise_id );
-			$this->promise_cache[ $promise_id ] = $promise;
-		}
-		if ( !$promise ) {
+	protected function _show( array $params = array() ) {
+		if ( !isset( $params['promise_id'] ) ) {
 			return false;
 		}
-		if ( isset( $params['with'] ) ) {
-			$promise = $this->load( $promise, $params['with'] );
-		}
-		return $promise;
-	}
-
-	/**
-	 * Updates the existing promised transaction
-	 * @param integer $promise_id Tokenpass promise index
-	 * @param $params New promise properties
-	 * @return PromiseInterface
-	 */
-	public function update( int $promise_id, array $params = array() ) {
-		$promise = $this->promise_repository->update( $promise_id, $params );
+		$promise_id = $params['promise_id'];
+		$promise = $this->promise_repository->show( $promise_id );
 		return $promise;
 	}
 	
@@ -98,7 +70,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	public function store( array $params = array() ) {
 		if (
 			!isset( $params['asset'] ) || 
-			!isset( $params['source'] ) ||
+			!isset( $params['source_id'] ) ||
 			!isset( $params['destination'] ) ||
 			!isset( $params['quantity'] ) ||
 			!isset( $params['pseudo'] )
@@ -108,20 +80,20 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$asset = $params['asset'];
 		$quantity = floatval( $params['quantity'] );
 		$pseudo = boolval( $params['pseudo'] );
-		$source = $params['source'];
+		$source_id = $params['source_id'];
 		$source = $this->source_service->show( array(
-			'address' => $params['source'],
+			'address' => $source_id,
 			'with'    => array( 'address' ),
 		) );
 		if ( !$source ||
-			!isset( $source->address_data ) ||
-			!isset( $source->address )
+			!isset( $source->address) ||
+			!isset( $source->address_id )
 		) {
 			throw new \Exception( 'Source not found or no address data.' );
 		}
-		$source_address = $source->address;
+		$address_id = $source->address_id;
 		$destination = $params['destination'];
-		$destination_oauth_user = $this->oauth_user_service->show( $destination );
+		$destination_oauth_user = $this->oauth_user_service->show( array( 'id' => $destination ) );
 		if ( !$destination_oauth_user ) {
 			throw new \Exception( 'Destination oauth user not found.' );
 		}
@@ -129,16 +101,16 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		if ( !$destination ) {
 			throw new \Exception( 'Destination is invalid.' );
 		}
-		$address_data = $source->address_data;
+		$address = $source->address;
 		if (
-			!isset( $address_data->type ) ||
-			!isset( $address_data->balances )
+			!isset( $address->type ) ||
+			!isset( $address->balance )
 		) {
-			throw new \Exception( 'Address data is incomplete.' );
+			throw new \Exception( 'Address is incomplete.' );
 		}
-		$type = $address_data->type;
-		$balances = $address_data->balances;
-		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balances );
+		$type = $address->type;
+		$balance = $address->balance;
+		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balance );
 		$ref = $params['ref'] ?? '';
 		$note = $params['note'] ?? '';
 		$expiration = null;
@@ -146,7 +118,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		$fingerprint = null;
 		$protocol = 'counterparty';
 		$promise = $this->promise_repository->store( array(
-			'address'     => $source_address,
+			'address'     => $address_id,
 			'destination' => $destination,
 			'asset'       => $asset,
 			'quantity'    => $quantity,
@@ -160,55 +132,18 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			'note'        => $note,
 		) );
 		$promise_meta_data = array();
-		$current_oauth_user = $this->current_user->get_oauth_user();
+		$promise_meta_data['promise_id'] = $promise->promise_id;
+		$this->current_user->load( array( 'oauth_user' ) );
+		$current_oauth_user = $this->current_user->oauth_user;
 		if ( isset( $current_oauth_user->id ) ) {
 			$promise_meta_data['source_user_id'] = $current_oauth_user->id;
 		}
 		if ( isset( $destination_oauth_user->id ) ) {
 			$promise_meta_data['destination_user_id'] = $destination_oauth_user->id;
 		}
-		$promise_meta = $promise->add_meta( $promise_meta_data );
-		if ( !$promise_meta ) {
-			throw new \Exception( 'Promise meta was not added.' );
-		}
+		$promise_meta = $this->promise_meta_service->store( $promise_meta_data );
+		$promise->associate_meta( $promise_meta );
 		return $promise;
-	}
-	
-	/**
-	 * Destroys the existing promise
-	 * @param integer $promise_id Tokenpass promise index
-	 * @return void
-	 */
-	public function destroy( int $promise_id ) {
-		$this->promise_repository->destroy( $promise_id );
-	}
-
-	protected function load_promise_meta( PromiseInterface $promise, array $relation ) {
-		$promise_meta = $this->promise_meta_service->show( array(
-			'with'        => $relation,
-			'promise_ids' => array( $promise->promise_id ), 
-		) );
-		if ( !$promise_meta ) {
-			return $promise;
-		}
-		$promise->promise_meta = $promise_meta;
-		return $promise;
-	}
-
-	protected function load_promise_meta_collection( PromiseCollectionInterface $promise_collection, array $relation ) {
-		$promise_ids = array_map( function( $promise ) {
-			return $promise->promise_id;	
-		}, ( array ) $promise_collection );
-		$promise_meta = $this->promise_meta_service->index( array(
-			'with'        => $relation,
-			'promise_ids' => $promise_ids, 
-		) );
-		$promise_meta->key_by_promise_id();
-		foreach ( ( array ) $promise_collection as &$promise ) {
-			$promise_id = $promise->promise_id;
-			$promise->promise_meta = $promise_meta[ $promise_id ] ?? array();
-		}
-		return $promise_collection;
 	}
 
 	/**
@@ -225,20 +160,20 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	}
 
 	/**
-	 * Searches for the specified asset in balances to get its precision then
+	 * Searches for the specified asset in balance to get its precision then
 	 * applies the precision to the specified quantity
 	 * @param int $quantity Quantity to apply precision to
 	 * @param string $asset Asset name to get precision from
-	 * @param BalanceCollectionInterface $balances Collection of balances where
+	 * @param BalanceCollectionInterface $balance Collection of balance where
 	 * the asset data will be searched
 	 * @return int
 	 */
-	protected function apply_precision_to_quantity( int $quantity, string $asset, BalanceCollectionInterface $balances ) {
-		$balances = $balances->key_by_field( 'asset' );
-		if ( !isset( $balances[ $asset ] ) ) {
+	protected function apply_precision_to_quantity( int $quantity, string $asset, BalanceCollectionInterface $balance ) {
+		$balance = $balance->key_by_field( 'asset' );
+		if ( !isset( $balance[ $asset ] ) ) {
 			return $quantity;
 		}
-		$balance = $balances[ $asset ];
+		$balance = $balance[ $asset ];
 		if ( !isset( $balance->precision ) ) {
 			return $quantity;
 		}

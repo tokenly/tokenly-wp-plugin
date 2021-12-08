@@ -25,7 +25,7 @@ interface SourceEditFormState {
 export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFormState> {
 	state: SourceEditFormState = {
 		source: {
-			address: null,
+			address_id: null,
 			assets: null,
 		},
 	};

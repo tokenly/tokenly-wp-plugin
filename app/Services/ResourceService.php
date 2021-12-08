@@ -2,12 +2,13 @@
 
 namespace Tokenly\Wp\Services;
 
+use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
 
 /**
  * Manages resources
  */
-class ResourceService implements ResourceServiceInterface {
+class ResourceService extends Service implements ResourceServiceInterface {
 	protected $root_url;
 	protected $root_dir;
 	protected $build_url;

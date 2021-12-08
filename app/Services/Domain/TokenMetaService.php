@@ -2,23 +2,20 @@
 
 namespace Tokenly\Wp\Services\Domain;
 
+use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 /**
  * Manages the token meta
  */
-class TokenMetaService implements TokenMetaServiceInterface {
+class TokenMetaService extends DomainService implements TokenMetaServiceInterface {
 	protected $token_meta_repository;
-	protected $meta_repository;
 
 	public function __construct(
-		TokenMetaRepositoryInterface $token_meta_repository,
-		MetaRepositoryInterface $meta_repository
+		TokenMetaRepositoryInterface $token_meta_repository
 	) {
 		$this->token_meta_repository = $token_meta_repository;
-		$this->meta_repository = $meta_repository;
 	}
 
 	/**
@@ -26,7 +23,7 @@ class TokenMetaService implements TokenMetaServiceInterface {
 	 * @param array $params Search params
 	 * @return TokenMetaCollectionInterface
 	 */
-	public function index( array $params = array() ) {
+	protected function _index( array $params = array() ) {
 		$posts = $this->token_meta_repository->index( $params ); 
 		return $posts;
 	}
@@ -36,28 +33,8 @@ class TokenMetaService implements TokenMetaServiceInterface {
 	 * @param array $params Post search params
 	 * @return TokenMetaInterface
 	 */
-	public function show( $params = array() ) {
-		$meta = $this->index( $params );
-		return $meta[0] ?? null;
-	}
-	
-	/**
-	 * Updates the token-meta post by post ID
-	 * @param array $params New post data
-	 * @return void
-	 */
-	public function update( int $post_id, array $params = array() ) {
-		$this->meta_repository->update( $post_id, array(
-			'asset' => $params['asset'] ?? null,
-			'extra' => $params['extra'] ?? null,
-		) );
-	}
-
-	public function get_token_meta( int $id ) {
-		$meta = $this->meta_repository->index( $id, array(
-			'asset',
-			'extra',
-		) );
+	protected function _show( array $params = array() ) {
+		$meta = $this->token_meta_repository->show( $params ); 
 		return $meta;
 	}
 }

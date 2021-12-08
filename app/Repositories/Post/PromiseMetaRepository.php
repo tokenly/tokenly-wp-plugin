@@ -15,13 +15,16 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	protected $client;
 	protected $promise_meta_collection_factory;
+	protected $meta_repository;
 	protected $string;
 	
 	public function __construct(
 		PromiseMetaCollectionFactoryInterface $promise_meta_collection_factory,
+		MetaRepositoryInterface $meta_repository,
 		string $namespace
 	) {
 		$this->promise_meta_collection_factory = $promise_meta_collection_factory;
+		$this->meta_repository = $meta_repository;
 		$this->namespace = $namespace;
 	}
 
@@ -48,7 +51,20 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		$collection = $this->promise_meta_collection_factory->create( $posts );
+		$posts_formatted = array();
+		foreach ( $posts as $post ) {
+			$array = array();
+			$post_id = $post->ID;
+			$meta = $this->meta_repository->index( $post_id, array(
+				'promise_id',
+				'source_user_id',
+				'destination_user_id',
+			) );
+			$array = array_merge( $array, $meta );
+			$array['post'] = $post;
+			$posts_formatted[] = $array;
+		}
+		$collection = $this->promise_meta_collection_factory->create( $posts_formatted );
 		return $collection;
 	}
 	
@@ -59,11 +75,9 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 */
 	public function show( $params = array() ) {
 		$posts = $this->index( $params );
-		$post;
 		if ( isset( $posts[0] ) ) {
-			$post = $posts[0];
+			return $posts[0];
 		}
-		return $post;
 	}
 	
 	/**
@@ -107,20 +121,21 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	
 	/**
 	 * Updates the token-meta post by post ID
-	 * @param int $post_id Post index
+	 * @param PromiseMetaInterface $post Post to update
 	 * @param array $params New post data
 	 * @return void
 	 */
-	public function update( array $params = array() ) {
+	public function update( PromiseMetaInterface $post, array $params = array() ) {
+		$params['ID'] = $post->ID; 
 		$post = wp_update_post( $params );
 	}
 	
 	/**
 	 * Deletes the existing promise meta post
-	 * @param int $post_id Post index
+	 * @param PromiseMetaInterface $post Post to delete
 	 * @return void 
 	 */
-	public function destroy( int $post_id ) {
-		wp_update_post( $post_id );
+	public function destroy( PromiseMetaInterface $post ) {
+		wp_delete_post( $post->ID );
 	}
 }

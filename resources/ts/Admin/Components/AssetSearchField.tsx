@@ -38,6 +38,7 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 		this.onKeywordsChange = this.onKeywordsChange.bind( this );
 		this.onAssetChange = this.onAssetChange.bind( this );
 		this.getAssetsAvailable = this.getAssetsAvailable.bind( this );
+		console.log(this.props.assets);
 	}
 	
 	onKeywordsChange( keywords: string ) {
@@ -83,7 +84,6 @@ export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSear
 				<div style={ { height: '40px' } }>
 					<ComboboxControl
 						label={ this.props.label }
-						help={ this.props.help }
 						value={ this.props.value }
 						onChange={ ( value: any ) => {
 							this.onAssetChange( value );

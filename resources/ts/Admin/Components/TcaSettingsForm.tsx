@@ -23,6 +23,7 @@ export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettings
 		super( props );
 		this.onChange = this.onChange.bind( this );
 		this.isPostTypeChecked = this.isPostTypeChecked.bind( this );
+		console.log(this.props);
 	}
 
 	onChange( newSettings: any ) {
@@ -47,9 +48,7 @@ export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettings
 					checked={ this.isPostTypeChecked( key ) }
 					onChange={ ( value: any ) => {
 						let settings = Object.assign( {}, this.props.settings );
-						if ( settings.post_types && typeof settings.post_types == 'object' ) {
-							settings.post_types[ key ] = value;
-						}
+						settings.post_types[ key ] = value;
 						this.onChange( settings );
 					} }
 				/>

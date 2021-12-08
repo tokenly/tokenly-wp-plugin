@@ -18,7 +18,6 @@ export class ButtonLoginComponent extends Component {
 	register( selector: string ) {
 		this.element.addEventListener( 'click', () => {
 			this.element.classList.add( 'loading' );
-			this.authService.connect();
 		} );
 	}
 }

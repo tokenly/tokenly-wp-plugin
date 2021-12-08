@@ -5,6 +5,8 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
@@ -25,13 +27,20 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected $controllers = array();
 	protected $auth_service;
 	protected $integration;
+	protected $current_user;
 	protected $root_dir;
+	protected $api_host;
+	protected $namespace;
 
 	public function __construct(
 		string $root_dir,
+		string $namespace,
+		string $api_host,
 		AuthServiceInterface $auth_service,
 		BalancesControllerInterface $balances_controller,
 		DashboardControllerInterface $dashboard_controller,
+		CreditGroupControllerInterface $credit_group_controller,
+		CreditTransactionControllerInterface $credit_transaction_controller,
 		VendorControllerInterface $vendor_controller,
 		WhitelistControllerInterface $whitelist_controller,
 		ConnectionControllerInterface $connection_controller,
@@ -41,19 +50,23 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user
 	) {
+		$this->namespace = $namespace;
+		$this->api_host = $api_host;
 		$this->root_dir = $root_dir;
 		$this->integration = $integration;
 		$this->current_user = $current_user;
 		$this->auth_service = $auth_service;
 		$this->controllers = array(
-			'dashboard'  => $dashboard_controller,
-			'vendor'     => $vendor_controller,
-			'whitelist'  => $whitelist_controller,
-			'connection' => $connection_controller,
-			'settings'   => $settings_controller,
-			'promise'    => $promise_controller,
-			'source'     => $source_controller,
-			'balances'   => $balances_controller,
+			'dashboard'           => $dashboard_controller,
+			'credit-transaction'  => $credit_transaction_controller,
+			'credit-group'        => $credit_group_controller,
+			'vendor'              => $vendor_controller,
+			'whitelist'           => $whitelist_controller,
+			'connection'          => $connection_controller,
+			'settings'            => $settings_controller,
+			'promise'             => $promise_controller,
+			'source'              => $source_controller,
+			'balances'            => $balances_controller,
 		);
 	}
 
@@ -77,12 +90,12 @@ class AdminRouter extends Router implements AdminRouterInterface {
 			<script type='text/javascript'>
 				window.tokenpassRedirects = [
 					{
-						from: 'tokenpass-inventory',
-						to: '/tokenpass-user/me',
+						from: '{$this->namespace}-inventory',
+						to: '/{$this->namespace}/user/me',
 					},
 					{
-						from: 'tokenpass-dashboard',
-						to: 'https://tokenpass.tokenly.com/dashboard',
+						from: '{$this->namespace}-dashboard',
+						to: '{$this->api_host}/dashboard',
 					},
 				];
 			</script>
@@ -96,7 +109,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	 */
 	protected function get_offline_routes_integration() {
 		return array(
-			'tokenpass',
+			$this->namespace,
 			'settings',
 		);
 	}
@@ -134,11 +147,12 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	 * @return array
 	 */
 	protected function get_routes() {
+		$namespace_title = ucfirst( $this->namespace );
 		$routes = array(
-			'tokenpass' => array(
-				'page_title' => 'Tokenpass',
-				'menu_title' => 'Tokenpass',
-				'menu_slug'  => 'tokenpass',
+			$this->namespace => array(
+				'page_title' => $namespace_title,
+				'menu_title' => $namespace_title,
+				'menu_slug'  => $this->namespace,
 				'callable'   => array( $this->controllers['dashboard'], 'show' ),
 				'capability' => 'read',
 				'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' ) ),
@@ -200,6 +214,53 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'menu_title'  => 'Manage promise',
 						'menu_slug'   => 'promise-edit',
 						'callable'    => array( $this->controllers['promise'], 'edit' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-group-index' => array(
+						'page_title'  => 'App Credits',
+						'menu_title'  => 'App Credits',
+						'menu_slug'   => 'credit-group-index',
+						'callable'    => array( $this->controllers['credit-group'], 'index' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-group-store' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Create credit group',
+						'menu_title'  => 'Create credit group',
+						'menu_slug'   => 'credit-group-store',
+						'callable'    => array( $this->controllers['credit-group'], 'store' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-group-edit' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Manage credit group',
+						'menu_title'  => 'Manage credit group',
+						'menu_slug'   => 'credit-group-edit',
+						'callable'    => array( $this->controllers['credit-group'], 'edit' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-group-show' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Credit group details',
+						'menu_title'  => 'Credit group details',
+						'menu_slug'   => 'credit-group-show',
+						'callable'    => array( $this->controllers['credit-group'], 'show' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-transaction-index' => array(
+						'parent_slug' => null,
+						'page_title'  => 'App Credits list',
+						'menu_title'  => 'App Credits list',
+						'menu_slug'   => 'credit-transaction-index',
+						'callable'    => array( $this->controllers['credit-transaction'], 'index' ),
+						'capability'  => 'manage_options',
+					),
+					'credit-transaction-store' => array(
+						'parent_slug' => null,
+						'page_title'  => 'App Credits create transaction',
+						'menu_title'  => 'App Credits create transaction',
+						'menu_slug'   => 'credit-transaction-store',
+						'callable'    => array( $this->controllers['credit-transaction'], 'store' ),
 						'capability'  => 'manage_options',
 					),
 					'source-index' => array(

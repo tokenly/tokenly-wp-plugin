@@ -17,7 +17,7 @@ export class ComponentServiceProvider extends ServiceProvider implements Compone
 		return [
 			{
 				name: 'buttonLoginComponent',
-				selector: 'button.tokenpass-login',
+				selector: 'a.tokenpass-login',
 			},
 			{
 				name: 'cardTokenItemComponent',

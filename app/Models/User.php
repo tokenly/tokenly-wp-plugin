@@ -6,99 +6,54 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
-class User implements UserInterface, CurrentUserInterface {
-	protected $_instance;
-	protected $oauth_user;
-	protected $oauth_token;
-	protected $addresses;
-	protected $user_service;
+class User extends Model implements UserInterface, CurrentUserInterface {
+	public $user;
+	public $oauth_user;
+	public $oauth_token;
+	public $uuid;
+	public $can_connect;
+	protected $oauth_user_service;
+	protected $user_meta_repository;
+	protected $fillable = array(
+		'user',
+		'oauth_user',
+		'oauth_token',
+		'uuid',
+		'can_connect',
+	);
 
 	public function __construct(
-		\WP_User $user,
-		UserServiceInterface $user_service
+		OauthUserServiceInterface $oauth_user_service,
+		UserMetaRepositoryInterface $user_meta_repository,
+		UserRepositoryInterface $domain_repository,
+		array $data = array()
 	) {
-		$this->_instance = $user;
-		$this->user_service = $user_service;
+		$this->oauth_user_service = $oauth_user_service;
+		$this->user_meta_repository = $user_meta_repository;
+		$this->domain_repository = $domain_repository;
+		parent::__construct( $data );
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->_instance, $method ), $args );
+		return call_user_func_array( array( $this->user, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->_instance->$key;
+		return $this->user->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->_instance->$key = $val;
-	}
-
-	/**
-	 * Gets all addresses
-	 * @param array $params Address search parameters
-	 * @return AddressCollectionInterface Found addresses
-	 */
-	public function get_addresses( array $params = array() ) {
-		$addresses = $this->user_service->get_addresses( $this->ID, $params );
-		return $addresses;
-	}
-
-	/**
-	 * Gets all balances
-	 * @param array $params Balance search parameters
-	 * @return BalanceCollectionInterface Found balances
-	 */
-	public function get_balances( array $params = array() ) {
-		$balances = $this->user_service->get_balances( $this->ID, $params );
-		return $balances;
-	}
-
-	/**
-	 * Checks if the user is currently connected to Tokenpass
-	 * @return bool
-	 */
-	public function can_connect() {
-		$can_connect = $this->user_service->can_connect( $this->ID );
-		return $can_connect;
-	}
-
-	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
-		$this->user_service->connect( $this->ID, $oauth_user, $oauth_token );
-	}
-
-	/**
-	 * Disconnects the user from Tokenpass
-	 * @return void
-	 */
-	public function disconnect() {
-		$this->user_service->disconnect( $this->ID );
-	}
-
-	/**
-	 * Retrieves oauth user from the API
-	 * @return OauthUserInterface
-	 */
-	public function get_oauth_user() {
-		if ( !isset( $this->oauth_user ) ) {
-			$this->oauth_user = $this->user_service->get_oauth_user( $this->ID );
-		}
-		return $this->oauth_user;
-	}
-
-	/**
-	 * Retrieves oauth token from the options
-	 * @return string
-	 */
-	public function get_oauth_token() {
-		if ( !isset( $this->oauth_token ) ) {
-			$this->oauth_token = $this->user_service->get_oauth_token( $this->ID );
-		}
-		return $this->oauth_token;
+		return $this->user->$key = $val;
 	}
 	
 	public function is_guest() {
@@ -106,9 +61,56 @@ class User implements UserInterface, CurrentUserInterface {
 	}
 	
 	public function to_array() {
-		return array(
+		$array = parent::to_array();
+		$array = array_merge( $array, array(
 			'id'   => $this->ID,
 			'name' => $this->user_nicename,
+		) );
+		return $array;
+	}
+
+	/**
+	 * Checks if the user is currently connected to Tokenpass
+	 * @return bool
+	 */
+	public function can_connect() {
+		$can_connect =  $this->user_meta_repository->show( $this->ID, 'can_connect' ) ?? false;
+		return $can_connect;
+	}
+
+	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
+		$this->update( array(
+			'uuid'        => $oauth_user->id,
+			'oauth_token' => $oauth_token,
+			'can_connect' => true,
+		) );
+		$this->add_cap( 'use_tokenpass' );
+	}
+
+	/**
+	 * Disconnects the user from Tokenpass
+	 * @return void
+	 */
+	public function disconnect() {
+		$this->user_meta_repository->destroy( $this->ID, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
+		$this->remove_cap( 'use_tokenpass');
+	}
+
+	/**
+	 * Retrieves oauth user from the API
+	 * @return self
+	 */
+	protected function load_oauth_user( array $relations ) {
+		if ( isset( $this->oauth_user ) ) {
+			return $this;
+		}
+		$oauth_user = $this->oauth_user_service->show(
+			array(
+				'id'   => $this->ID,
+				'with' => $relations,
+			)
 		);
+		$this->oauth_user = $oauth_user;
+		return $this;
 	}
 }

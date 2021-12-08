@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Collections;
 
-interface BalanceCollectionInterface {
+use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
+
+interface BalanceCollectionInterface extends CollectionInterface {
 	//
 }

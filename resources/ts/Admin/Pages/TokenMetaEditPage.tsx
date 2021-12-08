@@ -53,7 +53,6 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 		this.onAssetUpdated = this.onExtraUpdated.bind( this );
 		this.onExtraUpdated = this.onExtraUpdated.bind( this );
 		this.onPostUpdate = this.onPostUpdate.bind( this );
-		console.log(this.props.pageData);
 	}
 	
 	onAssetUpdated( value: any ) {
@@ -87,6 +86,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 								const state = Object.assign( {}, this.state.meta );
 								state.asset = value;
 								this.setState( { meta: state } );
+								this.onPostUpdate( state );
 							}}
 							style={{width: '100%', maxWidth: '500px', marginBottom: '8px'}}
 						/>

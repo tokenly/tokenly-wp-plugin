@@ -2,14 +2,19 @@
 
 namespace Tokenly\Wp\Repositories\General;
 
-use Tokenly\Wp\Traits\NamespaceableTrait;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 
 /**
  * Helps to prefix all user meta being retrieved and saved by the plugin.
  */
 class UserMetaRepository implements UserMetaRepositoryInterface {
-	use NamespaceableTrait;
+	protected $namespace;
+
+	public function __construct(
+		string $namespace
+	) {
+		$this->namespace = $namespace;
+	}
 
 	/**
 	 * Retrieves the specified keys from the user meta
@@ -32,8 +37,8 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 * @return string
 	 */
 	public function show( int $user_id, string $key ) {
-		$key_namespaced = $this->namespace_key( $key );
-		$option = get_user_meta( $user_id, $key_namespaced, true );
+		$key = "{$this->namespace}_{$key}";
+		$option = get_user_meta( $user_id, $key, true );
 		return $option;
 	}
 
@@ -45,8 +50,8 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 */
 	public function update( int $user_id, array $payload ) {
 		foreach ( $payload as $key => $value ) {
-			$key_namespaced = $this->namespace_key( $key );
-			update_user_meta( $user_id, $key_namespaced, $value );
+			$key = "{$this->namespace}_{$key}";
+			update_user_meta( $user_id, $key, $value );
 		}
 	}
 
@@ -58,8 +63,8 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 */
 	public function destroy( int $user_id, ...$keys ) {
 		foreach ( $keys as $key ) {
-			$key_namespaced = $this->namespace_key( $key );
-			delete_user_meta( $user_id, $key_namespaced );
+			$key = "{$this->namespace}_{$key}";
+			delete_user_meta( $user_id, $key );
 		}
 	}
 }

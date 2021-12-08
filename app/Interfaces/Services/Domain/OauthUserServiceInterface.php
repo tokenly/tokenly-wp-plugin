@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services\Domain;
 
-interface OauthUserServiceInterface {
+use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
+
+interface OauthUserServiceInterface extends DomainServiceInterface {
 	//
 }

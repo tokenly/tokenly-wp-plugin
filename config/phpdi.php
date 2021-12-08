@@ -1,4 +1,5 @@
 <?php
+
 use Psr\Container\ContainerInterface;
 use Tokenly\Wp\Providers\AppServiceProvider;
 use Tokenly\Wp\Providers\RouteServiceProvider;
@@ -7,11 +8,12 @@ use Tokenly\Wp\Services\AuthService;
 use Tokenly\Wp\Services\LifecycleService;
 use Tokenly\Wp\Services\ResourceService;
 use Tokenly\Wp\Services\TcaService;
+use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
-use Tokenly\Wp\Services\Domain\IntegrationService;
-use Tokenly\Wp\Services\Domain\IntegrationSettingsService;
-use Tokenly\Wp\Services\Domain\TcaSettingsService;
+use Tokenly\Wp\Services\Domain\CreditAccountService;
+use Tokenly\Wp\Services\Domain\CreditGroupService;
+use Tokenly\Wp\Services\Domain\CreditTransactionService;
 use Tokenly\Wp\Services\Domain\OauthUserService;
 use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
@@ -19,9 +21,11 @@ use Tokenly\Wp\Services\Domain\PromiseService;
 use Tokenly\Wp\Services\Domain\SourceService;
 use Tokenly\Wp\Services\Domain\TokenMetaService;
 use Tokenly\Wp\Services\Domain\UserService;
-use Tokenly\Wp\Services\Domain\WhitelistService;
 use Tokenly\Wp\Repositories\AddressRepository;
 use Tokenly\Wp\Repositories\BalanceRepository;
+use Tokenly\Wp\Repositories\CreditAccountRepository;
+use Tokenly\Wp\Repositories\CreditGroupRepository;
+use Tokenly\Wp\Repositories\CreditTransactionRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
@@ -39,11 +43,15 @@ use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Components\ButtonLoginComponent;
 use Tokenly\Wp\Components\ButtonLogoutComponent;
 use Tokenly\Wp\Components\CardTokenItemComponent;
+use Tokenly\Wp\Components\CardAppCreditItemComponent;
+use Tokenly\Wp\Controllers\Web\AuthController;
 use Tokenly\Wp\Controllers\Web\PostController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
 use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
+use Tokenly\Wp\Controllers\Web\Admin\CreditGroupController;
+use Tokenly\Wp\Controllers\Web\Admin\CreditTransactionController;
 use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
 use Tokenly\Wp\Controllers\Web\Admin\PromiseController;
 use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
@@ -51,56 +59,52 @@ use Tokenly\Wp\Controllers\Web\Admin\SourceController;
 use Tokenly\Wp\Controllers\Web\Admin\VendorController;
 use Tokenly\Wp\Controllers\Web\Admin\WhitelistController;
 use Tokenly\Wp\Controllers\Api\AuthController as AuthApiController;
+use Tokenly\Wp\Controllers\Api\CreditGroupController as CreditGroupApiController;
+use Tokenly\Wp\Controllers\Api\CreditTransactionController as CreditTransactionApiController;
 use Tokenly\Wp\Controllers\Api\PromiseController as PromiseApiController;
-use Tokenly\Wp\Controllers\Api\IntegrationSettingsController as IntegrationSettingsApiController;
-use Tokenly\Wp\Controllers\Api\TcaSettingsController as TcaSettingsApiController;
 use Tokenly\Wp\Controllers\Api\SourceController as SourceApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\WhitelistController as WhitelistApiController;
+use Tokenly\Wp\Controllers\Api\Settings\OauthSettingsController as OauthSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Settings\IntegrationSettingsController as IntegrationSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Settings\TcaSettingsController as TcaSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Settings\WhitelistSettingsController as WhitelistSettingsApiController;
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\AddressCollection;
 use Tokenly\Wp\Collections\BalanceCollection;
+use Tokenly\Wp\Collections\CreditAccountCollection;
+use Tokenly\Wp\Collections\CreditGroupCollection;
+use Tokenly\Wp\Collections\CreditTransactionCollection;
 use Tokenly\Wp\Collections\PromiseCollection;
 use Tokenly\Wp\Collections\PromiseMetaCollection;
+use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Collections\SourceCollection;
 use Tokenly\Wp\Collections\TokenMetaCollection;
 use Tokenly\Wp\Collections\TcaRuleCollection;
 use Tokenly\Wp\Collections\UserCollection;
+use Tokenly\Wp\Collections\WhitelistItemCollection;
 use Tokenly\Wp\Models\Address;
 use Tokenly\Wp\Models\Balance;
+use Tokenly\Wp\Models\CreditAccount;
+use Tokenly\Wp\Models\CreditGroup;
+use Tokenly\Wp\Models\CreditTransaction;
 use Tokenly\Wp\Models\OauthUser;
 use Tokenly\Wp\Models\Promise;
 use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Models\PromiseMeta;
 use Tokenly\Wp\Models\Integration;
-use Tokenly\Wp\Models\IntegrationSettings;
-use Tokenly\Wp\Models\TcaSettings;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
 use Tokenly\Wp\Models\TcaRule;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Models\GuestUser;
-use Tokenly\Wp\Models\Whitelist;
 use Tokenly\Wp\Models\WhitelistItem;
-use Tokenly\Wp\Factories\Models\AddressFactory;
-use Tokenly\Wp\Factories\Models\BalanceFactory;
-use Tokenly\Wp\Factories\Models\OauthUserFactory;
-use Tokenly\Wp\Factories\Models\PostFactory;
-use Tokenly\Wp\Factories\Models\PromiseFactory;
-use Tokenly\Wp\Factories\Models\PromiseMetaFactory;
-use Tokenly\Wp\Factories\Models\SourceFactory;
-use Tokenly\Wp\Factories\Models\TokenMetaFactory;
-use Tokenly\Wp\Factories\Models\TcaRuleFactory;
-use Tokenly\Wp\Factories\Models\UserFactory;
-use Tokenly\Wp\Factories\Models\WhitelistItemFactory;
-use Tokenly\Wp\Factories\Collections\AddressCollectionFactory;
-use Tokenly\Wp\Factories\Collections\BalanceCollectionFactory;
-use Tokenly\Wp\Factories\Collections\PromiseCollectionFactory;
-use Tokenly\Wp\Factories\Collections\PromiseMetaCollectionFactory;
-use Tokenly\Wp\Factories\Collections\SourceCollectionFactory;
-use Tokenly\Wp\Factories\Collections\TokenMetaCollectionFactory;
-use Tokenly\Wp\Factories\Collections\TcaRuleCollectionFactory;
-use Tokenly\Wp\Factories\Collections\UserCollectionFactory;
+use Tokenly\Wp\Models\Settings\OauthSettings;
+use Tokenly\Wp\Models\Settings\IntegrationSettings;
+use Tokenly\Wp\Models\Settings\TcaSettings;
+use Tokenly\Wp\Models\Settings\WhitelistSettings;
+use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
+use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\RouteServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
@@ -108,11 +112,12 @@ use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\IntegrationServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\IntegrationSettingsServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TcaSettingsServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditAccountServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\CreditTransactionServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
@@ -120,9 +125,11 @@ use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\WhitelistServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\BalanceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditAccountRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditGroupRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
@@ -137,11 +144,14 @@ use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
@@ -149,14 +159,22 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface as CreditGroupApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\CreditTransactionControllerInterface as CreditTransactionApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface as PromiseApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\IntegrationSettingsControllerInterface as IntegrationSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\TcaSettingsControllerInterface as TcaSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface as SourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\WhitelistControllerInterface as WhitelistApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthSettingsControllerInterface as OauthSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationSettingsControllerInterface as IntegrationSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaSettingsControllerInterface as TcaSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerInterface as WhitelistSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditAccountFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditAccountHistoryFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditGroupHistoryFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\CreditTransactionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
@@ -168,39 +186,58 @@ use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditGroupCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditTransactionCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\WhitelistItemCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\CreditAccountCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\CreditGroupCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\CreditTransactionCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\WhitelistItemCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\BalanceInterface;
+use Tokenly\Wp\Interfaces\Models\CreditAccountInterface;
+use Tokenly\Wp\Interfaces\Models\CreditAccountHistoryInterface;
+use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
+use Tokenly\Wp\Interfaces\Models\CreditGroupHistoryInterface;
+use Tokenly\Wp\Interfaces\Models\CreditTransactionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Tokenly\Wp\Interfaces\Models\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
+use Tokenly\Wp\Interfaces\Components\CardAppCreditItemComponentInterface;
 use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
+use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
+use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
@@ -229,73 +266,103 @@ return array(
 	'twig.template_cache_dir'  => \DI\factory( function( string $root_dir ) {
 		return $root_dir . '/build/template-cache/';
 	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	'oauth.callback_route'     => get_site_url() . '/tokenpass-oauth-callback',
+	'oauth.callback_route'     => \DI\factory( function( string $namespace ) {
+		$site_url = get_site_url();
+		return "{$site_url}/{$namespace}/oauth/callback";
+	} )->parameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	'oauth.host'               => \DI\factory( function( string $api_host ) {
 		return $api_host . '/oauth/authorize';
 	} )->parameter( 'api_host', \DI\get( 'api.host' ) ),
 	//Providers
 	AppServiceProviderInterface::class             => \DI\autowire( AppServiceProvider::class ),
 	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class ),
-	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class ),
-	//Controllers
+	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	//Controllers - API
+	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
+	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
+	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
+	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
+	SourceApiControllerInterface::class               => \DI\autowire( SourceApiController::class ),
+	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
+	//Controllers - API - Settings
+	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
+	OauthSettingsApiControllerInterface::class        => \DI\autowire( OauthSettingsApiController::class ),
+	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
+	WhitelistSettingsApiControllerInterface::class    => \DI\autowire( WhitelistSettingsApiController::class ),
+	//Controllers - Admin
 	BalancesControllerInterface::class             => \DI\autowire( BalancesController::class ),
-	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
-	UserControllerInterface::class                 => \DI\autowire( UserController::class ),
+	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
+	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
-	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
 	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
-		->constructorParameter( 'oauth_callback_route', DI\get( 'oauth.callback_route' ) ),
+		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
 	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
-	//Controllers - API
-	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
-	PromiseApiControllerInterface::class              => \DI\autowire( PromiseApiController::class ),
-	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
-	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
-	SourceApiControllerInterface::class               => \DI\autowire( SourceApiController::class ),
-	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
-	WhitelistApiControllerInterface::class            => \DI\autowire( WhitelistApiController::class ),
+	//Controllers - Web
+	AuthControllerInterface::class                 => \DI\autowire( AuthController::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
+	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
+	UserControllerInterface::class                 => \DI\autowire( UserController::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	//Shortcodes
+	LoginButtonShortcodeInterface::class              => \DI\autowire( LoginButtonShortcode::class ),
+	LogoutButtonShortcodeInterface::class             => \DI\autowire( LogoutButtonShortcode::class ),
 	//Components 
 	ButtonLoginComponentInterface::class           => \DI\autowire( ButtonLoginComponent::class )
-		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
+		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
-		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
+		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	CardAppCreditItemComponentInterface::class     => \DI\autowire( CardAppCreditItemComponent::class ),
 	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
 	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
-		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') ),
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
+		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') )
+		->constructorParameter( 'api_host', \DI\get( 'api.host' ) ),
 	LifecycleServiceInterface::class               => \DI\autowire( LifecycleService::class )
 		->constructorParameter( 'root_filepath', \DI\get( 'general.root_filepath' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ResourceServiceInterface::class                => \DI\autowire( ResourceService::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) )
-		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) )
+		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) ),
+	QueryServiceInterface::class                   => \DI\autowire( QueryService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	TcaServiceInterface::class                     => \DI\autowire( TcaService::class ),
 	//Services - Domain
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
-	IntegrationServiceInterface::class             => \DI\autowire( IntegrationService::class ),
-	IntegrationSettingsServiceInterface::class     => \DI\autowire( IntegrationSettingsService::class ),
-	TcaSettingsServiceInterface::class             => \DI\autowire( TcaSettingsService::class ),
+	CreditAccountServiceInterface::class           => \DI\autowire( CreditAccountService::class ),
+	CreditGroupServiceInterface::class             => \DI\autowire( CreditGroupService::class ),
+	CreditTransactionServiceInterface::class       => \DI\autowire( CreditTransactionService::class ),
 	OauthUserServiceInterface::class               => \DI\autowire( OauthUserService::class ),
 	PostServiceInterface::class                    => \DI\autowire( PostService::class ),
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
 	PromiseServiceInterface::class                 => \DI\autowire( PromiseService::class ),
 	SourceServiceInterface::class                  => \DI\autowire( SourceService::class ),
 	TokenMetaServiceInterface::class               => \DI\autowire( TokenMetaService::class ),
-	UserServiceInterface::class                    => \DI\autowire( UserService::class ),
+	UserServiceInterface::class                    => \DI\autowire( UserService::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	WhitelistServiceInterface::class               => \DI\autowire( WhitelistService::class ),
 	//Repositories - General
-	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class ),
-	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class ),
-	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class ),
+	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Repositories - Domain
 	AddressRepositoryInterface::class              => \DI\autowire( AddressRepository::class ),
 	BalanceRepositoryInterface::class              => \DI\autowire( BalanceRepository::class ),
+	CreditAccountRepositoryInterface::class        => \DI\autowire( CreditAccountRepository::class ),
+	CreditGroupRepositoryInterface::class          => \DI\autowire( CreditGroupRepository::class ),
+	CreditTransactionRepositoryInterface::class    => \DI\autowire( CreditTransactionRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
 	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
@@ -304,167 +371,163 @@ return array(
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
 	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class ),
+	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Routes
 	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
-		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) ),
-	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class ),
+		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) )
+		->constructorParameter( 'api_host', DI\get( 'api.host' ) )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	ApiRouterInterface::class                      => \DI\autowire( ApiRouter::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	WebRouterInterface::class                      => \DI\autowire( WebRouter::class ),
+	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Collections
-	CollectionInterface::class                     => \DI\autowire( Collection::class ),
-	AddressCollectionInterface::class              => \DI\autowire( AddressCollection::class ),
-	BalanceCollectionInterface::class              => \DI\autowire( BalanceCollection::class ),
-	PromiseCollectionInterface::class              => \DI\autowire( PromiseCollection::class ),
-	PromiseMetaCollectionInterface::class          => \DI\autowire( PromiseMetaCollection::class ),
-	SourceCollectionInterface::class               => \DI\autowire( SourceCollection::class ),
-	TokenMetaCollectionInterface::class            => \DI\autowire( TokenMetaCollection::class ),
-	TcaRuleCollectionInterface::class              => \DI\autowire( TcaRuleCollection::class ),
-	UserCollectionInterface::class                 => \DI\autowire( UserCollection::class ),
+	CollectionInterface::class                   => \DI\autowire( Collection::class ),
+	AddressCollectionInterface::class            => \DI\autowire( AddressCollection::class ),
+	BalanceCollectionInterface::class            => \DI\autowire( BalanceCollection::class ),
+	CreditAccountCollectionInterface::class        => \DI\autowire( CreditAccountCollection::class ),
+	CreditGroupCollectionInterface::class        => \DI\autowire( CreditGroupCollection::class ),
+	CreditTransactionCollectionInterface::class  => \DI\autowire( CreditTransactionCollection::class ),
+	PromiseCollectionInterface::class            => \DI\autowire( PromiseCollection::class ),
+	PromiseMetaCollectionInterface::class        => \DI\autowire( PromiseMetaCollection::class ),
+	PostCollectionInterface::class               => \DI\autowire( PostCollection::class ),
+	SourceCollectionInterface::class             => \DI\autowire( SourceCollection::class ),
+	TokenMetaCollectionInterface::class          => \DI\autowire( TokenMetaCollection::class ),
+	TcaRuleCollectionInterface::class            => \DI\autowire( TcaRuleCollection::class ),
+	UserCollectionInterface::class               => \DI\autowire( UserCollection::class ),
+	WhitelistItemCollectionInterface::class      => \DI\autowire( WhitelistItemCollection::class ),
 	//Models
-	AddressInterface::class                        => \DI\autowire( Address::class ),
-	BalanceInterface::class                        => \DI\autowire( Balance::class ),
-	OauthUserInterface::class                      => \DI\autowire( OauthUser::class ),
-	PostInterface::class                           => \DI\autowire( Post::class ),
-	PromiseInterface::class                        => \DI\autowire( Promise::class ),
-	PromiseMetaInterface::class                    => \DI\autowire( PromiseMeta::class ), 
-	SourceInterface::class                         => \DI\autowire( Source::class ), 
-	TokenMetaInterface::class                      => \DI\autowire( TokenMeta::class ), 
-	TcaRuleInterface::class                        => \DI\autowire( TcaRule::class ), 
-	UserInterface::class                           => \DI\autowire( User::class ),
-	WhitelistItemInterface::class                  => \DI\autowire( WhitelistItem::class ),
-	//Models - single instance
-	CurrentUserInterface::class                => \DI\factory( function (
+	AddressInterface::class                      => \DI\autowire( Address::class ),
+	BalanceInterface::class                      => \DI\autowire( Balance::class ),
+	CurrentUserInterface::class                  => \DI\factory( function (
 		ContainerInterface $container,
 		UserServiceInterface $user_service
 	) {
+		$user = null;
 		$user_id = get_current_user_id();
-		if ( $user_id == 0 ) {
-			$user = $container->make( GuestUser::class );
-		} else {
+		if ( $user_id != 0 ) {
 			$user = $user_service->show( array(
 				'id' => $user_id,
 			) );
 		}
+		if ( !$user || $user_id == 0 ) {
+			$user = $container->make( GuestUserInterface::class );
+		}
 		return $user;
 	} ),
-	IntegrationInterface::class                => \DI\factory( function ( 
-		ContainerInterface $container
-	) {
-		$integration = $container->make( Integration::class );
-		return $integration;
+	CreditAccountInterface::class          => \DI\autowire( CreditAccount::class ),
+	CreditAccountHistoryInterface::class   => \DI\autowire( CreditAccountHistory::class ),
+	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
+	CreditGroupHistoryInterface::class     => \DI\autowire( CreditGroupHistory::class ),
+	CreditTransactionInterface::class      => \DI\autowire( CreditTransaction::class ),
+	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
+	PostInterface::class                   => \DI\autowire( Post::class ),
+	PromiseInterface::class                => \DI\autowire( Promise::class ),
+	PromiseMetaInterface::class            => \DI\autowire( PromiseMeta::class ), 
+	SourceInterface::class                 => \DI\autowire( Source::class ), 
+	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
+	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
+	UserInterface::class                   => \DI\autowire( User::class ),
+	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
+	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
+	IntegrationInterface::class            => \DI\autowire( Integration::class ),
+	//Models - Settings
+	OauthSettingsInterface::class          => \DI\autowire( OauthSettings::class ),
+	IntegrationSettingsInterface::class    => \DI\autowire( IntegrationSettings::class ),
+	TcaSettingsInterface::class            => \DI\autowire( TcaSettings::class ),
+	WhitelistSettingsInterface::class      => \DI\autowire( WhitelistSettings::class ),
+	//Factories
+	AddressFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, AddressInterface::class ) extends ConcreteFactory implements AddressFactoryInterface {};
 	} ),
-	IntegrationSettingsInterface::class        => \DI\factory( function ( 
-		ContainerInterface $container,
-		IntegrationSettingsServiceInterface $integration_settings_service
-	) {
-		$settings_data = $integration_settings_service->show();
-		$settings = $container->make( IntegrationSettings::class, array(
-			'settings_data' => $settings_data,
-		) );
-		return $settings;
+	BalanceFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, BalanceInterface::class ) extends ConcreteFactory implements BalanceFactoryInterface {};
 	} ),
-	TcaSettingsInterface::class        => \DI\factory( function ( 
-		ContainerInterface $container,
-		TcaSettingsServiceInterface $tca_settings_service
-	) {
-		$settings_data = $tca_settings_service->show();
-		$settings = $container->make( TcaSettings::class, array(
-			'settings_data' => $settings_data,
-		) );
-		return $settings;
+	CreditAccountFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditAccountInterface::class ) extends ConcreteFactory implements CreditAccountFactoryInterface {};
 	} ),
-	WhitelistInterface::class                  => \DI\factory( function ( 
-		ContainerInterface $container,
-		WhitelistServiceInterface $whitelist_service
-	) {
-		$whitelist_data = $whitelist_service->show();
-		$whitelist = $container->make( Whitelist::class, array(
-			'whitelist_data' => $whitelist_data,
-		) );
-		return $whitelist;
+	CreditAccountHistoryFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditAccountHistoryInterface::class ) extends ConcreteFactory implements CreditAccountHistoryFactoryInterface {};
 	} ),
-	//Factories - concrete - models
-	AddressFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', AddressInterface::class ),
-	BalanceFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', BalanceInterface::class ),
-	OauthUserFactoryConcrete::class              => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', OauthUserInterface::class ),
-	PostFactoryConcrete::class                   => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PostInterface::class ),
-	PromiseFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PromiseInterface::class ),
-	PromiseMetaFactoryConcrete::class            => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PromiseMetaInterface::class ),
-	SourceFactoryConcrete::class                 => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', SourceInterface::class ),
-	TokenMetaFactoryConcrete::class              => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', TokenMetaInterface::class ),
-	TcaRuleFactoryConcrete::class                => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', TcaRuleInterface::class ),
-	UserFactoryConcrete::class                   => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', UserInterface::class ),
-	WhitelistItemFactoryConcrete::class          => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', WhitelistItemInterface::class ),
-	//Factories - concrete - collections
-	AddressCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', AddressCollectionInterface::class ),
-	BalanceCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', BalanceCollectionInterface::class ),
-	PromiseCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PromiseCollectionInterface::class ),
-	PromiseMetaCollectionFactoryConcrete::class  => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', PromiseMetaCollectionInterface::class ),
-	SourceCollectionFactoryConcrete::class       => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', SourceCollectionInterface::class ),
-	TokenMetaCollectionFactoryConcrete::class    => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', TokenMetaCollectionInterface::class ),
-	TcaRuleCollectionFactoryConcrete::class      => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', TcaRuleCollectionInterface::class ),
-	UserCollectionFactoryConcrete::class         => \DI\autowire( RootFactory::class )
-		->constructorParameter( 'class', UserCollectionInterface::class ),
-	//Factories - abstract - models
-	AddressFactoryInterface::class               => \DI\autowire( AddressFactory::class )
-		->constructorParameter( 'factory', \Di\get( AddressFactoryConcrete::class ) ),
-	BalanceFactoryInterface::class               => \DI\autowire( BalanceFactory::class )
-		->constructorParameter( 'factory', \Di\get( BalanceFactoryConcrete::class ) ),
-	OauthUserFactoryInterface::class             => \DI\autowire( OauthUserFactory::class )
-		->constructorParameter( 'factory', \Di\get( OauthUserFactoryConcrete::class ) ),
-	PostFactoryInterface::class                  => \DI\autowire( PostFactory::class )
-		->constructorParameter( 'factory', \Di\get( PostFactoryConcrete::class ) ),
-	PromiseFactoryInterface::class               => \DI\autowire( PromiseFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseFactoryConcrete::class ) ),
-	PromiseMetaFactoryInterface::class           => \DI\autowire( PromiseMetaFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseMetaFactoryConcrete::class ) ),
-	SourceFactoryInterface::class                => \DI\autowire( SourceFactory::class )
-		->constructorParameter( 'factory', \Di\get( SourceFactoryConcrete::class ) ),
-	TokenMetaFactoryInterface::class             => \DI\autowire( TokenMetaFactory::class )
-		->constructorParameter( 'factory', \Di\get( TokenMetaFactoryConcrete::class ) ),
-	TcaRuleFactoryInterface::class               => \DI\autowire( TcaRuleFactory::class )
-		->constructorParameter( 'factory', \Di\get( TcaRuleFactoryConcrete::class ) ),
-	UserFactoryInterface::class                  => \DI\autowire( UserFactory::class )
-		->constructorParameter( 'factory', \Di\get( UserFactoryConcrete::class ) ),
-	WhitelistItemFactoryInterface::class         => \DI\autowire( WhitelistItemFactory::class )
-		->constructorParameter( 'factory', \Di\get( WhitelistItemFactoryConcrete::class ) ),
-	//Factories - abstract - collections
-	AddressCollectionFactoryInterface::class     => \DI\autowire( AddressCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( AddressCollectionFactoryConcrete::class ) ),
-	BalanceCollectionFactoryInterface::class     => \DI\autowire( BalanceCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( BalanceCollectionFactoryConcrete::class ) ),
-	PromiseCollectionFactoryInterface::class     => \DI\autowire( PromiseCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseCollectionFactoryConcrete::class ) ),
-	PromiseMetaCollectionFactoryInterface::class => \DI\autowire( PromiseMetaCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( PromiseMetaCollectionFactoryConcrete::class ) ),
-	SourceCollectionFactoryInterface::class      => \DI\autowire( SourceCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( SourceCollectionFactoryConcrete::class ) ),
-	TokenMetaCollectionFactoryInterface::class   => \DI\autowire( TokenMetaCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( TokenMetaCollectionFactoryConcrete::class ) ),
-	TcaRuleCollectionFactoryInterface::class   => \DI\autowire( TcaRuleCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( TcaRuleCollectionFactoryConcrete::class ) ),
-	UserCollectionFactoryInterface::class        => \DI\autowire( UserCollectionFactory::class )
-		->constructorParameter( 'factory', \Di\get( UserCollectionFactoryConcrete::class ) ),
+	CreditGroupFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditGroupInterface::class ) extends ConcreteFactory implements CreditGroupFactoryInterface {};
+	} ),
+	CreditGroupHistoryFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditGroupHistoryInterface::class ) extends ConcreteFactory implements CreditGroupHistoryFactoryInterface {};
+	} ),
+	CreditTransactionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, CreditTransactionInterface::class ) extends ConcreteFactory implements CreditTransactionFactoryInterface {};
+	} ),
+	OauthUserFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, OauthUserInterface::class ) extends ConcreteFactory implements OauthUserFactoryInterface {};
+	} ),
+	PostFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, PostInterface::class ) extends ConcreteFactory implements PostFactoryInterface {};
+	} ),
+	PromiseFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, PromiseInterface::class ) extends ConcreteFactory implements PromiseFactoryInterface {};
+	} ),
+	PromiseMetaFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, PromiseMetaInterface::class ) extends ConcreteFactory implements PromiseMetaFactoryInterface {};
+	} ),
+	SourceFactoryInterface::class                   => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, SourceInterface::class ) extends ConcreteFactory implements SourceFactoryInterface {};
+	} ),
+	TokenMetaFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, TokenMetaInterface::class ) extends ConcreteFactory implements TokenMetaFactoryInterface {};
+	} ),
+	TcaRuleFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, TcaRuleInterface::class ) extends ConcreteFactory implements TcaRuleFactoryInterface {};
+	} ),
+	UserFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, UserInterface::class ) extends ConcreteFactory implements UserFactoryInterface {};
+	} ),
+	WhitelistItemFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, WhitelistItemInterface::class ) extends ConcreteFactory implements WhitelistItemFactoryInterface {};
+	} ),
+	//Factories - collections
+	AddressCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, AddressCollectionInterface::class ) extends ConcreteCollectionFactory implements AddressCollectionFactoryInterface {};
+	} ),
+	BalanceCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, BalanceFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, BalanceCollectionInterface::class ) extends ConcreteCollectionFactory implements BalanceCollectionFactoryInterface {};
+	} ),
+	CreditAccountCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, CreditAccountCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditAccountCollectionFactoryInterface {};
+	} ),
+	CreditGroupCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, CreditGroupCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditGroupCollectionFactoryInterface {};
+	} ),
+	CreditTransactionCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditTransactionFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, CreditTransactionCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditTransactionCollectionFactoryInterface {};
+	} ),
+	PromiseCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
+	} ),
+	PostCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, PostCollectionInterface::class ) extends ConcreteCollectionFactory implements PostCollectionFactoryInterface {};
+	} ),
+	PromiseMetaCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, PromiseMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseMetaCollectionFactoryInterface {};
+	} ),
+	SourceCollectionFactoryInterface::class         => \DI\factory( function( ContainerInterface $container, SourceFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, SourceCollectionInterface::class ) extends ConcreteCollectionFactory implements SourceCollectionFactoryInterface {};
+	} ),
+	TokenMetaCollectionFactoryInterface::class      => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, TokenMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenMetaCollectionFactoryInterface {};
+	} ),
+	TcaRuleCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, TcaRuleCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaRuleCollectionFactoryInterface {};
+	} ),
+	UserCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, UserCollectionInterface::class ) extends ConcreteCollectionFactory implements UserCollectionFactoryInterface {};
+	} ),
+	WhitelistItemCollectionFactoryInterface::class  => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, WhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements WhitelistItemCollectionFactoryInterface {};
+	} ),
 	//Third-party
 	TokenpassAPI::class => \DI\factory( function ( 
 		ContainerInterface $container,
@@ -473,11 +536,11 @@ return array(
 		string $oauth_callback_route
 	) {
 		$settings = $option_repository->index( array(
-			'client_id',
-			'client_secret',
+			'integration_client_id',
+			'integration_client_secret',
 		) );
-		$client_id = $settings['client_id'] ?? null;
-		$client_secret = $settings['client_secret'] ?? null;
+		$client_id = $settings['integration_client_id'] ?? null;
+		$client_secret = $settings['integration_client_secret'] ?? null;
 		$privileged_client_id = $client_id;
 		$privileged_client_secret = $client_secret;
 		$oauth_client_id = $client_id;
@@ -514,7 +577,7 @@ return array(
 		->parameter( 'twig_template_cache_dir', \DI\get( 'twig.template_cache_dir' ) ),
 );
 
-class RootFactory {
+class ConcreteFactory {
 	protected $container;
 	public $class;
 
@@ -523,7 +586,38 @@ class RootFactory {
 		$this->class = $class;
 	}
 
-	public function create( $params ) {
-		return $this->container->make( $this->class, $params );
+	public function create( $data ) {
+		if ( is_a( $data, $this->class ) ) {
+			return $data;
+		}
+		return $this->container->make( $this->class, array(
+			'data' => $data,
+		) );
+	}
+}
+
+class ConcreteCollectionFactory {
+	protected $container;
+	protected $item_factory;
+	public $class;
+
+	public function __construct(
+		ContainerInterface $container,
+		$item_factory,
+		string $class
+	) {
+		$this->container = $container;
+		$this->item_factory = $item_factory;
+		$this->class = $class;
+	}
+
+	public function create( array $data, $args = array() ) {
+		foreach ( $data as &$item ) {
+			$item = $this->item_factory->create( $item );
+		};
+		$collection = $this->container->make( $this->class, array(
+			'items' => $data,
+		) );
+		return $collection;
 	}
 }

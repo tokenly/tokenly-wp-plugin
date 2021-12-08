@@ -31,6 +31,9 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 */
 	public function index() {
 		$promises = $this->client->getPromisedTransactionList();
+		foreach ( $promises as &$promise ) {
+			$promise = $this->remap_fields( $promise );
+		}
 		$promises = $this->promise_collection_factory->create( $promises );
 		return $promises;
 	}
@@ -45,6 +48,7 @@ class PromiseRepository implements PromiseRepositoryInterface {
 		if ( !$promise ) {
 			return false;
 		}
+		$promise = $this->remap_fields( $promise );
 		$promise = $this->promise_factory->create( $promise );
 		return $promise;
 	}
@@ -81,20 +85,26 @@ class PromiseRepository implements PromiseRepositoryInterface {
 
 	/**
 	 * Updates the existing promised transaction
-	 * @param integer $promise_id Tokenpass promise index
+	 * @param PromiseInterface $promise Promise to update
 	 * @param $params New promise properties
 	 * @return array
 	 */
-	public function update( int $promise_id, array $params = array() ) {
-		$response = $this->client->updatePromisedTransaction( $promise_id, $params );
+	public function update( PromiseInterface $promise, array $params = array() ) {
+		$response = $this->client->updatePromisedTransaction( $promise->promise_id, $params );
 	}
 
 	/**
 	 * Destroys the existing promise
-	 * @param integer $promise_id Tokenpass promise index
+	 * @param PromiseInterface $promise Promise to destroy
 	 * @return void
 	 */
-	public function destroy( int $promise_id ) {
-		$this->client->deletePromisedTransaction( $promise_id );
+	public function destroy( PromiseInterface $promise ) {
+		$this->client->deletePromisedTransaction( $promise->promise_id );
+	}
+
+	protected function remap_fields( array $promise ) {
+		$promise['source_id'] = $promise['source'];
+		unset( $promise['source'] );
+		return $promise;
 	}
 }

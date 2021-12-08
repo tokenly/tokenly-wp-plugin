@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Routes;
 
-interface AdminRouterInterface {
-	public function register();
+use Tokenly\Wp\Interfaces\Routes\RouterInterface;
+
+interface AdminRouterInterface extends RouterInterface {
+	//
 }

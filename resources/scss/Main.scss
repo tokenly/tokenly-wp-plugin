@@ -14,7 +14,7 @@
 .tokenly-component-button {
 	display: inline;
 	background-color: $color-primary;
-	color: white;
+	color: white !important;
 	cursor: pointer;
 	border: none;
 	font-size: 14px;

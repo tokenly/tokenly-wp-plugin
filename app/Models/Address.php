@@ -2,48 +2,40 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
+use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 
-class Address implements AddressInterface {
-	public $address;
-	public $type;
-	public $label;
-	public $balances;
-	protected $source_service;
+class Address extends Model implements AddressInterface {
+	public $address = '';
+	public $type = '';
+	public $label = 'Unnamed';
+	public $balance;
+	protected $fillable = array(
+		'address',
+		'type',
+		'label',
+		'balance',
+	);
 
 	public function __construct(
-		string $address = '',
-		string $type = '',
-		string $label = 'Unnamed',
-		BalanceCollectionInterface $balances,
-		SourceServiceInterface $source_service
+		AddressRepositoryInterface $domain_repository,
+		array $data = array()
 	) {
-		$this->source_service = $source_service;
-		$this->address = $address;
-		$this->type = $type;
-		$this->label = $label;
-		$this->balances = $balances;
+		$this->domain_repository = $domain_repository;
+		parent::__construct( $data );
 	}
 
-	public function to_array() {
-		$balances = $this->balances->to_array();
-		$array = array(
-			'address'  => $this->address,
-			'type'     => $this->type,
-			'balances' => $balances,
-			'label'    => $this->label,
-		);
-		return $array;
-	}
-
-	public function register( $assets = '' ) {
-		$payload = array(
-			'address' => $this->address,
-			'type'    => $this->type,
-			'assets'  => $assets,
-		);
-		$this->source_service->store( $payload );
+	/**
+	 * Loads the balance relation
+	 * @param string[] $relations Further relations
+	 * @return self
+	 */
+	protected function load_balance( array $relations ) {
+		if ( isset( $this->balance ) ) {
+			$this->balance->load( $relations );
+		}
+		return $this;
 	}
 }

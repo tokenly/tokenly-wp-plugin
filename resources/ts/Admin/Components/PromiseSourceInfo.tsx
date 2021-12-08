@@ -24,16 +24,16 @@ export class PromiseSourceInfo extends Component<PromiseSourceInfoProps, Promise
 	}
 	
 	getPromiseSource( promiseItem: any ) {
-		let address = promiseItem.source;
-		const source = this.props.sources[ promiseItem.source ] ?? null;
+		let address = promiseItem.source_id;
+		const source = this.props.sources[ promiseItem.source_id ] ?? null;
 		if ( source ) {
-			address = source?.address_data?.label;
+			address = source?.address?.label;
 		}
 		return address;
 	}
 	
 	sourceExists( promiseItem: any ) {
-		const source = this.props.sources[ promiseItem.source ] ?? null;
+		const source = this.props.sources[ promiseItem.source_id ] ?? null;
 		if ( source ) {
 			return true;
 		} else {
@@ -46,10 +46,10 @@ export class PromiseSourceInfo extends Component<PromiseSourceInfoProps, Promise
 			<div>
 				<span>Source: </span>
 				{ this.sourceExists( this.props.promise )
-					? <a href={`/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.promise.source}`}>
+					? <a href={`/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.promise.source_id}`}>
 						<strong>{ this.getPromiseSource( this.props.promise ) }</strong>
 					</a>
-					: <span><strong>{ this.props.promise.source }</strong></span>
+					: <span><strong>{ this.props.promise.source_id }</strong></span>
 				}
 			</div>
 		);

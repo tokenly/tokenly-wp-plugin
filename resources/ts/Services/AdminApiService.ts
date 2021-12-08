@@ -25,9 +25,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		}
 	}
 	
-	settingsIntegrationShow(): Promise<SettingsData> {
+	settingsShow( type: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/settings/integration' ).then( ( result: SettingsData ) => {
+			this.makeRequest( 'GET', `/settings/${type}` ).then( ( result: any ) => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -35,9 +35,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	settingsIntegrationUpdate( params: SettingsData ): Promise<any> {
+	settingsUpdate( type: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/settings/integration', params ).then( result => {
+			this.makeRequest( 'PUT', `/settings/${type}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -45,9 +45,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	settingsTcaShow(): Promise<any> {
+	creditGroupIndex(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/settings/tca' ).then( ( result: any ) => {
+			this.makeRequest( 'GET', '/credit-group' ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -55,9 +55,39 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	settingsTcaUpdate( params: any ): Promise<any> {
+	creditGroupStore( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/settings/tca', params ).then( result => {
+			this.makeRequest( 'POST', '/credit-group', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditGroupUpdate( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', '/credit-group/', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditTransactionIndex(): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/credit-transaction' ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditTransactionStore( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'POST', '/credit-transaction', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -178,26 +208,6 @@ export class AdminApiService implements AdminApiServiceInterface {
 	userShow( userId: number, params: UserShowParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/user/${userId}`, params ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	whitelistShow(): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/whitelist' ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	whitelistUpdate( params: WhitelistData ): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/whitelist', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );

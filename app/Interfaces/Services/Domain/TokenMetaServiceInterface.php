@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services\Domain;
 
-interface TokenMetaServiceInterface {
+use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
+
+interface TokenMetaServiceInterface extends DomainServiceInterface {
 	//
 }

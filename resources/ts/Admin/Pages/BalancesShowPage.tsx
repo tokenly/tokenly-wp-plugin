@@ -30,14 +30,13 @@ export default class BalancesShowPage extends Component<BalancesShowPageProps, B
 	}
 	constructor( props: BalancesShowPageProps ) {
 		super( props );
-		console.log(this.props.pageData.address);
 	}
 	
 	render() {
 		return (
 			<Page title={'Address balances'}>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-source-index'>To source list</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-source-index'>To source list</a>
 				</div>
 				<Panel>
 					<PanelBody>
@@ -49,7 +48,7 @@ export default class BalancesShowPage extends Component<BalancesShowPageProps, B
 										{ this.props.pageData?.address?.address }
 									</strong>
 								</div>
-								<BalanceList balances={ this.props.pageData?.address?.balances ?? [] } />
+								<BalanceList balance={ this.props.pageData?.address?.balance ?? [] } />
 							</div>
 						</PanelRow>
 					</PanelBody>

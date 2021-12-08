@@ -4,53 +4,50 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 
 /**
  * Manages the addresses
  */
 class AddressService extends DomainService implements AddressServiceInterface {
-	protected $address_cache = array();
 	protected $address_repository;
-	protected $balance_service;
+	protected $oauth_user_service;
 
 	public function __construct(
 		AddressRepositoryInterface $address_repository,
-		BalanceServiceInterface $balance_service
+		OauthUserService $oauth_user_service
 	) {
 		$this->address_repository = $address_repository;
-		$this->balance_service = $balance_service;
-	}
-
-	public function index( array $params = array() ) {
-		if ( !isset( $params['username'] ) ) {
-			return;
-		}
-		$username = $params['username'] ?? null;
-		$addresses;
-		if ( isset( $this->address_cache[ $username ] ) ) {
-			$addresses = $this->address_cache[ $username ];
-		} else {
-			$addresses = $this->address_repository->index( $params );
-			$this->address_cache[ $username ] = $addresses;
-		}
-		if ( isset( $params['with'] ) ) {
-			$addresses = $this->load( $addresses, $params['with'] );
-		}
-		return $addresses;
+		$this->oauth_user_service = $oauth_user_service;
 	}
 
 	/**
-	 * Appends Address objects to the queries addresses (part of 'with' handler)
-	 * @param AddressCollectionInterface $addresses Queried addresses
-	 * @return AddressCollectionInterface Modified addresses
+	 * Gets a collection of addresses
+	 * @param array $params Search parameters
+	 * @return AddressCollectionInterface
 	 */
-	protected function load_balances_collection( AddressCollectionInterface $addresses, array $relation ) {
-		foreach( (array) $addresses as &$address ) {
-			$address->balances = $this->balance_service->load( $address->balances, $relation );
+	protected function _index( array $params = array() ) {
+		if ( !isset( $params['username'] ) ) {
+			return;
 		}
-		return $addresses;
+		$address = $this->address_repository->index( $params );
+		return $address;
+	}
+
+	protected function _show( array $params = array() ) {
+		if ( !isset( $params['address'] ) ) {
+			return;
+		}
+		$oauth_user = $this->oauth_user_service->show( array(
+			'address' => $params['address'],
+		) );
+		if ( !$oauth_user ) {
+			return;
+		}
+		$params['username'] = $oauth_user->username;
+		$address = $this->address_repository->show( $params );
+		return $address;
 	}
 }

@@ -16,8 +16,8 @@ class UserCollection extends Collection implements UserCollectionInterface {
 	protected $user_meta_repository;
 	
 	public function __construct(
-		array $items,
-		UserMetaRepositoryInterface $user_meta_repository
+		UserMetaRepositoryInterface $user_meta_repository,
+		array $items = array()
 	) {
 		parent::__construct( $items );
 		$this->user_meta_repository = $user_meta_repository;
@@ -33,5 +33,21 @@ class UserCollection extends Collection implements UserCollectionInterface {
 			$keyed[ $uuid ] = $user;
 		}
 		$this->exchangeArray( $keyed );
+	}
+
+	/**
+	 * Creates an array of suggestions out of users
+	 * (used for real-time search in combobox inputs)
+	 * @return array
+	 */
+	public function to_suggestions() {
+		$suggestions = array();
+		foreach (  (array ) $this as $user ) {
+			$suggestions[] = array(
+				'id'   => $user->ID, 
+				'name' => $user->nickname,
+			);
+		}
+		return $suggestions;
 	}
 }

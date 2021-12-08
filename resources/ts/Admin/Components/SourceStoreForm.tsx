@@ -114,7 +114,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 								<div>Address info:</div>
 								<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
 								<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
-								<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenpass-balances-show&address=${ this.getCurrentAddress() }` } >View balances</a></div>
+								<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.getCurrentAddress() }` } >View balances</a></div>
 							</div>
 							<TextareaControl
 								label="Whitelisted assets"

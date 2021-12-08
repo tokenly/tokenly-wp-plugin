@@ -5038,6 +5038,7 @@ class AssetSearchField extends react_1.Component {
         this.onKeywordsChange = this.onKeywordsChange.bind(this);
         this.onAssetChange = this.onAssetChange.bind(this);
         this.getAssetsAvailable = this.getAssetsAvailable.bind(this);
+        console.log(this.props.assets);
     }
     onKeywordsChange(keywords) {
         if (!keywords || keywords == '') {
@@ -5078,7 +5079,7 @@ class AssetSearchField extends react_1.Component {
     render() {
         return (React.createElement("div", { style: { marginBottom: '12px' } },
             React.createElement("div", { style: { height: '40px' } },
-                React.createElement(components_1.ComboboxControl, { label: this.props.label, help: this.props.help, value: this.props.value, onChange: (value) => {
+                React.createElement(components_1.ComboboxControl, { label: this.props.label, value: this.props.value, onChange: (value) => {
                         this.onAssetChange(value);
                     }, options: this.state.assets, onFilterValueChange: (keywords) => {
                         this.onKeywordsChange(keywords);
@@ -5223,7 +5224,7 @@ class BalanceList extends react_1.Component {
         super(props);
     }
     render() {
-        let listItems = Object.keys(this.props.balances).map((key) => this.props.balances[key]);
+        let listItems = Object.keys(this.props.balance).map((key) => this.props.balance[key]);
         listItems = listItems.map((balanceItem, i) => {
             return (React.createElement("div", { style: { width: '100%' } },
                 React.createElement(BalanceCard_1.BalanceCard, { balance: balanceItem })));
@@ -5278,6 +5279,404 @@ class ConfirmModal extends react_1.Component {
     }
 }
 exports.ConfirmModal = ConfirmModal;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditGroupCard.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditGroupCard.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditGroupCard = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupCard extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+            React.createElement(components_1.CardHeader, null,
+                React.createElement("div", null, this.props.creditGroup.name)),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } },
+                React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Active: "),
+                            React.createElement("strong", null, this.props.creditGroup.active ? 'Yes' : 'No'))))),
+            React.createElement(components_1.CardFooter, null,
+                React.createElement(components_1.Flex, { justify: "flex-start" },
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-transaction-index&credit_group=${this.props.creditGroup.uuid}` }, "View transactions"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-show&credit_group=${this.props.creditGroup.uuid}` }, "View details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${this.props.creditGroup.uuid}` }, "Manage group")))));
+    }
+}
+exports.CreditGroupCard = CreditGroupCard;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditGroupEditForm.tsx":
+/*!***************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditGroupEditForm.tsx ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditGroupEditForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupEditForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            creditGroup: {
+                name: null,
+                app_whitelist: null,
+            },
+        };
+        this.onSave = this.onSave.bind(this);
+        this.state.creditGroup = Object.assign(this.state.creditGroup, this.props.creditGroup);
+    }
+    onSave() {
+        this.props.onSave(this.state.creditGroup);
+    }
+    onCancel() {
+        this.props.onCancel();
+    }
+    render() {
+        return React.createElement("div", null,
+            React.createElement("form", null,
+                React.createElement("div", { style: { maxWidth: "320px" } },
+                    React.createElement(components_1.Flex
+                    //@ts-ignore
+                    , { 
+                        //@ts-ignore
+                        direction: "column" },
+                        React.createElement(components_1.TextControl, { label: "Name", value: this.state.creditGroup.name, onChange: (value) => {
+                                const state = Object.assign({}, this.state.creditGroup);
+                                state.name = value;
+                                this.setState({ creditGroup: state });
+                            } }),
+                        React.createElement(components_1.TextareaControl, { label: "App whitelist", help: "Comma-separated values.", value: this.state.creditGroup.app_whitelist, onChange: (value) => {
+                                const state = Object.assign({}, this.state.creditGroup);
+                                state.app_whitelist = value;
+                                this.setState({ creditGroup: state });
+                            } })),
+                    React.createElement(components_1.Flex, { justify: "flex-start", style: { marginTop: '12px' } },
+                        React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.saving, onClick: () => {
+                                this.onSave();
+                            } }, "Save credit group"),
+                        React.createElement(components_1.Button, { isTertiary: true, onClick: () => {
+                                this.onCancel();
+                            } }, "Cancel")))));
+    }
+}
+exports.CreditGroupEditForm = CreditGroupEditForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditGroupList.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditGroupList.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditGroupList = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditGroupCard_1 = __webpack_require__(/*! ./CreditGroupCard */ "./resources/ts/Admin/Components/CreditGroupCard.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupList extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let listItems = Object.keys(this.props.creditGroups).map((key) => this.props.creditGroups[key]);
+        listItems = listItems.map((creditGroup, i) => {
+            return (React.createElement("div", { style: { width: '100%' } },
+                React.createElement(CreditGroupCard_1.CreditGroupCard, { creditGroup: creditGroup })));
+        });
+        return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
+            //@ts-ignore
+            ? React.createElement(components_1.Flex, { direction: "column", style: { width: '100%' } }, listItems)
+            : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered credit groups")));
+    }
+}
+exports.CreditGroupList = CreditGroupList;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditGroupStoreForm.tsx":
+/*!****************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditGroupStoreForm.tsx ***!
+  \****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditGroupStoreForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupStoreForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: null,
+            appWhitelist: null,
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+    onSubmit() {
+        this.props.onSubmit({
+            name: this.state.name,
+            app_whitelist: this.state.appWhitelist,
+        });
+    }
+    onCancel() {
+        this.props.onCancel();
+    }
+    render() {
+        return (React.createElement("form", { style: { width: '100%', maxWidth: "400px" } },
+            React.createElement("div", null,
+                React.createElement(components_1.Flex
+                //@ts-ignore
+                , { 
+                    //@ts-ignore
+                    direction: "column" },
+                    React.createElement(components_1.TextControl, { label: "Name", value: this.state.name, onChange: (value) => {
+                            this.setState({ name: value });
+                        } }),
+                    React.createElement(components_1.TextareaControl, { label: "App whitelist", value: this.state.appWhitelist, help: "Comma-separated list.", onChange: (value) => {
+                            this.setState({ appWhitelist: value });
+                        } })),
+                React.createElement(components_1.Flex, { style: { marginTop: '12px' }, justify: "flex-start" },
+                    React.createElement(components_1.Button, { isPrimary: true, disabled: this.state.name === null, onClick: () => {
+                            this.onSubmit();
+                        } }, "Register credit group"),
+                    this.props.saving === true &&
+                        React.createElement(components_1.Spinner, null),
+                    React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
+                            this.onCancel();
+                        } }, "Cancel"),
+                    this.props.saving === true &&
+                        React.createElement(components_1.Spinner, null)))));
+    }
+}
+exports.CreditGroupStoreForm = CreditGroupStoreForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditTransactionCard.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditTransactionCard.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionCard = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionCard extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
+            React.createElement(components_1.CardHeader, null,
+                React.createElement("div", null, this.props.creditTransaction.uuid)),
+            React.createElement(components_1.CardBody, { style: { width: '100%' } },
+                React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                    React.createElement("div", { style: { flex: 1 } },
+                        React.createElement("div", null,
+                            React.createElement("span", null, "UUID: "),
+                            React.createElement("strong", null, this.props.creditTransaction.account_uuid)),
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Amount: "),
+                            React.createElement("strong", null, this.props.creditTransaction.amount)))))));
+    }
+}
+exports.CreditTransactionCard = CreditTransactionCard;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditTransactionList.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditTransactionList.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionList = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditTransactionCard_1 = __webpack_require__(/*! ./CreditTransactionCard */ "./resources/ts/Admin/Components/CreditTransactionCard.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionList extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let listItems = Object.keys(this.props.creditTransactions).map((key) => this.props.creditTransactions[key]);
+        listItems = listItems.map((creditTransaction, i) => {
+            return (React.createElement("div", { style: { width: '100%' } },
+                React.createElement(CreditTransactionCard_1.CreditTransactionCard, { creditTransaction: creditTransaction })));
+        });
+        return (React.createElement("div", { style: { width: '100%' } }, listItems.length > 0
+            //@ts-ignore
+            ? React.createElement(components_1.Flex, { direction: "column", style: { width: '100%' } }, listItems)
+            : React.createElement("div", { style: { opacity: 0.5 } }, "There are no registered transactions")));
+    }
+}
+exports.CreditTransactionList = CreditTransactionList;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/CreditTransactionStoreForm.tsx":
+/*!**********************************************************************!*\
+  !*** ./resources/ts/Admin/Components/CreditTransactionStoreForm.tsx ***!
+  \**********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionStoreForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const UserSearchField_1 = __webpack_require__(/*! ./UserSearchField */ "./resources/ts/Admin/Components/UserSearchField.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionStoreForm extends react_1.Component {
+    constructor(props) {
+        var _a, _b;
+        super(props);
+        this.state = {
+            creditGroupOptions: [],
+            transaction: {
+                group: null,
+                type: 'debit',
+                account: null,
+                amount: 0,
+                ref: '',
+                source: null,
+            }
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+        this.getCreditGroupOptions = this.getCreditGroupOptions.bind(this);
+        this.state.creditGroupOptions = this.getCreditGroupOptions();
+        if ((_a = this.state.creditGroupOptions[0]) !== null && _a !== void 0 ? _a : null) {
+            this.state.transaction.group = (_b = this.state.creditGroupOptions[0]) === null || _b === void 0 ? void 0 : _b.value;
+        }
+    }
+    onSubmit() {
+        const transaction = Object.assign({}, this.state.transaction);
+        console.log(transaction);
+        this.props.onSubmit(transaction);
+    }
+    onCancel() {
+        this.props.onCancel();
+    }
+    getCreditGroupOptions() {
+        const options = [];
+        this.props.creditGroups.forEach((creditGroup) => {
+            options.push({
+                label: creditGroup.name,
+                value: creditGroup.uuid,
+            });
+        });
+        return options;
+    }
+    render() {
+        return (React.createElement("form", { style: { width: '100%', maxWidth: "400px" } },
+            React.createElement("div", null,
+                React.createElement(components_1.Flex
+                //@ts-ignore
+                , { 
+                    //@ts-ignore
+                    direction: "column" },
+                    React.createElement("div", { style: { marginBottom: '12px' } },
+                        React.createElement(components_1.SelectControl, { label: "Credit group", value: this.state.transaction.group, options: this.state.creditGroupOptions, onChange: (value) => {
+                                let newState = Object.assign({}, this.state.transaction);
+                                newState.group = value;
+                                this.setState({ transaction: newState });
+                            } })),
+                    React.createElement("div", { style: { marginBottom: '12px' } },
+                        React.createElement(components_1.SelectControl, { label: "Transaction type", value: this.state.transaction.type, options: [
+                                { label: 'Debit', value: 'debit' },
+                                { label: 'Credit', value: 'credit' },
+                            ], onChange: (value) => {
+                                let newState = Object.assign({}, this.state.transaction);
+                                newState.type = value;
+                                this.setState({ transaction: newState });
+                            } })),
+                    React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Account",
+                            React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username."),
+                            React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                                    const state = Object.assign({}, this.state.transaction);
+                                    state.account = value;
+                                    this.setState({ transaction: state });
+                                } }))),
+                    React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Source",
+                            React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. (optional)"),
+                            React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
+                                    const state = Object.assign({}, this.state.transaction);
+                                    state.source = value;
+                                    this.setState({ transaction: state });
+                                } }))),
+                    React.createElement(components_1.TextControl, { label: "Amount", 
+                        // @ts-ignore
+                        type: "number", value: this.state.transaction.amount, onChange: (value) => {
+                            const state = Object.assign({}, this.state.transaction);
+                            state.amount = value;
+                            this.setState({ transaction: state });
+                        } }),
+                    React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.transaction.ref, onChange: (value) => {
+                            const state = Object.assign({}, this.state.transaction);
+                            state.ref = value;
+                            this.setState({ transaction: state });
+                        } })),
+                React.createElement(components_1.Flex, { style: { marginTop: '12px' }, justify: "flex-start" },
+                    React.createElement(components_1.Button, { isPrimary: true, onClick: () => {
+                            this.onSubmit();
+                        } }, "Make transaction"),
+                    this.props.saving === true &&
+                        React.createElement(components_1.Spinner, null),
+                    React.createElement(components_1.Button, { isTertiary: true, disabled: this.props.saving, onClick: () => {
+                            this.onCancel();
+                        } }, "Cancel"),
+                    this.props.saving === true &&
+                        React.createElement(components_1.Spinner, null)))));
+    }
+}
+exports.CreditTransactionStoreForm = CreditTransactionStoreForm;
 
 
 /***/ }),
@@ -5405,7 +5804,7 @@ class PromiseCard extends react_1.Component {
                     React.createElement("span", null,
                         React.createElement("span", null, "\u2116 "),
                         React.createElement("strong", null,
-                            React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
+                            React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }, this.props.promise.promise_id))),
                     ((_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.pseudo) == true &&
                         React.createElement("span", null,
                             React.createElement("span", { className: "tokenly-component-chip" }, "pseudo")))),
@@ -5422,8 +5821,8 @@ class PromiseCard extends react_1.Component {
                             React.createElement("strong", null, this.props.promise.quantity))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${this.props.promise.promise_id}` }, "Manage promise")))));
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${this.props.promise.promise_id}` }, "Manage promise")))));
     }
 }
 exports.PromiseCard = PromiseCard;
@@ -5658,12 +6057,12 @@ class PromiseParticipants extends react_1.Component {
             React.createElement("span", null, "Participants: "),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
             React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.destination }, ((_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.id)
-                ? React.createElement("a", { href: `/tokenpass-user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
+                ? React.createElement("a", { href: `/tokenly/user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
                 : React.createElement("span", null, "unknown")),
             React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
             React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", { title: (_o = (_m = this.props) === null || _m === void 0 ? void 0 : _m.promise) === null || _o === void 0 ? void 0 : _o.source }, ((_r = (_q = (_p = this.props.promise) === null || _p === void 0 ? void 0 : _p.promise_meta) === null || _q === void 0 ? void 0 : _q.destination_user) === null || _r === void 0 ? void 0 : _r.id)
-                ? React.createElement("a", { href: `/tokenpass-user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
+            React.createElement("strong", { title: (_o = (_m = this.props) === null || _m === void 0 ? void 0 : _m.promise) === null || _o === void 0 ? void 0 : _o.source_id }, ((_r = (_q = (_p = this.props.promise) === null || _p === void 0 ? void 0 : _p.promise_meta) === null || _q === void 0 ? void 0 : _q.destination_user) === null || _r === void 0 ? void 0 : _r.id)
+                ? React.createElement("a", { href: `/tokenly/user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
                 : React.createElement("span", null, "unknown"))));
     }
 }
@@ -5692,16 +6091,16 @@ class PromiseSourceInfo extends react_1.Component {
     }
     getPromiseSource(promiseItem) {
         var _a, _b;
-        let address = promiseItem.source;
-        const source = (_a = this.props.sources[promiseItem.source]) !== null && _a !== void 0 ? _a : null;
+        let address = promiseItem.source_id;
+        const source = (_a = this.props.sources[promiseItem.source_id]) !== null && _a !== void 0 ? _a : null;
         if (source) {
-            address = (_b = source === null || source === void 0 ? void 0 : source.address_data) === null || _b === void 0 ? void 0 : _b.label;
+            address = (_b = source === null || source === void 0 ? void 0 : source.address) === null || _b === void 0 ? void 0 : _b.label;
         }
         return address;
     }
     sourceExists(promiseItem) {
         var _a;
-        const source = (_a = this.props.sources[promiseItem.source]) !== null && _a !== void 0 ? _a : null;
+        const source = (_a = this.props.sources[promiseItem.source_id]) !== null && _a !== void 0 ? _a : null;
         if (source) {
             return true;
         }
@@ -5713,10 +6112,10 @@ class PromiseSourceInfo extends react_1.Component {
         return (React.createElement("div", null,
             React.createElement("span", null, "Source: "),
             this.sourceExists(this.props.promise)
-                ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.promise.source}` },
+                ? React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.promise.source_id}` },
                     React.createElement("strong", null, this.getPromiseSource(this.props.promise)))
                 : React.createElement("span", null,
-                    React.createElement("strong", null, this.props.promise.source))));
+                    React.createElement("strong", null, this.props.promise.source_id))));
     }
 }
 exports.PromiseSourceInfo = PromiseSourceInfo;
@@ -5745,7 +6144,7 @@ class PromiseStoreForm extends react_1.Component {
         super(props);
         this.state = {
             promise: {
-                source: null,
+                source_id: null,
                 destination: null,
                 asset: null,
                 pseudo: false,
@@ -5768,7 +6167,7 @@ class PromiseStoreForm extends react_1.Component {
         if (Object.keys(this.props.sources).length > 0) {
             const key = Object.keys(this.props.sources)[0];
             this.state.source = Object.assign({}, (_a = this.props.sources[key]) !== null && _a !== void 0 ? _a : null);
-            this.state.promise.source = this.state.source.address;
+            this.state.promise.source_id = this.state.source.address_id;
         }
     }
     onSubmit() {
@@ -5780,7 +6179,7 @@ class PromiseStoreForm extends react_1.Component {
     onSourceChange(value) {
         var _a;
         const state = Object.assign({}, this.state.promise);
-        state.source = value;
+        state.source_id = value;
         state.asset = null;
         state.quantity = 0;
         const source = Object.assign({}, (_a = this.props.sources[value]) !== null && _a !== void 0 ? _a : null);
@@ -5797,11 +6196,11 @@ class PromiseStoreForm extends react_1.Component {
     getSourceOptions() {
         const options = [];
         Object.keys(this.props.sources).forEach((key) => {
-            var _a, _b, _c;
-            const label = (_b = (_a = this.props.sources[key].address_data.label) !== null && _a !== void 0 ? _a : this.props.sources[key].address) !== null && _b !== void 0 ? _b : null;
+            var _a, _b;
+            const label = (_b = (_a = this.props.sources[key].address.label) !== null && _a !== void 0 ? _a : this.props.sources[key].address_id) !== null && _b !== void 0 ? _b : null;
             options.push({
                 label: label,
-                value: (_c = this.props.sources[key].address) !== null && _c !== void 0 ? _c : null,
+                value: key,
             });
         });
         return options;
@@ -5812,12 +6211,12 @@ class PromiseStoreForm extends react_1.Component {
         if (!this.state.source) {
             return [];
         }
-        const balances = (_b = (_a = this.state.source) === null || _a === void 0 ? void 0 : _a.address_data) === null || _b === void 0 ? void 0 : _b.balances;
-        if (!balances) {
+        const balance = (_b = (_a = this.state.source) === null || _a === void 0 ? void 0 : _a.address) === null || _b === void 0 ? void 0 : _b.balance;
+        if (!balance) {
             return [];
         }
-        Object.keys(balances).forEach((key) => {
-            let asset = balances[key].asset;
+        Object.keys(balance).forEach((key) => {
+            let asset = balance[key].asset;
             options.push(asset);
         });
         return options;
@@ -5831,22 +6230,24 @@ class PromiseStoreForm extends react_1.Component {
         if (asset == '') {
             return null;
         }
-        let balances = this.state.source.address_data.balances;
-        balances = Object.values(balances);
-        balances = balances.filter((balance) => {
+        let balance = this.state.source.address.balance;
+        balance = Object.values(balance);
+        balance = balance.filter((balance) => {
             return balance.asset === this.state.promise.asset;
         });
-        if (balances.length == 0) {
+        if (balance.length == 0) {
             return null;
         }
-        return balances[0];
+        return balance[0];
     }
     getMaxCount() {
         const asset = this.getCurrentAsset();
         if (!asset) {
             return null;
         }
-        return asset.balance;
+        const balance = parseFloat(asset.balance);
+        console.log(balance);
+        return balance;
     }
     isAssetValid() {
         var _a, _b;
@@ -5863,7 +6264,7 @@ class PromiseStoreForm extends react_1.Component {
             , { 
                 //@ts-ignore
                 direction: "column", style: { width: '100%' } },
-                React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source, options: this.getSourceOptions(), onChange: (value) => {
+                React.createElement(components_1.SelectControl, { label: "Source", value: this.state.promise.source_id, options: this.getSourceOptions(), onChange: (value) => {
                         this.onSourceChange(value);
                     }, help: "Source address to use." }),
                 React.createElement("div", null,
@@ -5886,7 +6287,9 @@ class PromiseStoreForm extends react_1.Component {
                 React.createElement("div", null,
                     React.createElement("label", null,
                         "Asset",
-                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "Name of the asset that will be promised."),
+                        React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } },
+                            React.createElement("div", null, "Name of the asset that will be promised."),
+                            React.createElement("div", null, "Note: Only the whitelisted assets are searchable.")),
                         this.state.promise.pseudo == false
                             ? React.createElement(AssetSearchField_1.AssetSearchField, { assets: this.getAssetOptions(), value: this.state.promise.asset, onChange: (value) => {
                                     const state = Object.assign({}, this.state.promise);
@@ -5912,7 +6315,7 @@ class PromiseStoreForm extends react_1.Component {
                                     React.createElement("span", null,
                                         React.createElement("span", null, "of / "),
                                         React.createElement("span", { title: this.getMaxCount() },
-                                            React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
+                                            React.createElement("strong", null, this.getMaxCount().toFixed(4)))))),
                         React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
                                 const state = Object.assign({}, this.state.promise);
                                 state.ref = value;
@@ -6006,7 +6409,7 @@ class SourceCard extends react_1.Component {
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
                 React.createElement("div", { title: this.props.source.address },
-                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.source.address}` }, (_a = this.props.source.address_data) === null || _a === void 0 ? void 0 : _a.label))),
+                    React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.source.address_id}` }, (_a = this.props.source.address) === null || _a === void 0 ? void 0 : _a.label))),
             React.createElement(components_1.CardBody, { style: { width: '100%' } },
                 React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
                     React.createElement("div", { style: { flex: 1 } },
@@ -6015,9 +6418,9 @@ class SourceCard extends react_1.Component {
                             React.createElement("strong", null, this.getAssets()))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.source.address}` }, "Manage source"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${this.props.source.address}` }, "View details"),
-                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.props.source.address}` }, "View balances")))));
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-source-edit&source=${this.props.source.address_id}` }, "Manage source"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.source.address_id}` }, "View details"),
+                    React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-balances-show&address=${this.props.source.address_id}` }, "View balances")))));
     }
 }
 exports.SourceCard = SourceCard;
@@ -6043,7 +6446,7 @@ class SourceEditForm extends react_1.Component {
         super(props);
         this.state = {
             source: {
-                address: null,
+                address_id: null,
                 assets: null,
             },
         };
@@ -6215,7 +6618,7 @@ class SourceStoreForm extends react_1.Component {
                                 React.createElement("span", null, this.getCurrentAddress())),
                             React.createElement("div", null,
                                 React.createElement("strong", null, "Assets: "),
-                                React.createElement("a", { href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.getCurrentAddress()}` }, "View balances"))),
+                                React.createElement("a", { href: `/wp-admin/admin.php?page=tokenly-balances-show&address=${this.getCurrentAddress()}` }, "View balances"))),
                         React.createElement(components_1.TextareaControl, { label: "Whitelisted assets", help: "Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised.", value: this.state.assets, onChange: (value) => {
                                 this.setState({ assets: value });
                             } })),
@@ -6391,6 +6794,7 @@ class TcaSettingsForm extends react_1.Component {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
+        console.log(this.props);
     }
     onChange(newSettings) {
         this.props.onChange(newSettings);
@@ -6409,9 +6813,7 @@ class TcaSettingsForm extends react_1.Component {
             const label = this.props.data.post_types[key];
             const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
                     let settings = Object.assign({}, this.props.settings);
-                    if (settings.post_types && typeof settings.post_types == 'object') {
-                        settings.post_types[key] = value;
-                    }
+                    settings.post_types[key] = value;
                     this.onChange(settings);
                 } }));
             listItems.push(item);
@@ -6628,13 +7030,12 @@ class BalancesShowPage extends react_1.Component {
         this.state = {
         //
         };
-        console.log(this.props.pageData.address);
     }
     render() {
         var _a, _b, _c, _d, _e;
         return (React.createElement(Page_1.default, { title: 'Address balances' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "To source list")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-source-index' }, "To source list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -6642,7 +7043,7 @@ class BalancesShowPage extends react_1.Component {
                             React.createElement("div", { style: { marginBottom: '12px' } },
                                 React.createElement("span", null, "Address: "),
                                 React.createElement("strong", null, (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.address) === null || _b === void 0 ? void 0 : _b.address)),
-                            React.createElement(BalanceList_1.BalanceList, { balances: (_e = (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.address) === null || _d === void 0 ? void 0 : _d.balances) !== null && _e !== void 0 ? _e : [] })))))));
+                            React.createElement(BalanceList_1.BalanceList, { balance: (_e = (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.address) === null || _d === void 0 ? void 0 : _d.balance) !== null && _e !== void 0 ? _e : [] })))))));
     }
 }
 exports["default"] = BalancesShowPage;
@@ -6678,7 +7079,6 @@ const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpres
 class ConnectionPage extends react_1.Component {
     constructor(props) {
         super(props);
-        console.log(this.props.pageData);
     }
     getStatusText() {
         var _a;
@@ -6703,12 +7103,8 @@ class ConnectionPage extends react_1.Component {
                                         React.createElement("strong", null, `${(_c = (_b = this.props.pageData) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.name} (${(_e = (_d = this.props.pageData) === null || _d === void 0 ? void 0 : _d.user) === null || _e === void 0 ? void 0 : _e.username})`))))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: 'flex-start' },
-                            React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, onClick: () => {
-                                    this.authService.connect();
-                                } }, "Connect to Tokenpass"),
-                            React.createElement(components_1.Button, { isPrimary: true, disabled: !this.props.pageData.status, onClick: () => {
-                                    this.authService.disconnect();
-                                } }, "Disconnect from Tokenpass")))))));
+                            React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, href: "/tokenly/oauth/connect" }, "Connect to Tokenpass"),
+                            React.createElement(components_1.Button, { isPrimary: true, disabled: !this.props.pageData.status, href: "/tokenly/oauth/disconnect" }, "Disconnect from Tokenpass")))))));
     }
 }
 __decorate([
@@ -6716,6 +7112,344 @@ __decorate([
     __metadata("design:type", Object)
 ], ConnectionPage.prototype, "authService", void 0);
 exports["default"] = ConnectionPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditGroupEditPage.tsx":
+/*!**********************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditGroupEditPage.tsx ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditGroupEditForm_1 = __webpack_require__(/*! ../Components/CreditGroupEditForm */ "./resources/ts/Admin/Components/CreditGroupEditForm.tsx");
+const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            saving: false,
+        };
+        this.onSave = this.onSave.bind(this);
+        this.onCancel = this.onCancel.bind(this);
+    }
+    return() {
+        window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+    }
+    onSave(creditGroup) {
+        this.setState({ saving: true });
+        let updateParams = Object.assign({}, creditGroup);
+        updateParams.uuid = this.props.pageData.credit_group.uuid;
+        this.creditGroupRepository.update(updateParams).then((result) => {
+            this.setState({ saving: false });
+            this.return();
+        });
+    }
+    onCancel() {
+        this.return();
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Manage credit group' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement("div", null,
+                            React.createElement("div", null,
+                                React.createElement(CreditGroupEditForm_1.CreditGroupEditForm, { onSave: this.onSave, onCancel: this.onCancel, saving: this.state.saving, creditGroup: this.props.pageData.credit_group }))))))));
+    }
+}
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.CreditGroupRepositoryInterface),
+    __metadata("design:type", Object)
+], CreditGroupEditPage.prototype, "creditGroupRepository", void 0);
+exports["default"] = CreditGroupEditPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditGroupIndexPage.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditGroupIndexPage.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditGroupList_1 = __webpack_require__(/*! ../Components/CreditGroupList */ "./resources/ts/Admin/Components/CreditGroupList.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupIndexPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Credit Groups' },
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { justify: "flex-start", style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenly-credit-transaction-store' }, "Make transaction"),
+                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenly-credit-group-store' }, "Register credit group"))))),
+            React.createElement(components_1.Panel, { header: "Registered credit groups" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(CreditGroupList_1.CreditGroupList, { creditGroups: this.props.pageData.credit_groups }))))));
+    }
+}
+exports["default"] = CreditGroupIndexPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditGroupShowPage.tsx":
+/*!**********************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditGroupShowPage.tsx ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupShowPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    dateFormatted(date) {
+        if (date) {
+            return dayjs(date).format('MMMM D, YYYY h:mm A');
+        }
+        return;
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Credit group details' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, { header: this.props.pageData.credit_group.name },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
+                            React.createElement("div", { style: { flex: 1 } },
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Name: "),
+                                    React.createElement("strong", null, this.props.pageData.credit_group.name)),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "UUID: "),
+                                    React.createElement("strong", null, this.props.pageData.credit_group.uuid)),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Active: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.props.pageData.credit_group.active ? 'Yes' : 'No'))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "App whitelist: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.props.pageData.credit_group.app_whitelist))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Created at: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.credit_group.created_at)))),
+                                React.createElement("div", null,
+                                    React.createElement("span", null, "Updated at: "),
+                                    React.createElement("span", null,
+                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.credit_group.updated_at))))))))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(components_1.Flex, { justify: "flex-start", style: { width: '100%' } },
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${this.props.pageData.credit_group.uuid}` }, "Manage credit group")))))));
+    }
+}
+exports["default"] = CreditGroupShowPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditGroupStorePage.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditGroupStorePage.tsx ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditGroupStoreForm_1 = __webpack_require__(/*! ../Components/CreditGroupStoreForm */ "./resources/ts/Admin/Components/CreditGroupStoreForm.tsx");
+const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditGroupStorePage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            storingCreditGroup: false,
+            address: null,
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+    return() {
+        window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+    }
+    onSubmit(creditGroup) {
+        this.creditGroupRepository.store(creditGroup).then((result) => {
+            this.return();
+        });
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Register credit group' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(CreditGroupStoreForm_1.CreditGroupStoreForm, { onSubmit: this.onSubmit, onCancel: this.return, saving: this.state.storingCreditGroup, style: { marginBottom: '12px' } }))))));
+    }
+}
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.CreditGroupRepositoryInterface),
+    __metadata("design:type", Object)
+], CreditGroupStorePage.prototype, "creditGroupRepository", void 0);
+exports["default"] = CreditGroupStorePage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditTransactionIndexPage.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditTransactionIndexPage.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditTransactionList_1 = __webpack_require__(/*! ../Components/CreditTransactionList */ "./resources/ts/Admin/Components/CreditTransactionList.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionIndexPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Credit Transactions' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, { header: "Transactions" },
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(CreditTransactionList_1.CreditTransactionList, { creditTransactions: this.props.pageData.credit_transactions }))))));
+    }
+}
+exports["default"] = CreditTransactionIndexPage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/CreditTransactionStorePage.tsx":
+/*!*****************************************************************!*\
+  !*** ./resources/ts/Admin/Pages/CreditTransactionStorePage.tsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const inversify_react_1 = __webpack_require__(/*! inversify-react */ "./node_modules/inversify-react/dist/index.js");
+const React = __webpack_require__(/*! react */ "react");
+const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
+const react_1 = __webpack_require__(/*! react */ "react");
+const CreditTransactionStoreForm_1 = __webpack_require__(/*! ../Components/CreditTransactionStoreForm */ "./resources/ts/Admin/Components/CreditTransactionStoreForm.tsx");
+const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class CreditTransactionStorePage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            storingCreditTransaction: false,
+            address: null,
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+    return() {
+        window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+    }
+    onSubmit(creditGroup) {
+        this.creditGroupRepository.store(creditGroup).then((result) => {
+            this.return();
+        });
+    }
+    render() {
+        return (React.createElement(Page_1.default, { title: 'Make App Credits transaction' },
+            React.createElement("div", { style: { marginBottom: '8px' } },
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-credit-group-index' }, "Back to credit group list")),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, null,
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(CreditTransactionStoreForm_1.CreditTransactionStoreForm, { onSubmit: this.onSubmit, onCancel: this.return, saving: this.state.storingCreditTransaction, style: { marginBottom: '12px' }, creditGroups: this.props.pageData.credit_groups }))))));
+    }
+}
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.CreditTransactionRepositoryInterface),
+    __metadata("design:type", Object)
+], CreditTransactionStorePage.prototype, "creditGroupRepository", void 0);
+exports["default"] = CreditTransactionStorePage;
 
 
 /***/ }),
@@ -6748,25 +7482,25 @@ class DashboardPage extends react_1.Component {
                     title: 'Inventory',
                     description: 'View the list of currently owned token assets.',
                     icon: 'money',
-                    url: '/tokenpass-user/me',
+                    url: '/tokenly/user/me',
                 },
                 connection: {
                     title: 'Connection',
                     description: 'Connect or disconnect to Tokenpass network.',
                     icon: 'admin-plugins',
-                    url: '/wp-admin/admin.php?page=tokenpass-connection',
+                    url: '/wp-admin/admin.php?page=tokenly-connection',
                 },
                 vendor: {
                     title: 'Vendor',
                     description: 'Manage token promises.',
                     icon: 'share',
-                    url: '/wp-admin/admin.php?page=tokenpass-vendor',
+                    url: '/wp-admin/admin.php?page=tokenly-vendor',
                 },
                 whitelist: {
                     title: 'Whitelist',
                     description: 'Configure a filter for tokens displayed on the inventory pages.',
                     icon: 'forms',
-                    url: '/wp-admin/admin.php?page=tokenpass-whitelist',
+                    url: '/wp-admin/admin.php?page=tokenly-whitelist',
                 },
                 meta: {
                     title: 'Token Meta',
@@ -6778,7 +7512,7 @@ class DashboardPage extends react_1.Component {
                     title: 'Settings',
                     description: 'Manage plugin settings.',
                     icon: 'admin-settings',
-                    url: '/wp-admin/admin.php?page=tokenpass-settings',
+                    url: '/wp-admin/admin.php?page=tokenly-settings',
                 },
             },
             offlineRoutesUser: [
@@ -6936,7 +7670,7 @@ class PromiseEditPage extends react_1.Component {
         this.onCancel = this.onCancel.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+        window.location = '/wp-admin/admin.php?page=tokenly-vendor';
     }
     onSave(promise) {
         this.setState({ saving: true });
@@ -6980,7 +7714,7 @@ class PromiseEditPage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Manage promise' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor"),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor"),
                 React.createElement("div", null,
                     React.createElement("span", null, "Promise ID: "),
                     React.createElement("strong", null, this.props.pageData.promise.promise_id))),
@@ -7022,7 +7756,6 @@ class PromiseShowPage extends react_1.Component {
         this.state = {
         //
         };
-        console.log(this.props.pageData);
     }
     dateFormatted(date) {
         if (date) {
@@ -7033,7 +7766,7 @@ class PromiseShowPage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Promise details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, { header: `№ ${this.props.pageData.promise.promise_id}` },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7067,7 +7800,7 @@ class PromiseShowPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${this.props.pageData.promise.promise_id}` }, "Manage promise")))))));
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${this.props.pageData.promise.promise_id}` }, "Manage promise")))))));
     }
 }
 exports["default"] = PromiseShowPage;
@@ -7112,7 +7845,7 @@ class PromiseStorePage extends react_1.Component {
         this.onCancel = this.onCancel.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-vendor';
+        window.location = '/wp-admin/admin.php?page=tokenly-vendor';
     }
     onSubmit(params) {
         this.promiseRepository.store(params).then(result => {
@@ -7125,7 +7858,7 @@ class PromiseStorePage extends react_1.Component {
     render() {
         return (React.createElement(Page_1.default, { title: 'Create a token promise' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7192,6 +7925,9 @@ class SettingsPage extends react_1.Component {
         this.onTcaSettingsChange = this.onTcaSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
         this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
+        if (!this.state.tcaSettings.post_types) {
+            this.state.tcaSettings.post_types = {};
+        }
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);
@@ -7205,10 +7941,10 @@ class SettingsPage extends react_1.Component {
     }
     onIntegrationSettingsSave() {
         this.setState({ savingIntegrationSettings: true });
-        this.integrationSettingsRepository.update(this.state.integrationSettings).then(result => {
+        this.integrationSettingsRepository.update(this.state.integrationSettings).then((result) => {
             this.setState({ savingIntegrationSettings: false });
             window.location.reload();
-        }).catch(error => {
+        }).catch((error) => {
             console.log(error);
         });
     }
@@ -7253,6 +7989,10 @@ __decorate([
     (0, inversify_react_1.resolve)(Types_1.TYPES.TcaSettingsRepositoryInterface),
     __metadata("design:type", Object)
 ], SettingsPage.prototype, "tcaSettingsRepository", void 0);
+__decorate([
+    (0, inversify_react_1.resolve)(Types_1.TYPES.OauthSettingsRepositoryInterface),
+    __metadata("design:type", Object)
+], SettingsPage.prototype, "oauthSettingsRepository", void 0);
 exports["default"] = SettingsPage;
 
 
@@ -7298,11 +8038,11 @@ class SourceEditPage extends react_1.Component {
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+        window.location = '/wp-admin/admin.php?page=tokenly-source-index';
     }
     onSave(source) {
         this.setState({ saving: true });
-        this.sourceRepository.update(this.props.pageData.source.address, source).then((result) => {
+        this.sourceRepository.update(this.props.pageData.source.address_id, source).then((result) => {
             this.setState({ saving: false });
             this.return();
         });
@@ -7319,7 +8059,7 @@ class SourceEditPage extends react_1.Component {
     }
     deleteSource() {
         this.setState({ deleting: true });
-        this.sourceRepository.destroy(this.props.pageData.source.address).then((result) => {
+        this.sourceRepository.destroy(this.props.pageData.source.address_id).then((result) => {
             this.setState({ deleting: false });
             this.return();
         });
@@ -7347,7 +8087,7 @@ class SourceEditPage extends react_1.Component {
         }
         return (React.createElement(Page_1.default, { title: 'Manage source' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source list")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-source-index' }, "Back to source list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7355,7 +8095,7 @@ class SourceEditPage extends react_1.Component {
                             React.createElement("div", null,
                                 React.createElement("span", null, "Source: "),
                                 React.createElement("strong", null,
-                                    React.createElement("a", { style: { display: 'inline-block', marginBottom: '12px' }, href: `/wp-admin/admin.php?page=tokenpass-source-show&source=${source.address}` }, (_b = source === null || source === void 0 ? void 0 : source.address_data) === null || _b === void 0 ? void 0 : _b.label))),
+                                    React.createElement("a", { style: { display: 'inline-block', marginBottom: '12px' }, href: `/wp-admin/admin.php?page=tokenly-source-show&source=${source.address_id}` }, (_b = source === null || source === void 0 ? void 0 : source.address) === null || _b === void 0 ? void 0 : _b.label))),
                             React.createElement("div", null,
                                 React.createElement(SourceEditForm_1.SourceEditForm, { onSave: this.onSave, onDelete: this.onDelete, onCancel: this.onCancel, saving: this.state.saving, deleting: this.state.deleting, sourceData: source }))))))));
     }
@@ -7390,17 +8130,16 @@ class SourceIndexPage extends react_1.Component {
             sourceData: [],
             storingPromise: false,
         };
-        console.log(this.props.pageData.sources);
     }
     render() {
         return (React.createElement(Page_1.default, { title: 'Sources' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenpass-source-store' }, "Register source"))))),
+                            React.createElement(components_1.Button, { isPrimary: true, href: '/wp-admin/admin.php?page=tokenly-source-store' }, "Register source"))))),
             React.createElement(components_1.Panel, { header: "Registered sources" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7432,11 +8171,10 @@ class SourceShowPage extends react_1.Component {
         //
         };
         this.getAssetNames = this.getAssetNames.bind(this);
-        console.log(this.props.pageData);
     }
     getAssetNames() {
         var _a, _b, _c;
-        let balances = (_c = (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.source) === null || _b === void 0 ? void 0 : _b.address_data) === null || _c === void 0 ? void 0 : _c.balances;
+        let balances = (_c = (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.source) === null || _b === void 0 ? void 0 : _b.address) === null || _c === void 0 ? void 0 : _c.balances;
         if (!balances) {
             return;
         }
@@ -7451,8 +8189,8 @@ class SourceShowPage extends react_1.Component {
         var _a;
         return (React.createElement(Page_1.default, { title: 'Source details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenpass-vendor' }, "Back to vendor")),
-            React.createElement(components_1.Panel, { header: this.props.pageData.source.address_data.label },
+                React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
+            React.createElement(components_1.Panel, { header: this.props.pageData.source.address.label },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
@@ -7462,7 +8200,7 @@ class SourceShowPage extends react_1.Component {
                                     React.createElement("strong", null, this.props.pageData.source.type)),
                                 React.createElement("div", null,
                                     React.createElement("span", null, "Address: "),
-                                    React.createElement("strong", null, this.props.pageData.source.address)),
+                                    React.createElement("strong", null, this.props.pageData.source.address_id)),
                                 React.createElement("div", null,
                                     React.createElement("span", null, "Assets (whitelisted): "),
                                     React.createElement("strong", null, (_a = this.props.pageData.source.assets) !== null && _a !== void 0 ? _a : 'all'))))))),
@@ -7470,8 +8208,8 @@ class SourceShowPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: "flex-start", style: { width: '100%' } },
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-source-edit&source=${this.props.pageData.source.address}` }, "Manage source"),
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenpass-balances-show&address=${this.props.pageData.source.address}` }, "View balances")))))));
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-source-edit&source=${this.props.pageData.source.address_id}` }, "Manage source"),
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: `/wp-admin/admin.php?page=tokenly-balances-show&address=${this.props.pageData.source.address_id}` }, "View balances")))))));
     }
 }
 exports["default"] = SourceShowPage;
@@ -7504,19 +8242,18 @@ const react_1 = __webpack_require__(/*! react */ "react");
 const SourceStoreForm_1 = __webpack_require__(/*! ../Components/SourceStoreForm */ "./resources/ts/Admin/Components/SourceStoreForm.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-class SourceIndexPage extends react_1.Component {
+class SourceStorePage extends react_1.Component {
     constructor(props) {
         super(props);
         this.state = {
             storingSource: false,
             address: null,
         };
-        console.log(this.props.pageData);
         this.onSubmit = this.onSubmit.bind(this);
         this.onAddressChange = this.onAddressChange.bind(this);
     }
     return() {
-        window.location = '/wp-admin/admin.php?page=tokenpass-source-index';
+        window.location = '/wp-admin/admin.php?page=tokenly-source-index';
     }
     onSubmit(promise) {
         this.sourceRepository.store(promise).then((result) => {
@@ -7524,13 +8261,12 @@ class SourceIndexPage extends react_1.Component {
         });
     }
     onAddressChange(address) {
-        console.log(address);
         this.setState({ address: address });
     }
     render() {
         return (React.createElement(Page_1.default, { title: 'Register source address' },
             React.createElement("div", { style: { marginBottom: '8px' } },
-                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Back to source address list")),
+                React.createElement("a", { href: '/wp-admin/admin.php?page=tokenly-source-index' }, "Back to source address list")),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7540,8 +8276,8 @@ class SourceIndexPage extends react_1.Component {
 __decorate([
     (0, inversify_react_1.resolve)(Types_1.TYPES.SourceRepositoryInterface),
     __metadata("design:type", Object)
-], SourceIndexPage.prototype, "sourceRepository", void 0);
-exports["default"] = SourceIndexPage;
+], SourceStorePage.prototype, "sourceRepository", void 0);
+exports["default"] = SourceStorePage;
 
 
 /***/ }),
@@ -7587,7 +8323,6 @@ class TokenMetaEditPage extends react_1.Component {
         this.onAssetUpdated = this.onExtraUpdated.bind(this);
         this.onExtraUpdated = this.onExtraUpdated.bind(this);
         this.onPostUpdate = this.onPostUpdate.bind(this);
-        console.log(this.props.pageData);
     }
     onAssetUpdated(value) {
     }
@@ -7612,6 +8347,7 @@ class TokenMetaEditPage extends react_1.Component {
                             const state = Object.assign({}, this.state.meta);
                             state.asset = value;
                             this.setState({ meta: state });
+                            this.onPostUpdate(state);
                         }, style: { width: '100%', maxWidth: '500px', marginBottom: '8px' } }),
                     React.createElement(AttributeRepeater_1.AttributeRepeater, { label: "Extra attributes", help: "Additional key-value asset meta attributes. They are displayed in the more info sections.", attributes: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.extra, onUpdate: this.onExtraUpdated })))));
     }
@@ -7662,7 +8398,6 @@ class VendorPage extends react_1.Component {
         };
         this.onDetails = this.onDetails.bind(this);
         this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind(this);
-        console.log(this.props.pageData);
     }
     onDetailsModalRequestClose() {
         this.setState({
@@ -7684,8 +8419,8 @@ class VendorPage extends react_1.Component {
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: "flex-start" },
-                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-promise-store', style: { marginRight: '8px' } }, "Create a promise"),
-                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenpass-source-index' }, "Manage source addresses"))))),
+                            React.createElement(components_1.Button, { isPrimary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenly-promise-store', style: { marginRight: '8px' } }, "Create a promise"),
+                            React.createElement(components_1.Button, { isSecondary: true, isLarge: true, href: '/wp-admin/admin.php?page=tokenly-source-index' }, "Manage source addresses"))))),
             React.createElement(components_1.Panel, { header: "Current promises" },
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null, ((_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.promises) === null || _b === void 0 ? void 0 : _b.length) > 0
@@ -7763,9 +8498,9 @@ class WhitelistPage extends react_1.Component {
     }
     onSave() {
         this.setState({ saving: true });
-        this.whitelistRepository.update(this.state.whitelistData).then(result => {
+        this.whitelistSettingsRepository.update(this.state.whitelistData).then((result) => {
             this.setState({ saving: false });
-        }).catch(error => {
+        }).catch((error) => {
             console.log(error);
         });
     }
@@ -7791,9 +8526,9 @@ class WhitelistPage extends react_1.Component {
     }
 }
 __decorate([
-    (0, inversify_react_1.resolve)(Types_1.TYPES.WhitelistRepositoryInterface),
+    (0, inversify_react_1.resolve)(Types_1.TYPES.WhitelistSettingsRepositoryInterface),
     __metadata("design:type", Object)
-], WhitelistPage.prototype, "whitelistRepository", void 0);
+], WhitelistPage.prototype, "whitelistSettingsRepository", void 0);
 exports["default"] = WhitelistPage;
 
 
@@ -7866,7 +8601,6 @@ let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Compon
     register(selector) {
         this.element.addEventListener('click', () => {
             this.element.classList.add('loading');
-            this.authService.connect();
         });
     }
 };
@@ -8000,31 +8734,44 @@ exports.container = void 0;
 __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Reflect.js");
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const Types_1 = __webpack_require__(/*! ./Types */ "./resources/ts/Types.ts");
+// Implementations
+// Implementations - Services
 const AuthService_1 = __webpack_require__(/*! ./Services/AuthService */ "./resources/ts/Services/AuthService.ts");
-const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/IntegrationSettingsRepository */ "./resources/ts/Repositories/IntegrationSettingsRepository.ts");
-const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/TcaSettingsRepository */ "./resources/ts/Repositories/TcaSettingsRepository.ts");
+const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
+// Implementations - Repositories
+const CreditGroupRepository_1 = __webpack_require__(/*! ./Repositories/CreditGroupRepository */ "./resources/ts/Repositories/CreditGroupRepository.ts");
+const CreditTransactionRepository_1 = __webpack_require__(/*! ./Repositories/CreditTransactionRepository */ "./resources/ts/Repositories/CreditTransactionRepository.ts");
 const PromiseRepository_1 = __webpack_require__(/*! ./Repositories/PromiseRepository */ "./resources/ts/Repositories/PromiseRepository.ts");
 const UserRepository_1 = __webpack_require__(/*! ./Repositories/UserRepository */ "./resources/ts/Repositories/UserRepository.ts");
 const SourceRepository_1 = __webpack_require__(/*! ./Repositories/SourceRepository */ "./resources/ts/Repositories/SourceRepository.ts");
-const WhitelistRepository_1 = __webpack_require__(/*! ./Repositories/WhitelistRepository */ "./resources/ts/Repositories/WhitelistRepository.ts");
 const TokenMetaRepository_1 = __webpack_require__(/*! ./Repositories/TokenMetaRepository */ "./resources/ts/Repositories/TokenMetaRepository.ts");
+// Implementations - Repositories - Settings
+const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/IntegrationSettingsRepository */ "./resources/ts/Repositories/Settings/IntegrationSettingsRepository.ts");
+const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/TcaSettingsRepository */ "./resources/ts/Repositories/Settings/TcaSettingsRepository.ts");
+const OauthSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/OauthSettingsRepository */ "./resources/ts/Repositories/Settings/OauthSettingsRepository.ts");
+const WhitelistSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/WhitelistSettingsRepository */ "./resources/ts/Repositories/Settings/WhitelistSettingsRepository.ts");
+// Implementations - Service providers
 const ComponentServiceProvider_1 = __webpack_require__(/*! ./Providers/ComponentServiceProvider */ "./resources/ts/Providers/ComponentServiceProvider.ts");
+// Implementations - Components
 const ButtonLoginComponent_1 = __webpack_require__(/*! ./Components/ButtonLoginComponent */ "./resources/ts/Components/ButtonLoginComponent.ts");
 const CardTokenItemComponent_1 = __webpack_require__(/*! ./Components/CardTokenItemComponent */ "./resources/ts/Components/CardTokenItemComponent.ts");
-const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
 const container = new inversify_1.Container();
 exports.container = container;
 // Services - Application
 container.bind(Types_1.TYPES.AuthServiceInterface).to(AuthService_1.AuthService);
 container.bind(Types_1.TYPES.AdminApiServiceInterface).to(AdminApiService_1.AdminApiService);
 // Repositories
+container.bind(Types_1.TYPES.CreditGroupRepositoryInterface).to(CreditGroupRepository_1.CreditGroupRepository);
+container.bind(Types_1.TYPES.CreditTransactionRepositoryInterface).to(CreditTransactionRepository_1.CreditTransactionRepository);
 container.bind(Types_1.TYPES.PromiseRepositoryInterface).to(PromiseRepository_1.PromiseRepository);
-container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
-container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 container.bind(Types_1.TYPES.SourceRepositoryInterface).to(SourceRepository_1.SourceRepository);
 container.bind(Types_1.TYPES.TokenMetaRepositoryInterface).to(TokenMetaRepository_1.TokenMetaRepository);
 container.bind(Types_1.TYPES.UserRepositoryInterface).to(UserRepository_1.UserRepository);
-container.bind(Types_1.TYPES.WhitelistRepositoryInterface).to(WhitelistRepository_1.WhitelistRepository);
+// Repositories - Settings
+container.bind(Types_1.TYPES.WhitelistSettingsRepositoryInterface).to(WhitelistSettingsRepository_1.WhitelistSettingsRepository);
+container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
+container.bind(Types_1.TYPES.OauthSettingsRepositoryInterface).to(OauthSettingsRepository_1.OauthSettingsRepository);
+container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 // Components
 container.bind(Types_1.TYPES.ComponentServiceProviderInterface).to(ComponentServiceProvider_1.ComponentServiceProvider);
 container.bind(Types_1.TYPES.ButtonLoginComponentInterface).to(ButtonLoginComponent_1.ButtonLoginComponent);
@@ -8154,7 +8901,7 @@ let ComponentServiceProvider = class ComponentServiceProvider extends ServicePro
         return [
             {
                 name: 'buttonLoginComponent',
-                selector: 'button.tokenpass-login',
+                selector: 'a.tokenpass-login',
             },
             {
                 name: 'cardTokenItemComponent',
@@ -8220,10 +8967,10 @@ exports.ServiceProvider = ServiceProvider;
 
 /***/ }),
 
-/***/ "./resources/ts/Repositories/IntegrationSettingsRepository.ts":
-/*!********************************************************************!*\
-  !*** ./resources/ts/Repositories/IntegrationSettingsRepository.ts ***!
-  \********************************************************************/
+/***/ "./resources/ts/Repositories/CreditGroupRepository.ts":
+/*!************************************************************!*\
+  !*** ./resources/ts/Repositories/CreditGroupRepository.ts ***!
+  \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -8241,16 +8988,25 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IntegrationSettingsRepository = void 0;
+exports.CreditGroupRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-let IntegrationSettingsRepository = class IntegrationSettingsRepository {
+let CreditGroupRepository = class CreditGroupRepository {
     constructor(adminApiService) {
         this.adminApiService = adminApiService;
     }
-    show() {
+    index() {
         return new Promise((resolve, reject) => {
-            this.adminApiService.settingsIntegrationShow().then((result) => {
+            this.adminApiService.creditGroupIndex().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditGroupStore(params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -8259,7 +9015,7 @@ let IntegrationSettingsRepository = class IntegrationSettingsRepository {
     }
     update(params) {
         return new Promise((resolve, reject) => {
-            this.adminApiService.settingsIntegrationUpdate(params).then(result => {
+            this.adminApiService.creditGroupUpdate(params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -8267,12 +9023,69 @@ let IntegrationSettingsRepository = class IntegrationSettingsRepository {
         });
     }
 };
-IntegrationSettingsRepository = __decorate([
+CreditGroupRepository = __decorate([
     (0, inversify_1.injectable)(),
     __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
     __metadata("design:paramtypes", [Object])
-], IntegrationSettingsRepository);
-exports.IntegrationSettingsRepository = IntegrationSettingsRepository;
+], CreditGroupRepository);
+exports.CreditGroupRepository = CreditGroupRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/CreditTransactionRepository.ts":
+/*!******************************************************************!*\
+  !*** ./resources/ts/Repositories/CreditTransactionRepository.ts ***!
+  \******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let CreditTransactionRepository = class CreditTransactionRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    index() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditTransactionIndex().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditTransactionStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+CreditTransactionRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], CreditTransactionRepository);
+exports.CreditTransactionRepository = CreditTransactionRepository;
 
 
 /***/ }),
@@ -8352,6 +9165,191 @@ exports.PromiseRepository = PromiseRepository;
 
 /***/ }),
 
+/***/ "./resources/ts/Repositories/Settings/IntegrationSettingsRepository.ts":
+/*!*****************************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/IntegrationSettingsRepository.ts ***!
+  \*****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let IntegrationSettingsRepository = class IntegrationSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'integration';
+    }
+};
+IntegrationSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], IntegrationSettingsRepository);
+exports.IntegrationSettingsRepository = IntegrationSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/Settings/OauthSettingsRepository.ts":
+/*!***********************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/OauthSettingsRepository.ts ***!
+  \***********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OauthSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let OauthSettingsRepository = class OauthSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'integration';
+    }
+};
+OauthSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], OauthSettingsRepository);
+exports.OauthSettingsRepository = OauthSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/Settings/TcaSettingsRepository.ts":
+/*!*********************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/TcaSettingsRepository.ts ***!
+  \*********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let TcaSettingsRepository = class TcaSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'tca';
+    }
+};
+TcaSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], TcaSettingsRepository);
+exports.TcaSettingsRepository = TcaSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/Settings/WhitelistSettingsRepository.ts":
+/*!***************************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/WhitelistSettingsRepository.ts ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WhitelistSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let WhitelistSettingsRepository = class WhitelistSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'whitelist';
+    }
+};
+WhitelistSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], WhitelistSettingsRepository);
+exports.WhitelistSettingsRepository = WhitelistSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/SettingsRepository.ts":
+/*!*********************************************************!*\
+  !*** ./resources/ts/Repositories/SettingsRepository.ts ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let SettingsRepository = class SettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsShow(this.settingsType).then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsUpdate(this.settingsType, params).then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+SettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], SettingsRepository);
+exports.SettingsRepository = SettingsRepository;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Repositories/SourceRepository.ts":
 /*!*******************************************************!*\
   !*** ./resources/ts/Repositories/SourceRepository.ts ***!
@@ -8423,63 +9421,6 @@ SourceRepository = __decorate([
     __metadata("design:paramtypes", [Object])
 ], SourceRepository);
 exports.SourceRepository = SourceRepository;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Repositories/TcaSettingsRepository.ts":
-/*!************************************************************!*\
-  !*** ./resources/ts/Repositories/TcaSettingsRepository.ts ***!
-  \************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TcaSettingsRepository = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-let TcaSettingsRepository = class TcaSettingsRepository {
-    constructor(adminApiService) {
-        this.adminApiService = adminApiService;
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsTcaShow().then((result) => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    update(params) {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsTcaUpdate(params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-};
-TcaSettingsRepository = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], TcaSettingsRepository);
-exports.TcaSettingsRepository = TcaSettingsRepository;
 
 
 /***/ }),
@@ -8598,63 +9539,6 @@ exports.UserRepository = UserRepository;
 
 /***/ }),
 
-/***/ "./resources/ts/Repositories/WhitelistRepository.ts":
-/*!**********************************************************!*\
-  !*** ./resources/ts/Repositories/WhitelistRepository.ts ***!
-  \**********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.WhitelistRepository = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ../Types */ "./resources/ts/Types.ts");
-let WhitelistRepository = class WhitelistRepository {
-    constructor(adminApiService) {
-        this.adminApiService = adminApiService;
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.whitelistShow().then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    update(params) {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.whitelistUpdate(params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-};
-WhitelistRepository = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], WhitelistRepository);
-exports.WhitelistRepository = WhitelistRepository;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Services/AdminApiService.ts":
 /*!**************************************************!*\
   !*** ./resources/ts/Services/AdminApiService.ts ***!
@@ -8682,36 +9566,63 @@ let AdminApiService = class AdminApiService {
             'X-WP-Nonce': wpApiSettings.nonce,
         };
     }
-    settingsIntegrationShow() {
+    settingsShow(type) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/settings/integration').then((result) => {
+            this.makeRequest('GET', `/settings/${type}`).then((result) => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsIntegrationUpdate(params) {
+    settingsUpdate(type, params) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/settings/integration', params).then(result => {
+            this.makeRequest('PUT', `/settings/${type}`, params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsTcaShow() {
+    creditGroupIndex() {
         return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/settings/tca').then((result) => {
+            this.makeRequest('GET', '/credit-group').then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsTcaUpdate(params) {
+    creditGroupStore(params) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/settings/tca', params).then(result => {
+            this.makeRequest('POST', '/credit-group', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditGroupUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/credit-group/', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditTransactionIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/credit-transaction').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditTransactionStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/credit-transaction', params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -8820,24 +9731,6 @@ let AdminApiService = class AdminApiService {
     userShow(userId, params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('GET', `/user/${userId}`, params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    whitelistShow() {
-        return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/whitelist').then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    whitelistUpdate(params) {
-        return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/whitelist', params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -8977,16 +9870,24 @@ exports.AuthService = AuthService;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TYPES = void 0;
 const TYPES = {
+    // Services
     AuthServiceInterface: Symbol.for('AuthServiceInterface'),
     AdminApiServiceInterface: Symbol.for('AdminApiServiceInterface'),
+    // Repositories
     PromiseRepositoryInterface: Symbol.for('PromiseRepositoryInterface'),
-    IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
-    TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
+    CreditGroupRepositoryInterface: Symbol.for('CreditGroupRepositoryInterface'),
+    CreditTransactionRepositoryInterface: Symbol.for('CreditTransactionRepositoryInterface'),
     SourceRepositoryInterface: Symbol.for('SourceRepositoryInterface'),
     TokenMetaRepositoryInterface: Symbol.for('TokenMetaRepositoryInterface'),
     UserRepositoryInterface: Symbol.for('UserRepositoryInterface'),
-    WhitelistRepositoryInterface: Symbol.for('WhitelistRepositoryInterface'),
+    // Repositories - Settings
+    OauthSettingsRepositoryInterface: Symbol.for('OauthSettingsRepositoryInterface'),
+    IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
+    TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
+    WhitelistSettingsRepositoryInterface: Symbol.for('WhitelistSettingsRepositoryInterface'),
+    // Service providers
     ComponentServiceProviderInterface: Symbol.for('ComponentServiceProviderInterface'),
+    // Components
     ButtonLoginComponentInterface: Symbol.for('ButtonLoginComponentInterface'),
     CardTokenItemComponentInterface: Symbol.for('CardTokenItemComponentInterface'),
 };
@@ -9120,6 +10021,12 @@ const WhitelistPage_1 = __webpack_require__(/*! ./Admin/Pages/WhitelistPage */ "
 const PromiseShowPage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseShowPage */ "./resources/ts/Admin/Pages/PromiseShowPage.tsx");
 const PromiseStorePage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseStorePage */ "./resources/ts/Admin/Pages/PromiseStorePage.tsx");
 const PromiseEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PromiseEditPage */ "./resources/ts/Admin/Pages/PromiseEditPage.tsx");
+const CreditGroupIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupIndexPage */ "./resources/ts/Admin/Pages/CreditGroupIndexPage.tsx");
+const CreditGroupShowPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupShowPage */ "./resources/ts/Admin/Pages/CreditGroupShowPage.tsx");
+const CreditGroupStorePage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupStorePage */ "./resources/ts/Admin/Pages/CreditGroupStorePage.tsx");
+const CreditGroupEditPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditGroupEditPage */ "./resources/ts/Admin/Pages/CreditGroupEditPage.tsx");
+const CreditTransactionIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/CreditTransactionIndexPage */ "./resources/ts/Admin/Pages/CreditTransactionIndexPage.tsx");
+const CreditTransactionStorePage_1 = __webpack_require__(/*! ./Admin/Pages/CreditTransactionStorePage */ "./resources/ts/Admin/Pages/CreditTransactionStorePage.tsx");
 const SourceIndexPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceIndexPage */ "./resources/ts/Admin/Pages/SourceIndexPage.tsx");
 const SourceShowPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceShowPage */ "./resources/ts/Admin/Pages/SourceShowPage.tsx");
 const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage */ "./resources/ts/Admin/Pages/SourceStorePage.tsx");
@@ -9164,6 +10071,12 @@ class AdminApp extends App_1.default {
             'promise-show': PromiseShowPage_1.default,
             'promise-store': PromiseStorePage_1.default,
             'promise-edit': PromiseEditPage_1.default,
+            'credit-group-index': CreditGroupIndexPage_1.default,
+            'credit-group-show': CreditGroupShowPage_1.default,
+            'credit-group-store': CreditGroupStorePage_1.default,
+            'credit-group-edit': CreditGroupEditPage_1.default,
+            'credit-transaction-index': CreditTransactionIndexPage_1.default,
+            'credit-transaction-store': CreditTransactionStorePage_1.default,
             'source-index': SourceIndexPage_1.default,
             'source-show': SourceShowPage_1.default,
             'source-store': SourceStorePage_1.default,
@@ -9197,7 +10110,10 @@ class AdminApp extends App_1.default {
         });
     }
     highlightMenu() {
-        const adminMenu = document.querySelector('#adminmenu #toplevel_page_tokenpass');
+        const adminMenu = document.querySelector('#adminmenu #toplevel_page_tokenly');
+        if (!adminMenu) {
+            return;
+        }
         adminMenu.classList.remove('wp-not-current-submenu');
         adminMenu.classList.add('wp-has-current-submenu', 'wp-menu-open');
     }

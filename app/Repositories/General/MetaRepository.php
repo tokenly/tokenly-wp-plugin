@@ -2,14 +2,19 @@
 
 namespace Tokenly\Wp\Repositories\General;
 
-use Tokenly\Wp\Traits\NamespaceableTrait;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 /**
  * Helps to prefix all post meta being retrieved and saved by the plugin.
  */
 class MetaRepository implements MetaRepositoryInterface {
-	use NamespaceableTrait;
+	protected $namespace;
+
+	public function __construct(
+		string $namespace
+	) {
+		$this->namespace = $namespace;
+	}
 
 	/**
 	 * Retrieves the specified keys from the post meta
@@ -32,8 +37,8 @@ class MetaRepository implements MetaRepositoryInterface {
 	 * @return string
 	 */
 	public function show( $post_id, $key ) {
-		$key_namespaced = $this->namespace_key( $key );
-		$option = get_post_meta( $post_id, $key_namespaced, true );
+		$key = "{$this->namespace}_{$key}";
+		$option = get_post_meta( $post_id, $key , true );
 		return $option;
 	}
 
@@ -45,8 +50,8 @@ class MetaRepository implements MetaRepositoryInterface {
 	 */
 	public function update( $post_id, $payload ) {
 		foreach ( $payload as $key => $value ) {
-			$key_namespaced = $this->namespace_key( $key );
-			update_post_meta( $post_id, $key_namespaced, $value );
+			$key = "{$this->namespace}_{$key}";
+			update_post_meta( $post_id, $key, $value );
 		}
 	}
 }

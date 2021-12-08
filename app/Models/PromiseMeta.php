@@ -6,73 +6,66 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 
-class PromiseMeta implements PromiseMetaInterface {
-	protected $_instance;
+class PromiseMeta extends Model implements PromiseMetaInterface {
+	public $promise_id;
+	public $source_user_id;
+	public $source_user;
+	public $destination_user_id;
+	public $destination_user;
+	public $post;
 	protected $user_service;
-	protected $promise_meta_service;
+	protected $fillable = array(
+		'post',
+		'promise_id',
+		'promise',
+		'source_user_id',
+		'source_user',
+		'destination_user_id',
+		'destination_user',
+	);
 
 	public function __construct(
-		\WP_Post $post,
 		UserServiceInterface $user_service,
-		PromiseMetaServiceInterface $promise_meta_service
+		PromiseMetaRepositoryInterface $domain_repository,
+		array $data = array()
 	) {
-		$this->_instance = $post;
-		$this->promise_meta_service = $promise_meta_service;
 		$this->user_service = $user_service;
+		$this->domain_repository = $domain_repository;
+		parent::__construct( $data );
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->_instance, $method ), $args );
+		return call_user_func_array( array( $this->post, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->_instance->$key;
+		return $this->post->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->_instance->$key = $val;
+		return $this->post->$key = $val;
 	}
-	
-	public function to_array() {
-		$meta = $this->promise_meta_service->get_promise_meta( $this->ID );
-		$uuids = array();
-		if ( isset( $meta['source_user_id'] ) ) {
-			$uuids[] = $meta['source_user_id'];
-		}
-		if ( isset( $meta['destination_user_id'] ) ) {
-			$uuids[] = $meta['destination_user_id'];
-		}
-		$users = $this->user_service->index( array(
-			'uuids' => $uuids,
+
+	protected function load_source_user( array $relations ) {
+		$user = $this->user_service->show( array(
+			'uuid' => $this->source_user_id,
+			'with' => $relations,
 		) );
-		$users->key_by_uuid();
-		$source_user = null;
-		if ( isset( $meta['source_user_id'] ) && isset( $users[ $meta['source_user_id'] ] ) ) {
-			$source_user = $users[ $meta['source_user_id'] ];
-			$source_user = $source_user->to_array();
-		}
-		$destination_user = null;
-		if ( isset( $meta['destination_user_id'] ) && isset( $users[ $meta['destination_user_id'] ] ) ) {
-			$destination_user = $users[ $meta['destination_user_id'] ];
-			$destination_user = $destination_user->to_array();
-		}
-		$array = array(
-			'promise_id'       => $meta['promise_id'] ?? null, 
-			'source_user'      => $source_user,
-			'destination_user' => $destination_user,
-		);
-		return $array;
+		$this->source_user = $user;
+		return $this;
 	}
-	
-	public function update( $params = array() ) {
-		$this->promise_meta_service->update( $this->ID, $params );
-	}
-	
-	public function destroy() {
-		$this->promise_meta_service->destroy( $this->ID );
+
+	protected function load_destination_user( array $relations ) {
+		$user = $this->user_service->show( array(
+			'uuid' => $this->destination_user_id,
+			'with' => $relations,
+		) );
+		$this->destination_user = $user;
+		return $this;
 	}
 }

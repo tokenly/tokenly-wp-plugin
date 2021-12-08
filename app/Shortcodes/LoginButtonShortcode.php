@@ -2,10 +2,11 @@
 
 namespace Tokenly\Wp\Shortcodes;
 
-use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 use Tokenly\Wp\Shortcodes\Shortcode;
+use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
+use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 
-class LoginButtonShortcode extends Shortcode {
+class LoginButtonShortcode extends Shortcode implements LoginButtonShortcodeInterface {
 	protected $button_login_component;
 
 	public function __construct(

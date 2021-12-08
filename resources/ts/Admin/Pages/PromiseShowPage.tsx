@@ -33,7 +33,6 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 	}
 	constructor( props: PromiseShowPageProps ) {
 		super( props );
-		console.log(this.props.pageData);
 	}
 	
 	dateFormatted( date: Date ) {
@@ -47,7 +46,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 		return (
 			<Page title={ 'Promise details' }>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenpass-vendor'>Back to vendor</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-vendor'>Back to vendor</a>
 				</div>
 				<Panel header={ `№ ${this.props.pageData.promise.promise_id}` }>
 					<PanelBody>
@@ -74,7 +73,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenpass-promise-edit&promise=${ this.props.pageData.promise.promise_id }` }
+									href={ `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${ this.props.pageData.promise.promise_id }` }
 								>
 									Manage promise
 								</Button>

@@ -18,8 +18,11 @@ class ListCardTokenItemBlock extends Component {
 	}
 
 	public function render( $data ) {
-		$balances = $data['balances'] ?? null;
+		if ( !isset( $data['balance'] ) ) {
+			return false;
+		}
 		$html_token_items = '';
+		$balances = $data['balance'];
 		foreach ( ( array ) $balances as $balance ) {
 			$html_token_items .= $this->card_token_item_component->render( array( 'balance' => $balance, ) );
 		}

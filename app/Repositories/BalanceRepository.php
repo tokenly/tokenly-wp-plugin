@@ -30,7 +30,11 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	 * @param bool $use_meta Append additional token meta to the collection
 	 * @return BalanceCollectionFactoryInterface $balances
 	 */
-	public function index( $oauth_token, array $params = array() ) {
+	public function index( array $params = array() ) {
+		if ( !isset( $params['oauth_token'] ) ) {
+			return false;
+		}
+		$oauth_token = $params['oauth_token'];
 		$balances = $this->client->getCombinedPublicBalances( $oauth_token ) ?? array();
 		$balances = $this->balance_collection_factory->create( $balances, array(
 			'use_whitelist' => $params['use_whitelist'] ?? true,

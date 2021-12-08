@@ -48,7 +48,6 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		super( props );
 		this.onDetails = this.onDetails.bind( this );
 		this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind( this );
-		console.log(this.props.pageData);
 	}
 
 	onDetailsModalRequestClose() {
@@ -80,7 +79,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 								<Button
 									isPrimary
 									isLarge
-									href='/wp-admin/admin.php?page=tokenpass-promise-store'
+									href='/wp-admin/admin.php?page=tokenly-promise-store'
 									style={ { marginRight: '8px' } }
 								>
 									Create a promise
@@ -88,7 +87,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 								<Button
 									isSecondary
 									isLarge
-									href='/wp-admin/admin.php?page=tokenpass-source-index'
+									href='/wp-admin/admin.php?page=tokenly-source-index'
 								>
 									Manage source addresses
 								</Button>

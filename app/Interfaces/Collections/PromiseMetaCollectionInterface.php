@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Collections;
 
-interface PromiseMetaCollectionInterface {
+use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
+
+interface PromiseMetaCollectionInterface extends CollectionInterface {
 	//
 }

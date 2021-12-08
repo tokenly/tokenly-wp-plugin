@@ -14,8 +14,8 @@ export interface SettingsData {
 }
 
 export interface SourceItem {
-	address: string;
-	address_data: any;
+	address_id: string;
+	address: any;
 	type: string;
 	assets: Array<string>;
 }
@@ -37,7 +37,8 @@ export interface WhitelistData {
 }
 
 export interface SourceData {
-	address: string;
+	address_id: string;
+	address?: any;
 	assets: string;
 }
 
@@ -61,7 +62,7 @@ export interface UserIndexParams {
 }
 
 export interface PromiseStoreParams {
-	source: string;
+	source_id: string;
 	destination: number;
 	asset: string;
 	quantity: number;
@@ -80,7 +81,8 @@ export interface PromiseUpdateParams {
 }
 
 export interface PromiseData {
-	source: string;
+	source_id: string;
+	source?: SourceData;
 	destination: string;
 	asset: string;
 	quantity: number;

@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface BalanceInterface {
-	public function to_array();
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface BalanceInterface extends ModelInterface {
+	//
 }

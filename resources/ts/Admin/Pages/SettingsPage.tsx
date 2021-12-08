@@ -7,8 +7,9 @@ import { IntegrationSettingsForm } from '../Components/IntegrationSettingsForm';
 import { IntegrationSettingsHelp } from '../Components/IntegrationSettingsHelp';
 import { TcaSettingsForm } from '../Components/TcaSettingsForm';
 import { SettingsData } from '../../Interfaces';
-import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/IntegrationSettingsRepositoryInterface';
-import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/TcaSettingsRepositoryInterface';
+import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
+import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
+import { OauthSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
 
 import { 
@@ -32,7 +33,11 @@ interface SettingsPageProps {
 
 interface SettingsPageState {
 	integrationSettings: SettingsData;
-	tcaSettings: any;
+	tcaSettings: {
+		post_types: object,
+		filter_menu_items: boolean,
+		filter_post_results: boolean,
+	};
 	savingIntegrationSettings: boolean,
 	savingTcaSettings: boolean,
 }
@@ -42,6 +47,8 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	integrationSettingsRepository: IntegrationSettingsRepositoryInterface;
 	@resolve( TYPES.TcaSettingsRepositoryInterface )
 	tcaSettingsRepository: TcaSettingsRepositoryInterface;
+	@resolve( TYPES.OauthSettingsRepositoryInterface )
+	oauthSettingsRepository: OauthSettingsRepositoryInterface;
 	
 	state: SettingsPageState = {
 		integrationSettings: {
@@ -64,6 +71,9 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		this.onTcaSettingsChange = this.onTcaSettingsChange.bind( this );
 		this.state.integrationSettings = Object.assign( this.state.integrationSettings, this.props.pageData.integration_settings );
 		this.state.tcaSettings = Object.assign( {}, this.props.pageData?.tca_settings );
+		if ( !this.state.tcaSettings.post_types ) {
+			this.state.tcaSettings.post_types = {};
+		}
 	}
 	
 	setClientId( value: string ) {
@@ -80,10 +90,10 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 	
 	onIntegrationSettingsSave() {
 		this.setState( { savingIntegrationSettings: true } );
-		this.integrationSettingsRepository.update( this.state.integrationSettings ).then( result => {
+		this.integrationSettingsRepository.update( this.state.integrationSettings ).then( ( result: any ) => {
 			this.setState( { savingIntegrationSettings: false } );
 			window.location.reload();
-		} ).catch( error => {
+		} ).catch( ( error: any ) => {
 			console.log( error );
 		})
 	}

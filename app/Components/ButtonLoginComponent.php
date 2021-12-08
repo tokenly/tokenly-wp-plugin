@@ -8,16 +8,19 @@ use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 
 class ButtonLoginComponent extends Component implements ButtonLoginComponentInterface {
-	public $integration;
+	protected $integration;
 	protected $root_dir;
+	protected $namespace;
 
 	public function __construct(
 		Environment $twig,
 		IntegrationInterface $integration,
-		string $root_dir
+		string $root_dir,
+		string $namespace
 	) {
 		parent::__construct( $twig );
 		$this->root_dir = $root_dir;
+		$this->namespace = $namespace;
 		$this->integration = $integration;
 	}
 
@@ -29,9 +32,11 @@ class ButtonLoginComponent extends Component implements ButtonLoginComponentInte
 			return;
 		}
 		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
+		$url = "/{$this->namespace}/oauth/connect?{$this->namespace}_success_url=/wp-admin/admin.php?page=tokenly-connection";
 		$html = $this->twig->render( 'components/ButtonLoginComponent.twig', array(
 			'label' => 'Login with Tokenpass',
 			'logo'  => $logo,
+			'url'   => $url,
 		) );
 		return $html;
 	}

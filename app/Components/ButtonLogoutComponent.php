@@ -8,7 +8,7 @@ use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
 
 class ButtonLogoutComponent extends Component implements ButtonLogoutComponentInterface {
-	public $settings;
+	protected $settings;
 	protected $root_dir;
 	
 	public function __construct(
@@ -29,10 +29,10 @@ class ButtonLogoutComponent extends Component implements ButtonLogoutComponentIn
 			return;
 		}
 		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
-		$html = $this->twig->render( 'components/ButtonLogoutComponent.twig', array(
+		$html = $this->twig->render( 'components/ButtonLoginComponent.twig', array(
 			'label' => 'Logout',
-			'url'   => wp_logout_url(),
 			'logo'  => $logo,
+			'url'   => wp_logout_url(),
 		) );
 		return $html;
 	}

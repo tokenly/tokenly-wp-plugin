@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface TcaRuleInterface {
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface TcaRuleInterface extends ModelInterface {
 	//
 }

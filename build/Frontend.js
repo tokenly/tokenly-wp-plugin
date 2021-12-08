@@ -5060,7 +5060,6 @@ let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Compon
     register(selector) {
         this.element.addEventListener('click', () => {
             this.element.classList.add('loading');
-            this.authService.connect();
         });
     }
 };
@@ -5169,31 +5168,44 @@ exports.container = void 0;
 __webpack_require__(/*! reflect-metadata */ "./node_modules/reflect-metadata/Reflect.js");
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const Types_1 = __webpack_require__(/*! ./Types */ "./resources/ts/Types.ts");
+// Implementations
+// Implementations - Services
 const AuthService_1 = __webpack_require__(/*! ./Services/AuthService */ "./resources/ts/Services/AuthService.ts");
-const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/IntegrationSettingsRepository */ "./resources/ts/Repositories/IntegrationSettingsRepository.ts");
-const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/TcaSettingsRepository */ "./resources/ts/Repositories/TcaSettingsRepository.ts");
+const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
+// Implementations - Repositories
+const CreditGroupRepository_1 = __webpack_require__(/*! ./Repositories/CreditGroupRepository */ "./resources/ts/Repositories/CreditGroupRepository.ts");
+const CreditTransactionRepository_1 = __webpack_require__(/*! ./Repositories/CreditTransactionRepository */ "./resources/ts/Repositories/CreditTransactionRepository.ts");
 const PromiseRepository_1 = __webpack_require__(/*! ./Repositories/PromiseRepository */ "./resources/ts/Repositories/PromiseRepository.ts");
 const UserRepository_1 = __webpack_require__(/*! ./Repositories/UserRepository */ "./resources/ts/Repositories/UserRepository.ts");
 const SourceRepository_1 = __webpack_require__(/*! ./Repositories/SourceRepository */ "./resources/ts/Repositories/SourceRepository.ts");
-const WhitelistRepository_1 = __webpack_require__(/*! ./Repositories/WhitelistRepository */ "./resources/ts/Repositories/WhitelistRepository.ts");
 const TokenMetaRepository_1 = __webpack_require__(/*! ./Repositories/TokenMetaRepository */ "./resources/ts/Repositories/TokenMetaRepository.ts");
+// Implementations - Repositories - Settings
+const IntegrationSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/IntegrationSettingsRepository */ "./resources/ts/Repositories/Settings/IntegrationSettingsRepository.ts");
+const TcaSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/TcaSettingsRepository */ "./resources/ts/Repositories/Settings/TcaSettingsRepository.ts");
+const OauthSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/OauthSettingsRepository */ "./resources/ts/Repositories/Settings/OauthSettingsRepository.ts");
+const WhitelistSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Settings/WhitelistSettingsRepository */ "./resources/ts/Repositories/Settings/WhitelistSettingsRepository.ts");
+// Implementations - Service providers
 const ComponentServiceProvider_1 = __webpack_require__(/*! ./Providers/ComponentServiceProvider */ "./resources/ts/Providers/ComponentServiceProvider.ts");
+// Implementations - Components
 const ButtonLoginComponent_1 = __webpack_require__(/*! ./Components/ButtonLoginComponent */ "./resources/ts/Components/ButtonLoginComponent.ts");
 const CardTokenItemComponent_1 = __webpack_require__(/*! ./Components/CardTokenItemComponent */ "./resources/ts/Components/CardTokenItemComponent.ts");
-const AdminApiService_1 = __webpack_require__(/*! ./Services/AdminApiService */ "./resources/ts/Services/AdminApiService.ts");
 const container = new inversify_1.Container();
 exports.container = container;
 // Services - Application
 container.bind(Types_1.TYPES.AuthServiceInterface).to(AuthService_1.AuthService);
 container.bind(Types_1.TYPES.AdminApiServiceInterface).to(AdminApiService_1.AdminApiService);
 // Repositories
+container.bind(Types_1.TYPES.CreditGroupRepositoryInterface).to(CreditGroupRepository_1.CreditGroupRepository);
+container.bind(Types_1.TYPES.CreditTransactionRepositoryInterface).to(CreditTransactionRepository_1.CreditTransactionRepository);
 container.bind(Types_1.TYPES.PromiseRepositoryInterface).to(PromiseRepository_1.PromiseRepository);
-container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
-container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 container.bind(Types_1.TYPES.SourceRepositoryInterface).to(SourceRepository_1.SourceRepository);
 container.bind(Types_1.TYPES.TokenMetaRepositoryInterface).to(TokenMetaRepository_1.TokenMetaRepository);
 container.bind(Types_1.TYPES.UserRepositoryInterface).to(UserRepository_1.UserRepository);
-container.bind(Types_1.TYPES.WhitelistRepositoryInterface).to(WhitelistRepository_1.WhitelistRepository);
+// Repositories - Settings
+container.bind(Types_1.TYPES.WhitelistSettingsRepositoryInterface).to(WhitelistSettingsRepository_1.WhitelistSettingsRepository);
+container.bind(Types_1.TYPES.IntegrationSettingsRepositoryInterface).to(IntegrationSettingsRepository_1.IntegrationSettingsRepository);
+container.bind(Types_1.TYPES.OauthSettingsRepositoryInterface).to(OauthSettingsRepository_1.OauthSettingsRepository);
+container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 // Components
 container.bind(Types_1.TYPES.ComponentServiceProviderInterface).to(ComponentServiceProvider_1.ComponentServiceProvider);
 container.bind(Types_1.TYPES.ButtonLoginComponentInterface).to(ButtonLoginComponent_1.ButtonLoginComponent);
@@ -5239,7 +5251,7 @@ let ComponentServiceProvider = class ComponentServiceProvider extends ServicePro
         return [
             {
                 name: 'buttonLoginComponent',
-                selector: 'button.tokenpass-login',
+                selector: 'a.tokenpass-login',
             },
             {
                 name: 'cardTokenItemComponent',
@@ -5305,10 +5317,10 @@ exports.ServiceProvider = ServiceProvider;
 
 /***/ }),
 
-/***/ "./resources/ts/Repositories/IntegrationSettingsRepository.ts":
-/*!********************************************************************!*\
-  !*** ./resources/ts/Repositories/IntegrationSettingsRepository.ts ***!
-  \********************************************************************/
+/***/ "./resources/ts/Repositories/CreditGroupRepository.ts":
+/*!************************************************************!*\
+  !*** ./resources/ts/Repositories/CreditGroupRepository.ts ***!
+  \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -5326,16 +5338,25 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IntegrationSettingsRepository = void 0;
+exports.CreditGroupRepository = void 0;
 const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
 const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-let IntegrationSettingsRepository = class IntegrationSettingsRepository {
+let CreditGroupRepository = class CreditGroupRepository {
     constructor(adminApiService) {
         this.adminApiService = adminApiService;
     }
-    show() {
+    index() {
         return new Promise((resolve, reject) => {
-            this.adminApiService.settingsIntegrationShow().then((result) => {
+            this.adminApiService.creditGroupIndex().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditGroupStore(params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -5344,7 +5365,7 @@ let IntegrationSettingsRepository = class IntegrationSettingsRepository {
     }
     update(params) {
         return new Promise((resolve, reject) => {
-            this.adminApiService.settingsIntegrationUpdate(params).then(result => {
+            this.adminApiService.creditGroupUpdate(params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -5352,12 +5373,69 @@ let IntegrationSettingsRepository = class IntegrationSettingsRepository {
         });
     }
 };
-IntegrationSettingsRepository = __decorate([
+CreditGroupRepository = __decorate([
     (0, inversify_1.injectable)(),
     __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
     __metadata("design:paramtypes", [Object])
-], IntegrationSettingsRepository);
-exports.IntegrationSettingsRepository = IntegrationSettingsRepository;
+], CreditGroupRepository);
+exports.CreditGroupRepository = CreditGroupRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/CreditTransactionRepository.ts":
+/*!******************************************************************!*\
+  !*** ./resources/ts/Repositories/CreditTransactionRepository.ts ***!
+  \******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreditTransactionRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let CreditTransactionRepository = class CreditTransactionRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    index() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditTransactionIndex().then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    store(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.creditTransactionStore(params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+CreditTransactionRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], CreditTransactionRepository);
+exports.CreditTransactionRepository = CreditTransactionRepository;
 
 
 /***/ }),
@@ -5437,6 +5515,191 @@ exports.PromiseRepository = PromiseRepository;
 
 /***/ }),
 
+/***/ "./resources/ts/Repositories/Settings/IntegrationSettingsRepository.ts":
+/*!*****************************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/IntegrationSettingsRepository.ts ***!
+  \*****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let IntegrationSettingsRepository = class IntegrationSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'integration';
+    }
+};
+IntegrationSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], IntegrationSettingsRepository);
+exports.IntegrationSettingsRepository = IntegrationSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/Settings/OauthSettingsRepository.ts":
+/*!***********************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/OauthSettingsRepository.ts ***!
+  \***********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OauthSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let OauthSettingsRepository = class OauthSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'integration';
+    }
+};
+OauthSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], OauthSettingsRepository);
+exports.OauthSettingsRepository = OauthSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/Settings/TcaSettingsRepository.ts":
+/*!*********************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/TcaSettingsRepository.ts ***!
+  \*********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let TcaSettingsRepository = class TcaSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'tca';
+    }
+};
+TcaSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], TcaSettingsRepository);
+exports.TcaSettingsRepository = TcaSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/Settings/WhitelistSettingsRepository.ts":
+/*!***************************************************************************!*\
+  !*** ./resources/ts/Repositories/Settings/WhitelistSettingsRepository.ts ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WhitelistSettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ "./resources/ts/Repositories/SettingsRepository.ts");
+let WhitelistSettingsRepository = class WhitelistSettingsRepository extends SettingsRepository_1.SettingsRepository {
+    constructor() {
+        super(...arguments);
+        this.settingsType = 'whitelist';
+    }
+};
+WhitelistSettingsRepository = __decorate([
+    (0, inversify_1.injectable)()
+], WhitelistSettingsRepository);
+exports.WhitelistSettingsRepository = WhitelistSettingsRepository;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Repositories/SettingsRepository.ts":
+/*!*********************************************************!*\
+  !*** ./resources/ts/Repositories/SettingsRepository.ts ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SettingsRepository = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+let SettingsRepository = class SettingsRepository {
+    constructor(adminApiService) {
+        this.adminApiService = adminApiService;
+    }
+    show() {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsShow(this.settingsType).then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    update(params) {
+        return new Promise((resolve, reject) => {
+            this.adminApiService.settingsUpdate(this.settingsType, params).then((result) => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+};
+SettingsRepository = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], SettingsRepository);
+exports.SettingsRepository = SettingsRepository;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Repositories/SourceRepository.ts":
 /*!*******************************************************!*\
   !*** ./resources/ts/Repositories/SourceRepository.ts ***!
@@ -5508,63 +5771,6 @@ SourceRepository = __decorate([
     __metadata("design:paramtypes", [Object])
 ], SourceRepository);
 exports.SourceRepository = SourceRepository;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Repositories/TcaSettingsRepository.ts":
-/*!************************************************************!*\
-  !*** ./resources/ts/Repositories/TcaSettingsRepository.ts ***!
-  \************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TcaSettingsRepository = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-let TcaSettingsRepository = class TcaSettingsRepository {
-    constructor(adminApiService) {
-        this.adminApiService = adminApiService;
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsTcaShow().then((result) => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    update(params) {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.settingsTcaUpdate(params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-};
-TcaSettingsRepository = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], TcaSettingsRepository);
-exports.TcaSettingsRepository = TcaSettingsRepository;
 
 
 /***/ }),
@@ -5683,63 +5889,6 @@ exports.UserRepository = UserRepository;
 
 /***/ }),
 
-/***/ "./resources/ts/Repositories/WhitelistRepository.ts":
-/*!**********************************************************!*\
-  !*** ./resources/ts/Repositories/WhitelistRepository.ts ***!
-  \**********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.WhitelistRepository = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ../Types */ "./resources/ts/Types.ts");
-let WhitelistRepository = class WhitelistRepository {
-    constructor(adminApiService) {
-        this.adminApiService = adminApiService;
-    }
-    show() {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.whitelistShow().then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    update(params) {
-        return new Promise((resolve, reject) => {
-            this.adminApiService.whitelistUpdate(params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-};
-WhitelistRepository = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AdminApiServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], WhitelistRepository);
-exports.WhitelistRepository = WhitelistRepository;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Services/AdminApiService.ts":
 /*!**************************************************!*\
   !*** ./resources/ts/Services/AdminApiService.ts ***!
@@ -5767,36 +5916,63 @@ let AdminApiService = class AdminApiService {
             'X-WP-Nonce': wpApiSettings.nonce,
         };
     }
-    settingsIntegrationShow() {
+    settingsShow(type) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/settings/integration').then((result) => {
+            this.makeRequest('GET', `/settings/${type}`).then((result) => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsIntegrationUpdate(params) {
+    settingsUpdate(type, params) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/settings/integration', params).then(result => {
+            this.makeRequest('PUT', `/settings/${type}`, params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsTcaShow() {
+    creditGroupIndex() {
         return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/settings/tca').then((result) => {
+            this.makeRequest('GET', '/credit-group').then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
             });
         });
     }
-    settingsTcaUpdate(params) {
+    creditGroupStore(params) {
         return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/settings/tca', params).then(result => {
+            this.makeRequest('POST', '/credit-group', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditGroupUpdate(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('PUT', '/credit-group/', params).then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditTransactionIndex() {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('GET', '/credit-transaction').then(result => {
+                resolve(result);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+    creditTransactionStore(params) {
+        return new Promise((resolve, reject) => {
+            this.makeRequest('POST', '/credit-transaction', params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -5905,24 +6081,6 @@ let AdminApiService = class AdminApiService {
     userShow(userId, params) {
         return new Promise((resolve, reject) => {
             this.makeRequest('GET', `/user/${userId}`, params).then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    whitelistShow() {
-        return new Promise((resolve, reject) => {
-            this.makeRequest('GET', '/whitelist').then(result => {
-                resolve(result);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
-    whitelistUpdate(params) {
-        return new Promise((resolve, reject) => {
-            this.makeRequest('PUT', '/whitelist', params).then(result => {
                 resolve(result);
             }).catch(error => {
                 reject(error);
@@ -6062,16 +6220,24 @@ exports.AuthService = AuthService;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TYPES = void 0;
 const TYPES = {
+    // Services
     AuthServiceInterface: Symbol.for('AuthServiceInterface'),
     AdminApiServiceInterface: Symbol.for('AdminApiServiceInterface'),
+    // Repositories
     PromiseRepositoryInterface: Symbol.for('PromiseRepositoryInterface'),
-    IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
-    TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
+    CreditGroupRepositoryInterface: Symbol.for('CreditGroupRepositoryInterface'),
+    CreditTransactionRepositoryInterface: Symbol.for('CreditTransactionRepositoryInterface'),
     SourceRepositoryInterface: Symbol.for('SourceRepositoryInterface'),
     TokenMetaRepositoryInterface: Symbol.for('TokenMetaRepositoryInterface'),
     UserRepositoryInterface: Symbol.for('UserRepositoryInterface'),
-    WhitelistRepositoryInterface: Symbol.for('WhitelistRepositoryInterface'),
+    // Repositories - Settings
+    OauthSettingsRepositoryInterface: Symbol.for('OauthSettingsRepositoryInterface'),
+    IntegrationSettingsRepositoryInterface: Symbol.for('IntegrationSettingsRepositoryInterface'),
+    TcaSettingsRepositoryInterface: Symbol.for('TcaSettingsRepositoryInterface'),
+    WhitelistSettingsRepositoryInterface: Symbol.for('WhitelistSettingsRepositoryInterface'),
+    // Service providers
     ComponentServiceProviderInterface: Symbol.for('ComponentServiceProviderInterface'),
+    // Components
     ButtonLoginComponentInterface: Symbol.for('ButtonLoginComponentInterface'),
     CardTokenItemComponentInterface: Symbol.for('CardTokenItemComponentInterface'),
 };

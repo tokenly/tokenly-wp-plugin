@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services\Domain;
 
-interface SourceServiceInterface {
-	//
+use Tokenly\Wp\Interfaces\Services\Domain\DomainServiceInterface;
+
+interface SourceServiceInterface extends DomainServiceInterface {
+	public function store( array $params );
 }

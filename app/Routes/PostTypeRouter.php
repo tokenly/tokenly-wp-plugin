@@ -10,10 +10,11 @@ use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 
 /**
  * Manages routing for the post type views
@@ -26,6 +27,8 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $current_user;
 	protected $tca_settings;
 	protected $tca_service;
+	protected $post_service;
+	protected $post_collection_factory;
 	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
@@ -38,6 +41,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		CurrentUserInterface $current_user,
 		TcaSettingsInterface $tca_settings,
 		TcaServiceInterface $tca_service,
+		PostCollectionFactoryInterface $post_collection_factory,
 		string $namespace
 	) {
 		$this->integration = $integration;
@@ -46,6 +50,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		$this->tca_service = $tca_service;
 		$this->namespace = $namespace;
 		$this->post_service = $post_service;
+		$this->post_collection_factory = $post_collection_factory;
 		$this->post_types = array(
 			'token_meta' => array(
 				'post_type'  => $token_meta_post_type,
@@ -67,9 +72,18 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		$this->register_routes();
 		add_action( 'template_redirect', array( $this, 'on_template_redirect' ) );
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
-		add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
-		add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
-		
+		if (
+			isset( $this->tca_settings->filter_menu_items ) &&
+			$this->tca_settings->filter_menu_items == true
+		) {
+			add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
+		}
+		if (
+			isset( $this->tca_settings->filter_post_results ) &&
+			$this->tca_settings->filter_post_results == true
+		) {
+			add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -83,13 +97,19 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	public function on_post_save( int $post_id, \WP_Post $post, bool $update ) {
 		$post_type = $post->post_type;
 		$post_type_key = str_replace( "{$this->namespace}_", '', $post_type );
-		$params = $_POST["{$this->namespace}_data"] ?? array();
+		$params = $_POST[ "{$this->namespace}_data" ] ?? array();
 		if ( $params ) {
 			$params = wp_unslash( $params );
 			$params = json_decode( $params, true );
 		}
-		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['save_callback'] ) ) {
-			call_user_func( $this->routes[ $post_type_key ]['save_callback'], $post_id, $params );
+		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['show_callback'] ) ) {
+			$post = call_user_func(
+				$this->routes[ $post_type_key ]['show_callback'],
+				array(
+					'id' => $post_id,
+				)
+			);
+			$post->update( $params );
 		}
 	}
 	
@@ -108,7 +128,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				'slug'          => 'token-meta',
 				'post_type'     => $this->post_types['token_meta']['post_type'],
 				'edit_callback' => array( $this->post_types['token_meta']['controller'], 'edit' ),
-				'save_callback' => array( $this->post_types['token_meta']['service'], 'update' ),
+				'show_callback' => array( $this->post_types['token_meta']['service'], 'show' ),
 			),
 			'promise_meta'   => array(
 				'name'          => 'promise_meta',
@@ -145,7 +165,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			$routes[ $key ] = array(
 				'name'          => $key,
 				'edit_callback' => array( $this->post_types['post']['controller'], 'edit' ),
-				'save_callback' => array( $this->post_types['post']['service'], 'update' ),
+				'show_callback' => array( $this->post_types['post']['service'], 'show' ),
 			);
 		}
 		return $routes;
@@ -170,9 +190,11 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 				};
 				$route['edit_callback'] = $callable;
 				add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
+					$meta_box_name = "{$this->namespace}_data";
+					$meta_box_title = ucfirst( $this->namespace );
 					add_meta_box(
-						'tokenpass_data',
-						__( 'Tokenpass', 'textdomain' ),
+						$meta_box_name,
+						__( $meta_box_title, 'textdomain' ),
 						$callable,
 						$name,
 						'advanced',
@@ -188,15 +210,25 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @return void
 	 */
 	public function on_template_redirect() {
-		$is_virtual = boolval( get_query_var( 'virtual' ) ) ?? false;
+		$is_virtual = boolval( get_query_var( "{$this->namespace}_virtual" ) ) ?? false;
 		if ( $is_virtual === true ) {
 			return;
 		}
 		$post_id = get_the_ID();
-		$user_id = get_current_user_id();
-		$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+		$post = $this->post_service->show( array(
+			'id' => $post_id,
+		) );
+		if ( !$post ) {
+			return;
+		}
+		$can_access = $post->can_access_post( $this->current_user );
 		if ( $can_access === false ) {
-			wp_die( 'Access denied by TCA.' );
+			if ( is_admin() === true ) {
+				wp_die( 'Access denied by TCA.' );
+			} else {
+				wp_redirect( "/{$this->namespace}/access-denied" );
+				exit;
+			}
 		}
 	}
 
@@ -209,10 +241,12 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @return array
 	 */
 	public function tca_on_get_nav_menu_items( array $items, object $menu, array $args ) {
-		$user_id = get_current_user_id();
 		foreach ( $items as $key => $item ) {
 			$post_id = $item->object_id;
-			$can_access = $this->post_service->can_access_post( $post_id, $user_id );
+			$post = $this->post_service->show( array(
+				'id' => $post_id,
+			) );
+			$can_access = $post->can_access_post( $this->current_user );
 			if ( $can_access === false ) {
 				unset( $items[ $key ] );
 			}
@@ -226,12 +260,25 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	 * @param array $posts
 	 * @return array
 	 */
-	public function tca_on_posts_results( array $posts ) {
-		$user_id = get_current_user_id();
-		foreach ( $posts as $key => $post ) {
+	public function tca_on_posts_results( array $posts, $query ) {
+		$post_collection = array();
+		foreach( $posts as $post ) {
+			$post_collection[] = array(
+				'post' => $post,
+			);
+		}
+		$post_collection = $this->post_collection_factory->create( $post_collection );
+		$post_collection->load( array( 'meta' ) );
+		$current_post_id = 0;
+		$is_singular = $query->is_singular;
+		if ( $is_singular == true && isset( $query->posts[0] )) {
+			$post = $query->posts[0];
+			$current_post_id = $post->ID;
+		}
+		foreach ( (array) $post_collection as $key => $post ) {
 			$post_id = $post->ID;
-			$can_access = $this->post_service->can_access_post( $post_id, $user_id );
-			if ( $can_access === false ) {
+			$can_access = $post->can_access_post( $this->current_user );
+			if ( $can_access === false && $current_post_id != $post_id ) {			
 				unset( $posts[ $key ] );
 			}
 		}

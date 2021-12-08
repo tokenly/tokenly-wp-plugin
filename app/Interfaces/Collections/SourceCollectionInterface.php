@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Collections;
 
-interface SourceCollectionInterface {
+use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
+
+interface SourceCollectionInterface extends CollectionInterface {
 	//
 }

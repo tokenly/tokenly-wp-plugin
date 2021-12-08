@@ -2,7 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Models;
 
-interface PromiseInterface {
-	public function update( $params );
-	public function destroy();
+use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
+interface PromiseInterface extends ModelInterface {
+	//
 }

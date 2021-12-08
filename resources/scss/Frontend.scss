@@ -1,6 +1,7 @@
 @use '/resources/scss/variables' as *;
 @use '/resources/scss/Components/CardTokenItemComponent.scss' as *;
 @use '/resources/scss/Blocks/ListCardTokenItemBlock.scss' as *;
+@use '/resources/scss/Pages/Web/Denied.scss' as *;
 
 .tokenly-block {
 	& * {

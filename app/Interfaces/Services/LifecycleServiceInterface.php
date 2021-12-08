@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Services;
 
-interface LifecycleServiceInterface {
+use Tokenly\Wp\Interfaces\Services\ServiceInterface;
+
+interface LifecycleServiceInterface extends ServiceInterface {
 	//
 }

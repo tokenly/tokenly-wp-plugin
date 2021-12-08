@@ -6,6 +6,7 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\SourceInterface;
 
 /**
  * Manages sources for promise type transactions
@@ -23,6 +24,22 @@ class SourceRepository implements SourceRepositoryInterface {
 	}
 
 	/**
+	 * Gets the list of registered source addresses
+	 * @return array
+	 */
+	public function index( array $params = array() ) {
+		$sources = $this->client->getProvisionalSourceList();
+		if ( $sources == false ) {
+			return false;
+		}
+		foreach ( $sources as &$source ) {
+			$source = $this->remap_fields( $source );
+		}
+		$sources = $this->source_collection_factory->create( $sources );
+		return $sources;
+	}
+
+	/**
 	 * Gets the source data by address
 	 * @param string $address Source address
 	 * @return array
@@ -37,18 +54,7 @@ class SourceRepository implements SourceRepositoryInterface {
 		return $source;
 	}
 
-	/**
-	 * Gets the list of registered source addresses
-	 * @return array
-	 */
-	public function index( array $params = array() ) {
-		$sources = $this->client->getProvisionalSourceList();
-		if ( $sources == false ) {
-			return false;
-		}
-		$sources = $this->source_collection_factory->create( $sources );
-		return $sources;
-	}
+
 	
 	/**
 	 * Registers the source address for the current integration
@@ -68,20 +74,27 @@ class SourceRepository implements SourceRepositoryInterface {
 
 	/**
 	 * Updates the exisiting source by address
-	 * @param string $address Address of source
+	 * @param SourceInterface $source Source to update
 	 * @param array $params New source data
-	 * @return boolean
+	 * @return SourceInterface
 	 */
-	public function update( $address, $params ) {
+	public function update( SourceInterface $source, array $params ) {
+		$params['address'] = $source->address_id;
 		return $this->store( $params );
 	}
 
 	/**
-	 * Destroys the existing source by address
-	 * @param string $address
+	 * Destroys the existing source
+	 * @param SourceInterface $source Source to destroy
 	 * @return void
 	 */
-	public function destroy( $address ) {
-		$this->client->deleteProvisionalSource( $address );
+	public function destroy( SourceInterface $source ) {
+		$this->client->deleteProvisionalSource( $source->address_id );
+	}
+
+	protected function remap_fields( array $source ) {
+		$source['address_id'] = $source['address'];
+		unset( $source['address'] );
+		return $source; 
 	}
 }

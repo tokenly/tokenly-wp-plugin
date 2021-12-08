@@ -4,38 +4,38 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
 use Tokenly\Wp\Views\Admin\BalancesShowView;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 
 /**
  * Serves the admin source views
  */
 class BalancesController implements BalancesControllerInterface {
 	protected $balances_show_view;
-	
+	protected $address_service;
+
 	public function __construct(
 		BalancesShowView $balances_show_view,
-		CurrentUserInterface $current_user
+		AddressServiceInterface $address_service
 	) {
 		$this->balances_show_view = $balances_show_view;
-		$this->current_user = $current_user;
+		$this->address_service = $address_service;
 	}
 
 	public function show() {
-		$address = $_GET['address'] ?? null;
-		if ( !isset( $this->current_user ) ) {
+		if ( !isset( $_GET['address'] ) ) {
 			return;
 		}
-		$addresses = $this->current_user->get_addresses(
+		$address_id = $_GET['address'];
+		$address = $this->address_service->show(
 			array(
-				'with' => array( 'balances.token_meta' ),
+				'address' => $address_id,
+				'with'    => array( 'balance.token_meta' ),
 			)
 		);
-		$addresses->key_by_field( 'address' );
-		$addresses = $addresses->to_array();
-		$address = $addresses[ $address ] ?? null;
 		if ( !$address ) {
 			return;
 		}
+		$address = $address->to_array();
 		$render = $this->balances_show_view->render( array(
 			'address' => $address,
 		) );

@@ -2,7 +2,9 @@
 
 namespace Tokenly\Wp\Interfaces\Routes;
 
-interface RouterInterface {
+use Tokenly\Wp\Interfaces\Services\ServiceInterface;
+
+interface RouterInterface extends ServiceInterface {
 	public function register();
 	public function render_route( callable $render_function );
 	public function register_routes();

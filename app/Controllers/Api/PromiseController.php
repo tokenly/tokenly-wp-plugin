@@ -21,20 +21,21 @@ class PromiseController implements PromiseControllerInterface {
 	
 	/**
 	 * Get a list of current promises
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return PromiseInterface[]
 	 */
-	public function index( $request ) {
+	public function index( \WP_REST_Request $request ) {
 		$promises = $this->promise_service->index();
+		$promises = $promises->to_array();
 		return $promises;
 	}
 
 	/**
 	 * Creates a new promise
-	 * @param WP_REST_Request $request Request data
+	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function store( $request ) {
+	public function store( \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$promise = $this->promise_service->store( $params );
 		return array(
@@ -48,7 +49,7 @@ class PromiseController implements PromiseControllerInterface {
 	 * @param WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function update( $request ) {
+	public function update( \WP_REST_Request $request ) {
 		$promise = $this->get_promise( $request );
 		if ( !$promise ) {
 			return;
@@ -65,7 +66,7 @@ class PromiseController implements PromiseControllerInterface {
 	 * @param WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( $request ) {
+	public function destroy( \WP_REST_Request $request ) {
 		$promise = $this->get_promise( $request );
 		if ( !$promise ) {
 			return;
@@ -81,12 +82,14 @@ class PromiseController implements PromiseControllerInterface {
 	 * @param WP_REST_Request $request Request data
 	 * @return PromiseInterface
 	 */
-	protected function get_promise( $request ) {
+	protected function get_promise( \WP_REST_Request $request ) {
 		$promise_id = $request->get_param( 'promise' );
 		if ( !$promise_id ) {
 			return;
 		}
-		$promise = $this->promise_service->show( $promise_id );
+		$promise = $this->promise_service->show( array(
+			'promise_id' => $promise_id,
+		) );
 		return $promise;
 	}
 }

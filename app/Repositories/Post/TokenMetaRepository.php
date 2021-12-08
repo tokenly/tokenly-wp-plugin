@@ -6,19 +6,23 @@ use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 /**
  * Manages token meta data
  */
 class TokenMetaRepository implements TokenMetaRepositoryInterface {
 	protected $token_meta_collection_factory;
+	protected $meta_repository;
 	protected $namespace;
 	
 	public function __construct(
 		TokenMetaCollectionFactoryInterface $token_meta_collection_factory,
+		MetaRepositoryInterface $meta_repository,
 		string $namespace
 	) {
 		$this->token_meta_collection_factory = $token_meta_collection_factory;
+		$this->meta_repository = $meta_repository;
 		$this->namespace = $namespace;
 	}
 
@@ -44,7 +48,46 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		$posts = $this->token_meta_collection_factory->create( $posts );
+		$posts_formatted = array();
+		foreach ( $posts as $post ) {
+			$meta = $this->meta_repository->index( $post->ID, array(
+				'asset',
+				'extra',
+			) );
+			$posts_formatted[] = array_merge( $meta, array(
+				'post' => $post,
+			) );
+		}
+		$posts = $this->token_meta_collection_factory->create( $posts_formatted );
 		return $posts;
+	}
+
+	/**
+	 * Retrieves a single token meta post
+	 * @param integer $params Post search params
+	 * @return TokenMetaInterface
+	 */
+	public function show( array $params = array() ) {
+		$posts = $this->index( $params );
+		if ( isset( $posts[0] ) ) {
+			return $posts[0];
+		}
+	}
+
+	/**
+	 * Updates the specific token meta post
+	 * @param TokenMetaInterface $post Target post
+	 * @param array $params Update parameters
+	 * @return void
+	 */
+	public function update( TokenMetaInterface $post, array $params = array() ) {
+		$update_params = array();
+		if ( isset( $params['asset'] ) ) {
+			$update_params['asset'] = $params['asset'];
+		}
+		if ( isset( $params['extra'] ) ) {
+			$update_params['extra'] = $params['extra'];
+		}
+		$this->meta_repository->update( $post->ID, $update_params );
 	}
 }

@@ -2,53 +2,51 @@
 
 namespace Tokenly\Wp\Models;
 
+use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
-class Source implements SourceInterface {
+class Source extends Model implements SourceInterface {
+	public $address_id;
 	public $address;
-	public $address_data;
 	public $assets;
 	public $type;
-	protected $source_service;
+	protected $address_service;
+	protected $current_user;
+	protected $fillable = array(
+		'address_id',
+		'address',
+		'assets',
+		'type'
+	);
 
 	public function __construct(
-		$source_data = array(),
-		SourceServiceInterface $source_service
+		SourceRepositoryInterface $domain_repository,
+		AddressServiceInterface $address_service,
+		CurrentUserInterface $current_user,
+		array $data = array()
 	) {
-		$this->address = $source_data['address'] ?? null;
-		$this->assets = $source_data['assets'] ?? null;
-		$this->type = $source_data['type'] ?? null;
-		$this->source_service = $source_service;
+		$this->domain_repository = $domain_repository;
+		$this->address_service = $address_service;
+		$this->current_user = $current_user;
+		parent::__construct( $data );
 	}
 
 	/**
-	 * Updates the source data
-	 * @param array $params New source data
-	 * @return void
+	 * Loads the address relation
+	 * @param array $relations Further relations
+	 * @return self 
 	 */
-	public function update( $params ) {
-		return $this->source_service->update( $this->address, $params );
-	}
-
-	/**
-	 * Destroys the source
-	 * @return void
-	 */
-	public function destroy() {
-		$this->source_service->destroy( $this->address );
-	}
-
-	/**
-	 * Converts the source to array
-	 */
-	public function to_array() {
-		$array = array(
-			'address' => $this->address,
-			'address_data' => $this->address_data,
-			'assets'  => $this->assets,
-			'type'    => $this->type,
-		);
-		return $array;
+	protected function load_address( array $relations = array() ) {
+		$address = $this->address_service->show( array(
+			'address' => $this->address_id,
+			'with'    => $relations,
+		) );
+		if ( $address ) {
+			$this->address = $address;
+		}
+		return $this;
 	}
 }

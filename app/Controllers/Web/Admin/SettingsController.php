@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
 use Tokenly\Wp\Views\Admin\SettingsView;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Tokenly\Wp\Interfaces\Models\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 /**
  * Serves the admin settings view
