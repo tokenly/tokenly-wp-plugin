@@ -2,23 +2,19 @@
 
 namespace Tokenly\Wp\Controllers\Web;
 
-use Tokenly\Wp\Views\TokenMetaEditView;
-use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
+use Tokenly\Wp\ViewModels\Admin\TokenMetaEditViewModel;
 
 /**
  * Serves the token meta views
  */
 class TokenMetaController implements TokenMetaControllerInterface {
-	public $token_meta_edit_view;
-	public $token_meta_repository;
+	public $token_meta_edit_view_model;
 
 	public function __construct(
-		TokenMetaEditView $token_meta_edit_view,
-		TokenMetaServiceInterface $token_meta_service
+		TokenMetaEditViewModel $token_meta_edit_view_model
 	) {
-		$this->token_meta_edit_view = $token_meta_edit_view;
-		$this->token_meta_service = $token_meta_service;
+		$this->token_meta_edit_view_model = $token_meta_edit_view_model;
 	}
 	
 	/**
@@ -26,13 +22,10 @@ class TokenMetaController implements TokenMetaControllerInterface {
 	 * It is responsible for editing the additional token meta.
 	 */
 	public function edit() {
-		$meta = $this->token_meta_service->show( array( 'id' => get_the_ID() ) );
-		if ( $meta ) {
-			$meta = $meta->to_array();
-		}
-		$render = $this->token_meta_edit_view->render( array(
-			'meta' => $meta,
-		) );
-		return $render;
+		$view_data = $this->token_meta_edit_view_model->prepare();
+		return array(
+			'template' => 'Dynamic.twig',
+			'data'     => $view_data,
+		);
 	}
 }

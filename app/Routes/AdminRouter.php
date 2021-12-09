@@ -17,9 +17,13 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
+use Twig\Environment;
 
 /**
  * Manages routing for the WordPress admin pages
+ * The responses from the controllers are routed back to the router. It is to render the views since
+ * every response is the same (render dynamic view) and only the data is different.
+ * All admin routes are rendered by client so there is no need for more than one template.
  */
 class AdminRouter extends Router implements AdminRouterInterface {
 	protected $routes = array();
@@ -31,6 +35,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected $root_dir;
 	protected $api_host;
 	protected $namespace;
+	protected $twig;
 
 	public function __construct(
 		string $root_dir,
@@ -48,7 +53,8 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		PromiseControllerInterface $promise_controller,
 		SourceControllerInterface $source_controller,
 		IntegrationInterface $integration,
-		CurrentUserInterface $current_user
+		CurrentUserInterface $current_user,
+		Environment $twig
 	) {
 		$this->namespace = $namespace;
 		$this->api_host = $api_host;
@@ -68,6 +74,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 			'source'              => $source_controller,
 			'balances'            => $balances_controller,
 		);
+		$this->twig = $twig;
 	}
 
 	/**
@@ -100,6 +107,18 @@ class AdminRouter extends Router implements AdminRouterInterface {
 				];
 			</script>
 		"; 
+	}
+	
+	/**
+	 * Executes the specified render callback
+	 * @param callable $render_function Controller's render function
+	 */
+	public function render_route( callable $render_function ) {
+		$view_data = call_user_func( $render_function );
+		$html = $this->twig->render( 'Dynamic.twig', array(
+			'props' => $view_data,
+		) );	
+		echo $html;
 	}
 	
 	/**

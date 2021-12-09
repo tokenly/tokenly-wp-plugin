@@ -9,6 +9,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
+use Twig\Environment;
 
 /**
  * Manages routing for the public views
@@ -23,6 +24,7 @@ class WebRouter extends Router implements WebRouterInterface {
 	protected $integration;
 	protected $current_user;
 	protected $namespace;
+	protected $twig;
 
 	public function __construct(
 		UserControllerInterface $user_controller,
@@ -30,6 +32,7 @@ class WebRouter extends Router implements WebRouterInterface {
 		PostControllerInterface $post_controller,
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
+		Environment $twig,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -41,6 +44,7 @@ class WebRouter extends Router implements WebRouterInterface {
 		);
 		$this->integration = $integration;
 		$this->current_user = $current_user;
+		$this->twig = $twig;
 	}
 
 	/**

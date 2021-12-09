@@ -42,6 +42,7 @@ class AdminApp extends App {
 	pageData: object;
 	tcaEnabled: boolean = false;
 	tcaRules: any = [];
+	routePrefix: string = 'tokenly';
 
 	constructor() {
 		super();
@@ -51,11 +52,13 @@ class AdminApp extends App {
 			if ( !data ) {
 				return;
 			}
-			this.view = data?.view;
+			const urlParams = new URLSearchParams(window.location.search);
+			this.view = urlParams.get( 'page' );
 			this.pageData = data?.props;
 			this.tcaEnabled = data.tcaEnabled ?? false;
 			this.tcaRules = data.tcaRules ?? [];
 			const views = this.getViews();
+			console.log(views);
 			const ViewComponent = views[ this.view ] ?? null;
 			if ( ViewComponent ) {
 				this.highlightMenu();
@@ -66,7 +69,7 @@ class AdminApp extends App {
 	}
 	
 	getViews() {
-		return {
+		let routes = {
 			'balances-show'             : BalancesShowPage,
 			'settings'                  : SettingsPage,
 			'connection'                : ConnectionPage,
@@ -89,6 +92,11 @@ class AdminApp extends App {
 			'token-meta-edit'           : TokenMetaEditPage,
 			'dashboard'                 : DashboardPage,
 		} as any;
+		const routesPrefixed = {} as any;
+		Object.keys( routes ).forEach( key => {
+			routesPrefixed[ `${this.routePrefix}-${key}` ] = routes[ key ];
+		});
+		return routesPrefixed;
 	}
 	
 	render( ViewComponent: any ) {

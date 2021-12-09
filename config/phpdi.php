@@ -7,7 +7,6 @@ use Tokenly\Wp\Providers\ShortcodeServiceProvider;
 use Tokenly\Wp\Services\AuthService;
 use Tokenly\Wp\Services\LifecycleService;
 use Tokenly\Wp\Services\ResourceService;
-use Tokenly\Wp\Services\TcaService;
 use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
@@ -111,7 +110,6 @@ use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
@@ -234,8 +232,6 @@ use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
 use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
-use Tokenly\Wp\Interfaces\Components\CardAppCreditItemComponentInterface;
-use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
 use Twig\Environment;
@@ -297,8 +293,7 @@ return array(
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
-	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
-		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
+	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
 	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
@@ -318,8 +313,6 @@ return array(
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	CardAppCreditItemComponentInterface::class     => \DI\autowire( CardAppCreditItemComponent::class ),
-	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
 	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
@@ -334,7 +327,6 @@ return array(
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) ),
 	QueryServiceInterface::class                   => \DI\autowire( QueryService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TcaServiceInterface::class                     => \DI\autowire( TcaService::class ),
 	//Services - Domain
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
@@ -571,6 +563,14 @@ return array(
 			// 'cache' => $twig_template_cache_dir
 			'cache' => false,
 		) );
+		$twig->registerUndefinedFunctionCallback(function( $name ) {
+			if ( function_exists( $name ) ) {
+				return new \Twig\TwigFunction( $name, function() use ( $name ) {
+					return call_user_func_array( $name, func_get_args() );
+				} );
+			}
+			throw new \RuntimeException( sprintf( 'Function %s not found', $name ) );
+		});
 		return $twig;
 	} )
 		->parameter( 'twig_template_dir', \DI\get( 'twig.template_dir' ) )

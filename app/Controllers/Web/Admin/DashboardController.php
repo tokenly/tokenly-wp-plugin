@@ -2,34 +2,23 @@
 
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
-use Tokenly\Wp\Views\Admin\DashboardView;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+use Tokenly\Wp\ViewModels\Admin\DashboardViewModel;
 
 /**
  * Serves the admin Dashboard view
  */
 class DashboardController implements DashboardControllerInterface {
-	protected $dashboard_view;
-	protected $integration;
-	protected $current_user;
+	protected $dashboard_view_model;
 
 	public function __construct(
-		DashboardView $dashboard_view,
-		IntegrationInterface $integration,
-		CurrentUserInterface $current_user
+		DashboardViewModel $dashboard_view_model
 	) {
-		$this->dashboard_view = $dashboard_view;
-		$this->integration = $integration;
-		$this->current_user = $current_user;
+		$this->dashboard_view_model = $dashboard_view_model;
 	}
 
 	public function show() {
-		$render = $this->dashboard_view->render( array(
-			'integration_can_connect' => $this->integration->can_connect(),
-			'user_can_connect'        => $this->current_user->can_connect(),
-		) );
-		return $render;
+		$view_data = $this->dashboard_view_model->prepare();
+		return $view_data;
 	}
 }

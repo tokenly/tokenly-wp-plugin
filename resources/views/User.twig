@@ -1,7 +1,12 @@
-<div class="tokenly-component spacer lg"></div>
-{{ user_info_block | raw }}
-<div class="tokenly-component spacer lg"></div>
-{{ list_card_token_block | raw }}
-<div class="tokenly-component spacer lg"></div>
-{{ list_card_app_credit_block | raw }}
-<div class="tokenly-component spacer lg"></div>
+{% extends "Index.twig" %}
+{% from 'blocks/ListCardTokenItemBlock.twig' import list_card_token_item_block %}
+{% from 'blocks/ListCardAppCreditItemBlock.twig' import list_card_app_credit_item_block %}
+{% block content %}
+	<div class="tokenly-component spacer lg"></div>
+	{{ user_info_block | raw }}
+	<div class="tokenly-component spacer lg"></div>
+	{{ list_card_token_item_block( token_inventory_block_data.token_items ) }}
+	<div class="tokenly-component spacer lg"></div>
+	{{ list_card_app_credit_item_block( credit_inventory_block_data.credit_items ) }}
+	<div class="tokenly-component spacer lg"></div>
+{% endblock %}

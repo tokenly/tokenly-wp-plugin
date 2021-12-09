@@ -10042,17 +10042,20 @@ class AdminApp extends App_1.default {
         this.container = Inversify_config_1.container;
         this.tcaEnabled = false;
         this.tcaRules = [];
+        this.routePrefix = 'tokenly';
         this.pageElement = document.querySelector('.tokenpass-admin-page');
         if (this.pageElement) {
             const data = window.tokenpassData;
             if (!data) {
                 return;
             }
-            this.view = data === null || data === void 0 ? void 0 : data.view;
+            const urlParams = new URLSearchParams(window.location.search);
+            this.view = urlParams.get('page');
             this.pageData = data === null || data === void 0 ? void 0 : data.props;
             this.tcaEnabled = (_a = data.tcaEnabled) !== null && _a !== void 0 ? _a : false;
             this.tcaRules = (_b = data.tcaRules) !== null && _b !== void 0 ? _b : [];
             const views = this.getViews();
+            console.log(views);
             const ViewComponent = (_c = views[this.view]) !== null && _c !== void 0 ? _c : null;
             if (ViewComponent) {
                 this.highlightMenu();
@@ -10062,7 +10065,7 @@ class AdminApp extends App_1.default {
         this.registerRedirects();
     }
     getViews() {
-        return {
+        let routes = {
             'balances-show': BalancesShowPage_1.default,
             'settings': SettingsPage_1.default,
             'connection': ConnectionPage_1.default,
@@ -10085,6 +10088,11 @@ class AdminApp extends App_1.default {
             'token-meta-edit': TokenMetaEditPage_1.default,
             'dashboard': DashboardPage_1.default,
         };
+        const routesPrefixed = {};
+        Object.keys(routes).forEach(key => {
+            routesPrefixed[`${this.routePrefix}-${key}`] = routes[key];
+        });
+        return routesPrefixed;
     }
     render(ViewComponent) {
         if (!this.pageElement) {

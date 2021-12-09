@@ -1,9 +1,11 @@
-<div class="tokenly-component component-card-token-item">
-	<div class="info-container">
-		<div class="name" title="{{ asset }}">{{ name }}</div>
-		<div class="balance-container">
-			<span class="label">Total: </span>
-			<span class="amount">{{ balance }}</span>
+{% macro card_app_credit_item_component( name, balance ) %}
+	<div class="tokenly-component component-card-token-item">
+		<div class="info-container">
+			<div class="name" title="{{ asset }}">{{ name }}</div>
+			<div class="balance-container">
+				<span class="label">Total: </span>
+				<span class="amount">{{ balance }}</span>
+			</div>
 		</div>
 	</div>
-</div>
+{% endmacro %}

@@ -58,7 +58,6 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 		}
 		$group_uuid = $params['group'];
 		$account_user = $params['account'];
-		$this->ensure_account_exists( $group_uuid, $account_user->id );
 		$amount = intval( $params['amount'] );
 		$account = array(
 			'account' => $account_user->username,
@@ -69,7 +68,6 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 		$source = null;
 		if ( isset( $params['source'] ) ) {
 			$source = $params['source']->id;
-			$this->ensure_account_exists( $group_uuid, $source );
 		}
 		$accounts = array( $account );
 		$transactions = null;
@@ -93,12 +91,5 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 			$transactions['credit'] = $this->credit_transaction_collection_factory->create( $transactions_credit );
 		}
 		return $transactions;
-	}
-
-	protected function ensure_account_exists( string $group_uuid, string $uuid ) {
-		$account = $this->client->getAppCreditAccount( $group_uuid, $uuid );
-		if( !$account ){
-			$this->client->newAppCreditAccount( $group_uuid, $uuid );
-		}
 	}
 }
