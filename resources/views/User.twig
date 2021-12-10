@@ -1,9 +1,10 @@
 {% extends "Index.twig" %}
+{% from 'blocks/UserInfoBlock.twig' import user_info_block %}
 {% from 'blocks/TokenItemCardListBlock.twig' import token_item_card_list_block %}
 {% from 'blocks/AppCreditItemCardListBlock.twig' import app_credit_item_card_list_block %}
 {% block content %}
 	<div class="tokenly-component spacer lg"></div>
-	{{ user_info_block | raw }}
+	{{ user_info_block( user_info_block_data.name ) }}
 	<div class="tokenly-component spacer lg"></div>
 	{{ token_item_card_list_block( token_inventory_block_data.token_items ) }}
 	<div class="tokenly-component spacer lg"></div>

@@ -25,6 +25,7 @@ class WebRouter extends Router implements WebRouterInterface {
 	protected $current_user;
 	protected $namespace;
 	protected $twig;
+	protected $default_template = 'Index.twig';
 
 	public function __construct(
 		UserControllerInterface $user_controller,

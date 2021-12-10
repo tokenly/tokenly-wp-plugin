@@ -31,7 +31,10 @@ class SourceController implements SourceControllerInterface {
 
 	public function index() {
 		$view_data = $this->source_index_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'source-index',
+			'data' => $view_data,
+		);
 	}
 
 	public function show() {
@@ -42,12 +45,18 @@ class SourceController implements SourceControllerInterface {
 			'source' => $_GET['source'],
 		);
 		$view_data = $this->source_show_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'source-show',
+			'data' => $view_data,
+		);
 	}
 
 	public function store() {
 		$view_data = $this->source_store_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'source-store',
+			'data' => $view_data,
+		);
 	}
 
 	public function edit() {
@@ -58,6 +67,9 @@ class SourceController implements SourceControllerInterface {
 			'source_id' => $_GET['source'],
 		);
 		$view_data = $this->source_edit_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'source-edit',
+			'data' => $view_data,
+		);
 	}
 }

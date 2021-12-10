@@ -28,11 +28,17 @@ class CreditTransactionController implements CreditTransactionControllerInterfac
 			'group_uuid' => $_GET['credit_group'],
 		);
 		$view_data = $this->credit_transaction_index_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'credit-transaction-index',
+			'data' => $view_data,
+		);
 	}
 	
 	public function store() {
 		$view_data = $this->credit_transaction_store_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'credit-transaction-store',
+			'data' => $view_data,
+		);
 	}
 }

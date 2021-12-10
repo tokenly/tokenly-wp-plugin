@@ -39,10 +39,12 @@ class AdminApp extends App {
 	container = container;
 	pageElement: any;
 	view: string;
-	pageData: object;
+	pageData: any;
 	tcaEnabled: boolean = false;
 	tcaRules: any = [];
 	routePrefix: string = 'tokenly';
+	post: number;
+	action: string;
 
 	constructor() {
 		super();
@@ -52,13 +54,10 @@ class AdminApp extends App {
 			if ( !data ) {
 				return;
 			}
-			const urlParams = new URLSearchParams(window.location.search);
-			this.view = urlParams.get( 'page' );
 			this.pageData = data?.props;
-			this.tcaEnabled = data.tcaEnabled ?? false;
-			this.tcaRules = data.tcaRules ?? [];
+			this.view = this.pageData?.view;
 			const views = this.getViews();
-			console.log(views);
+
 			const ViewComponent = views[ this.view ] ?? null;
 			if ( ViewComponent ) {
 				this.highlightMenu();
@@ -70,7 +69,7 @@ class AdminApp extends App {
 	
 	getViews() {
 		let routes = {
-			'root'                      : DashboardPage,
+			'dashboard'                 : DashboardPage,
 			'balances-show'             : BalancesShowPage,
 			'settings'                  : SettingsPage,
 			'connection'                : ConnectionPage,
@@ -92,15 +91,7 @@ class AdminApp extends App {
 			'post-edit'                 : PostEditPage,
 			'token-meta-edit'           : TokenMetaEditPage,
 		} as any;
-		const routesPrefixed = {} as any;
-		Object.keys( routes ).forEach( key => {
-			if ( key == 'root') {
-				routesPrefixed[ `${this.routePrefix}` ] = routes[ key ];
-			} else {
-				routesPrefixed[ `${this.routePrefix}-${key}` ] = routes[ key ];
-			}
-		});
-		return routesPrefixed;
+		return routes;
 	}
 	
 	render( ViewComponent: any ) {
@@ -111,10 +102,7 @@ class AdminApp extends App {
 		this.pageElement.appendChild( pageContainer );
 		render(
 			<Provider container={ this.container }>
-				<AppLayout
-					tcaEnabled={ this.tcaEnabled }
-					tcaRules={ this.tcaRules }
-				>
+				<AppLayout pageData={ this.pageData }>
 					<ViewComponent pageData={ this.pageData } />
 				</AppLayout>
 			</Provider>,

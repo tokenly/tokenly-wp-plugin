@@ -11,6 +11,7 @@ use Twig\Environment;
  */
 class Router extends Service implements RouterInterface {
 	protected $routes = array();
+	protected $default_template;
 
 	/**
 	 * Hooks the router to WordPress
@@ -41,11 +42,25 @@ class Router extends Service implements RouterInterface {
 	 */
 	public function render_route( callable $render_function ) {
 		$controller_response = call_user_func( $render_function );
-		$view_data = $controller_response['data'];
-		if ( !$view_data ) {
-			$view_data = array();
+		if ( !$controller_response ) {
+			return;
 		}
-		$template = $controller_response['template'];
+		$view_data = array();
+		$template = $this->default_template;
+		if ( isset( $controller_response['template'] ) ) {
+			$template = $controller_response['template'];
+		}
+		if ( isset( $controller_response['data'] ) ) {
+			$view_data = array_merge( $view_data, $controller_response['data'] );
+		}
+		if ( isset( $controller_response['view'] ) ) {
+			$view_data['view'] = $controller_response['view'];
+		}
+		if ( $template == 'Dynamic.twig' ) {
+			$view_data = array(
+				'props' => $view_data,
+			);
+		}
 		$html = $this->twig->render( $template, $view_data );	
 		echo $html;
 	}

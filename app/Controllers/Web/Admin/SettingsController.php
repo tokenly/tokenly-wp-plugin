@@ -19,6 +19,9 @@ class SettingsController implements SettingsControllerInterface {
 
 	public function show() {
 		$view_data = $this->settings_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'settings',
+			'data' => $view_data,
+		);
 	}
 }

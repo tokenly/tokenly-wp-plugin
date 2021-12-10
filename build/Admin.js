@@ -8801,6 +8801,7 @@ const EventBus_1 = __webpack_require__(/*! ../EventBus */ "./resources/ts/EventB
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AppLayout extends react_1.Component {
     constructor(props) {
+        var _a, _b;
         super(props);
         this.state = {
             confirmModalData: null,
@@ -8813,7 +8814,8 @@ class AppLayout extends react_1.Component {
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
         this.onPostDataUpdated = this.onPostDataUpdated.bind(this);
         this.onTcaUpdate = this.onTcaUpdate.bind(this);
-        this.state.tcaRules = Object.assign({}, this.props.tcaRules);
+        console.log(this.props.pageData);
+        this.state.tcaRules = Object.assign({}, (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.pageData) === null || _b === void 0 ? void 0 : _b.tca_rules);
         this.state.postData.tca_rules = this.state.tcaRules;
     }
     onConfirmModalRequestClose() {
@@ -8854,11 +8856,12 @@ class AppLayout extends react_1.Component {
         });
     }
     render() {
+        var _a;
         return (React.createElement(element_1.Fragment, null,
             this.props.children,
             this.state.confirmModalShow == true &&
                 React.createElement(ConfirmModal_1.ConfirmModal, { key: this.state.confirmModalData.key, title: this.state.confirmModalData.title, subtitle: this.state.confirmModalData.subtitle, onRequestClose: this.onConfirmModalRequestClose, onChoice: this.onConfirmModalChoice }),
-            this.props.tcaEnabled == true &&
+            ((_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_enabled) == true &&
                 React.createElement(TcaRuleEditor_1.default, { rules: this.state.tcaRules, onUpdate: this.onTcaUpdate }),
             React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.postData) })));
     }
@@ -10037,7 +10040,7 @@ const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditP
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
-        var _a, _b, _c;
+        var _a, _b;
         super();
         this.container = Inversify_config_1.container;
         this.tcaEnabled = false;
@@ -10049,14 +10052,10 @@ class AdminApp extends App_1.default {
             if (!data) {
                 return;
             }
-            const urlParams = new URLSearchParams(window.location.search);
-            this.view = urlParams.get('page');
             this.pageData = data === null || data === void 0 ? void 0 : data.props;
-            this.tcaEnabled = (_a = data.tcaEnabled) !== null && _a !== void 0 ? _a : false;
-            this.tcaRules = (_b = data.tcaRules) !== null && _b !== void 0 ? _b : [];
+            this.view = (_a = this.pageData) === null || _a === void 0 ? void 0 : _a.view;
             const views = this.getViews();
-            console.log(views);
-            const ViewComponent = (_c = views[this.view]) !== null && _c !== void 0 ? _c : null;
+            const ViewComponent = (_b = views[this.view]) !== null && _b !== void 0 ? _b : null;
             if (ViewComponent) {
                 this.highlightMenu();
                 this.render(ViewComponent);
@@ -10066,7 +10065,7 @@ class AdminApp extends App_1.default {
     }
     getViews() {
         let routes = {
-            'root': DashboardPage_1.default,
+            'dashboard': DashboardPage_1.default,
             'balances-show': BalancesShowPage_1.default,
             'settings': SettingsPage_1.default,
             'connection': ConnectionPage_1.default,
@@ -10088,16 +10087,7 @@ class AdminApp extends App_1.default {
             'post-edit': PostEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
         };
-        const routesPrefixed = {};
-        Object.keys(routes).forEach(key => {
-            if (key == 'root') {
-                routesPrefixed[`${this.routePrefix}`] = routes[key];
-            }
-            else {
-                routesPrefixed[`${this.routePrefix}-${key}`] = routes[key];
-            }
-        });
-        return routesPrefixed;
+        return routes;
     }
     render(ViewComponent) {
         if (!this.pageElement) {
@@ -10106,7 +10096,7 @@ class AdminApp extends App_1.default {
         const pageContainer = document.createElement('div');
         this.pageElement.appendChild(pageContainer);
         (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
-            React.createElement(AppLayout_1.default, { tcaEnabled: this.tcaEnabled, tcaRules: this.tcaRules },
+            React.createElement(AppLayout_1.default, { pageData: this.pageData },
                 React.createElement(ViewComponent, { pageData: this.pageData }))), pageContainer);
     }
     registerRedirects() {

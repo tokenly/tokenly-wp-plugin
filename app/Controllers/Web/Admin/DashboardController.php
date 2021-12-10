@@ -19,6 +19,9 @@ class DashboardController implements DashboardControllerInterface {
 
 	public function show() {
 		$view_data = $this->dashboard_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'dashboard',
+			'data' => $view_data,
+		);
 	}
 }

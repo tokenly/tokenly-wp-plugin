@@ -27,7 +27,10 @@ class CreditGroupController implements CreditGroupControllerInterface {
 
 	public function index() {
 		$view_data = $this->credit_group_index_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'credit-group-index',
+			'data' => $view_data,
+		);
 	}
 	
 	public function show() {
@@ -38,12 +41,18 @@ class CreditGroupController implements CreditGroupControllerInterface {
 			'credit_group_uuid' => $_GET['credit_group'],
 		);
 		$view_data = $this->credit_group_show_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'credit-group-show',
+			'data' => $view_data,
+		);
 	}
 
 	public function store() {
 		$view_data = array();
-		return $view_data;
+		return array(
+			'view' => 'credit-group-store',
+			'data' => $view_data,
+		);
 	}
 
 	public function edit() {
@@ -54,6 +63,9 @@ class CreditGroupController implements CreditGroupControllerInterface {
 			'credit_group_uuid' => $_GET['credit_group'],
 		);
 		$view_data = $this->credit_group_edit_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'credit-group-edit',
+			'data' => $view_data,
+		);
 	}
 }

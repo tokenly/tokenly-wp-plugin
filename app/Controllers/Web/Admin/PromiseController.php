@@ -33,12 +33,18 @@ class PromiseController implements PromiseControllerInterface {
 			'promise_id' => intval( $_GET['promise'] ),
 		);
 		$view_data = $this->promise_show_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'promise-show',
+			'data' => $view_data,
+		);
 	}
 
 	public function store() {
 		$view_data = $this->promise_store_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'promise-store',
+			'data' => $view_data,
+		);
 	}
 
 	public function edit() {
@@ -49,6 +55,9 @@ class PromiseController implements PromiseControllerInterface {
 			'promise_id' => intval( $_GET['promise'] ),
 		);
 		$view_data = $this->promise_edit_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'promise-edit',
+			'data' => $view_data,
+		);
 	}
 }

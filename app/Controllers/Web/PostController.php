@@ -28,6 +28,7 @@ class PostController implements PostControllerInterface {
 		$view_data = $this->post_edit_view_model->prepare();
 		return array(
 			'template' => 'Dynamic.twig',
+			'view'     => 'post-edit',
 			'data'     => $view_data,
 		);
 	}

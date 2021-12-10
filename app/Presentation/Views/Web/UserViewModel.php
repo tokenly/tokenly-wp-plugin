@@ -74,15 +74,15 @@ class UserViewModel extends ViewModel implements UserViewModelInterface {
 			);
 		}
 		$user_info_block_data = null;
-		// if ( isset( $data['user'] ) ) {
-		// 	$user_info_block_data = $this->user_info_block_model->render(
-		// 		array(
-		// 			'user' => $data['user'],
-		// 		)
-		// 	);
-		// }
+		if ( $user ) {
+			$user_info_block_data = $this->user_info_block_model->prepare(
+				array(
+					'user' => $user,
+				)
+			);
+		}
 		return array(
-			'user_info_block'              => $user_info_block_data,
+			'user_info_block_data'         => $user_info_block_data,
 			'token_inventory_block_data'   => $token_item_card_list_block_data,
 			'credit_inventory_block_data'  => $app_credit_item_card_list_block_data,
 		);

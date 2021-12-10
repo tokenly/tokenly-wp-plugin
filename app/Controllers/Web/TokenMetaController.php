@@ -25,6 +25,7 @@ class TokenMetaController implements TokenMetaControllerInterface {
 		$view_data = $this->token_meta_edit_view_model->prepare();
 		return array(
 			'template' => 'Dynamic.twig',
+			'view'     => 'token-meta-edit',
 			'data'     => $view_data,
 		);
 	}

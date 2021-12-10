@@ -36,6 +36,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected $api_host;
 	protected $namespace;
 	protected $twig;
+	protected $default_template = 'Dynamic.twig';
 
 	public function __construct(
 		string $root_dir,
@@ -107,18 +108,6 @@ class AdminRouter extends Router implements AdminRouterInterface {
 				];
 			</script>
 		"; 
-	}
-	
-	/**
-	 * Executes the specified render callback
-	 * @param callable $render_function Controller's render function
-	 */
-	public function render_route( callable $render_function ) {
-		$view_data = call_user_func( $render_function );
-		$html = $this->twig->render( 'Dynamic.twig', array(
-			'props' => $view_data,
-		) );	
-		echo $html;
 	}
 	
 	/**

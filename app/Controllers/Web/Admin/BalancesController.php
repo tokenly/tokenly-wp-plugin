@@ -25,6 +25,9 @@ class BalancesController implements BalancesControllerInterface {
 			'address' => $_GET['address'],
 		);
 		$view_data = $this->balances_show_view_model->prepare( $input_data );
-		return $view_data;
+		return array(
+			'view' => 'balances-show',
+			'data' => $view_data,
+		);
 	}
 }

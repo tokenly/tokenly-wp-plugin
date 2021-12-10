@@ -19,6 +19,9 @@ class VendorController implements VendorControllerInterface {
 
 	public function show() {
 		$view_data = $this->vendor_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'vendor',
+			'data' => $view_data,
+		);
 	}
 }

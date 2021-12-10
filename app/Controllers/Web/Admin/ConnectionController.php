@@ -19,6 +19,9 @@ class ConnectionController implements ConnectionControllerInterface {
 
 	public function show() {
 		$view_data = $this->connection_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'connection',
+			'data' => $view_data,
+		);
 	}
 }

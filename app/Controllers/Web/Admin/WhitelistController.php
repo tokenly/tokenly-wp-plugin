@@ -19,6 +19,9 @@ class WhitelistController implements WhitelistControllerInterface {
 
 	public function show() {
 		$view_data = $this->whitelist_view_model->prepare();
-		return $view_data;
+		return array(
+			'view' => 'whitelist',
+			'data' => $view_data,
+		);
 	}
 }

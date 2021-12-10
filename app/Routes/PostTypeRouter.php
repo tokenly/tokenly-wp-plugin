@@ -28,6 +28,8 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $tca_settings;
 	protected $post_service;
 	protected $post_collection_factory;
+	protected $twig;
+	protected $default_template = 'Index.twig';
 	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
@@ -40,6 +42,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		CurrentUserInterface $current_user,
 		TcaSettingsInterface $tca_settings,
 		PostCollectionFactoryInterface $post_collection_factory,
+		Environment $twig,
 		string $namespace
 	) {
 		$this->integration = $integration;
@@ -48,6 +51,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		$this->namespace = $namespace;
 		$this->post_service = $post_service;
 		$this->post_collection_factory = $post_collection_factory;
+		$this->twig = $twig;
 		$this->post_types = array(
 			'token_meta' => array(
 				'post_type'  => $token_meta_post_type,
