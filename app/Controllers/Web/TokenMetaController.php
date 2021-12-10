@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
-use Tokenly\Wp\ViewModels\Admin\TokenMetaEditViewModel;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
 
 /**
  * Serves the token meta views
@@ -12,7 +12,7 @@ class TokenMetaController implements TokenMetaControllerInterface {
 	public $token_meta_edit_view_model;
 
 	public function __construct(
-		TokenMetaEditViewModel $token_meta_edit_view_model
+		TokenMetaEditViewModelInterface $token_meta_edit_view_model
 	) {
 		$this->token_meta_edit_view_model = $token_meta_edit_view_model;
 	}

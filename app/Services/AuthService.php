@@ -9,14 +9,15 @@ use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
-use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
+use Tokenly\Wp\Interfaces\Presentation\Components\LoginButtonComponentModelInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
+use Twig\Environment;
 
 /**
  * Handles the Tokenpass authentication flow (OAuth)
  */
 class AuthService extends Service implements AuthServiceInterface {
-	protected $button_login_component;
+	protected $login_button_component_model;
 	protected $client;
 	protected $current_user;
 	protected $oauth_callback_route;
@@ -27,27 +28,30 @@ class AuthService extends Service implements AuthServiceInterface {
 	protected $namespace;
 	protected $state_cookie_name;
 	protected $success_url_cookie_name;
+	protected $twig;
 	
 	public function __construct(
-		ButtonLoginComponentInterface $button_login_component,
+		LoginButtonComponentModelInterface $login_button_component_model,
 		CurrentUserInterface $current_user,
 		TokenpassAPIInterface $client,
 		OauthUserServiceInterface $oauth_user_service,
 		IntegrationSettingsInterface $settings,
 		UserServiceInterface $user_service,
+		Environment $twig,
 		string $oauth_callback_route,
 		string $api_host,
 		string $namespace
 	) {
 		$this->api_host = $api_host;
 		$this->namespace = $namespace;
-		$this->button_login_component = $button_login_component;
+		$this->login_button_component_model = $login_button_component_model;
 		$this->client = $client;
 		$this->current_user = $current_user;
 		$this->oauth_callback_route = $oauth_callback_route;
 		$this->oauth_user_service = $oauth_user_service;
 		$this->settings = $settings;
 		$this->user_service = $user_service;
+		$this->twig = $twig;
 		$this->state_cookie_name = "{$this->namespace}_oauth_state";
 		$this->success_url_cookie_name = "{$this->namespace}_oauth_success_url";
 	}
@@ -82,7 +86,9 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return void
 	 */
 	public function embed_tokenpass_login() {
-		echo $this->button_login_component->render();
+		$component_data = $this->login_button_component_model->prepare();
+		$component_html = $this->twig->render( 'components/LoginButtonComponent.twig', $component_data );
+		echo $component_html;
 	}
 
 	/**

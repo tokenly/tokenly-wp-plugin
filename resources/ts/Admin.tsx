@@ -70,6 +70,7 @@ class AdminApp extends App {
 	
 	getViews() {
 		let routes = {
+			'root'                      : DashboardPage,
 			'balances-show'             : BalancesShowPage,
 			'settings'                  : SettingsPage,
 			'connection'                : ConnectionPage,
@@ -90,11 +91,14 @@ class AdminApp extends App {
 			'source-edit'               : SourceEditPage,
 			'post-edit'                 : PostEditPage,
 			'token-meta-edit'           : TokenMetaEditPage,
-			'dashboard'                 : DashboardPage,
 		} as any;
 		const routesPrefixed = {} as any;
 		Object.keys( routes ).forEach( key => {
-			routesPrefixed[ `${this.routePrefix}-${key}` ] = routes[ key ];
+			if ( key == 'root') {
+				routesPrefixed[ `${this.routePrefix}` ] = routes[ key ];
+			} else {
+				routesPrefixed[ `${this.routePrefix}-${key}` ] = routes[ key ];
+			}
 		});
 		return routesPrefixed;
 	}

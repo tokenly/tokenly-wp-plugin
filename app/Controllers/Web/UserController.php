@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
-use Tokenly\Wp\ViewModels\Web\UserViewModel;
+use Tokenly\Wp\Interfaces\Presentation\Views\Web\UserViewModelInterface;
 
 /**
  * Serves the public user views
@@ -14,7 +14,7 @@ class UserController implements UserControllerInterface {
 
 	public function __construct(
 		string $namespace,
-		UserViewModel $user_view_model
+		UserViewModelInterface $user_view_model
 	) {
 		$this->namespace = $namespace;
 		$this->user_view_model = $user_view_model;

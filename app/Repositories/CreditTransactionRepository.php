@@ -51,12 +51,12 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 	public function store( array $params = array() ) {
 		if (
 			!isset( $params['type'] ) ||
-			!isset( $params['group'] ) ||
+			!isset( $params['group_uuid'] ) ||
 			!isset( $params['account'] )
 		) {
 			return;
 		}
-		$group_uuid = $params['group'];
+		$group_uuid = $params['group_uuid'];
 		$account_user = $params['account'];
 		$amount = intval( $params['amount'] );
 		$account = array(

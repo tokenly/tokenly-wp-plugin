@@ -17,7 +17,7 @@ class AddressService extends DomainService implements AddressServiceInterface {
 
 	public function __construct(
 		AddressRepositoryInterface $address_repository,
-		OauthUserService $oauth_user_service
+		OauthUserServiceInterface $oauth_user_service
 	) {
 		$this->address_repository = $address_repository;
 		$this->oauth_user_service = $oauth_user_service;

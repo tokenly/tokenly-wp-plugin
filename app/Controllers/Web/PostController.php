@@ -3,8 +3,8 @@
 namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
-use Tokenly\Wp\ViewModels\Admin\PostEditViewModel;
-use Tokenly\Wp\ViewModels\Web\PostAccessDeniedViewModel;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
 
 /**
  * Serves the token meta views
@@ -13,8 +13,8 @@ class PostController implements PostControllerInterface {
 	protected $post_edit_view_model;
 
 	public function __construct(
-		PostEditViewModel $post_edit_view_model,
-		PostAccessDeniedViewModel $post_access_denied_view_model
+		PostEditViewModelInterface $post_edit_view_model,
+		PostAccessDeniedViewModelInterface $post_access_denied_view_model
 	) {
 		$this->post_edit_view_model = $post_edit_view_model;
 		$this->post_access_denied_view_model = $post_access_denied_view_model;

@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Repositories\CreditGroupRepositoryInterface;
  * Manages credit groups
  */
 class CreditGroupService extends DomainService implements CreditGroupServiceInterface {
+	protected $credit_group_repository;
 
 	public function __construct(
 		CreditGroupRepositoryInterface $credit_group_repository

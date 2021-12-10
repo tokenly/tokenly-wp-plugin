@@ -98,13 +98,13 @@ class CreditAccountRepository implements CreditAccountRepositoryInterface {
 	 */
 	public function store( array $params = array() ) {
 		if (
-			!isset( $params['name'] ) ||
+			!isset( $params['account_uuid'] ) ||
 			!isset( $params['group_uuid'] )
 		) {
 			return;
 		}
 		$group_uuid = $params['group_uuid'];
-		$name = $params['name'];
+		$name = $params['account_uuid'];
 		$account = $this->client->newAppCreditAccount( $group_uuid, $name );
 		if( !$account ){
 			return;

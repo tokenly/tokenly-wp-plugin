@@ -60,7 +60,6 @@ class OauthUser extends Model implements OauthUserInterface {
 		TokenpassAPIInterface $client,
 		array $data = array()
 	) {
-		$this->tca_service = $tca_service;
 		$this->address_service = $address_service;
 		$this->balance_service = $balance_service;
 		$this->user_service = $user_service;
@@ -171,7 +170,7 @@ class OauthUser extends Model implements OauthUserInterface {
 			'group_uuid'   => $group_uuid,
 		) );
 		if( !$account ){
-			$this->client->credit_account_service->store( array(
+			$account = $this->credit_account_service->store( array(
 				'account_uuid' => $this->id,
 				'group_uuid'   => $group_uuid,
 			) );

@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
-use Tokenly\Wp\ViewModels\Admin\BalancesShowViewModel;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\BalancesShowViewModelInterface;
 
 /**
  * Serves the admin balance views
@@ -12,7 +12,7 @@ class BalancesController implements BalancesControllerInterface {
 	protected $balances_show_view_model;
 
 	public function __construct(
-		BalancesShowViewModel $balances_show_view_model
+		BalancesShowViewModelInterface $balances_show_view_model
 	) {
 		$this->balances_show_view_model = $balances_show_view_model;
 	}

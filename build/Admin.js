@@ -5577,7 +5577,7 @@ class CreditTransactionStoreForm extends react_1.Component {
         this.state = {
             creditGroupOptions: [],
             transaction: {
-                group: null,
+                group_uuid: null,
                 type: 'debit',
                 account: null,
                 amount: 0,
@@ -5589,7 +5589,7 @@ class CreditTransactionStoreForm extends react_1.Component {
         this.getCreditGroupOptions = this.getCreditGroupOptions.bind(this);
         this.state.creditGroupOptions = this.getCreditGroupOptions();
         if ((_a = this.state.creditGroupOptions[0]) !== null && _a !== void 0 ? _a : null) {
-            this.state.transaction.group = (_b = this.state.creditGroupOptions[0]) === null || _b === void 0 ? void 0 : _b.value;
+            this.state.transaction.group_uuid = (_b = this.state.creditGroupOptions[0]) === null || _b === void 0 ? void 0 : _b.value;
         }
     }
     onSubmit() {
@@ -5619,9 +5619,9 @@ class CreditTransactionStoreForm extends react_1.Component {
                     //@ts-ignore
                     direction: "column" },
                     React.createElement("div", { style: { marginBottom: '12px' } },
-                        React.createElement(components_1.SelectControl, { label: "Credit group", value: this.state.transaction.group, options: this.state.creditGroupOptions, onChange: (value) => {
+                        React.createElement(components_1.SelectControl, { label: "Credit group", value: this.state.transaction.group_uuid, options: this.state.creditGroupOptions, onChange: (value) => {
                                 let newState = Object.assign({}, this.state.transaction);
-                                newState.group = value;
+                                newState.group_uuid = value;
                                 this.setState({ transaction: newState });
                             } })),
                     React.createElement("div", { style: { marginBottom: '12px' } },
@@ -10066,6 +10066,7 @@ class AdminApp extends App_1.default {
     }
     getViews() {
         let routes = {
+            'root': DashboardPage_1.default,
             'balances-show': BalancesShowPage_1.default,
             'settings': SettingsPage_1.default,
             'connection': ConnectionPage_1.default,
@@ -10086,11 +10087,15 @@ class AdminApp extends App_1.default {
             'source-edit': SourceEditPage_1.default,
             'post-edit': PostEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
-            'dashboard': DashboardPage_1.default,
         };
         const routesPrefixed = {};
         Object.keys(routes).forEach(key => {
-            routesPrefixed[`${this.routePrefix}-${key}`] = routes[key];
+            if (key == 'root') {
+                routesPrefixed[`${this.routePrefix}`] = routes[key];
+            }
+            else {
+                routesPrefixed[`${this.routePrefix}-${key}`] = routes[key];
+            }
         });
         return routesPrefixed;
     }

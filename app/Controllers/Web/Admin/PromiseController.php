@@ -3,9 +3,9 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
-use Tokenly\Wp\ViewModels\Admin\PromiseShowViewModel;
-use Tokenly\Wp\ViewModels\Admin\PromiseStoreViewModel;
-use Tokenly\Wp\ViewModels\Admin\PromiseEditViewModel;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseStoreViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseEditViewModelInterface;
 
 /**
  * Serves the admin promise views
@@ -16,9 +16,9 @@ class PromiseController implements PromiseControllerInterface {
 	protected $promise_edit_view_model;
 
 	public function __construct(
-		PromiseShowViewModel $promise_show_view_model,
-		PromiseStoreViewModel $promise_store_view_model,
-		PromiseEditViewModel $promise_edit_view_model
+		PromiseShowViewModelInterface $promise_show_view_model,
+		PromiseStoreViewModelInterface $promise_store_view_model,
+		PromiseEditViewModelInterface $promise_edit_view_model
 	) {
 		$this->promise_show_view_model = $promise_show_view_model;
 		$this->promise_store_view_model = $promise_store_view_model;

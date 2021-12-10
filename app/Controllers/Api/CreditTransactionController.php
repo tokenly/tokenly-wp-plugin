@@ -42,7 +42,8 @@ class CreditTransactionController implements CreditTransactionControllerInterfac
 		$params = $request->get_params();
 		if (
 			!isset( $params['type'] ) ||
-			!isset( $params['account'] )
+			!isset( $params['account'] ) ||
+			!isset( $params['group_uuid'] )
 		)
 		$user = null;
 		$user = $this->user_service->show( array(

@@ -3,9 +3,9 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditGroupControllerInterface;
-use Tokenly\Wp\ViewModels\Admin\CreditGroupIndexViewModel;
-use Tokenly\Wp\ViewModels\Admin\CreditGroupShowViewModel;
-use Tokenly\Wp\ViewModels\Admin\CreditGroupEditViewModel;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupIndexViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupEditViewModelInterface;
 
 /**
  * Serves the admin credit group views
@@ -16,9 +16,9 @@ class CreditGroupController implements CreditGroupControllerInterface {
 	protected $credit_group_edit_view_model;
 
 	public function __construct(
-		CreditGroupIndexViewModel $credit_group_index_view_model,
-		CreditGroupShowViewModel $credit_group_show_view_model,
-		CreditGroupEditViewModel $credit_group_edit_view_model
+		CreditGroupIndexViewModelInterface $credit_group_index_view_model,
+		CreditGroupShowViewModelInterface $credit_group_show_view_model,
+		CreditGroupEditViewModelInterface $credit_group_edit_view_model
 	) {
 		$this->credit_group_index_view_model = $credit_group_index_view_model;
 		$this->credit_group_show_view_model = $credit_group_show_view_model;

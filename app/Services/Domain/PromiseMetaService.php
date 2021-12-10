@@ -5,21 +5,17 @@ namespace Tokenly\Wp\Services\Domain;
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 /**
  * Manages the promise meta
  */
 class PromiseMetaService extends DomainService implements PromiseMetaServiceInterface {
 	protected $promise_meta_repository;
-	protected $meta_repository;
 
 	public function __construct(
-		PromiseMetaRepositoryInterface $promise_meta_repository,
-		MetaRepositoryInterface $meta_repository
+		PromiseMetaRepositoryInterface $promise_meta_repository
 	) {
 		$this->promise_meta_repository = $promise_meta_repository;
-		$this->meta_repository = $meta_repository;
 	}
 
 	/**
