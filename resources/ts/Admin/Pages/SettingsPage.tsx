@@ -6,7 +6,8 @@ import { SavePanel } from '../Components/SavePanel';
 import { IntegrationSettingsForm } from '../Components/IntegrationSettingsForm';
 import { IntegrationSettingsHelp } from '../Components/IntegrationSettingsHelp';
 import { TcaSettingsForm } from '../Components/TcaSettingsForm';
-import { SettingsData } from '../../Interfaces';
+import { OauthSettingsForm } from '../Components/OauthSettingsForm';
+import { IntegrationSettings, TcaSettings, OauthSettings } from '../../Interfaces';
 import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
 import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
 import { OauthSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
@@ -21,9 +22,10 @@ import {
 } from '@wordpress/components';
 
 interface SettingsPageData {
-	integration_settings: any;
+	integration_settings: IntegrationSettings;
 	integration_data: any;
-	tca_settings: any;
+	tca_settings: TcaSettings;
+	oauth_settings: OauthSettings;
 	tca_data: any;
 }
 
@@ -32,14 +34,12 @@ interface SettingsPageProps {
 }
 
 interface SettingsPageState {
-	integrationSettings: SettingsData;
-	tcaSettings: {
-		post_types: object,
-		filter_menu_items: boolean,
-		filter_post_results: boolean,
-	};
-	savingIntegrationSettings: boolean,
-	savingTcaSettings: boolean,
+	integrationSettings: IntegrationSettings;
+	tcaSettings: TcaSettings;
+	oauthSettings: OauthSettings;
+	savingIntegrationSettings: boolean;
+	savingTcaSettings: boolean;
+	savingOauthSettings: boolean;
 }
 
 export default class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
@@ -57,11 +57,18 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		},
 		tcaSettings: {
 			post_types: {},
-			filter_menu_items: false,
-			filter_post_results: false,
+			filter_menu_items: null,
+			filter_post_results: null,
+		},
+		oauthSettings: {
+			use_single_sign_on: null,
+			success_url: '',
+			allow_no_email: null,
+			allow_unconfirmed_email: null,
 		},
 		savingIntegrationSettings: false,
 		savingTcaSettings: false,
+		savingOauthSettings: false,
 	}
 	constructor( props: SettingsPageProps ) {
 		super( props );
@@ -69,11 +76,14 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind( this );
 		this.onTcaSettingsSave = this.onTcaSettingsSave.bind( this );
 		this.onTcaSettingsChange = this.onTcaSettingsChange.bind( this );
+		this.onOauthSettingsSave = this.onOauthSettingsSave.bind( this );
+		this.onOauthSettingsChange = this.onOauthSettingsChange.bind( this );
 		this.state.integrationSettings = Object.assign( this.state.integrationSettings, this.props.pageData.integration_settings );
 		this.state.tcaSettings = Object.assign( {}, this.props.pageData?.tca_settings );
 		if ( !this.state.tcaSettings.post_types ) {
 			this.state.tcaSettings.post_types = {};
 		}
+		this.state.oauthSettings = Object.assign( this.state.oauthSettings, this.props.pageData.oauth_settings );
 	}
 	
 	setClientId( value: string ) {
@@ -115,11 +125,24 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		this.setState( { tcaSettings: newSettings } )
 	}
 
+	onOauthSettingsSave() {
+		this.setState( { savingOauthSettings: true } );
+		this.oauthSettingsRepository.update( this.state.oauthSettings ).then( ( result: any ) => {
+			this.setState( { savingOauthSettings: false } );
+		} ).catch( ( error: any ) => {
+			console.log( error );
+		})
+	}
+
+	onOauthSettingsChange( newSettings: any ) {
+		this.setState( { oauthSettings: newSettings } )
+	}
+
 	render() {
 		return (
 			<Page title={'Tokenpass Settings'}>
 				<Panel>
-					<PanelBody title="Integration settings">
+					<PanelBody title="Integration">
 						<PanelRow>
 							<IntegrationSettingsHelp
 								appHomepageUrl={ this.props.pageData?.integration_data?.app_homepage_url }
@@ -143,7 +166,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 					</PanelBody>
 				</Panel>
 				<Panel>
-					<PanelBody title="TCA settings">
+					<PanelBody title="Token Controlled Access (TCA)">
 						<PanelRow>
 							<TcaSettingsForm
 								settings={ this.state.tcaSettings }
@@ -156,6 +179,23 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 								label="Save TCA settings"
 								saving={ this.state.savingTcaSettings }
 								onClick={ this.onTcaSettingsSave }
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody title="Authorization (OAuth)">
+						<PanelRow>
+							<OauthSettingsForm
+								settings={ this.state.oauthSettings }
+								onChange={ this.onOauthSettingsChange }
+							/>
+						</PanelRow>
+						<PanelRow>
+							<SavePanel
+								label="Save OAuth settings"
+								saving={ this.state.savingOauthSettings }
+								onClick={ this.onOauthSettingsSave }
 							/>
 						</PanelRow>
 					</PanelBody>

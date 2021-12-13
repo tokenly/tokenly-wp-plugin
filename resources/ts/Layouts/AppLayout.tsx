@@ -11,8 +11,7 @@ import {
 
 interface AppLayoutProps {
 	children: any;
-	tcaEnabled: boolean;
-	tcaRules: any;
+	pageData: any;
 }
 
 interface AppLayoutState {
@@ -36,7 +35,8 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 		this.onPostDataUpdated = this.onPostDataUpdated.bind( this );
 		this.onTcaUpdate = this.onTcaUpdate.bind( this );
-		this.state.tcaRules = Object.assign( {}, this.props.tcaRules );
+		console.log(this.props.pageData);
+		this.state.tcaRules = Object.assign( {}, this.props?.pageData?.tca_rules );
 		this.state.postData.tca_rules = this.state.tcaRules;
 	}
 
@@ -96,7 +96,7 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 						onChoice={ this.onConfirmModalChoice }
 					/>
 				}
-				{ this.props.tcaEnabled == true &&
+				{ this.props.pageData?.tca_enabled == true &&
 					<TcaRuleEditor
 						rules={ this.state.tcaRules }
 						onUpdate={ this.onTcaUpdate }

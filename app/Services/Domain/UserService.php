@@ -3,7 +3,6 @@
 namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
-use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
@@ -14,16 +13,13 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
  * Manages the users
  */
 class UserService extends DomainService implements UserServiceInterface {
-	protected $oauth_user_service;
 	protected $user_repository;
 	protected $namespace;
 
 	public function __construct(
-		OauthUserServiceInterface $oauth_user_service,
 		UserRepositoryInterface $user_repository,
 		string $namespace
 	) {
-		$this->oauth_user_service = $oauth_user_service;
 		$this->user_repository = $user_repository;
 		$this->namespace = $namespace;
 	}

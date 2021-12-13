@@ -2,31 +2,22 @@
 
 namespace Tokenly\Wp\Controllers\Web;
 
-use Tokenly\Wp\Views\PostEditView;
-use Tokenly\Wp\Views\PostAccessDeniedView;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
 
 /**
  * Serves the token meta views
  */
 class PostController implements PostControllerInterface {
-	protected $post_edit_view;
-	protected $post_access_denied_view;
-	protected $post_service;
-	protected $tca_settings;
+	protected $post_edit_view_model;
 
 	public function __construct(
-		PostEditView $post_edit_view,
-		PostAccessDeniedView $post_access_denied_view,
-		PostServiceInterface $post_service,
-		TcaSettingsInterface $tca_settings
+		PostEditViewModelInterface $post_edit_view_model,
+		PostAccessDeniedViewModelInterface $post_access_denied_view_model
 	) {
-		$this->post_edit_view = $post_edit_view;
-		$this->post_access_denied_view = $post_access_denied_view;
-		$this->post_service = $post_service;
-		$this->tca_settings = $tca_settings;
+		$this->post_edit_view_model = $post_edit_view_model;
+		$this->post_access_denied_view_model = $post_access_denied_view_model;
 	}
 	
 	/**
@@ -34,31 +25,19 @@ class PostController implements PostControllerInterface {
 	 * It is responsible for editing the additional token meta.
 	 */
 	public function edit() {
-		$post_type = get_post_type();
-		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
-		$post_id = get_the_ID();
-		if ( !$post_id || $post_id == 0 ) {
-			return;
-		}
-		$post = $this->post_service->show( array(
-			'id' => $post_id,
-		) );
-		error_log(d( $post ));
-		$tca_rules = array();
-		if ( $post && isset( $post->tca_rules ) && is_object( $post->tca_rules ) ) {
-			$tca_rules = $post->tca_rules->to_array();
-		}
-		$render = $this->post_edit_view->render( array(
-			'tca_enabled' => $tca_enabled,
-			'tca_rules'   => $tca_rules,
-		) );
-		return $render;
+		$view_data = $this->post_edit_view_model->prepare();
+		return array(
+			'template' => 'Dynamic.twig',
+			'view'     => 'post-edit',
+			'data'     => $view_data,
+		);
 	}
 
 	public function denied() {
-		$render = $this->post_access_denied_view->render( array(
-			//
-		) );
-		return $render;
+		$view_data = $this->post_access_denied_view_model->prepare();
+		return array(
+			'template' => 'Denied.twig',
+			'data'     => $view_data,
+		);
 	}
 }

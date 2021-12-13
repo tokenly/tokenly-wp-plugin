@@ -7,7 +7,6 @@ use Tokenly\Wp\Providers\ShortcodeServiceProvider;
 use Tokenly\Wp\Services\AuthService;
 use Tokenly\Wp\Services\LifecycleService;
 use Tokenly\Wp\Services\ResourceService;
-use Tokenly\Wp\Services\TcaService;
 use Tokenly\Wp\Services\QueryService;
 use Tokenly\Wp\Services\Domain\AddressService;
 use Tokenly\Wp\Services\Domain\BalanceService;
@@ -40,10 +39,6 @@ use Tokenly\Wp\Routes\AdminRouter;
 use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\Wp\Routes\PostTypeRouter;
 use Tokenly\Wp\Routes\WebRouter;
-use Tokenly\Wp\Components\ButtonLoginComponent;
-use Tokenly\Wp\Components\ButtonLogoutComponent;
-use Tokenly\Wp\Components\CardTokenItemComponent;
-use Tokenly\Wp\Components\CardAppCreditItemComponent;
 use Tokenly\Wp\Controllers\Web\AuthController;
 use Tokenly\Wp\Controllers\Web\PostController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
@@ -103,6 +98,35 @@ use Tokenly\Wp\Models\Settings\OauthSettings;
 use Tokenly\Wp\Models\Settings\IntegrationSettings;
 use Tokenly\Wp\Models\Settings\TcaSettings;
 use Tokenly\Wp\Models\Settings\WhitelistSettings;
+use Tokenly\Wp\Presentation\Blocks\AppCreditItemCardListBlockModel;
+use Tokenly\Wp\Presentation\Blocks\TokenItemCardListBlockModel;
+use Tokenly\Wp\Presentation\Blocks\UserInfoBlockModel;
+use Tokenly\Wp\Presentation\Components\AppCreditItemCardComponentModel;
+use Tokenly\Wp\Presentation\Components\LoginButtonComponentModel;
+use Tokenly\Wp\Presentation\Components\LogoutButtonComponentModel;
+use Tokenly\Wp\Presentation\Components\TokenItemCardComponentModel;
+use Tokenly\Wp\Presentation\Views\Admin\BalancesShowViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\ConnectionViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\CreditGroupEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\CreditGroupIndexViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\CreditGroupShowViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\CreditTransactionIndexViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\CreditTransactionStoreViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\DashboardViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\PostEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\PromiseEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\PromiseShowViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\PromiseStoreViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\SettingsViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\SourceEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\SourceIndexViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\SourceShowViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\SourceStoreViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\TokenMetaEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\VendorViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\WhitelistViewModel;
+use Tokenly\Wp\Presentation\Views\Web\PostAccessDeniedViewModel;
+use Tokenly\Wp\Presentation\Views\Web\UserViewModel;
 use Tokenly\Wp\Shortcodes\LoginButtonShortcode;
 use Tokenly\Wp\Shortcodes\LogoutButtonShortcode;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
@@ -111,7 +135,6 @@ use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
@@ -232,12 +255,37 @@ use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
-use Tokenly\Wp\Interfaces\Components\ButtonLoginComponentInterface;
-use Tokenly\Wp\Interfaces\Components\ButtonLogoutComponentInterface;
-use Tokenly\Wp\Interfaces\Components\CardAppCreditItemComponentInterface;
-use Tokenly\Wp\Interfaces\Components\CardTokenItemComponentInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Blocks\AppCreditItemCardListBlockModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Blocks\TokenItemCardListBlockModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Blocks\UserInfoBlockModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Components\AppCreditItemCardComponentModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Components\LoginButtonComponentModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Components\LogoutButtonComponentModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Components\TokenItemCardComponentModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\BalancesShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\ConnectionViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupIndexViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditTransactionIndexViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditTransactionStoreViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\DashboardViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseStoreViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SettingsViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceIndexViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceStoreViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\VendorViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\WhitelistViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Web\UserViewModelInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Tokenly\TokenpassClient\TokenpassAPI;
@@ -297,8 +345,7 @@ return array(
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
-	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class )
-		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
+	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
 	WhitelistControllerInterface::class            => \DI\autowire( WhitelistController::class ),
@@ -312,14 +359,6 @@ return array(
 	//Shortcodes
 	LoginButtonShortcodeInterface::class              => \DI\autowire( LoginButtonShortcode::class ),
 	LogoutButtonShortcodeInterface::class             => \DI\autowire( LogoutButtonShortcode::class ),
-	//Components 
-	ButtonLoginComponentInterface::class           => \DI\autowire( ButtonLoginComponent::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
-		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	ButtonLogoutComponentInterface::class          => \DI\autowire( ButtonLogoutComponent::class )
-		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	CardAppCreditItemComponentInterface::class     => \DI\autowire( CardAppCreditItemComponent::class ),
-	CardTokenItemComponentInterface::class         => \DI\autowire( CardTokenItemComponent::class ),
 	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
@@ -334,7 +373,6 @@ return array(
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) ),
 	QueryServiceInterface::class                   => \DI\autowire( QueryService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TcaServiceInterface::class                     => \DI\autowire( TcaService::class ),
 	//Services - Domain
 	AddressServiceInterface::class                 => \DI\autowire( AddressService::class ),
 	BalanceServiceInterface::class                 => \DI\autowire( BalanceService::class ),
@@ -384,6 +422,43 @@ return array(
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	//Presentation - Block models
+	AppCreditItemCardListBlockModelInterface::class  => \DI\autowire( AppCreditItemCardListBlockModel::class ),
+	TokenItemCardListBlockModelInterface::class      => \DI\autowire( TokenItemCardListBlockModel::class ),
+	UserInfoBlockModelInterface::class               => \DI\autowire( UserInfoBlockModel::class ),
+	//Presentation - Component models
+	AppCreditItemCardComponentModelInterface::class  => \DI\autowire( AppCreditItemCardComponentModel::class ),
+	LoginButtonComponentModelInterface::class        => \DI\autowire( LoginButtonComponentModel::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
+		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	LogoutButtonComponentModelInterface::class       => \DI\autowire( LogoutButtonComponentModel::class )
+		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	TokenItemCardComponentModelInterface::class      => \DI\autowire( TokenItemCardComponentModel::class ),
+	//Presentation - View models - Admin
+	BalancesShowViewModelInterface::class            => \DI\autowire( BalancesShowViewModel::class ),
+	ConnectionViewModelInterface::class              => \DI\autowire( ConnectionViewModel::class ),
+	CreditGroupEditViewModelInterface::class         => \DI\autowire( CreditGroupEditViewModel::class ),
+	CreditGroupIndexViewModelInterface::class        => \DI\autowire( CreditGroupIndexViewModel::class ),
+	CreditGroupShowViewModelInterface::class         => \DI\autowire( CreditGroupShowViewModel::class ),
+	CreditTransactionIndexViewModelInterface::class  => \DI\autowire( CreditTransactionIndexViewModel::class ),
+	CreditTransactionStoreViewModelInterface::class  => \DI\autowire( CreditTransactionStoreViewModel::class ),
+	DashboardViewModelInterface::class               => \DI\autowire( DashboardViewModel::class ),
+	PostEditViewModelInterface::class                => \DI\autowire( PostEditViewModel::class ),
+	PromiseEditViewModelInterface::class             => \DI\autowire( PromiseEditViewModel::class ),
+	PromiseShowViewModelInterface::class             => \DI\autowire( PromiseShowViewModel::class ),
+	PromiseStoreViewModelInterface::class            => \DI\autowire( PromiseStoreViewModel::class ),
+	SettingsViewModelInterface::class                => \DI\autowire( SettingsViewModel::class )
+		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
+	SourceEditViewModelInterface::class              => \DI\autowire( SourceEditViewModel::class ),
+	SourceIndexViewModelInterface::class             => \DI\autowire( SourceIndexViewModel::class ),
+	SourceShowViewModelInterface::class              => \DI\autowire( SourceShowViewModel::class ),
+	SourceStoreViewModelInterface::class             => \DI\autowire( SourceStoreViewModel::class ),
+	TokenMetaEditViewModelInterface::class           => \DI\autowire( TokenMetaEditViewModel::class ),
+	VendorViewModelInterface::class                  => \DI\autowire( VendorViewModel::class ),
+	WhitelistViewModelInterface::class               => \DI\autowire( WhitelistViewModel::class ),
+	//Presentation - View models - Web
+	PostAccessDeniedViewModelInterface::class        => \DI\autowire( PostAccessDeniedViewModel::class ),
+	UserViewModelInterface::class                    => \DI\autowire( UserViewModel::class ),
 	//Collections
 	CollectionInterface::class                   => \DI\autowire( Collection::class ),
 	AddressCollectionInterface::class            => \DI\autowire( AddressCollection::class ),
@@ -449,13 +524,13 @@ return array(
 	CreditAccountFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditAccountInterface::class ) extends ConcreteFactory implements CreditAccountFactoryInterface {};
 	} ),
-	CreditAccountHistoryFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+	CreditAccountHistoryFactoryInterface::class     => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditAccountHistoryInterface::class ) extends ConcreteFactory implements CreditAccountHistoryFactoryInterface {};
 	} ),
 	CreditGroupFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditGroupInterface::class ) extends ConcreteFactory implements CreditGroupFactoryInterface {};
 	} ),
-	CreditGroupHistoryFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+	CreditGroupHistoryFactoryInterface::class       => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditGroupHistoryInterface::class ) extends ConcreteFactory implements CreditGroupHistoryFactoryInterface {};
 	} ),
 	CreditTransactionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container ) {
@@ -489,43 +564,43 @@ return array(
 		return new class( $container, WhitelistItemInterface::class ) extends ConcreteFactory implements WhitelistItemFactoryInterface {};
 	} ),
 	//Factories - collections
-	AddressCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
+	AddressCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, AddressCollectionInterface::class ) extends ConcreteCollectionFactory implements AddressCollectionFactoryInterface {};
 	} ),
-	BalanceCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, BalanceFactoryInterface $item_factory ) {
+	BalanceCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, BalanceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, BalanceCollectionInterface::class ) extends ConcreteCollectionFactory implements BalanceCollectionFactoryInterface {};
 	} ),
-	CreditAccountCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
+	CreditAccountCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditAccountCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditAccountCollectionFactoryInterface {};
 	} ),
-	CreditGroupCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
+	CreditGroupCollectionFactoryInterface::class          => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditGroupCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditGroupCollectionFactoryInterface {};
 	} ),
 	CreditTransactionCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditTransactionFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditTransactionCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditTransactionCollectionFactoryInterface {};
 	} ),
-	PromiseCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
+	PromiseCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
 	} ),
-	PostCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
+	PostCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PostCollectionInterface::class ) extends ConcreteCollectionFactory implements PostCollectionFactoryInterface {};
 	} ),
-	PromiseMetaCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
+	PromiseMetaCollectionFactoryInterface::class          => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseMetaCollectionFactoryInterface {};
 	} ),
-	SourceCollectionFactoryInterface::class         => \DI\factory( function( ContainerInterface $container, SourceFactoryInterface $item_factory ) {
+	SourceCollectionFactoryInterface::class               => \DI\factory( function( ContainerInterface $container, SourceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, SourceCollectionInterface::class ) extends ConcreteCollectionFactory implements SourceCollectionFactoryInterface {};
 	} ),
-	TokenMetaCollectionFactoryInterface::class      => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
+	TokenMetaCollectionFactoryInterface::class            => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TokenMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenMetaCollectionFactoryInterface {};
 	} ),
-	TcaRuleCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
+	TcaRuleCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TcaRuleCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaRuleCollectionFactoryInterface {};
 	} ),
-	UserCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
+	UserCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, UserCollectionInterface::class ) extends ConcreteCollectionFactory implements UserCollectionFactoryInterface {};
 	} ),
-	WhitelistItemCollectionFactoryInterface::class  => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
+	WhitelistItemCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, WhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements WhitelistItemCollectionFactoryInterface {};
 	} ),
 	//Third-party
@@ -571,6 +646,14 @@ return array(
 			// 'cache' => $twig_template_cache_dir
 			'cache' => false,
 		) );
+		$twig->registerUndefinedFunctionCallback(function( $name ) {
+			if ( function_exists( $name ) ) {
+				return new \Twig\TwigFunction( $name, function() use ( $name ) {
+					return call_user_func_array( $name, func_get_args() );
+				} );
+			}
+			throw new \RuntimeException( sprintf( 'Function %s not found', $name ) );
+		});
 		return $twig;
 	} )
 		->parameter( 'twig_template_dir', \DI\get( 'twig.template_dir' ) )

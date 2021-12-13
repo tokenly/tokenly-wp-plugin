@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
  * Manages credit transactions
  */
 class CreditTransactionService extends DomainService implements CreditTransactionServiceInterface {
+	protected $credit_transaction_repository;
 
 	public function __construct(
 		CreditTransactionRepositoryInterface $credit_transaction_repository

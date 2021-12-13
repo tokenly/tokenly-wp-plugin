@@ -33,6 +33,10 @@ class Settings extends Model implements SettingsInterface {
 		return $this;
 	}
 
+	/**
+	 * Gets all settings
+	 * @return array
+	 */
 	protected function get_options() {
 		$fillable_prefixed = $this->get_fillable_prefixed();
 		$options = $this->domain_repository->index( $fillable_prefixed );
@@ -40,6 +44,10 @@ class Settings extends Model implements SettingsInterface {
 		return $options;
 	}
 
+	/**
+	 * Gets prefixed versions of keys for each fillable property
+	 * @return string[]
+	 */
 	protected function get_fillable_prefixed() {
 		if ( !isset( $this->fillable_prefixed ) ) {
 			$this->fillable_prefixed = array();
@@ -50,6 +58,11 @@ class Settings extends Model implements SettingsInterface {
 		return $this->fillable_prefixed;
 	}
 
+	/**
+	 * Prefixes all keys for the specified array of options
+	 * @param array $options Array of options to prefix
+	 * @return array
+	 */
 	protected function prefix_options( array $options = array() ) {
 		$options_prefixed = array();
 		foreach ( $options as $key => $option ) {
@@ -59,6 +72,11 @@ class Settings extends Model implements SettingsInterface {
 		return $options_prefixed;
 	}
 
+	/**
+	 * Unprefixes all keys for the specified array of options
+	 * @param array $options Array of options to unprefix
+	 * @return array
+	 */
 	protected function unprefix_options( array $options = array() ) {
 		$options_unprefixed = array();
 		foreach ( $options as $key => $option ) {
@@ -68,6 +86,11 @@ class Settings extends Model implements SettingsInterface {
 		return $options_unprefixed;
 	}
 
+	/**
+	 * Checks whether the specified key is prefixed
+	 * @param string $key
+	 * @return bool
+	 */
 	protected function is_key_prefixed( string $key ) {
 		if ( strpos ( $key, "{$this->option_prefix}_" ) !== false ) {
 			return true;
@@ -75,11 +98,21 @@ class Settings extends Model implements SettingsInterface {
 		return false;
 	}
 
+	/**
+	 * Prefixes the specified key
+	 * @param string $key Key
+	 * @return string
+	 */
 	protected function prefix_key ( string $key ) {
 		$new_key = "{$this->option_prefix}_{$key}";
 		return $new_key;
 	}
 
+	/**
+	 * Removes prefix from the specified key
+	 * @param string $key Prefixed key
+	 * @return string
+	 */
 	protected function unprefix_key( string $key ) {
 		$new_key = str_replace( "{$this->option_prefix}_", '', $key );
 		return $new_key;

@@ -3,42 +3,31 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
-use Tokenly\Wp\Views\Admin\BalancesShowView;
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\BalancesShowViewModelInterface;
 
 /**
- * Serves the admin source views
+ * Serves the admin balance views
  */
 class BalancesController implements BalancesControllerInterface {
-	protected $balances_show_view;
-	protected $address_service;
+	protected $balances_show_view_model;
 
 	public function __construct(
-		BalancesShowView $balances_show_view,
-		AddressServiceInterface $address_service
+		BalancesShowViewModelInterface $balances_show_view_model
 	) {
-		$this->balances_show_view = $balances_show_view;
-		$this->address_service = $address_service;
+		$this->balances_show_view_model = $balances_show_view_model;
 	}
 
 	public function show() {
 		if ( !isset( $_GET['address'] ) ) {
 			return;
 		}
-		$address_id = $_GET['address'];
-		$address = $this->address_service->show(
-			array(
-				'address' => $address_id,
-				'with'    => array( 'balance.token_meta' ),
-			)
+		$input_data = array(
+			'address' => $_GET['address'],
 		);
-		if ( !$address ) {
-			return;
-		}
-		$address = $address->to_array();
-		$render = $this->balances_show_view->render( array(
-			'address' => $address,
-		) );
-		return $render;
+		$view_data = $this->balances_show_view_model->prepare( $input_data );
+		return array(
+			'view' => 'balances-show',
+			'data' => $view_data,
+		);
 	}
 }

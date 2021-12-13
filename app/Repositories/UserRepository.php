@@ -115,7 +115,9 @@ class UserRepository implements UserRepositoryInterface {
 		if ( !$user ) {
 			return;
 		}
-		$user = $this->user_factory->create( $user );
+		$user = $this->user_factory->create( array( 
+			'user' => $user,
+		) );
 		return $user;
 	}
 

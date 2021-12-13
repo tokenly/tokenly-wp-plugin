@@ -119,6 +119,9 @@ body.login .tokenpass-login-container {
 .tokenly-component-button.with-loader.loading .title {
   visibility: hidden;
 }
+.tokenly-component-button.with-loader.loading .icon {
+  visibility: hidden;
+}
 .tokenly-component-button.with-loader.loading .tokenly-loader-container {
   visibility: visible;
 }

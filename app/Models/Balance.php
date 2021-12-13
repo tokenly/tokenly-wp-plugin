@@ -39,11 +39,11 @@ class Balance extends Model implements BalanceInterface {
 			isset( $this->balance_sat ) == true && 
 			isset( $this->precision ) === true
 		) {
-			$this->balance = $this->from_sat( $this->balance_sat, $this->precision );
+			$this->balance = $this->from_sat( floatval( $this->balance_sat ), intval( $this->precision ) );
 		}
 	}
 
-	public function from_sat( $value, $precision = 1 ) {
+	public function from_sat( float $value, int $precision = 1 ) {
 		if ( $precision == 0 ) {
 			return $value;
 		}
@@ -52,7 +52,7 @@ class Balance extends Model implements BalanceInterface {
 		return $value;
 	}
 
-	public function to_sat( $value, $precision ) {
+	public function to_sat( float $value, int $precision ) {
 		if ( $precision == 0 ) {
 			return $value;
 		}

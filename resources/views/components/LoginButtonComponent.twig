@@ -1,0 +1,11 @@
+{% macro login_button_component( logo, label, url ) %}
+	<div class="tokenpass-login-container">
+		<a href="{{ url }}" class="tokenly-component-button with-icon with-loader tokenpass-login">
+			<div class="tokenly-loader-container">
+				<div class="tokenly-loader">Loading...</div>
+			</div>
+			<span class='icon'>{{ logo | raw }}</span>
+			<span class='title'>{{ label }}</span>
+		</a>
+	</div>
+{% endmacro %}

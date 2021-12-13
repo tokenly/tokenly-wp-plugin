@@ -13,8 +13,8 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Services\TcaServiceInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
+use Twig\Environment;
 
 /**
  * Manages routing for the post type views
@@ -26,9 +26,10 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $post_types;
 	protected $current_user;
 	protected $tca_settings;
-	protected $tca_service;
 	protected $post_service;
 	protected $post_collection_factory;
+	protected $twig;
+	protected $default_template = 'Index.twig';
 	
 	public function __construct(
 		TokenMetaPostType $token_meta_post_type,
@@ -40,17 +41,17 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
 		TcaSettingsInterface $tca_settings,
-		TcaServiceInterface $tca_service,
 		PostCollectionFactoryInterface $post_collection_factory,
+		Environment $twig,
 		string $namespace
 	) {
 		$this->integration = $integration;
 		$this->current_user = $current_user;
 		$this->tca_settings = $tca_settings;
-		$this->tca_service = $tca_service;
 		$this->namespace = $namespace;
 		$this->post_service = $post_service;
 		$this->post_collection_factory = $post_collection_factory;
+		$this->twig = $twig;
 		$this->post_types = array(
 			'token_meta' => array(
 				'post_type'  => $token_meta_post_type,
@@ -109,6 +110,9 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 					'id' => $post_id,
 				)
 			);
+			if ( !$post ) {
+				return;
+			}
 			$post->update( $params );
 		}
 	}

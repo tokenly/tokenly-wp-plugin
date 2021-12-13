@@ -1,9 +1,0 @@
-<script type="text/javascript">
-	let tokenpassData = {}
-	tokenpassData.props = JSON.parse( `{{ props|json_encode|raw }}` );
-	tokenpassData.view = '{{ view }}';
-	tokenpassData.tcaEnabled = '{{ tca_enabled }}'
-	tokenpassData.tcaRules = JSON.parse( '{{ tca_rules|json_encode|raw }}' );
-	window.tokenpassData = tokenpassData;
-</script>
-<div id="tokenpass-admin-page-{{ view }}" class="tokenpass-admin-page"></div>

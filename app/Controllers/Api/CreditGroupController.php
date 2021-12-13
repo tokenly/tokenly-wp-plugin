@@ -51,7 +51,7 @@ class CreditGroupController implements CreditGroupControllerInterface {
 	public function update( \WP_REST_Request $request ) {
 		$credit_group_id = $request->get_param( 'uuid' );
 		$credit_group = $this->credit_group_service->show( array(
-			'uuid' => $credit_group_id,
+			'group_uuid' => $credit_group_id,
 		) );
 		if ( !$credit_group_id ) {
 			return;
@@ -89,7 +89,9 @@ class CreditGroupController implements CreditGroupControllerInterface {
 		if ( !$credit_group_id ) {
 			return;
 		}
-		$credit_group = $this->credit_group_service->show( $credit_group_ids );
+		$credit_group = $this->credit_group_service->show( array(
+			'group_uuid' => $credit_group_id,
+		) );
 		return $credit_group;
 	}
 }

@@ -8,9 +8,22 @@ export interface Component {
 	register( selector: string ): void;
 }
 
-export interface SettingsData {
+export interface IntegrationSettings {
 	client_id: string;
 	client_secret: string;
+}
+
+export interface TcaSettings {
+	post_types: object;
+	filter_menu_items: boolean;
+	filter_post_results: boolean;
+}
+
+export interface OauthSettings {
+	use_single_sign_on: boolean;
+	success_url: string;
+	allow_no_email: boolean;
+	allow_unconfirmed_email: boolean;
 }
 
 export interface SourceItem {

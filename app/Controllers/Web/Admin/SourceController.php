@@ -3,102 +3,73 @@
 namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
-use Tokenly\Wp\Views\Admin\SourceIndexView;
-use Tokenly\Wp\Views\Admin\SourceShowView;
-use Tokenly\Wp\Views\Admin\SourceStoreView;
-use Tokenly\Wp\Views\Admin\SourceEditView;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceIndexViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceStoreViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceEditViewModelInterface;
 
 /**
  * Serves the admin source views
  */
 class SourceController implements SourceControllerInterface {
-	protected $source_index_view;
-	protected $source_show_view;
-	protected $source_store_view;
-	protected $source_edit_view;
-	protected $source_service;
-	protected $current_user;
+	protected $source_index_view_model;
+	protected $source_show_view_model;
+	protected $source_store_view_model;
+	protected $source_edit_view_model;
 
 	public function __construct(
-		SourceIndexView $source_index_view,
-		SourceShowView $source_show_view,
-		SourceStoreView $source_store_view,
-		SourceEditView $source_edit_view,
-		SourceServiceInterface $source_service,
-		CurrentUserInterface $current_user
+		SourceIndexViewModelInterface $source_index_view_model,
+		SourceShowViewModelInterface $source_show_view_model,
+		SourceStoreViewModelInterface $source_store_view_model,
+		SourceEditViewModelInterface $source_edit_view_model
 	) {
-		$this->source_index_view = $source_index_view;
-		$this->source_show_view = $source_show_view;
-		$this->source_store_view = $source_store_view;
-		$this->source_edit_view = $source_edit_view;
-		$this->source_service = $source_service;
-		$this->current_user = $current_user;
+		$this->source_index_view_model = $source_index_view_model;
+		$this->source_show_view_model = $source_show_view_model;
+		$this->source_store_view_model = $source_store_view_model;
+		$this->source_edit_view_model = $source_edit_view_model;
 	}
 
 	public function index() {
-		$sources = $this->source_service->index( array(
-			'with' => array(
-				'address',
-			),
-		) );
-		$sources = $sources->to_array();
-		$render = $this->source_index_view->render( array(
-			'sources' => $sources,
-		) );
-		return $render;
+		$view_data = $this->source_index_view_model->prepare();
+		return array(
+			'view' => 'source-index',
+			'data' => $view_data,
+		);
 	}
 
 	public function show() {
-		$address = $_GET['source'] ?? null;
-		$source = $this->source_service->show( array(
-			'address' => $address,
-			'with'    => array(
-				'address',
-			),
-		) );
-		if ( !$source ) {
-			return;
+		if ( !isset( $_GET['source'] ) ) {
+			return false;
 		}
-		$source = $source->to_array();
-		$render = $this->source_show_view->render( array(
-			'source' => $source,
-		) );
-		return $render;
+		$input_data = array(
+			'source' => $_GET['source'],
+		);
+		$view_data = $this->source_show_view_model->prepare( $input_data );
+		return array(
+			'view' => 'source-show',
+			'data' => $view_data,
+		);
 	}
 
 	public function store() {
-		if ( !isset( $this->current_user ) ) {
-			return;
-		}
-		$this->current_user->load( array( 'oauth_user' ) );
-		if ( !isset( $this->current_user->oauth_user ) ) {
-			return;
-		}
-		$oauth_user = $this->current_user->oauth_user;
-		$oauth_user->load( array( 'address.balance.token_meta' ) );
-		$address = array();
-		if ( $oauth_user->address ?? null ) {
-			$address = $oauth_user->address->to_array();
-		}
-		$render = $this->source_store_view->render( array(
-			'addresses' => $address,
-		) );
-		return $render;
+		$view_data = $this->source_store_view_model->prepare();
+		return array(
+			'view' => 'source-store',
+			'data' => $view_data,
+		);
 	}
 
 	public function edit() {
-		$source_address = $_GET['source'] ?? null;
-		$source = $this->source_service->show( array(
-			'address' => $source_address,
-			'with'    => array(
-				'address',
-			),
-		) );
-		$render = $this->source_edit_view->render( array(
-			'source' => $source,
-		) );
-		return $render;
+		if ( !isset( $_GET['source'] ) ) {
+			return false;
+		}
+		$input_data = array(
+			'source_id' => $_GET['source'],
+		);
+		$view_data = $this->source_edit_view_model->prepare( $input_data );
+		return array(
+			'view' => 'source-edit',
+			'data' => $view_data,
+		);
 	}
 }

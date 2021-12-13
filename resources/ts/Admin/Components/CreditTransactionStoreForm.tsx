@@ -23,7 +23,7 @@ interface CreditTransactionStoreFormProps {
 interface CreditTransactionStoreFormState {
 	creditGroupOptions: any;
 	transaction: {
-		group: string,
+		group_uuid: string,
 		type: string,
 		account: string,
 		amount: number,
@@ -36,7 +36,7 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 	state: CreditTransactionStoreFormState = {
 		creditGroupOptions: [],
 		transaction: {
-			group: null,
+			group_uuid: null,
 			type: 'debit',
 			account: null,
 			amount: 0,
@@ -51,7 +51,7 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 		this.getCreditGroupOptions = this.getCreditGroupOptions.bind( this );
 		this.state.creditGroupOptions = this.getCreditGroupOptions();
 		if ( this.state.creditGroupOptions[0] ?? null ) {
-			this.state.transaction.group = this.state.creditGroupOptions[0]?.value;
+			this.state.transaction.group_uuid = this.state.creditGroupOptions[0]?.value;
 		}
 	}
 	
@@ -89,11 +89,11 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 						>
 							<SelectControl
 								label="Credit group"
-								value={ this.state.transaction.group }
+								value={ this.state.transaction.group_uuid }
 								options={ this.state.creditGroupOptions }
 								onChange={ ( value: string ) => {
 									let newState = Object.assign( {}, this.state.transaction );
-									newState.group = value;
+									newState.group_uuid = value;
 									this.setState( { transaction: newState } );
 								} }
 							/>

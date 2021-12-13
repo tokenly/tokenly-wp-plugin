@@ -16,4 +16,19 @@ class TcaRule extends Model implements TcaRuleInterface {
 		'op',
 		'stackOp',
 	);
+	
+	/**
+	 * Formats the rule for request
+	 * @param int $key Rule number
+	 * @return array
+	 */
+	public function format_rule( int $key ) {
+		$rule = array();
+		$rule[ $this->asset ] = $this->quantity;
+		$rule[ "op_{$key}" ] = $this->op; 
+		if ( $key > 0 ) {
+			$rule[ "stackop_{$key}" ] = $this->stackOp;
+		}
+		return $rule;
+	}
 }

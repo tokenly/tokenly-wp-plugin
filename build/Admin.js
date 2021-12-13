@@ -5577,7 +5577,7 @@ class CreditTransactionStoreForm extends react_1.Component {
         this.state = {
             creditGroupOptions: [],
             transaction: {
-                group: null,
+                group_uuid: null,
                 type: 'debit',
                 account: null,
                 amount: 0,
@@ -5589,7 +5589,7 @@ class CreditTransactionStoreForm extends react_1.Component {
         this.getCreditGroupOptions = this.getCreditGroupOptions.bind(this);
         this.state.creditGroupOptions = this.getCreditGroupOptions();
         if ((_a = this.state.creditGroupOptions[0]) !== null && _a !== void 0 ? _a : null) {
-            this.state.transaction.group = (_b = this.state.creditGroupOptions[0]) === null || _b === void 0 ? void 0 : _b.value;
+            this.state.transaction.group_uuid = (_b = this.state.creditGroupOptions[0]) === null || _b === void 0 ? void 0 : _b.value;
         }
     }
     onSubmit() {
@@ -5619,9 +5619,9 @@ class CreditTransactionStoreForm extends react_1.Component {
                     //@ts-ignore
                     direction: "column" },
                     React.createElement("div", { style: { marginBottom: '12px' } },
-                        React.createElement(components_1.SelectControl, { label: "Credit group", value: this.state.transaction.group, options: this.state.creditGroupOptions, onChange: (value) => {
+                        React.createElement(components_1.SelectControl, { label: "Credit group", value: this.state.transaction.group_uuid, options: this.state.creditGroupOptions, onChange: (value) => {
                                 let newState = Object.assign({}, this.state.transaction);
-                                newState.group = value;
+                                newState.group_uuid = value;
                                 this.setState({ transaction: newState });
                             } })),
                     React.createElement("div", { style: { marginBottom: '12px' } },
@@ -5773,6 +5773,60 @@ class IntegrationSettingsHelp extends react_1.Component {
     }
 }
 exports.IntegrationSettingsHelp = IntegrationSettingsHelp;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/OauthSettingsForm.tsx":
+/*!*************************************************************!*\
+  !*** ./resources/ts/Admin/Components/OauthSettingsForm.tsx ***!
+  \*************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OauthSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class OauthSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    render() {
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column" },
+            React.createElement(components_1.TextControl, { label: "Redirect URL", value: this.props.settings.success_url, help: "Default redirect URL on success for the login shortcode and the main login form.", onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.success_url = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Use Single sign-on (SSO)", help: "Allows the existing users to login using their Tokenpass account.", checked: this.props.settings.use_single_sign_on, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without email", help: "Allows connecting Tokenpass accounts which have no email accounts associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } })));
+    }
+}
+exports.OauthSettingsForm = OauthSettingsForm;
 
 
 /***/ }),
@@ -7900,6 +7954,7 @@ const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resour
 const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/IntegrationSettingsForm */ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx");
 const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx");
 const TcaSettingsForm_1 = __webpack_require__(/*! ../Components/TcaSettingsForm */ "./resources/ts/Admin/Components/TcaSettingsForm.tsx");
+const OauthSettingsForm_1 = __webpack_require__(/*! ../Components/OauthSettingsForm */ "./resources/ts/Admin/Components/OauthSettingsForm.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {
@@ -7913,21 +7968,31 @@ class SettingsPage extends react_1.Component {
             },
             tcaSettings: {
                 post_types: {},
-                filter_menu_items: false,
-                filter_post_results: false,
+                filter_menu_items: null,
+                filter_post_results: null,
+            },
+            oauthSettings: {
+                use_single_sign_on: null,
+                success_url: '',
+                allow_no_email: null,
+                allow_unconfirmed_email: null,
             },
             savingIntegrationSettings: false,
             savingTcaSettings: false,
+            savingOauthSettings: false,
         };
         this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind(this);
         this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind(this);
         this.onTcaSettingsSave = this.onTcaSettingsSave.bind(this);
         this.onTcaSettingsChange = this.onTcaSettingsChange.bind(this);
+        this.onOauthSettingsSave = this.onOauthSettingsSave.bind(this);
+        this.onOauthSettingsChange = this.onOauthSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
         this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
         if (!this.state.tcaSettings.post_types) {
             this.state.tcaSettings.post_types = {};
         }
+        this.state.oauthSettings = Object.assign(this.state.oauthSettings, this.props.pageData.oauth_settings);
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);
@@ -7962,11 +8027,22 @@ class SettingsPage extends react_1.Component {
     onTcaSettingsChange(newSettings) {
         this.setState({ tcaSettings: newSettings });
     }
+    onOauthSettingsSave() {
+        this.setState({ savingOauthSettings: true });
+        this.oauthSettingsRepository.update(this.state.oauthSettings).then((result) => {
+            this.setState({ savingOauthSettings: false });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+    onOauthSettingsChange(newSettings) {
+        this.setState({ oauthSettings: newSettings });
+    }
     render() {
         var _a, _b, _c, _d, _e, _f, _g;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
             React.createElement(components_1.Panel, null,
-                React.createElement(components_1.PanelBody, { title: "Integration settings" },
+                React.createElement(components_1.PanelBody, { title: "Integration" },
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(IntegrationSettingsHelp_1.IntegrationSettingsHelp, { appHomepageUrl: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, clientAuthUrl: (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.client_auth_url })),
                     React.createElement(components_1.PanelRow, null,
@@ -7974,11 +8050,17 @@ class SettingsPage extends react_1.Component {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(SavePanel_1.SavePanel, { label: "Save Integration settings", saving: this.state.savingIntegrationSettings, onClick: this.onIntegrationSettingsSave })))),
             React.createElement(components_1.Panel, null,
-                React.createElement(components_1.PanelBody, { title: "TCA settings" },
+                React.createElement(components_1.PanelBody, { title: "Token Controlled Access (TCA)" },
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(TcaSettingsForm_1.TcaSettingsForm, { settings: this.state.tcaSettings, data: this.props.pageData.tca_data, onChange: this.onTcaSettingsChange })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.savingTcaSettings, onClick: this.onTcaSettingsSave }))))));
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.savingTcaSettings, onClick: this.onTcaSettingsSave })))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, { title: "Authorization (OAuth)" },
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(OauthSettingsForm_1.OauthSettingsForm, { settings: this.state.oauthSettings, onChange: this.onOauthSettingsChange })),
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save OAuth settings", saving: this.state.savingOauthSettings, onClick: this.onOauthSettingsSave }))))));
     }
 }
 __decorate([
@@ -8801,6 +8883,7 @@ const EventBus_1 = __webpack_require__(/*! ../EventBus */ "./resources/ts/EventB
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AppLayout extends react_1.Component {
     constructor(props) {
+        var _a, _b;
         super(props);
         this.state = {
             confirmModalData: null,
@@ -8813,7 +8896,8 @@ class AppLayout extends react_1.Component {
         this.onConfirmModalChoice = this.onConfirmModalChoice.bind(this);
         this.onPostDataUpdated = this.onPostDataUpdated.bind(this);
         this.onTcaUpdate = this.onTcaUpdate.bind(this);
-        this.state.tcaRules = Object.assign({}, this.props.tcaRules);
+        console.log(this.props.pageData);
+        this.state.tcaRules = Object.assign({}, (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.pageData) === null || _b === void 0 ? void 0 : _b.tca_rules);
         this.state.postData.tca_rules = this.state.tcaRules;
     }
     onConfirmModalRequestClose() {
@@ -8854,11 +8938,12 @@ class AppLayout extends react_1.Component {
         });
     }
     render() {
+        var _a;
         return (React.createElement(element_1.Fragment, null,
             this.props.children,
             this.state.confirmModalShow == true &&
                 React.createElement(ConfirmModal_1.ConfirmModal, { key: this.state.confirmModalData.key, title: this.state.confirmModalData.title, subtitle: this.state.confirmModalData.subtitle, onRequestClose: this.onConfirmModalRequestClose, onChoice: this.onConfirmModalChoice }),
-            this.props.tcaEnabled == true &&
+            ((_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_enabled) == true &&
                 React.createElement(TcaRuleEditor_1.default, { rules: this.state.tcaRules, onUpdate: this.onTcaUpdate }),
             React.createElement("input", { type: "hidden", name: "tokenly_data", value: JSON.stringify(this.state.postData) })));
     }
@@ -9218,7 +9303,7 @@ const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ 
 let OauthSettingsRepository = class OauthSettingsRepository extends SettingsRepository_1.SettingsRepository {
     constructor() {
         super(...arguments);
-        this.settingsType = 'integration';
+        this.settingsType = 'oauth';
     }
 };
 OauthSettingsRepository = __decorate([
@@ -10037,23 +10122,22 @@ const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditP
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
     constructor() {
-        var _a, _b, _c;
+        var _a, _b;
         super();
         this.container = Inversify_config_1.container;
         this.tcaEnabled = false;
         this.tcaRules = [];
+        this.routePrefix = 'tokenly';
         this.pageElement = document.querySelector('.tokenpass-admin-page');
         if (this.pageElement) {
             const data = window.tokenpassData;
             if (!data) {
                 return;
             }
-            this.view = data === null || data === void 0 ? void 0 : data.view;
             this.pageData = data === null || data === void 0 ? void 0 : data.props;
-            this.tcaEnabled = (_a = data.tcaEnabled) !== null && _a !== void 0 ? _a : false;
-            this.tcaRules = (_b = data.tcaRules) !== null && _b !== void 0 ? _b : [];
+            this.view = (_a = this.pageData) === null || _a === void 0 ? void 0 : _a.view;
             const views = this.getViews();
-            const ViewComponent = (_c = views[this.view]) !== null && _c !== void 0 ? _c : null;
+            const ViewComponent = (_b = views[this.view]) !== null && _b !== void 0 ? _b : null;
             if (ViewComponent) {
                 this.highlightMenu();
                 this.render(ViewComponent);
@@ -10062,7 +10146,8 @@ class AdminApp extends App_1.default {
         this.registerRedirects();
     }
     getViews() {
-        return {
+        let routes = {
+            'dashboard': DashboardPage_1.default,
             'balances-show': BalancesShowPage_1.default,
             'settings': SettingsPage_1.default,
             'connection': ConnectionPage_1.default,
@@ -10083,8 +10168,8 @@ class AdminApp extends App_1.default {
             'source-edit': SourceEditPage_1.default,
             'post-edit': PostEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
-            'dashboard': DashboardPage_1.default,
         };
+        return routes;
     }
     render(ViewComponent) {
         if (!this.pageElement) {
@@ -10093,7 +10178,7 @@ class AdminApp extends App_1.default {
         const pageContainer = document.createElement('div');
         this.pageElement.appendChild(pageContainer);
         (0, element_1.render)(React.createElement(inversify_react_1.Provider, { container: this.container },
-            React.createElement(AppLayout_1.default, { tcaEnabled: this.tcaEnabled, tcaRules: this.tcaRules },
+            React.createElement(AppLayout_1.default, { pageData: this.pageData },
                 React.createElement(ViewComponent, { pageData: this.pageData }))), pageContainer);
     }
     registerRedirects() {
