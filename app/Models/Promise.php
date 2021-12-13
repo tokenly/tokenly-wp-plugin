@@ -59,7 +59,6 @@ class Promise extends Model implements PromiseInterface {
 		PromiseRepositoryInterface $promise_repository,
 		array $data = array()
 	) {
-		error_log(d( $data ));
 		$this->domain_service = $domain_service;
 		$this->promise_meta_service = $promise_meta_service;
 		$this->promise_repository = $promise_repository;
