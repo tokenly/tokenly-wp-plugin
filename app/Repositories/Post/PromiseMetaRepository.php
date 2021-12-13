@@ -115,6 +115,11 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 				'post_type'  => "{$this->namespace}_promise_meta",
 			), $common_params );
 			$post = wp_insert_post( $store_params );
+			if ( is_int( $post ) ) {
+				$post = $this->show( array(
+					'id' => $post,
+				) );
+			}
 		}
 		return $post;
 	}
@@ -123,11 +128,12 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	 * Updates the token-meta post by post ID
 	 * @param PromiseMetaInterface $post Post to update
 	 * @param array $params New post data
-	 * @return void
+	 * @return PromiseMetaInterface
 	 */
 	public function update( PromiseMetaInterface $post, array $params = array() ) {
 		$params['ID'] = $post->ID; 
-		$post = wp_update_post( $params );
+		wp_update_post( $params );
+		return $post;
 	}
 	
 	/**

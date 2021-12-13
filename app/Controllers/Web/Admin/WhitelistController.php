@@ -4,7 +4,6 @@ namespace Tokenly\Wp\Controllers\Web\Admin;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\WhitelistViewModelInterface;
-
 /**
  * Serves the admin Whitelist view
  */

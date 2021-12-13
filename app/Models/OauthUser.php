@@ -25,6 +25,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	public $name;
 	public $email_is_confirmed;
 	public $oauth_token;
+	public $balance;
 	/**
 	 * @var AddressCollectionInterface $address Collection of blockchain addresses assigned to this account
 	 */
@@ -128,6 +129,20 @@ class OauthUser extends Model implements OauthUserInterface {
 		}
 		$user->oauth_user->ensure_credit_account_exists( $group_uuid );
 		return $user->oauth_user;
+	}
+
+	/**
+	 * Loads the balance relation
+	 * @param string[] $relations Further relations
+	 * @return self
+	 */
+	protected function load_balance( array $relations = array() ) {
+		$balance = $this->balance_service->index( array(
+			'oauth_token'  => $this->oauth_token,
+			'with'         => $relations,
+		) );
+		$this->balance = $balance;
+		return $this;
 	}
 
 	/**

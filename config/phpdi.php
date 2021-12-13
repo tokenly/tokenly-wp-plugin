@@ -524,13 +524,13 @@ return array(
 	CreditAccountFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditAccountInterface::class ) extends ConcreteFactory implements CreditAccountFactoryInterface {};
 	} ),
-	CreditAccountHistoryFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+	CreditAccountHistoryFactoryInterface::class     => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditAccountHistoryInterface::class ) extends ConcreteFactory implements CreditAccountHistoryFactoryInterface {};
 	} ),
 	CreditGroupFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditGroupInterface::class ) extends ConcreteFactory implements CreditGroupFactoryInterface {};
 	} ),
-	CreditGroupHistoryFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+	CreditGroupHistoryFactoryInterface::class       => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditGroupHistoryInterface::class ) extends ConcreteFactory implements CreditGroupHistoryFactoryInterface {};
 	} ),
 	CreditTransactionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container ) {
@@ -564,43 +564,43 @@ return array(
 		return new class( $container, WhitelistItemInterface::class ) extends ConcreteFactory implements WhitelistItemFactoryInterface {};
 	} ),
 	//Factories - collections
-	AddressCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
+	AddressCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, AddressCollectionInterface::class ) extends ConcreteCollectionFactory implements AddressCollectionFactoryInterface {};
 	} ),
-	BalanceCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, BalanceFactoryInterface $item_factory ) {
+	BalanceCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, BalanceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, BalanceCollectionInterface::class ) extends ConcreteCollectionFactory implements BalanceCollectionFactoryInterface {};
 	} ),
-	CreditAccountCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
+	CreditAccountCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditAccountCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditAccountCollectionFactoryInterface {};
 	} ),
-	CreditGroupCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
+	CreditGroupCollectionFactoryInterface::class          => \DI\factory( function( ContainerInterface $container, CreditGroupFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditGroupCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditGroupCollectionFactoryInterface {};
 	} ),
 	CreditTransactionCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditTransactionFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditTransactionCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditTransactionCollectionFactoryInterface {};
 	} ),
-	PromiseCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
+	PromiseCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
 	} ),
-	PostCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
+	PostCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PostCollectionInterface::class ) extends ConcreteCollectionFactory implements PostCollectionFactoryInterface {};
 	} ),
-	PromiseMetaCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
+	PromiseMetaCollectionFactoryInterface::class          => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseMetaCollectionFactoryInterface {};
 	} ),
-	SourceCollectionFactoryInterface::class         => \DI\factory( function( ContainerInterface $container, SourceFactoryInterface $item_factory ) {
+	SourceCollectionFactoryInterface::class               => \DI\factory( function( ContainerInterface $container, SourceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, SourceCollectionInterface::class ) extends ConcreteCollectionFactory implements SourceCollectionFactoryInterface {};
 	} ),
-	TokenMetaCollectionFactoryInterface::class      => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
+	TokenMetaCollectionFactoryInterface::class            => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TokenMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenMetaCollectionFactoryInterface {};
 	} ),
-	TcaRuleCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
+	TcaRuleCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TcaRuleCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaRuleCollectionFactoryInterface {};
 	} ),
-	UserCollectionFactoryInterface::class           => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
+	UserCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, UserCollectionInterface::class ) extends ConcreteCollectionFactory implements UserCollectionFactoryInterface {};
 	} ),
-	WhitelistItemCollectionFactoryInterface::class  => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
+	WhitelistItemCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, WhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements WhitelistItemCollectionFactoryInterface {};
 	} ),
 	//Third-party

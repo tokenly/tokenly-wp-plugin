@@ -43,7 +43,7 @@ class Balance extends Model implements BalanceInterface {
 		}
 	}
 
-	public function from_sat( $value, $precision = 1 ) {
+	public function from_sat( int $value, int $precision = 1 ) {
 		if ( $precision == 0 ) {
 			return $value;
 		}
@@ -52,7 +52,7 @@ class Balance extends Model implements BalanceInterface {
 		return $value;
 	}
 
-	public function to_sat( $value, $precision ) {
+	public function to_sat( int $value, int $precision ) {
 		if ( $precision == 0 ) {
 			return $value;
 		}

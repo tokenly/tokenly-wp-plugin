@@ -52,8 +52,8 @@ class UserViewModel extends ViewModel implements UserViewModelInterface {
 		if ( !isset( $user->oauth_user ) ) {
 			return false;
 		}
-		$user->oauth_user->load( array( 'address.balance.token_meta', 'credit_account' ) );
-		$balance = $user->oauth_user->address->get_combined_balance();
+		$user->oauth_user->load( array( 'balance.token_meta', 'credit_account' ) );
+		$balance = $user->oauth_user->balance;
 		$credit_accounts = $user->oauth_user->credit_account;
 		$credit_groups = $this->credit_group_service->index();
 		$token_item_card_list_block_data = null;
