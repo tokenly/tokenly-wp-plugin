@@ -6,28 +6,31 @@ use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SettingsViewModelInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 
 class SettingsViewModel extends ViewModel implements SettingsViewModelInterface {
-	protected $source_service;
+	protected $integration;
+	protected $tca_settings;
+	protected $oauth_settings;
+	protected $oauth_callback_route;
 	
 	public function __construct(
 		IntegrationInterface $integration,
 		TcaSettingsInterface $tca_settings,
+		OauthSettingsInterface $oauth_settings,
 		string $oauth_callback_route
 	) {
 		$this->integration = $integration;
-		$this->oauth_callback_route = $oauth_callback_route;
 		$this->tca_settings = $tca_settings;
+		$this->oauth_settings = $oauth_settings;
+		$this->oauth_callback_route = $oauth_callback_route;
 	}
 	
 	public function prepare( array $data = array() ) {
 		$integration_settings = $this->integration->settings->to_array();
-		$post_type_objects = get_post_types( array(), 'objects' );
-		$post_types = array();
-		foreach ( $post_type_objects as $post_type_object ) {
-			$post_types[ $post_type_object->name ] = $post_type_object->label; 
-		}
 		$tca_settings = $this->tca_settings->to_array();
+		$oauth_settings = $this->oauth_settings->to_array();
+		$post_types = $this->tca_settings->get_available_post_types();
 		return array(
 			'integration_settings' => $integration_settings,
 			'integration_data'     => array(
@@ -39,6 +42,8 @@ class SettingsViewModel extends ViewModel implements SettingsViewModelInterface 
 			'tca_data'              => array(
 				'post_types' => $post_types,
 			),
+			'oauth_settings'        => $oauth_settings,
 		);
 	}
+
 }

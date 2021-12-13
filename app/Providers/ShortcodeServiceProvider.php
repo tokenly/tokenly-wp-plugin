@@ -36,13 +36,21 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	public function register() {
 		foreach ( $this->services as $key => $service ) {
 			$name = "{$this->namespace}_{$key}";
-			$callable = array( $service, 'shortcode_callback' );
-			add_shortcode( $name, array( $this, 'render_shortcode', $callable ) );
+			add_shortcode( $name, function() use ( $service ) {
+				$response = $service->shortcode_callback();
+				$this->render_shortcode( $response );
+			} );
 			$service->register();
 		}
 	}
 
-	protected function render_shortcode( callable $callback ) {
-
+	protected function render_shortcode( array $parameters ) {
+		$template = $parameters['template'];
+		$data = array();
+		if ( isset( $parameters['data'] ) ) {
+			$data = $parameters['data'];
+		}
+		$html = $this->twig->render( $template, $data );
+		echo $html;
 	}
 }

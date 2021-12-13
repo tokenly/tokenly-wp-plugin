@@ -5777,6 +5777,60 @@ exports.IntegrationSettingsHelp = IntegrationSettingsHelp;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/OauthSettingsForm.tsx":
+/*!*************************************************************!*\
+  !*** ./resources/ts/Admin/Components/OauthSettingsForm.tsx ***!
+  \*************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OauthSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class OauthSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    render() {
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column" },
+            React.createElement(components_1.TextControl, { label: "Redirect URL", value: this.props.settings.success_url, help: "Default redirect URL on success for the login shortcode and the main login form.", onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.success_url = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Use Single sign-on (SSO)", help: "Allows the existing users to login using their Tokenpass account.", checked: this.props.settings.use_single_sign_on, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without email", help: "Allows connecting Tokenpass accounts which have no email accounts associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } })));
+    }
+}
+exports.OauthSettingsForm = OauthSettingsForm;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/PromiseCard.tsx":
 /*!*******************************************************!*\
   !*** ./resources/ts/Admin/Components/PromiseCard.tsx ***!
@@ -7900,6 +7954,7 @@ const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resour
 const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/IntegrationSettingsForm */ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx");
 const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx");
 const TcaSettingsForm_1 = __webpack_require__(/*! ../Components/TcaSettingsForm */ "./resources/ts/Admin/Components/TcaSettingsForm.tsx");
+const OauthSettingsForm_1 = __webpack_require__(/*! ../Components/OauthSettingsForm */ "./resources/ts/Admin/Components/OauthSettingsForm.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {
@@ -7913,21 +7968,31 @@ class SettingsPage extends react_1.Component {
             },
             tcaSettings: {
                 post_types: {},
-                filter_menu_items: false,
-                filter_post_results: false,
+                filter_menu_items: null,
+                filter_post_results: null,
+            },
+            oauthSettings: {
+                use_single_sign_on: null,
+                success_url: '',
+                allow_no_email: null,
+                allow_unconfirmed_email: null,
             },
             savingIntegrationSettings: false,
             savingTcaSettings: false,
+            savingOauthSettings: false,
         };
         this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind(this);
         this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind(this);
         this.onTcaSettingsSave = this.onTcaSettingsSave.bind(this);
         this.onTcaSettingsChange = this.onTcaSettingsChange.bind(this);
+        this.onOauthSettingsSave = this.onOauthSettingsSave.bind(this);
+        this.onOauthSettingsChange = this.onOauthSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
         this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
         if (!this.state.tcaSettings.post_types) {
             this.state.tcaSettings.post_types = {};
         }
+        this.state.oauthSettings = Object.assign(this.state.oauthSettings, this.props.pageData.oauth_settings);
     }
     setClientId(value) {
         let state = Object.assign({}, this.state);
@@ -7962,11 +8027,22 @@ class SettingsPage extends react_1.Component {
     onTcaSettingsChange(newSettings) {
         this.setState({ tcaSettings: newSettings });
     }
+    onOauthSettingsSave() {
+        this.setState({ savingOauthSettings: true });
+        this.oauthSettingsRepository.update(this.state.oauthSettings).then((result) => {
+            this.setState({ savingOauthSettings: false });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+    onOauthSettingsChange(newSettings) {
+        this.setState({ oauthSettings: newSettings });
+    }
     render() {
         var _a, _b, _c, _d, _e, _f, _g;
         return (React.createElement(Page_1.default, { title: 'Tokenpass Settings' },
             React.createElement(components_1.Panel, null,
-                React.createElement(components_1.PanelBody, { title: "Integration settings" },
+                React.createElement(components_1.PanelBody, { title: "Integration" },
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(IntegrationSettingsHelp_1.IntegrationSettingsHelp, { appHomepageUrl: (_b = (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.integration_data) === null || _b === void 0 ? void 0 : _b.app_homepage_url, clientAuthUrl: (_d = (_c = this.props.pageData) === null || _c === void 0 ? void 0 : _c.integration_data) === null || _d === void 0 ? void 0 : _d.client_auth_url })),
                     React.createElement(components_1.PanelRow, null,
@@ -7974,11 +8050,17 @@ class SettingsPage extends react_1.Component {
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(SavePanel_1.SavePanel, { label: "Save Integration settings", saving: this.state.savingIntegrationSettings, onClick: this.onIntegrationSettingsSave })))),
             React.createElement(components_1.Panel, null,
-                React.createElement(components_1.PanelBody, { title: "TCA settings" },
+                React.createElement(components_1.PanelBody, { title: "Token Controlled Access (TCA)" },
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(TcaSettingsForm_1.TcaSettingsForm, { settings: this.state.tcaSettings, data: this.props.pageData.tca_data, onChange: this.onTcaSettingsChange })),
                     React.createElement(components_1.PanelRow, null,
-                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.savingTcaSettings, onClick: this.onTcaSettingsSave }))))));
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save TCA settings", saving: this.state.savingTcaSettings, onClick: this.onTcaSettingsSave })))),
+            React.createElement(components_1.Panel, null,
+                React.createElement(components_1.PanelBody, { title: "Authorization (OAuth)" },
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(OauthSettingsForm_1.OauthSettingsForm, { settings: this.state.oauthSettings, onChange: this.onOauthSettingsChange })),
+                    React.createElement(components_1.PanelRow, null,
+                        React.createElement(SavePanel_1.SavePanel, { label: "Save OAuth settings", saving: this.state.savingOauthSettings, onClick: this.onOauthSettingsSave }))))));
     }
 }
 __decorate([
@@ -9221,7 +9303,7 @@ const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ 
 let OauthSettingsRepository = class OauthSettingsRepository extends SettingsRepository_1.SettingsRepository {
     constructor() {
         super(...arguments);
-        this.settingsType = 'integration';
+        this.settingsType = 'oauth';
     }
 };
 OauthSettingsRepository = __decorate([

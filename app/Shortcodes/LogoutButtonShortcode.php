@@ -10,7 +10,7 @@ class LogoutButtonShortcode extends Shortcode implements LogoutButtonShortcodeIn
 	protected $logout_button_component_model;
 
 	public function __construct(
-		ButtonLogoutComponentInterface $logout_button_component_model
+		LogoutButtonComponentModelInterface $logout_button_component_model
 	) {
 		$this->logout_button_component_model = $logout_button_component_model;
 	}
@@ -18,7 +18,7 @@ class LogoutButtonShortcode extends Shortcode implements LogoutButtonShortcodeIn
 	public function shortcode_callback() {
 		$data = $this->logout_button_component_model->prepare();
 		return array(
-			'template' => 'components/LoginButtonComponent.twig',
+			'template' => 'shortcodes/LogoutButtonShortcode.twig',
 			'data'     => $data,
 		);
 	}

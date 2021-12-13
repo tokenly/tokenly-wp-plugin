@@ -110,6 +110,9 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 					'id' => $post_id,
 				)
 			);
+			if ( !$post ) {
+				return;
+			}
 			$post->update( $params );
 		}
 	}

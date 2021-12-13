@@ -1,0 +1,4 @@
+{% from 'components/LoginButtonComponent.twig' import login_button_component %}
+{% if can_connect and is_logged_in == true %}
+	{{ login_button_component( logo, label, url ) }}
+{% endif %}

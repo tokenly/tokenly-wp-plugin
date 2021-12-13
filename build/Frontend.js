@@ -5568,7 +5568,7 @@ const SettingsRepository_1 = __webpack_require__(/*! ./../SettingsRepository */ 
 let OauthSettingsRepository = class OauthSettingsRepository extends SettingsRepository_1.SettingsRepository {
     constructor() {
         super(...arguments);
-        this.settingsType = 'integration';
+        this.settingsType = 'oauth';
     }
 };
 OauthSettingsRepository = __decorate([

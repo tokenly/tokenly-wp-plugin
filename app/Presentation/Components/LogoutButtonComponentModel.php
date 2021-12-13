@@ -18,18 +18,16 @@ class LogoutButtonComponentModel extends ComponentModel implements LogoutButtonC
 		$this->integration = $integration;
 	}
 
-	public function render() {
-		if ( $this->integration->can_connect() === false ) {
-			return;
-		}
-		if ( is_user_logged_in() === false ) {
-			return;
-		}
+	public function prepare( array $data = array() ) {
+		$can_connect = $this->integration->can_connect();
+		$is_logged_in = is_user_logged_in();
 		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
 		return array(
 			'label' => 'Logout',
 			'logo'  => $logo,
 			'url'   => wp_logout_url(),
+			'can_connect'  => $can_connect,
+			'is_logged_in' => $is_logged_in,
 		);
 	}
 }

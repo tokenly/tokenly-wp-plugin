@@ -8,7 +8,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Presentation\Components\LoginButtonComponentModelInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Twig\Environment;
@@ -28,6 +30,7 @@ class AuthService extends Service implements AuthServiceInterface {
 	protected $namespace;
 	protected $state_cookie_name;
 	protected $success_url_cookie_name;
+	protected $oauth_settings;
 	protected $twig;
 	
 	public function __construct(
@@ -37,6 +40,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		OauthUserServiceInterface $oauth_user_service,
 		IntegrationSettingsInterface $settings,
 		UserServiceInterface $user_service,
+		OauthSettingsInterface $oauth_settings,
 		Environment $twig,
 		string $oauth_callback_route,
 		string $api_host,
@@ -51,6 +55,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		$this->oauth_user_service = $oauth_user_service;
 		$this->settings = $settings;
 		$this->user_service = $user_service;
+		$this->oauth_settings = $oauth_settings;
 		$this->twig = $twig;
 		$this->state_cookie_name = "{$this->namespace}_oauth_state";
 		$this->success_url_cookie_name = "{$this->namespace}_oauth_success_url";
@@ -61,7 +66,9 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return void
 	 */
 	public function register() {
-		add_action( 'login_footer', array( $this, 'embed_tokenpass_login' ) );
+		if ( $this->oauth_settings->use_single_sign_on == true ) {
+			add_action( 'login_footer', array( $this, 'embed_tokenpass_login' ) );
+		}
 	}
 
 	/**
@@ -86,9 +93,7 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return void
 	 */
 	public function embed_tokenpass_login() {
-		$component_data = $this->login_button_component_model->prepare();
-		$component_html = $this->twig->render( 'components/LoginButtonComponent.twig', $component_data );
-		echo $component_html;
+		do_shortcode( "[{$this->namespace}_login]" );
 	}
 
 	/**
@@ -119,13 +124,13 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( !$oauth_user ) {
 			return false;
 		}
+		$can_login = $oauth_user->can_social_login();
+		if ( $can_login === false ) {
+			return false;
+		}
 		if ( $this->current_user->is_guest() === false ) {
 			$user = $this->current_user;
 		} else {
-			$can_login = $oauth_user->can_social_login();
-			if ( $can_login === false ) {
-				return false;
-			}
 			$user = $this->find_existing_user( $oauth_user );
 			if ( !$user ) {
 				$user = $this->user_service->store( $oauth_user );
@@ -207,23 +212,21 @@ class AuthService extends Service implements AuthServiceInterface {
 	/**
 	 * Searches for WordPress user using Tokenpass user data
 	 * @param OauthUserInterface $oauth_user Tokenpass user data
-	 * @return mixed
+	 * @return UserInterface
 	 */
 	protected function find_existing_user( OauthUserInterface $oauth_user ) {
-		$uuid = $oauth_user->id ?? null;
-		$email = $oauth_user->email ?? null;
 		$user;
-		if ( $uuid ) {
+		if ( isset( $oauth_user->id ) ) {
 			$user = $this->user_service->show( array(
-				'uuid' => $uuid,
+				'uuid' => $oauth_user->id,
 			) );
 			if ( $user ) {
 				return $user;
 			}
 		}
-		if ( $email ) {
+		if ( isset( $oauth_user->email ) ) {
 			$user = $this->user_service->show( array(
-				'email' => $email,
+				'email' => $oauth_user->email,
 			) );
 			if ( $user ) {
 				return $user;
@@ -233,6 +236,7 @@ class AuthService extends Service implements AuthServiceInterface {
 
 	/**
 	 * Constructs Tokenpass OAuth login link
+	 * @param string $state OAuth state
 	 * @return string
 	 */
 	protected function get_tokenpass_login_url( string $state ) {

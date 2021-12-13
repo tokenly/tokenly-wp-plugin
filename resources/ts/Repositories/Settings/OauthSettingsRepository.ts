@@ -4,5 +4,5 @@ import { OauthSettingsRepositoryInterface } from './../../Interfaces/Repositorie
 
 @injectable()
 export class OauthSettingsRepository extends SettingsRepository implements OauthSettingsRepositoryInterface {
-	settingsType: string = 'integration';
+	settingsType: string = 'oauth';
 }

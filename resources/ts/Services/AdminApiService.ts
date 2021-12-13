@@ -1,7 +1,5 @@
 import { injectable } from 'inversify';
 import {
-	SettingsData,
-	WhitelistData,
 	SourceData,
 	UserShowParams,
 	UserIndexParams,

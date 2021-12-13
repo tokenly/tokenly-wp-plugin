@@ -15,6 +15,7 @@ use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditAccountServiceInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
@@ -36,6 +37,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	protected $credit_account_service;
 	protected $credit_transaction_repository;
 	protected $credit_account_collection_factory;
+	protected $oauth_settings;
 	protected $client;
 	protected $fillable = array(
 		'id',
@@ -58,10 +60,12 @@ class OauthUser extends Model implements OauthUserInterface {
 		CreditAccountCollectionFactoryInterface $credit_account_collection_factory,
 		CreditAccountServiceInterface $credit_account_service,
 		TokenpassAPIInterface $client,
+		OauthSettingsInterface $oauth_settings,
 		array $data = array()
 	) {
 		$this->address_service = $address_service;
 		$this->balance_service = $balance_service;
+		$this->oauth_settings = $oauth_settings;
 		$this->user_service = $user_service;
 		$this->credit_transaction_repository = $credit_transaction_repository;
 		$this->credit_account_collection_factory = $credit_account_collection_factory;
@@ -73,13 +77,15 @@ class OauthUser extends Model implements OauthUserInterface {
 
 	/**
 	 * Check if the user is allowed to proceed with login
-	 * @param array $tokenpass_user
 	 * @return bool
 	 */
 	public function can_social_login() {
 		$email = $this->email ?? null;
-		$email_is_confirmed = $this->email_is_confirmed ?? null;
-		if ( !$email || $email_is_confirmed == false ) {
+		$email_is_confirmed = $this->email_is_confirmed ?? false;
+		if ( !$email && $this->oauth_settings->allow_no_email == false ) {
+			return false;
+		}
+		if ( $email_is_confirmed == false && $this->oauth_settings->allow_unconfirmed_email == false ) {
 			return false;	
 		}
 		return true;
@@ -164,6 +170,12 @@ class OauthUser extends Model implements OauthUserInterface {
 		return $this;
 	}
 	
+	/**
+	 * Checks if the user has an existing credit account and if not creates a new one
+	 * for the specified credit group
+	 * @param string $group_id Index of the token group
+	 * @return void
+	 */
 	protected function ensure_credit_account_exists( string $group_uuid ) {
 		$account = $this->credit_account_service->show( array(
 			'account_uuid' => $this->id,
@@ -175,6 +187,7 @@ class OauthUser extends Model implements OauthUserInterface {
 				'group_uuid'   => $group_uuid,
 			) );
 		}
+		return $this;
 	}
 	
 	/**
