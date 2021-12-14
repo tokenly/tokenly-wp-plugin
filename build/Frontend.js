@@ -5027,97 +5027,6 @@ exports["default"] = App;
 
 /***/ }),
 
-/***/ "./resources/ts/Components/ButtonLoginComponent.ts":
-/*!*********************************************************!*\
-  !*** ./resources/ts/Components/ButtonLoginComponent.ts ***!
-  \*********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ButtonLoginComponent = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
-let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Component {
-    constructor(authService) {
-        super();
-        this.authService = authService;
-    }
-    register(selector) {
-        this.element.addEventListener('click', () => {
-            this.element.classList.add('loading');
-        });
-    }
-};
-ButtonLoginComponent = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AuthServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], ButtonLoginComponent);
-exports.ButtonLoginComponent = ButtonLoginComponent;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Components/CardTokenItemComponent.ts":
-/*!***********************************************************!*\
-  !*** ./resources/ts/Components/CardTokenItemComponent.ts ***!
-  \***********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CardTokenItemComponent = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
-let CardTokenItemComponent = class CardTokenItemComponent extends Component_1.Component {
-    constructor() {
-        super();
-    }
-    register(selector) {
-        const extraButton = this.element.querySelector('.extra-button');
-        extraButton.addEventListener('click', () => {
-            this.element.classList.add('extra-shown');
-        });
-        const closeButton = this.element.querySelector('.close-button');
-        closeButton.addEventListener('click', () => {
-            this.element.classList.remove('extra-shown');
-        });
-    }
-};
-CardTokenItemComponent = __decorate([
-    (0, inversify_1.injectable)(),
-    __metadata("design:paramtypes", [])
-], CardTokenItemComponent);
-exports.CardTokenItemComponent = CardTokenItemComponent;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Components/Component.ts":
 /*!**********************************************!*\
   !*** ./resources/ts/Components/Component.ts ***!
@@ -5155,6 +5064,101 @@ exports.Component = Component;
 
 /***/ }),
 
+/***/ "./resources/ts/Components/LoginButtonComponent.ts":
+/*!*********************************************************!*\
+  !*** ./resources/ts/Components/LoginButtonComponent.ts ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LoginButtonComponent = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
+let LoginButtonComponent = class LoginButtonComponent extends Component_1.Component {
+    constructor(authService) {
+        super();
+        this.authService = authService;
+    }
+    register(selector) {
+        this.element.addEventListener('click', () => {
+            this.element.classList.add('loading');
+        });
+    }
+};
+LoginButtonComponent = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AuthServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], LoginButtonComponent);
+exports.LoginButtonComponent = LoginButtonComponent;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Components/TokenItemCardComponent.ts":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Components/TokenItemCardComponent.ts ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TokenItemCardComponent = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
+let TokenItemCardComponent = class TokenItemCardComponent extends Component_1.Component {
+    constructor() {
+        super();
+    }
+    register(selector) {
+        const extraButton = this.element.querySelector('.extra-button');
+        if (extraButton) {
+            extraButton.addEventListener('click', () => {
+                this.element.classList.add('extra-shown');
+            });
+        }
+        const closeButton = this.element.querySelector('.close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                this.element.classList.remove('extra-shown');
+            });
+        }
+    }
+};
+TokenItemCardComponent = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], TokenItemCardComponent);
+exports.TokenItemCardComponent = TokenItemCardComponent;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Inversify.config.ts":
 /*!******************************************!*\
   !*** ./resources/ts/Inversify.config.ts ***!
@@ -5187,8 +5191,8 @@ const WhitelistSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Set
 // Implementations - Service providers
 const ComponentServiceProvider_1 = __webpack_require__(/*! ./Providers/ComponentServiceProvider */ "./resources/ts/Providers/ComponentServiceProvider.ts");
 // Implementations - Components
-const ButtonLoginComponent_1 = __webpack_require__(/*! ./Components/ButtonLoginComponent */ "./resources/ts/Components/ButtonLoginComponent.ts");
-const CardTokenItemComponent_1 = __webpack_require__(/*! ./Components/CardTokenItemComponent */ "./resources/ts/Components/CardTokenItemComponent.ts");
+const LoginButtonComponent_1 = __webpack_require__(/*! ./Components/LoginButtonComponent */ "./resources/ts/Components/LoginButtonComponent.ts");
+const TokenItemCardComponent_1 = __webpack_require__(/*! ./Components/TokenItemCardComponent */ "./resources/ts/Components/TokenItemCardComponent.ts");
 const container = new inversify_1.Container();
 exports.container = container;
 // Services - Application
@@ -5208,10 +5212,10 @@ container.bind(Types_1.TYPES.OauthSettingsRepositoryInterface).to(OauthSettingsR
 container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 // Components
 container.bind(Types_1.TYPES.ComponentServiceProviderInterface).to(ComponentServiceProvider_1.ComponentServiceProvider);
-container.bind(Types_1.TYPES.ButtonLoginComponentInterface).to(ButtonLoginComponent_1.ButtonLoginComponent);
-container.bind(Types_1.TYPES.CardTokenItemComponentInterface).to(CardTokenItemComponent_1.CardTokenItemComponent);
-container.bind('Component').to(ButtonLoginComponent_1.ButtonLoginComponent).whenTargetNamed('buttonLoginComponent');
-container.bind('Component').to(CardTokenItemComponent_1.CardTokenItemComponent).whenTargetNamed('cardTokenItemComponent');
+container.bind(Types_1.TYPES.LoginButtonComponentInterface).to(LoginButtonComponent_1.LoginButtonComponent);
+container.bind(Types_1.TYPES.TokenItemCardComponentInterface).to(TokenItemCardComponent_1.TokenItemCardComponent);
+container.bind('Component').to(LoginButtonComponent_1.LoginButtonComponent).whenTargetNamed('loginButtonComponent');
+container.bind('Component').to(TokenItemCardComponent_1.TokenItemCardComponent).whenTargetNamed('tokenItemCardComponent');
 container.bind('Factory<Component>')
     .toAutoNamedFactory('Component');
 
@@ -5250,11 +5254,11 @@ let ComponentServiceProvider = class ComponentServiceProvider extends ServicePro
     get components() {
         return [
             {
-                name: 'buttonLoginComponent',
+                name: 'loginButtonComponent',
                 selector: 'a.tokenpass-login',
             },
             {
-                name: 'cardTokenItemComponent',
+                name: 'tokenItemCardComponent',
                 selector: '.component-card-token-item',
             }
         ];
@@ -6238,8 +6242,8 @@ const TYPES = {
     // Service providers
     ComponentServiceProviderInterface: Symbol.for('ComponentServiceProviderInterface'),
     // Components
-    ButtonLoginComponentInterface: Symbol.for('ButtonLoginComponentInterface'),
-    CardTokenItemComponentInterface: Symbol.for('CardTokenItemComponentInterface'),
+    LoginButtonComponentInterface: Symbol.for('LoginButtonComponentInterface'),
+    TokenItemCardComponentInterface: Symbol.for('TokenItemCardComponentInterface'),
 };
 exports.TYPES = TYPES;
 

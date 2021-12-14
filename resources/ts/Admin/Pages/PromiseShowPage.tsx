@@ -50,7 +50,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 				value: this.props.pageData.promise?.asset,
 			},
 			{
-				label: 'Quantity',
+				label: 'Quantity (Sat)',
 				value: this.props.pageData.promise?.quantity?.value_sat,
 			},
 			{

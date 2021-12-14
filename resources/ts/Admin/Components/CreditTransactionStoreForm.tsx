@@ -48,6 +48,7 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 	constructor( props: CreditTransactionStoreFormProps ) {
 		super( props );
 		this.onSubmit = this.onSubmit.bind( this );
+		this.getSourceLabel = this.getSourceLabel.bind( this );
 		this.getCreditGroupOptions = this.getCreditGroupOptions.bind( this );
 		this.state.creditGroupOptions = this.getCreditGroupOptions();
 		if ( this.state.creditGroupOptions[0] ?? null ) {
@@ -74,6 +75,19 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 			} );
 		} );
 		return options;
+	}
+
+	getSourceLabel() {
+		let label = '';
+		switch ( this.state.transaction.type ) {
+			case 'debit':
+				label = 'Destination';
+				break;
+			case 'credit':
+				label = 'Source';
+				break;
+		}
+		return label;
 	}
 
 	render() {
@@ -129,7 +143,7 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 							</label>
 						</div>
 						<div>
-							<label>Source
+							<label>{ this.getSourceLabel() }
 								<div style={{opacity:0.8, marginBottom: '12px'}}>WordPress username. (optional)</div>
 								<UserSearchField
 									onChange={ ( value: any ) => {

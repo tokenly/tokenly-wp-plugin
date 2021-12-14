@@ -17,8 +17,8 @@ const TYPES = {
 	// Service providers
 	ComponentServiceProviderInterface       : Symbol.for( 'ComponentServiceProviderInterface' ),
 	// Components
-	ButtonLoginComponentInterface           : Symbol.for( 'ButtonLoginComponentInterface' ),
-	CardTokenItemComponentInterface         : Symbol.for( 'CardTokenItemComponentInterface' ),
+	LoginButtonComponentInterface           : Symbol.for( 'LoginButtonComponentInterface' ),
+	TokenItemCardComponentInterface         : Symbol.for( 'TokenItemCardComponentInterface' ),
 };
 
 export { TYPES };

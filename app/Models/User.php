@@ -42,6 +42,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		$this->user_meta_repository = $user_meta_repository;
 		$this->domain_repository = $domain_repository;
 		parent::__construct( $data );
+		$this->load( array( 'user_meta' ) );
 	}
 
 	public function __call( $method, $args ) {
@@ -74,8 +75,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	 * @return bool
 	 */
 	public function can_connect() {
-		$can_connect =  $this->user_meta_repository->show( $this->ID, 'can_connect' ) ?? false;
-		return $can_connect;
+		return $this->can_connect;
 	}
 
 	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
@@ -100,7 +100,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	 * Retrieves oauth user from the API
 	 * @return self
 	 */
-	protected function load_oauth_user( array $relations ) {
+	protected function load_oauth_user( array $relations = array() ) {
 		if ( isset( $this->oauth_user ) ) {
 			return $this;
 		}
@@ -111,6 +111,12 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 			)
 		);
 		$this->oauth_user = $oauth_user;
+		return $this;
+	}
+
+	protected function load_user_meta( array $relations = array() ) {
+		$meta = $this->user_meta_repository->index( $this->ID, 'uuid', 'oauth_token', 'can_connect' );
+		$this->fill( $meta );
 		return $this;
 	}
 }

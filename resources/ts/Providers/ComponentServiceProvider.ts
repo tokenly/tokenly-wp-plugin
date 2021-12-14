@@ -16,11 +16,11 @@ export class ComponentServiceProvider extends ServiceProvider implements Compone
 	get components() {
 		return [
 			{
-				name: 'buttonLoginComponent',
+				name: 'loginButtonComponent',
 				selector: 'a.tokenpass-login',
 			},
 			{
-				name: 'cardTokenItemComponent',
+				name: 'tokenItemCardComponent',
 				selector: '.component-card-token-item',
 			}
 		];

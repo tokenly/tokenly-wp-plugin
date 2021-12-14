@@ -64,6 +64,12 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 				icon: 'share',
 				url: '/wp-admin/admin.php?page=tokenly-vendor',
 			},
+			credits: {
+				title: 'App Credits',
+				description: 'Manage credit groups and transactions.',
+				icon: 'money-alt',
+				url: '/wp-admin/admin.php?page=tokenly-credit-group-index',
+			},
 			whitelist: {
 				title: 'Whitelist',
 				description: 'Configure a filter for tokens displayed on the inventory pages.',
@@ -90,6 +96,7 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 			'settings',
 		],
 		adminRoutes: [
+			'credits',
 			'vendor',
 			'meta',
 			'settings',

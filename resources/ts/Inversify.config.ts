@@ -21,8 +21,8 @@ import { WhitelistSettingsRepository } from './Repositories/Settings/WhitelistSe
 // Implementations - Service providers
 import { ComponentServiceProvider } from './Providers/ComponentServiceProvider';
 // Implementations - Components
-import { ButtonLoginComponent } from './Components/ButtonLoginComponent';
-import { CardTokenItemComponent } from './Components/CardTokenItemComponent';
+import { LoginButtonComponent } from './Components/LoginButtonComponent';
+import { TokenItemCardComponent } from './Components/TokenItemCardComponent';
 // Interfaces
 // Interfaces - Services
 import { AuthServiceInterface } from './Interfaces/Services/AuthServiceInterface';
@@ -41,8 +41,8 @@ import { OauthSettingsRepositoryInterface } from './Interfaces/Repositories/Sett
 import { WhitelistSettingsRepositoryInterface } from './Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
 // Interfaces - Components
 import { ComponentServiceProviderInterface } from './Interfaces/Providers/ComponentServiceProviderInterface';
-import { ButtonLoginComponentInterface } from './Interfaces/Components/ButtonLoginComponentInterface';
-import { CardTokenItemComponentInterface } from './Interfaces/Components/CardTokenItemComponentInterface';
+import { LoginButtonComponentInterface } from './Interfaces/Components/LoginButtonComponentInterface';
+import { TokenItemCardComponentInterface } from './Interfaces/Components/TokenItemCardComponentInterface';
 
 const container = new Container();
 
@@ -63,11 +63,11 @@ container.bind<OauthSettingsRepositoryInterface>( TYPES.OauthSettingsRepositoryI
 container.bind<TcaSettingsRepositoryInterface>( TYPES.TcaSettingsRepositoryInterface ).to( TcaSettingsRepository );
 // Components
 container.bind<ComponentServiceProviderInterface>( TYPES.ComponentServiceProviderInterface ).to( ComponentServiceProvider );
-container.bind<ButtonLoginComponentInterface>( TYPES.ButtonLoginComponentInterface ).to( ButtonLoginComponent );
-container.bind<CardTokenItemComponentInterface>( TYPES.CardTokenItemComponentInterface ).to( CardTokenItemComponent );
+container.bind<LoginButtonComponentInterface>( TYPES.LoginButtonComponentInterface ).to( LoginButtonComponent );
+container.bind<TokenItemCardComponentInterface>( TYPES.TokenItemCardComponentInterface ).to( TokenItemCardComponent );
 
-container.bind<Component>( 'Component' ).to( ButtonLoginComponent ).whenTargetNamed( 'buttonLoginComponent' );
-container.bind<Component>( 'Component' ).to( CardTokenItemComponent ).whenTargetNamed( 'cardTokenItemComponent' );
+container.bind<Component>( 'Component' ).to( LoginButtonComponent ).whenTargetNamed( 'loginButtonComponent' );
+container.bind<Component>( 'Component' ).to( TokenItemCardComponent ).whenTargetNamed( 'tokenItemCardComponent' );
 container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
 		.toAutoNamedFactory<Component>( 'Component' );
 		

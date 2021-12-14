@@ -81,6 +81,7 @@ class UserRepository implements UserRepositoryInterface {
 		}
 		$query = new \WP_User_Query( $args );
 		$users = $query->get_results();
+
 		foreach ( $users as &$user ) {
 			$user = array(
 				'user' => $user,

@@ -1,18 +1,24 @@
 {% macro token_item_card_list_block( token_items ) %}
 	{% from 'components/TokenItemCardComponent.twig' import token_item_card_component %}
-	<div class="tokenly-block block-list-card-token-item">
+	<div class="tokenly-block block-token-item-card-list">
 		<div class="row">
 			<div class="container">
-				{% for token_item in token_items %}
-					{{ token_item_card_component(
-						token_item.image,
-						token_item.name,
-						token_item.description,
-						token_item.balance,
-						token_item.asset,
-						token_item.extra 
-					) }}
-				{% endfor %}
+				<div class="title-container">
+					<h2>Tokens</h2>
+					<hr>
+				</div>
+				<div class="token-items">
+					{% for token_item in token_items %}
+						{{ token_item_card_component(
+							token_item.image,
+							token_item.name,
+							token_item.description,
+							token_item.balance,
+							token_item.asset,
+							token_item.extra 
+						) }}
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
