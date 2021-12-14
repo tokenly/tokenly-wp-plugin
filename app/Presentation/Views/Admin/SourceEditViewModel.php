@@ -16,9 +16,9 @@ class SourceEditViewModel extends ViewModel implements SourceEditViewModelInterf
 	}
 	
 	public function prepare( array $data = array() ) {
-		$source_address = $data['source_address'];
+		$source_id = $data['source_id'];
 		$source = $this->source_service->show( array(
-			'address' => $source_address,
+			'address' => $source_id,
 			'with'    => array(
 				'address',
 			),

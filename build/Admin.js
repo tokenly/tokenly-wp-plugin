@@ -5701,7 +5701,7 @@ class PromiseCard extends react_1.Component {
         super(props);
     }
     render() {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
                 React.createElement(components_1.Flex, { align: "center", justify: "flex-start" },
@@ -5722,7 +5722,7 @@ class PromiseCard extends react_1.Component {
                             React.createElement("strong", null, this.props.promise.asset)),
                         React.createElement("div", null,
                             React.createElement("span", null, "Quantity: "),
-                            React.createElement("strong", null, this.props.promise.quantity))))),
+                            React.createElement("strong", null, (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.quantity) === null || _d === void 0 ? void 0 : _d.value))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
                     React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
@@ -5818,6 +5818,7 @@ const react_1 = __webpack_require__(/*! react */ "react");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class PromiseEditForm extends react_1.Component {
     constructor(props) {
+        var _a, _b;
         super(props);
         this.state = {
             promise: {},
@@ -5826,7 +5827,7 @@ class PromiseEditForm extends react_1.Component {
         this.onDelete = this.onDelete.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.state.promise = {
-            quantity: this.props.promise.quantity,
+            quantity: (_b = (_a = this.props.promise) === null || _a === void 0 ? void 0 : _a.quantity) === null || _b === void 0 ? void 0 : _b.value_sat,
             expiration: null,
             txid: null,
             fingerprint: null,
@@ -6417,12 +6418,12 @@ class OauthSettingsForm extends react_1.Component {
                 } }),
             React.createElement(components_1.ToggleControl, { label: "Allow accounts without email", help: "Allows connecting Tokenpass accounts which have no email accounts associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
                     const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
+                    state.allow_no_email = value;
                     this.onChange(state);
                 } }),
-            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_unconfirmed_email, onChange: (value) => {
                     const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
+                    state.allow_unconfirmed_email = value;
                     this.onChange(state);
                 } })));
     }
@@ -7810,6 +7811,7 @@ class PromiseShowPage extends react_1.Component {
         this.state = {
         //
         };
+        this.getProperties = this.getProperties.bind(this);
     }
     dateFormatted(date) {
         if (date) {
@@ -7817,7 +7819,45 @@ class PromiseShowPage extends react_1.Component {
         }
         return;
     }
+    getProperties() {
+        var _a, _b, _c, _d, _e, _f, _g;
+        return [
+            {
+                label: 'Asset',
+                value: (_a = this.props.pageData.promise) === null || _a === void 0 ? void 0 : _a.asset,
+            },
+            {
+                label: 'Quantity',
+                value: (_c = (_b = this.props.pageData.promise) === null || _b === void 0 ? void 0 : _b.quantity) === null || _c === void 0 ? void 0 : _c.value_sat,
+            },
+            {
+                label: 'Ref',
+                value: (_d = this.props.pageData.promise) === null || _d === void 0 ? void 0 : _d.ref,
+            },
+            {
+                label: 'Note',
+                value: (_e = this.props.pageData.promise) === null || _e === void 0 ? void 0 : _e.note,
+            },
+            {
+                label: 'Created at',
+                value: this.dateFormatted((_f = this.props.pageData.promise) === null || _f === void 0 ? void 0 : _f.created_at),
+            },
+            {
+                label: 'Updated at',
+                value: this.dateFormatted((_g = this.props.pageData.promise) === null || _g === void 0 ? void 0 : _g.updated_at),
+            },
+        ];
+    }
     render() {
+        const properties = this.getProperties();
+        const listItems = properties.map((property) => {
+            return (React.createElement("div", null,
+                React.createElement("span", null,
+                    property.label,
+                    ": "),
+                React.createElement("span", { style: { opacity: property.value ? 1 : 0.6 } },
+                    React.createElement("strong", null, property.value ? property.value : 'No data'))));
+        });
         return (React.createElement(Page_1.default, { title: 'Promise details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
                 React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
@@ -7828,28 +7868,7 @@ class PromiseShowPage extends react_1.Component {
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement(PromiseSourceInfo_1.PromiseSourceInfo, { promise: this.props.pageData.promise, sources: this.props.pageData.sources }),
                                 React.createElement(PromiseParticipants_1.PromiseParticipants, { promise: this.props.pageData.promise }),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Asset: "),
-                                    React.createElement("strong", null, this.props.pageData.promise.asset)),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Quantity: "),
-                                    React.createElement("strong", null, this.props.pageData.promise.quantity)),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Ref: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.props.pageData.promise.ref))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Note: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.props.pageData.promise.note))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Created at: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.promise.created_at)))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Updated at: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.promise.updated_at))))))))),
+                                listItems))))),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,

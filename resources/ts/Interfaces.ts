@@ -98,7 +98,7 @@ export interface PromiseData {
 	source?: SourceData;
 	destination: string;
 	asset: string;
-	quantity: number;
+	quantity: Quantity;
 	ref: string;
 	txid: string;
 	fingerprint: string;
@@ -109,6 +109,12 @@ export interface PromiseData {
 	note: string;
 	promise_id: number;
 	promise_meta: any;
+}
+
+export interface Quantity {
+	value: number;
+	value_sat: number;
+	precision: number;
 }
 
 export interface StatusData {

@@ -87,6 +87,7 @@ use Tokenly\Wp\Models\OauthUser;
 use Tokenly\Wp\Models\Promise;
 use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Models\PromiseMeta;
+use Tokenly\Wp\Models\Quantity;
 use Tokenly\Wp\Models\Integration;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\TokenMeta;
@@ -202,6 +203,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseMetaFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\QuantityFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TokenMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleFactoryInterface;
@@ -250,6 +252,7 @@ use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\QuantityInterface;
 use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
@@ -463,7 +466,7 @@ return array(
 	CollectionInterface::class                   => \DI\autowire( Collection::class ),
 	AddressCollectionInterface::class            => \DI\autowire( AddressCollection::class ),
 	BalanceCollectionInterface::class            => \DI\autowire( BalanceCollection::class ),
-	CreditAccountCollectionInterface::class        => \DI\autowire( CreditAccountCollection::class ),
+	CreditAccountCollectionInterface::class      => \DI\autowire( CreditAccountCollection::class ),
 	CreditGroupCollectionInterface::class        => \DI\autowire( CreditGroupCollection::class ),
 	CreditTransactionCollectionInterface::class  => \DI\autowire( CreditTransactionCollection::class ),
 	PromiseCollectionInterface::class            => \DI\autowire( PromiseCollection::class ),
@@ -475,8 +478,7 @@ return array(
 	UserCollectionInterface::class               => \DI\autowire( UserCollection::class ),
 	WhitelistItemCollectionInterface::class      => \DI\autowire( WhitelistItemCollection::class ),
 	//Models
-	AddressInterface::class                      => \DI\autowire( Address::class ),
-	BalanceInterface::class                      => \DI\autowire( Balance::class ),
+
 	CurrentUserInterface::class                  => \DI\factory( function (
 		ContainerInterface $container,
 		UserServiceInterface $user_service
@@ -493,6 +495,8 @@ return array(
 		}
 		return $user;
 	} ),
+	AddressInterface::class                => \DI\autowire( Address::class ),
+	BalanceInterface::class                => \DI\autowire( Balance::class ),
 	CreditAccountInterface::class          => \DI\autowire( CreditAccount::class ),
 	CreditAccountHistoryInterface::class   => \DI\autowire( CreditAccountHistory::class ),
 	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
@@ -506,8 +510,9 @@ return array(
 	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
 	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
 	UserInterface::class                   => \DI\autowire( User::class ),
-	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
 	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
+	QuantityInterface::class               => \DI\autowire( Quantity::class ),
+	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
 	IntegrationInterface::class            => \DI\autowire( Integration::class ),
 	//Models - Settings
 	OauthSettingsInterface::class          => \DI\autowire( OauthSettings::class ),
@@ -547,6 +552,9 @@ return array(
 	} ),
 	PromiseMetaFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, PromiseMetaInterface::class ) extends ConcreteFactory implements PromiseMetaFactoryInterface {};
+	} ),
+	QuantityFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, QuantityInterface::class ) extends ConcreteFactory implements QuantityFactoryInterface {};
 	} ),
 	SourceFactoryInterface::class                   => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, SourceInterface::class ) extends ConcreteFactory implements SourceFactoryInterface {};

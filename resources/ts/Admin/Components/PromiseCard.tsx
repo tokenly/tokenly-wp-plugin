@@ -58,7 +58,7 @@ export class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
 							<PromiseSourceInfo promise={ this.props.promise } sources={ this.props.sources } />
 							<PromiseParticipants promise={ this.props.promise } />
 							<div><span>Asset: </span><strong>{ this.props.promise.asset }</strong></div>
-							<div><span>Quantity: </span><strong>{ this.props.promise.quantity }</strong></div>
+							<div><span>Quantity: </span><strong>{ this.props.promise?.quantity?.value }</strong></div>
 						</div>
 					</Flex>
 				</CardBody>
