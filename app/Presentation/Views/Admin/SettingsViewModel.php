@@ -31,6 +31,7 @@ class SettingsViewModel extends ViewModel implements SettingsViewModelInterface 
 		$tca_settings = $this->tca_settings->to_array();
 		$oauth_settings = $this->oauth_settings->to_array();
 		$post_types = $this->tca_settings->get_available_post_types();
+		$taxonomies = $this->tca_settings->get_available_taxonomies();
 		return array(
 			'integration_settings' => $integration_settings,
 			'integration_data'     => array(
@@ -41,6 +42,7 @@ class SettingsViewModel extends ViewModel implements SettingsViewModelInterface 
 			'tca_settings'          => $tca_settings,
 			'tca_data'              => array(
 				'post_types' => $post_types,
+				'taxonomies' => $taxonomies,
 			),
 			'oauth_settings'        => $oauth_settings,
 		);

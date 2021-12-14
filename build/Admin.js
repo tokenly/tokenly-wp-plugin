@@ -6476,7 +6476,7 @@ class TcaSettingsForm extends react_1.Component {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
-        console.log(this.props);
+        this.isTaxonomyChecked = this.isTaxonomyChecked.bind(this);
     }
     onChange(newSettings) {
         this.props.onChange(newSettings);
@@ -6489,18 +6489,44 @@ class TcaSettingsForm extends react_1.Component {
         }
         return checked;
     }
+    isTaxonomyChecked(key) {
+        var _a, _b;
+        let checked = false;
+        if (((_a = this.props.settings) === null || _a === void 0 ? void 0 : _a.taxonomies) && ((_b = this.props.settings) === null || _b === void 0 ? void 0 : _b.taxonomies[key])) {
+            checked = this.props.settings.taxonomies[key];
+        }
+        return checked;
+    }
     render() {
-        let listItems = [];
-        Object.keys(this.props.data.post_types).map((key, index) => {
-            const label = this.props.data.post_types[key];
-            const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
-                    let settings = Object.assign({}, this.props.settings);
-                    settings.post_types[key] = value;
-                    this.onChange(settings);
-                } }));
-            listItems.push(item);
-        });
-        return (React.createElement("div", null,
+        const postTypes = [];
+        if (this.props.data.post_types) {
+            Object.keys(this.props.data.post_types).map((key, index) => {
+                const label = this.props.data.post_types[key];
+                const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
+                        let settings = Object.assign({}, this.props.settings);
+                        settings.post_types[key] = value;
+                        this.onChange(settings);
+                    } }));
+                postTypes.push(item);
+            });
+        }
+        const taxonomies = [];
+        if (this.props.data.taxonomies) {
+            Object.keys(this.props.data.taxonomies).map((key, index) => {
+                const label = this.props.data.taxonomies[key];
+                const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isTaxonomyChecked(key), onChange: (value) => {
+                        let settings = Object.assign({}, this.props.settings);
+                        settings.taxonomies[key] = value;
+                        this.onChange(settings);
+                    } }));
+                taxonomies.push(item);
+            });
+        }
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column" },
             React.createElement("fieldset", null,
                 React.createElement(components_1.Flex
                 //@ts-ignore
@@ -6525,13 +6551,27 @@ class TcaSettingsForm extends react_1.Component {
                         } }))),
             React.createElement("hr", null),
             React.createElement("div", null,
-                React.createElement("strong", null, "TCA post types"),
-                React.createElement("div", null, "The selected post types will be able to use the TCA functions.")),
+                React.createElement("strong", null, "Post types"),
+                React.createElement("div", null,
+                    "The selected post types will be able to use the TCA functions. ",
+                    React.createElement("br", null),
+                    " The rule editor will be available at the post editing screen.")),
             React.createElement(components_1.Flex
             //@ts-ignore
             , { 
                 //@ts-ignore
-                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, listItems)));
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, postTypes.length > 0 ? postTypes : React.createElement("div", { style: { opacity: 0.6 } }, "No post types found")),
+            React.createElement("div", { style: { marginTop: '12px' } },
+                React.createElement("strong", null, "Taxonomies"),
+                React.createElement("div", null,
+                    "The selected taxonomies will be able to use the TCA functions. ",
+                    React.createElement("br", null),
+                    " The rule editor will be available at the taxonomy term editing screen.")),
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, taxonomies.length > 0 ? taxonomies : React.createElement("div", { style: { opacity: 0.6 } }, "No taxonomies found"))));
     }
 }
 exports.TcaSettingsForm = TcaSettingsForm;
@@ -8057,6 +8097,7 @@ class SettingsPage extends react_1.Component {
             },
             tcaSettings: {
                 post_types: {},
+                taxonomies: {},
                 filter_menu_items: null,
                 filter_post_results: null,
             },
@@ -8080,6 +8121,9 @@ class SettingsPage extends react_1.Component {
         this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
         if (!this.state.tcaSettings.post_types) {
             this.state.tcaSettings.post_types = {};
+        }
+        if (!this.state.tcaSettings.taxonomies) {
+            this.state.tcaSettings.taxonomies = {};
         }
         this.state.oauthSettings = Object.assign(this.state.oauthSettings, this.props.pageData.oauth_settings);
     }

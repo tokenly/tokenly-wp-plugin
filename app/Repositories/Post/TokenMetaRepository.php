@@ -48,17 +48,13 @@ class TokenMetaRepository implements TokenMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		$posts_formatted = array();
-		foreach ( $posts as $post ) {
-			$meta = $this->meta_repository->index( $post->ID, array(
-				'asset',
-				'extra',
-			) );
-			$posts_formatted[] = array_merge( $meta, array(
+		foreach ( $posts as &$post ) {
+			$post = array(
 				'post' => $post,
-			) );
+			);
 		}
-		$posts = $this->token_meta_collection_factory->create( $posts_formatted );
+		$collection = $this->token_meta_collection_factory->create( $posts );
+		$collection->load( array( 'meta' ) );
 		return $posts;
 	}
 

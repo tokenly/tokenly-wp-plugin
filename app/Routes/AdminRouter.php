@@ -57,9 +57,9 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		CurrentUserInterface $current_user,
 		Environment $twig
 	) {
-		$this->namespace = $namespace;
-		$this->api_host = $api_host;
 		$this->root_dir = $root_dir;
+		$this->api_host = $api_host;
+		$this->namespace = $namespace;
 		$this->integration = $integration;
 		$this->current_user = $current_user;
 		$this->auth_service = $auth_service;

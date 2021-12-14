@@ -91,14 +91,4 @@ class Post extends Model implements PostInterface {
 		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;
 		return $tca_allowed;
 	}
-	
-	protected function load_meta( array $relations = array() ) {
-		$tca_rules = $this->meta_repository->show( $this->ID, 'tca_rules' );
-		if ( !$tca_rules ) {
-			$tca_rules = array();
-		}
-		$tca_rules = $this->tca_rule_collection_factory->create( $tca_rules );
-		$this->tca_rules = $tca_rules;
-		return $this;
-	}
 }

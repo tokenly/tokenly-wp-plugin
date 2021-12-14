@@ -14,6 +14,9 @@ use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterfac
 class PostRepository implements PostRepositoryInterface {
 	protected $post_factory;
 	protected $meta_repository;
+	protected $meta = array(
+		'tca_rules',
+	);
 	
 	public function __construct(
 		PostFactoryInterface $post_factory,
@@ -46,10 +49,8 @@ class PostRepository implements PostRepositoryInterface {
 		if ( !$post ) {
 			return;
 		}
-		$post = $this->post_factory->create( array(
-			'post'      => $post,
-		) );
-		$post->load( array( 'meta' ) );
+		$post = $this->append_meta( $post );
+		$post = $this->post_factory->create( $post );
 		return $post;
 	}
 
@@ -65,5 +66,25 @@ class PostRepository implements PostRepositoryInterface {
 			$update_params['tca_rules'] = $params['tca_rules'];
 		}
 		$this->meta_repository->update( $post->ID, $update_params );
+	}
+
+	protected function load_meta( \WP_Post $post ) {
+		$meta = $this->meta_repository->index( $post->ID, $this->meta );
+		return $meta;
+	}
+
+	protected function append_meta( \WP_Post $post ) {
+		$meta = $this->load_meta( $post );
+		$post = array_merge( array(
+			'post' => $post,
+		), $meta );
+		return $post;
+	}
+
+	protected function append_meta_collection( array $posts ) {
+		foreach ( $posts as &$post ) {
+			$post = $this->append_meta( $post );
+		}
+		return $posts;
 	}
 }

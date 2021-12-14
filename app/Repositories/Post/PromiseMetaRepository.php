@@ -17,6 +17,10 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 	protected $promise_meta_collection_factory;
 	protected $meta_repository;
 	protected $string;
+	protected $meta = array(
+		'asset',
+		'extra',
+	);
 	
 	public function __construct(
 		PromiseMetaCollectionFactoryInterface $promise_meta_collection_factory,
@@ -51,20 +55,17 @@ class PromiseMetaRepository implements PromiseMetaRepositoryInterface {
 		}
 		$query_meta = new \WP_Query( $query_args );
 		$posts = $query_meta->posts;
-		$posts_formatted = array();
-		foreach ( $posts as $post ) {
-			$array = array();
-			$post_id = $post->ID;
-			$meta = $this->meta_repository->index( $post_id, array(
-				'promise_id',
-				'source_user_id',
-				'destination_user_id',
+		foreach ( $posts as &$post ) {
+			$meta = $this->meta_repository->index( $post->ID, array(
+				'asset',
+				'extra',
 			) );
-			$array = array_merge( $array, $meta );
-			$array['post'] = $post;
-			$posts_formatted[] = $array;
+			$post = array(
+				'post' => $post
+			);
+			$post = array_merge( $post, $meta );
 		}
-		$collection = $this->promise_meta_collection_factory->create( $posts_formatted );
+		$collection = $this->promise_meta_collection_factory->create( $posts );
 		return $collection;
 	}
 	

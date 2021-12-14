@@ -10,6 +10,7 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 class PromiseMeta extends Model implements PromiseMetaInterface {
 	public $promise_id;
@@ -32,8 +33,10 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 	public function __construct(
 		UserServiceInterface $user_service,
 		PromiseMetaRepositoryInterface $domain_repository,
+		MetaRepositoryInterface $meta_repository,
 		array $data = array()
 	) {
+		$this->meta_repository = $meta_repository;
 		$this->user_service = $user_service;
 		$this->domain_repository = $domain_repository;
 		parent::__construct( $data );
@@ -51,7 +54,12 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 		return $this->post->$key = $val;
 	}
 
-	protected function load_source_user( array $relations ) {
+	/**
+	 * Loads the source user relation
+	 * @param string[] $relations Further relations
+	 * @return self 
+	 */
+	protected function load_source_user( array $relations = array() ) {
 		$user = $this->user_service->show( array(
 			'uuid' => $this->source_user_id,
 			'with' => $relations,
@@ -60,12 +68,33 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 		return $this;
 	}
 
-	protected function load_destination_user( array $relations ) {
+	/**
+	 * Loads the destination user relation
+	 * @param string[] $relations Further relations
+	 * @return self
+	 */
+	protected function load_destination_user( array $relations = array() ) {
 		$user = $this->user_service->show( array(
 			'uuid' => $this->destination_user_id,
 			'with' => $relations,
 		) );
 		$this->destination_user = $user;
+		return $this;
+	}
+
+	/**
+	 * Loads the meta relation
+	 * @param string[] $relations Further relations
+	 * @return self
+	 */
+	protected function load_meta( array $relations = array() ) {
+		$post_id = $post->ID;
+		$meta = $this->meta_repository->index( $post_id, array(
+			'promise_id',
+			'source_user_id',
+			'destination_user_id',
+		) );
+		$this->fill( $meta );
 		return $this;
 	}
 }

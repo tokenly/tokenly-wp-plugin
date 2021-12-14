@@ -15,6 +15,7 @@ export interface IntegrationSettings {
 
 export interface TcaSettings {
 	post_types: object;
+	taxonomies: object;
 	filter_menu_items: boolean;
 	filter_post_results: boolean;
 }

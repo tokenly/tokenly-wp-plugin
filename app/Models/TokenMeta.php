@@ -23,6 +23,7 @@ class TokenMeta extends Model implements TokenMetaInterface {
 
 	public function __construct(
 		TokenMetaRepositoryInterface $domain_repository,
+		MetaRepositoryInterface $meta_repository,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
