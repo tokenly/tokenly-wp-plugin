@@ -5681,156 +5681,6 @@ exports.CreditTransactionStoreForm = CreditTransactionStoreForm;
 
 /***/ }),
 
-/***/ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx":
-/*!*******************************************************************!*\
-  !*** ./resources/ts/Admin/Components/IntegrationSettingsForm.tsx ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IntegrationSettingsForm = void 0;
-const React = __webpack_require__(/*! react */ "react");
-const react_1 = __webpack_require__(/*! react */ "react");
-const StatusIndicator_1 = __webpack_require__(/*! ../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
-const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-class IntegrationSettingsForm extends react_1.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-    }
-    onChange(newSettings) {
-        this.props.onChange(newSettings);
-    }
-    render() {
-        var _a, _b, _c;
-        return (React.createElement(components_1.Flex
-        //@ts-ignore
-        , { 
-            //@ts-ignore
-            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
-            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_a = this.props.status) !== null && _a !== void 0 ? _a : false }),
-            React.createElement(components_1.TextControl, { label: "Client ID", value: (_b = this.props.settings.client_id) !== null && _b !== void 0 ? _b : '', onChange: (value) => {
-                    let newSettings = Object.assign({}, this.props.settings);
-                    newSettings.client_id = value;
-                    this.onChange(newSettings);
-                } }),
-            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_c = this.props.settings.client_secret) !== null && _c !== void 0 ? _c : '', onChange: (value) => {
-                    let newSettings = Object.assign({}, this.props.settings);
-                    newSettings.client_secret = value;
-                    this.onChange(newSettings);
-                } })));
-    }
-}
-exports.IntegrationSettingsForm = IntegrationSettingsForm;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx":
-/*!*******************************************************************!*\
-  !*** ./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx ***!
-  \*******************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IntegrationSettingsHelp = void 0;
-const React = __webpack_require__(/*! react */ "react");
-const react_1 = __webpack_require__(/*! react */ "react");
-class IntegrationSettingsHelp extends react_1.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        var _a, _b, _c, _d;
-        return (React.createElement("div", null,
-            React.createElement("ul", { className: "tk_steps" },
-                React.createElement("li", null,
-                    React.createElement("span", null, "1. Add a new application on "),
-                    React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
-                    "."),
-                React.createElement("li", null, "2. Enter the received app credentials below."),
-                React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features.")),
-            React.createElement("div", { className: "tk_app_details" },
-                React.createElement("h3", null, "Register Client Application"),
-                React.createElement("span", null,
-                    React.createElement("span", null,
-                        React.createElement("b", null, "CLIENT NAME: ")),
-                    React.createElement("span", null, "Random Input")),
-                React.createElement("br", null),
-                React.createElement("span", null,
-                    React.createElement("span", null,
-                        React.createElement("b", null, "APP HOMEPAGE URL: ")),
-                    React.createElement("a", { href: (_a = this.props) === null || _a === void 0 ? void 0 : _a.appHomepageUrl, target: "_blank" }, (_b = this.props) === null || _b === void 0 ? void 0 : _b.appHomepageUrl)),
-                React.createElement("br", null),
-                React.createElement("span", null,
-                    React.createElement("span", null,
-                        React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
-                    React.createElement("a", { href: (_c = this.props) === null || _c === void 0 ? void 0 : _c.clientAuthUrl, target: "_blank" }, (_d = this.props) === null || _d === void 0 ? void 0 : _d.clientAuthUrl)))));
-    }
-}
-exports.IntegrationSettingsHelp = IntegrationSettingsHelp;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Admin/Components/OauthSettingsForm.tsx":
-/*!*************************************************************!*\
-  !*** ./resources/ts/Admin/Components/OauthSettingsForm.tsx ***!
-  \*************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OauthSettingsForm = void 0;
-const React = __webpack_require__(/*! react */ "react");
-const react_1 = __webpack_require__(/*! react */ "react");
-const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-class OauthSettingsForm extends react_1.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-    }
-    onChange(newSettings) {
-        this.props.onChange(newSettings);
-    }
-    render() {
-        return (React.createElement(components_1.Flex
-        //@ts-ignore
-        , { 
-            //@ts-ignore
-            direction: "column" },
-            React.createElement(components_1.TextControl, { label: "Redirect URL", value: this.props.settings.success_url, help: "Default redirect URL on success for the login shortcode and the main login form.", onChange: (value) => {
-                    const state = Object.assign({}, this.props.settings);
-                    state.success_url = value;
-                    this.onChange(state);
-                } }),
-            React.createElement(components_1.ToggleControl, { label: "Use Single sign-on (SSO)", help: "Allows the existing users to login using their Tokenpass account.", checked: this.props.settings.use_single_sign_on, onChange: (value) => {
-                    const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
-                    this.onChange(state);
-                } }),
-            React.createElement(components_1.ToggleControl, { label: "Allow accounts without email", help: "Allows connecting Tokenpass accounts which have no email accounts associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
-                    const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
-                    this.onChange(state);
-                } }),
-            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
-                    const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
-                    this.onChange(state);
-                } })));
-    }
-}
-exports.OauthSettingsForm = OauthSettingsForm;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Admin/Components/PromiseCard.tsx":
 /*!*******************************************************!*\
   !*** ./resources/ts/Admin/Components/PromiseCard.tsx ***!
@@ -6432,6 +6282,237 @@ exports.SavePanel = SavePanel;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/Settings/IntegrationSettingsForm.tsx":
+/*!****************************************************************************!*\
+  !*** ./resources/ts/Admin/Components/Settings/IntegrationSettingsForm.tsx ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const StatusIndicator_1 = __webpack_require__(/*! ../../Components/StatusIndicator */ "./resources/ts/Admin/Components/StatusIndicator.tsx");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class IntegrationSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    render() {
+        var _a, _b, _c;
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } },
+            React.createElement(StatusIndicator_1.StatusIndicator, { status: (_a = this.props.status) !== null && _a !== void 0 ? _a : false }),
+            React.createElement(components_1.TextControl, { label: "Client ID", value: (_b = this.props.settings.client_id) !== null && _b !== void 0 ? _b : '', onChange: (value) => {
+                    let newSettings = Object.assign({}, this.props.settings);
+                    newSettings.client_id = value;
+                    this.onChange(newSettings);
+                } }),
+            React.createElement(components_1.TextControl, { label: "Client Secret", value: (_c = this.props.settings.client_secret) !== null && _c !== void 0 ? _c : '', onChange: (value) => {
+                    let newSettings = Object.assign({}, this.props.settings);
+                    newSettings.client_secret = value;
+                    this.onChange(newSettings);
+                } })));
+    }
+}
+exports.IntegrationSettingsForm = IntegrationSettingsForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/Settings/IntegrationSettingsHelp.tsx":
+/*!****************************************************************************!*\
+  !*** ./resources/ts/Admin/Components/Settings/IntegrationSettingsHelp.tsx ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntegrationSettingsHelp = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+class IntegrationSettingsHelp extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        var _a, _b, _c, _d;
+        return (React.createElement("div", null,
+            React.createElement("ul", { className: "tk_steps" },
+                React.createElement("li", null,
+                    React.createElement("span", null, "1. Add a new application on "),
+                    React.createElement("a", { href: "https://tokenpass.tokenly.com/auth/apps", target: "_blank" }, "Tokenpass Developers"),
+                    "."),
+                React.createElement("li", null, "2. Enter the received app credentials below."),
+                React.createElement("li", null, "3. Connect your Tokenpass account on the Connection screen to unlock more features.")),
+            React.createElement("div", { className: "tk_app_details" },
+                React.createElement("h3", null, "Register Client Application"),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "CLIENT NAME: ")),
+                    React.createElement("span", null, "Random Input")),
+                React.createElement("br", null),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "APP HOMEPAGE URL: ")),
+                    React.createElement("a", { href: (_a = this.props) === null || _a === void 0 ? void 0 : _a.appHomepageUrl, target: "_blank" }, (_b = this.props) === null || _b === void 0 ? void 0 : _b.appHomepageUrl)),
+                React.createElement("br", null),
+                React.createElement("span", null,
+                    React.createElement("span", null,
+                        React.createElement("b", null, "CLIENT AUTHORIZATION REDIRECT URL: ")),
+                    React.createElement("a", { href: (_c = this.props) === null || _c === void 0 ? void 0 : _c.clientAuthUrl, target: "_blank" }, (_d = this.props) === null || _d === void 0 ? void 0 : _d.clientAuthUrl)))));
+    }
+}
+exports.IntegrationSettingsHelp = IntegrationSettingsHelp;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/Settings/OauthSettingsForm.tsx":
+/*!**********************************************************************!*\
+  !*** ./resources/ts/Admin/Components/Settings/OauthSettingsForm.tsx ***!
+  \**********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OauthSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class OauthSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    render() {
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column" },
+            React.createElement(components_1.TextControl, { label: "Redirect URL", value: this.props.settings.success_url, help: "Default redirect URL on success for the login shortcode and the main login form.", onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.success_url = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Use Single sign-on (SSO)", help: "Allows the existing users to login using their Tokenpass account.", checked: this.props.settings.use_single_sign_on, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without email", help: "Allows connecting Tokenpass accounts which have no email accounts associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } }),
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+                    const state = Object.assign({}, this.props.settings);
+                    state.use_single_sign_on = value;
+                    this.onChange(state);
+                } })));
+    }
+}
+exports.OauthSettingsForm = OauthSettingsForm;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Components/Settings/TcaSettingsForm.tsx":
+/*!********************************************************************!*\
+  !*** ./resources/ts/Admin/Components/Settings/TcaSettingsForm.tsx ***!
+  \********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TcaSettingsForm = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class TcaSettingsForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
+        console.log(this.props);
+    }
+    onChange(newSettings) {
+        this.props.onChange(newSettings);
+    }
+    isPostTypeChecked(key) {
+        var _a, _b;
+        let checked = false;
+        if (((_a = this.props.settings) === null || _a === void 0 ? void 0 : _a.post_types) && ((_b = this.props.settings) === null || _b === void 0 ? void 0 : _b.post_types[key])) {
+            checked = this.props.settings.post_types[key];
+        }
+        return checked;
+    }
+    render() {
+        let listItems = [];
+        Object.keys(this.props.data.post_types).map((key, index) => {
+            const label = this.props.data.post_types[key];
+            const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
+                    let settings = Object.assign({}, this.props.settings);
+                    settings.post_types[key] = value;
+                    this.onChange(settings);
+                } }));
+            listItems.push(item);
+        });
+        return (React.createElement("div", null,
+            React.createElement("fieldset", null,
+                React.createElement(components_1.Flex
+                //@ts-ignore
+                , { 
+                    //@ts-ignore
+                    direction: "column" },
+                    React.createElement("legend", { style: { marginBottom: '8px' } },
+                        React.createElement("strong", null, "Filtering options"),
+                        React.createElement("div", null,
+                            "Filtering the content can slow down page loading speed. ",
+                            React.createElement("br", null),
+                            "The following options allow fine-grained control over what gets filtered.")),
+                    React.createElement(components_1.ToggleControl, { label: "Filter menu items", help: "Filters the menus made via Customizer. Note that the custom / external links will not be tested.", checked: this.props.settings.filter_menu_items, onChange: (value) => {
+                            let settings = Object.assign({}, this.props.settings);
+                            settings.filter_menu_items = value;
+                            this.onChange(settings);
+                        } }),
+                    React.createElement(components_1.ToggleControl, { label: "Filter post results", help: "Filters the post listings which are not controlable by the menu editor, like recent post list.", checked: this.props.settings.filter_post_results, onChange: (value) => {
+                            let settings = Object.assign({}, this.props.settings);
+                            settings.filter_post_results = value;
+                            this.onChange(settings);
+                        } }))),
+            React.createElement("hr", null),
+            React.createElement("div", null,
+                React.createElement("strong", null, "TCA post types"),
+                React.createElement("div", null, "The selected post types will be able to use the TCA functions.")),
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, listItems)));
+    }
+}
+exports.TcaSettingsForm = TcaSettingsForm;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/SourceCard.tsx":
 /*!******************************************************!*\
   !*** ./resources/ts/Admin/Components/SourceCard.tsx ***!
@@ -6826,87 +6907,6 @@ class TcaRuleEditor extends react_1.Component {
     }
 }
 exports["default"] = TcaRuleEditor;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Admin/Components/TcaSettingsForm.tsx":
-/*!***********************************************************!*\
-  !*** ./resources/ts/Admin/Components/TcaSettingsForm.tsx ***!
-  \***********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TcaSettingsForm = void 0;
-const React = __webpack_require__(/*! react */ "react");
-const react_1 = __webpack_require__(/*! react */ "react");
-const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-class TcaSettingsForm extends react_1.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-        this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
-        console.log(this.props);
-    }
-    onChange(newSettings) {
-        this.props.onChange(newSettings);
-    }
-    isPostTypeChecked(key) {
-        var _a, _b;
-        let checked = false;
-        if (((_a = this.props.settings) === null || _a === void 0 ? void 0 : _a.post_types) && ((_b = this.props.settings) === null || _b === void 0 ? void 0 : _b.post_types[key])) {
-            checked = this.props.settings.post_types[key];
-        }
-        return checked;
-    }
-    render() {
-        let listItems = [];
-        Object.keys(this.props.data.post_types).map((key, index) => {
-            const label = this.props.data.post_types[key];
-            const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
-                    let settings = Object.assign({}, this.props.settings);
-                    settings.post_types[key] = value;
-                    this.onChange(settings);
-                } }));
-            listItems.push(item);
-        });
-        return (React.createElement("div", null,
-            React.createElement("fieldset", null,
-                React.createElement(components_1.Flex
-                //@ts-ignore
-                , { 
-                    //@ts-ignore
-                    direction: "column" },
-                    React.createElement("legend", { style: { marginBottom: '8px' } },
-                        React.createElement("strong", null, "Filtering options"),
-                        React.createElement("div", null,
-                            "Filtering the content can slow down page loading speed. ",
-                            React.createElement("br", null),
-                            "The following options allow fine-grained control over what gets filtered.")),
-                    React.createElement(components_1.ToggleControl, { label: "Filter menu items", help: "Filters the menus made via Customizer. Note that the custom / external links will not be tested.", checked: this.props.settings.filter_menu_items, onChange: (value) => {
-                            let settings = Object.assign({}, this.props.settings);
-                            settings.filter_menu_items = value;
-                            this.onChange(settings);
-                        } }),
-                    React.createElement(components_1.ToggleControl, { label: "Filter post results", help: "Filters the post listings which are not controlable by the menu editor, like recent post list.", checked: this.props.settings.filter_post_results, onChange: (value) => {
-                            let settings = Object.assign({}, this.props.settings);
-                            settings.filter_post_results = value;
-                            this.onChange(settings);
-                        } }))),
-            React.createElement("hr", null),
-            React.createElement("div", null,
-                React.createElement("strong", null, "TCA post types"),
-                React.createElement("div", null, "The selected post types will be able to use the TCA functions.")),
-            React.createElement(components_1.Flex
-            //@ts-ignore
-            , { 
-                //@ts-ignore
-                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, listItems)));
-    }
-}
-exports.TcaSettingsForm = TcaSettingsForm;
 
 
 /***/ }),
@@ -7951,10 +7951,10 @@ const React = __webpack_require__(/*! react */ "react");
 const Page_1 = __webpack_require__(/*! ./Page */ "./resources/ts/Admin/Pages/Page.tsx");
 const react_1 = __webpack_require__(/*! react */ "react");
 const SavePanel_1 = __webpack_require__(/*! ../Components/SavePanel */ "./resources/ts/Admin/Components/SavePanel.tsx");
-const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/IntegrationSettingsForm */ "./resources/ts/Admin/Components/IntegrationSettingsForm.tsx");
-const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/IntegrationSettingsHelp.tsx");
-const TcaSettingsForm_1 = __webpack_require__(/*! ../Components/TcaSettingsForm */ "./resources/ts/Admin/Components/TcaSettingsForm.tsx");
-const OauthSettingsForm_1 = __webpack_require__(/*! ../Components/OauthSettingsForm */ "./resources/ts/Admin/Components/OauthSettingsForm.tsx");
+const IntegrationSettingsForm_1 = __webpack_require__(/*! ../Components/Settings/IntegrationSettingsForm */ "./resources/ts/Admin/Components/Settings/IntegrationSettingsForm.tsx");
+const IntegrationSettingsHelp_1 = __webpack_require__(/*! ../Components/Settings/IntegrationSettingsHelp */ "./resources/ts/Admin/Components/Settings/IntegrationSettingsHelp.tsx");
+const TcaSettingsForm_1 = __webpack_require__(/*! ../Components/Settings/TcaSettingsForm */ "./resources/ts/Admin/Components/Settings/TcaSettingsForm.tsx");
+const OauthSettingsForm_1 = __webpack_require__(/*! ../Components/Settings/OauthSettingsForm */ "./resources/ts/Admin/Components/Settings/OauthSettingsForm.tsx");
 const Types_1 = __webpack_require__(/*! ../../Types */ "./resources/ts/Types.ts");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class SettingsPage extends react_1.Component {

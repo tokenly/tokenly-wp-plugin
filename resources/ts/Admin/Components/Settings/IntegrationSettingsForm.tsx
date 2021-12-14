@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { StatusIndicator } from '../Components/StatusIndicator';
+import { StatusIndicator } from '../../Components/StatusIndicator';
 
 import { 
 	Flex,

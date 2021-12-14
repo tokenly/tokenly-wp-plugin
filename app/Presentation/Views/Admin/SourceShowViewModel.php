@@ -16,8 +16,9 @@ class SourceShowViewModel extends ViewModel implements SourceShowViewModelInterf
 	}
 	
 	public function prepare( array $data = array() ) {
+		$source = $data['source'];
 		$source = $this->source_service->show( array(
-			'address' => $address,
+			'address' => $source,
 			'with'    => array(
 				'address',
 			),

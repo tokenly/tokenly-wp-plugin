@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { OauthSettings } from '../../Interfaces';
+import { OauthSettings } from '../../../Interfaces';
 
 import { 
 	Flex,

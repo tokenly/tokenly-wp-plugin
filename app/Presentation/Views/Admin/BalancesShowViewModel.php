@@ -16,9 +16,10 @@ class BalancesShowViewModel extends ViewModel implements BalancesShowViewModelIn
 	}
 	
 	public function prepare( array $data = array() ) {
+		$address = $data['address'];
 		$address = $this->address_service->show(
 			array(
-				'address' => $address_id,
+				'address' => $address,
 				'with'    => array( 'balance.token_meta' ),
 			)
 		);
