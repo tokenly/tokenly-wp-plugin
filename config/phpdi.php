@@ -18,6 +18,7 @@ use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\PromiseMetaService;
 use Tokenly\Wp\Services\Domain\PromiseService;
 use Tokenly\Wp\Services\Domain\SourceService;
+use Tokenly\Wp\Services\Domain\TermService;
 use Tokenly\Wp\Services\Domain\TokenMetaService;
 use Tokenly\Wp\Services\Domain\UserService;
 use Tokenly\Wp\Repositories\AddressRepository;
@@ -28,19 +29,23 @@ use Tokenly\Wp\Repositories\CreditTransactionRepository;
 use Tokenly\Wp\Repositories\OauthUserRepository;
 use Tokenly\Wp\Repositories\PromiseRepository;
 use Tokenly\Wp\Repositories\SourceRepository;
+use Tokenly\Wp\Repositories\TermRepository;
 use Tokenly\Wp\Repositories\UserRepository;
 use Tokenly\Wp\Repositories\Post\PostRepository;
 use Tokenly\Wp\Repositories\Post\PromiseMetaRepository;
 use Tokenly\Wp\Repositories\Post\TokenMetaRepository;
 use Tokenly\Wp\Repositories\General\MetaRepository;
 use Tokenly\Wp\Repositories\General\OptionRepository;
+use Tokenly\Wp\Repositories\General\TermMetaRepository;
 use Tokenly\Wp\Repositories\General\UserMetaRepository;
 use Tokenly\Wp\Routes\AdminRouter;
 use Tokenly\Wp\Routes\ApiRouter;
 use Tokenly\Wp\Routes\PostTypeRouter;
+use Tokenly\Wp\Routes\TaxonomyRouter;
 use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Controllers\Web\AuthController;
 use Tokenly\Wp\Controllers\Web\PostController;
+use Tokenly\Wp\Controllers\Web\TaxonomyController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
@@ -74,6 +79,7 @@ use Tokenly\Wp\Collections\PromiseCollection;
 use Tokenly\Wp\Collections\PromiseMetaCollection;
 use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Collections\SourceCollection;
+use Tokenly\Wp\Collections\TermCollection;
 use Tokenly\Wp\Collections\TokenMetaCollection;
 use Tokenly\Wp\Collections\TcaRuleCollection;
 use Tokenly\Wp\Collections\UserCollection;
@@ -90,6 +96,7 @@ use Tokenly\Wp\Models\PromiseMeta;
 use Tokenly\Wp\Models\Quantity;
 use Tokenly\Wp\Models\Integration;
 use Tokenly\Wp\Models\Source;
+use Tokenly\Wp\Models\Term;
 use Tokenly\Wp\Models\TokenMeta;
 use Tokenly\Wp\Models\TcaRule;
 use Tokenly\Wp\Models\User;
@@ -123,6 +130,7 @@ use Tokenly\Wp\Presentation\Views\Admin\SourceEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SourceIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SourceShowViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SourceStoreViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\TaxonomyEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\TokenMetaEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\VendorViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\WhitelistViewModel;
@@ -147,6 +155,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\AddressRepositoryInterface;
@@ -156,20 +165,24 @@ use Tokenly\Wp\Interfaces\Repositories\CreditGroupRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\TermMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;;
+use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
+use Tokenly\Wp\Interfaces\Routes\TaxonomyRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\TaxonomyControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
@@ -205,6 +218,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\QuantityFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TokenMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
@@ -218,6 +232,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterfac
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TermCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
@@ -232,6 +247,7 @@ use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
@@ -249,6 +265,7 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Models\TermInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
@@ -284,6 +301,7 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceShowViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceStoreViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TaxonomyEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\VendorViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\WhitelistViewModelInterface;
@@ -356,12 +374,13 @@ return array(
 	AuthControllerInterface::class                 => \DI\autowire( AuthController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
+	TaxonomyControllerInterface::class             => \DI\autowire( TaxonomyController::class ),
 	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
 	UserControllerInterface::class                 => \DI\autowire( UserController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Shortcodes
-	LoginButtonShortcodeInterface::class              => \DI\autowire( LoginButtonShortcode::class ),
-	LogoutButtonShortcodeInterface::class             => \DI\autowire( LogoutButtonShortcode::class ),
+	LoginButtonShortcodeInterface::class           => \DI\autowire( LoginButtonShortcode::class ),
+	LogoutButtonShortcodeInterface::class          => \DI\autowire( LogoutButtonShortcode::class ),
 	//Services - Application
 	AuthServiceInterface::class                    => \DI\autowire( AuthService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
@@ -387,12 +406,15 @@ return array(
 	PromiseMetaServiceInterface::class             => \DI\autowire( PromiseMetaService::class ),
 	PromiseServiceInterface::class                 => \DI\autowire( PromiseService::class ),
 	SourceServiceInterface::class                  => \DI\autowire( SourceService::class ),
+	TermServiceInterface::class                    => \DI\autowire( TermService::class ),
 	TokenMetaServiceInterface::class               => \DI\autowire( TokenMetaService::class ),
 	UserServiceInterface::class                    => \DI\autowire( UserService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	WhitelistServiceInterface::class               => \DI\autowire( WhitelistService::class ),
 	//Repositories - General
 	MetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	TermMetaRepositoryInterface::class             => \DI\autowire( TermMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
@@ -405,15 +427,17 @@ return array(
 	CreditGroupRepositoryInterface::class          => \DI\autowire( CreditGroupRepository::class ),
 	CreditTransactionRepositoryInterface::class    => \DI\autowire( CreditTransactionRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
-	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
 	PromiseRepositoryInterface::class              => \DI\autowire( PromiseRepository::class ),
-	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	SourceRepositoryInterface::class               => \DI\autowire( SourceRepository::class ),
-	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
-		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	TermRepositoryInterface::class                 => \DI\autowire( TermRepository::class ),
+	//Repositories - Domain - Post
+	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
+	PromiseMetaRepositoryInterface::class          => \DI\autowire( PromiseMetaRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
+		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	//Routes
 	AdminRouterInterface::class                    => \DI\autowire( AdminRouter::class )
 		->constructorParameter( 'root_dir', DI\get( 'general.root_dir' ) )
@@ -423,6 +447,8 @@ return array(
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	PostTypeRouterInterface::class                 => \DI\autowire( PostTypeRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
+	TaxonomyRouterInterface::class                 => \DI\autowire( TaxonomyRouter::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	WebRouterInterface::class                      => \DI\autowire( WebRouter::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Presentation - Block models
@@ -456,6 +482,7 @@ return array(
 	SourceIndexViewModelInterface::class             => \DI\autowire( SourceIndexViewModel::class ),
 	SourceShowViewModelInterface::class              => \DI\autowire( SourceShowViewModel::class ),
 	SourceStoreViewModelInterface::class             => \DI\autowire( SourceStoreViewModel::class ),
+	TaxonomyEditViewModelInterface::class            => \DI\autowire( TaxonomyEditViewModel::class ),
 	TokenMetaEditViewModelInterface::class           => \DI\autowire( TokenMetaEditViewModel::class ),
 	VendorViewModelInterface::class                  => \DI\autowire( VendorViewModel::class ),
 	WhitelistViewModelInterface::class               => \DI\autowire( WhitelistViewModel::class ),
@@ -473,12 +500,19 @@ return array(
 	PromiseMetaCollectionInterface::class        => \DI\autowire( PromiseMetaCollection::class ),
 	PostCollectionInterface::class               => \DI\autowire( PostCollection::class ),
 	SourceCollectionInterface::class             => \DI\autowire( SourceCollection::class ),
+	TermCollectionInterface::class               => \DI\autowire( TermCollection::class ),
 	TokenMetaCollectionInterface::class          => \DI\autowire( TokenMetaCollection::class ),
 	TcaRuleCollectionInterface::class            => \DI\autowire( TcaRuleCollection::class ),
 	UserCollectionInterface::class               => \DI\autowire( UserCollection::class ),
 	WhitelistItemCollectionInterface::class      => \DI\autowire( WhitelistItemCollection::class ),
 	//Models
-
+	AddressInterface::class                => \DI\autowire( Address::class ),
+	BalanceInterface::class                => \DI\autowire( Balance::class ),
+	CreditAccountInterface::class          => \DI\autowire( CreditAccount::class ),
+	CreditAccountHistoryInterface::class   => \DI\autowire( CreditAccountHistory::class ),
+	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
+	CreditGroupHistoryInterface::class     => \DI\autowire( CreditGroupHistory::class ),
+	CreditTransactionInterface::class      => \DI\autowire( CreditTransaction::class ),
 	CurrentUserInterface::class                  => \DI\factory( function (
 		ContainerInterface $container,
 		UserServiceInterface $user_service
@@ -495,31 +529,25 @@ return array(
 		}
 		return $user;
 	} ),
-	AddressInterface::class                => \DI\autowire( Address::class ),
-	BalanceInterface::class                => \DI\autowire( Balance::class ),
-	CreditAccountInterface::class          => \DI\autowire( CreditAccount::class ),
-	CreditAccountHistoryInterface::class   => \DI\autowire( CreditAccountHistory::class ),
-	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
-	CreditGroupHistoryInterface::class     => \DI\autowire( CreditGroupHistory::class ),
-	CreditTransactionInterface::class      => \DI\autowire( CreditTransaction::class ),
+	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
+	IntegrationInterface::class            => \DI\autowire( Integration::class ),
 	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
 	PostInterface::class                   => \DI\autowire( Post::class ),
 	PromiseInterface::class                => \DI\autowire( Promise::class ),
 	PromiseMetaInterface::class            => \DI\autowire( PromiseMeta::class ), 
-	SourceInterface::class                 => \DI\autowire( Source::class ), 
+	QuantityInterface::class               => \DI\autowire( Quantity::class ),
+	SourceInterface::class                 => \DI\autowire( Source::class ),
+	TermInterface::class                   => \DI\autowire( TermInterface::class ), 
 	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
 	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
 	UserInterface::class                   => \DI\autowire( User::class ),
 	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
-	QuantityInterface::class               => \DI\autowire( Quantity::class ),
-	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
-	IntegrationInterface::class            => \DI\autowire( Integration::class ),
 	//Models - Settings
 	OauthSettingsInterface::class          => \DI\autowire( OauthSettings::class ),
 	IntegrationSettingsInterface::class    => \DI\autowire( IntegrationSettings::class ),
 	TcaSettingsInterface::class            => \DI\autowire( TcaSettings::class ),
 	WhitelistSettingsInterface::class      => \DI\autowire( WhitelistSettings::class ),
-	//Factories
+	//Factories - Models
 	AddressFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, AddressInterface::class ) extends ConcreteFactory implements AddressFactoryInterface {};
 	} ),
@@ -544,14 +572,8 @@ return array(
 	OauthUserFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, OauthUserInterface::class ) extends ConcreteFactory implements OauthUserFactoryInterface {};
 	} ),
-	PostFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
-		return new class( $container, PostInterface::class ) extends ConcreteFactory implements PostFactoryInterface {};
-	} ),
 	PromiseFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, PromiseInterface::class ) extends ConcreteFactory implements PromiseFactoryInterface {};
-	} ),
-	PromiseMetaFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
-		return new class( $container, PromiseMetaInterface::class ) extends ConcreteFactory implements PromiseMetaFactoryInterface {};
 	} ),
 	QuantityFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, QuantityInterface::class ) extends ConcreteFactory implements QuantityFactoryInterface {};
@@ -559,8 +581,8 @@ return array(
 	SourceFactoryInterface::class                   => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, SourceInterface::class ) extends ConcreteFactory implements SourceFactoryInterface {};
 	} ),
-	TokenMetaFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
-		return new class( $container, TokenMetaInterface::class ) extends ConcreteFactory implements TokenMetaFactoryInterface {};
+	TermFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, TermInterface::class ) extends ConcreteFactory implements TermFactoryInterface {};
 	} ),
 	TcaRuleFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, TcaRuleInterface::class ) extends ConcreteFactory implements TcaRuleFactoryInterface {};
@@ -571,7 +593,17 @@ return array(
 	WhitelistItemFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, WhitelistItemInterface::class ) extends ConcreteFactory implements WhitelistItemFactoryInterface {};
 	} ),
-	//Factories - collections
+	//Factories - Models - Post
+	PostFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, PostInterface::class ) extends ConcreteFactory implements PostFactoryInterface {};
+	} ),
+	PromiseMetaFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, PromiseMetaInterface::class ) extends ConcreteFactory implements PromiseMetaFactoryInterface, PostFactoryInterface {};
+	} ),
+	TokenMetaFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, TokenMetaInterface::class ) extends ConcreteFactory implements TokenMetaFactoryInterface, PostFactoryInterface {};
+	} ),
+	//Factories - Collections
 	AddressCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, AddressFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, AddressCollectionInterface::class ) extends ConcreteCollectionFactory implements AddressCollectionFactoryInterface {};
 	} ),
@@ -587,29 +619,33 @@ return array(
 	CreditTransactionCollectionFactoryInterface::class    => \DI\factory( function( ContainerInterface $container, CreditTransactionFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, CreditTransactionCollectionInterface::class ) extends ConcreteCollectionFactory implements CreditTransactionCollectionFactoryInterface {};
 	} ),
-	PromiseCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
-		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
-	} ),
-	PostCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
-		return new class( $container, $item_factory, PostCollectionInterface::class ) extends ConcreteCollectionFactory implements PostCollectionFactoryInterface {};
-	} ),
-	PromiseMetaCollectionFactoryInterface::class          => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
-		return new class( $container, $item_factory, PromiseMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseMetaCollectionFactoryInterface {};
-	} ),
 	SourceCollectionFactoryInterface::class               => \DI\factory( function( ContainerInterface $container, SourceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, SourceCollectionInterface::class ) extends ConcreteCollectionFactory implements SourceCollectionFactoryInterface {};
 	} ),
-	TokenMetaCollectionFactoryInterface::class            => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
-		return new class( $container, $item_factory, TokenMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenMetaCollectionFactoryInterface {};
+	PromiseCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
 	} ),
 	TcaRuleCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TcaRuleCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaRuleCollectionFactoryInterface {};
+	} ),
+	TermCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, TermFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, TermCollectionInterface::class ) extends ConcreteCollectionFactory implements TermCollectionFactoryInterface {};
 	} ),
 	UserCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, UserCollectionInterface::class ) extends ConcreteCollectionFactory implements UserCollectionFactoryInterface {};
 	} ),
 	WhitelistItemCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, WhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements WhitelistItemCollectionFactoryInterface {};
+	} ),
+	//Factories - Collections - Post
+	PostCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, PostFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, PostCollectionInterface::class ) extends ConcreteCollectionFactory implements PostCollectionFactoryInterface {};
+	} ),
+	TokenMetaCollectionFactoryInterface::class            => \DI\factory( function( ContainerInterface $container, TokenMetaFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, TokenMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenMetaCollectionFactoryInterface, PostCollectionFactoryInterface {};
+	} ),
+	PromiseMetaCollectionFactoryInterface::class          => \DI\factory( function( ContainerInterface $container, PromiseMetaFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, PromiseMetaCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseMetaCollectionFactoryInterface, PostCollectionFactoryInterface {};
 	} ),
 	//Third-party
 	TokenpassAPI::class => \DI\factory( function ( 

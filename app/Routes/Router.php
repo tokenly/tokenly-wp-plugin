@@ -17,7 +17,8 @@ class Router extends Service implements RouterInterface {
 	 * Hooks the router to WordPress
 	 */
 	public function register() {
-		//
+		$this->routes = $this->get_routes();
+		$this->register_routes();
 	}
 
 	/**

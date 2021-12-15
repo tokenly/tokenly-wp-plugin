@@ -21,6 +21,7 @@ class TaxonomyController implements TaxonomyControllerInterface {
 	 * Displays a section on taxonomy term edit screen.
 	 */
 	public function edit() {
+		error_log(123);
 		$view_data = $this->taxonomy_edit_view_model->prepare();
 		return array(
 			'template' => 'Dynamic.twig',

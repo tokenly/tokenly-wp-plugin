@@ -8497,6 +8497,34 @@ exports["default"] = SourceStorePage;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Pages/TaxonomyEditPage.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/ts/Admin/Pages/TaxonomyEditPage.tsx ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class TaxonomyEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(element_1.Fragment, null));
+    }
+}
+exports["default"] = TaxonomyEditPage;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx":
 /*!********************************************************!*\
   !*** ./resources/ts/Admin/Pages/TokenMetaEditPage.tsx ***!
@@ -10255,6 +10283,7 @@ const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage 
 const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */ "./resources/ts/Admin/Pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
 const PostEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PostEditPage */ "./resources/ts/Admin/Pages/PostEditPage.tsx");
+const TaxonomyEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TaxonomyEditPage */ "./resources/ts/Admin/Pages/TaxonomyEditPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditPage */ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
@@ -10304,6 +10333,7 @@ class AdminApp extends App_1.default {
             'source-store': SourceStorePage_1.default,
             'source-edit': SourceEditPage_1.default,
             'post-edit': PostEditPage_1.default,
+            'taxonomy-edit': TaxonomyEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
         };
         return routes;

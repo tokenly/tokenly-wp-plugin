@@ -28,6 +28,15 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	}
 
 	/**
+	 * Checks whether the specified taxonomy has TCA enabled
+	 * @param string $taxonomy Taxonomy to check
+	 * @return bool
+	 */
+	public function is_enabled_for_taxonomy( string $taxonomy ) {
+		return $this->taxonomies[ $taxonomy ] ?? false;
+	}
+
+	/**
 	 * Returns an array of post types for which TCA can be enabled
 	 * @return array
 	 */

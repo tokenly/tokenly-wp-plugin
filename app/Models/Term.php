@@ -1,14 +1,14 @@
 <?php
 
 /**
- * WP_Post decorator
+ * WP_Term decorator
  */
 
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Models\PostInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\TermInterface;
+use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
@@ -16,19 +16,19 @@ use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
-class Post extends Model implements PostInterface {
+class Term extends Model implements TermInterface {
 	public $tca_rules;
-	protected $post = null;
+	protected $term = null;
 	protected $meta_repository;
 	protected $tca_settings;
 	protected $tca_rule_collection_factory;
 	protected $fillable = array(
-		'post',
+		'term',
 		'tca_rules',
 	);
 
 	public function __construct(
-		PostRepositoryInterface $domain_repository,
+		TermRepositoryInterface $domain_repository,
 		MetaRepositoryInterface $meta_repository,
 		TcaSettingsInterface $tca_settings,
 		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
@@ -54,28 +54,24 @@ class Post extends Model implements PostInterface {
 	}
 
 	/**
-	 * Main pipeline for post access check
-	 * @param int $post_id ID of the post to check
+	 * Check if the specified user can access the term
 	 * @param UserInterface $user User to check
 	 * @return bool
 	 */
-	public function can_access_post( UserInterface $user ) {
+	public function can_access_term( UserInterface $user ) {
 		$can_access = $this->test_access( $user );
 		return $can_access;
 	}
 
 	/**
-	 * Check if the specified user is allowed to access
-	 * the specified post
-	 * @param int $post_id ID of the post to check
-	 * @param int $user_id ID of the user to check
+	 * Check if the specified user is allowed to access the term
+	 * @param UserInterface $user User to check
 	 * @return bool
 	 */
 	protected function test_access( UserInterface $user ) {
-		$post_id = $this->ID;
+		$term_id = $this->term_id;
 		$can_access = false;
-		$post_type = $this->post_type;
-		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
+		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $this->taxonomy );
 		if ( $tca_enabled === false ) {
 			return true;
 		}

@@ -42,7 +42,6 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		$this->user_meta_repository = $user_meta_repository;
 		$this->domain_repository = $domain_repository;
 		parent::__construct( $data );
-		$this->load( array( 'user_meta' ) );
 	}
 
 	public function __call( $method, $args ) {
@@ -78,6 +77,12 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		return $this->can_connect;
 	}
 
+	/**
+	 * Connects the user to Tokenpass
+	 * @param OauthUserInterface $oauth_user OAuth user to associate the current user with
+	 * @param string $oauth_token OAuth token of the OAuth user
+	 * @return self
+	 */
 	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
 		$this->update( array(
 			'uuid'        => $oauth_user->id,
@@ -85,6 +90,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 			'can_connect' => true,
 		) );
 		$this->add_cap( 'use_tokenpass' );
+		return $this;
 	}
 
 	/**
@@ -94,6 +100,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	public function disconnect() {
 		$this->user_meta_repository->destroy( $this->ID, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
 		$this->remove_cap( 'use_tokenpass');
+		return $this;
 	}
 
 	/**
@@ -114,9 +121,18 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		return $this;
 	}
 
-	protected function load_user_meta( array $relations = array() ) {
-		$meta = $this->user_meta_repository->index( $this->ID, 'uuid', 'oauth_token', 'can_connect' );
-		$this->fill( $meta );
-		return $this;
+	protected function check_token_access( TcaRuleCollectionInterface $rules ) {
+		if ( $this instanceof GuestUserInterface === true ) {
+			return false;
+		}
+		if ( user_can( $this, 'administrator' ) ) {
+			return true;
+		}
+		$this->load( array( 'oauth_user' ) );
+		if ( !isset( $this->oauth_user ) ) {
+			return false;
+		}
+		$oauth_user_can_access = $this->oauth_user->check_token_access( $rules );
+		return $oauth_user_can_access;
 	}
 }
