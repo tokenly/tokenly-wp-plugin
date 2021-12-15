@@ -102,7 +102,7 @@ class TermRepository implements TermRepositoryInterface {
 	 */
 	protected function query( array $args = array() ) {
 		$query = new \WP_Term_Query( $args );
-		$terms = $query->get_results();
+		$terms = $query->get_terms();
 		return $terms;
 	}
 

@@ -20,9 +20,11 @@ class TaxonomyController implements TaxonomyControllerInterface {
 	/**
 	 * Displays a section on taxonomy term edit screen.
 	 */
-	public function edit() {
-		error_log(123);
-		$view_data = $this->taxonomy_edit_view_model->prepare();
+	public function edit( \WP_Term $term ) {
+		$input_data = array(
+			'term' => $term,
+		);
+		$view_data = $this->taxonomy_edit_view_model->prepare( $input_data );
 		return array(
 			'template' => 'Dynamic.twig',
 			'view'     => 'taxonomy-edit',

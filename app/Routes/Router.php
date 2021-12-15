@@ -41,7 +41,7 @@ class Router extends Service implements RouterInterface {
 	 * Executes the specified render callback
 	 * @param callable $render_function Controller's render function
 	 */
-	public function render_route( callable $render_function ) {
+	public function render_route( callable $render_function, array $arguments = array() ) {
 		$controller_response = call_user_func( $render_function );
 		if ( !$controller_response ) {
 			return;

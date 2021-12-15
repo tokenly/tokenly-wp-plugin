@@ -365,7 +365,23 @@ return array(
 	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
-	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
+	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class )
+		->methodParameter( 'show', 'promise', \DI\factory( function(
+			PromiseServiceInterface $promise_service
+		) {
+			if ( !isset( $_GET['promise'] ) ) {
+				return;
+			}
+			$promise_id = $_GET['promise'];
+			$promise = $promise_service->show( array(
+				'promise_id' => $promise_id, 
+				'with'       => array(
+					'promise_meta.source_user',
+					'promise_meta.destination_user'
+				),
+			) );
+			return $promise;
+		} ) ),
 	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),

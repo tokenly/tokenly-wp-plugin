@@ -49,7 +49,6 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 	}
 
 	public function __set( $key, $val ) {
-		error_log($key);
 		return $this->post->$key = $val;
 	}
 

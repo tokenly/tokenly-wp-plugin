@@ -20,15 +20,17 @@ class TaxonomyEditViewModel extends ViewModel implements TaxonomyEditViewModelIn
 	}
 	
 	public function prepare( array $data = array() ) {
-		$taxonomy = get_query_var( 'taxonomy' );
+		if ( !isset( $data['term'] ) ) {
+			return;
+		}
+		$term = $data['term'];
+		$taxonomy = $term->taxonomy;
 		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $taxonomy );
-		$tag_id = get_query_var( 'tag_ID' );
-		error_log('edit');
+		$term_id = $term->term_id;
 		$term = $this->term_service->show( array(
 			'taxonomy' => $taxonomy,
-			'id'       => $tag_id,
+			'id'       => $term_id,
 		) );
-		error_log( d( $term ) );
 		$tca_rules = array();
 		if ( $term && isset( $term->tca_rules ) && is_object( $term->tca_rules ) ) {
 			$tca_rules = $term->tca_rules->to_array();
