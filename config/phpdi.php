@@ -45,7 +45,7 @@ use Tokenly\Wp\Routes\TaxonomyRouter;
 use Tokenly\Wp\Routes\WebRouter;
 use Tokenly\Wp\Controllers\Web\AuthController;
 use Tokenly\Wp\Controllers\Web\PostController;
-use Tokenly\Wp\Controllers\Web\TaxonomyController;
+use Tokenly\Wp\Controllers\Web\TermController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\BalancesController;
@@ -130,7 +130,7 @@ use Tokenly\Wp\Presentation\Views\Admin\SourceEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SourceIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SourceShowViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SourceStoreViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\TaxonomyEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\TermEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\TokenMetaEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\VendorViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\WhitelistViewModel;
@@ -182,7 +182,7 @@ use Tokenly\Wp\Interfaces\Routes\TaxonomyRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\TaxonomyControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\TermControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
@@ -301,7 +301,7 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceShowViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SourceStoreViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TaxonomyEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TermEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\VendorViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\WhitelistViewModelInterface;
@@ -365,23 +365,7 @@ return array(
 	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
-	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class )
-		->methodParameter( 'show', 'promise', \DI\factory( function(
-			PromiseServiceInterface $promise_service
-		) {
-			if ( !isset( $_GET['promise'] ) ) {
-				return;
-			}
-			$promise_id = $_GET['promise'];
-			$promise = $promise_service->show( array(
-				'promise_id' => $promise_id, 
-				'with'       => array(
-					'promise_meta.source_user',
-					'promise_meta.destination_user'
-				),
-			) );
-			return $promise;
-		} ) ),
+	PromiseControllerInterface::class              => \DI\autowire( PromiseController::class ),
 	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
 	SourceControllerInterface::class               => \DI\autowire( SourceController::class ),
 	VendorControllerInterface::class               => \DI\autowire( VendorController::class ),
@@ -390,7 +374,7 @@ return array(
 	AuthControllerInterface::class                 => \DI\autowire( AuthController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	PostControllerInterface::class                 => \DI\autowire( PostController::class ),
-	TaxonomyControllerInterface::class             => \DI\autowire( TaxonomyController::class ),
+	TermControllerInterface::class                 => \DI\autowire( TermController::class ),
 	TokenMetaControllerInterface::class            => \DI\autowire( TokenMetaController::class ),
 	UserControllerInterface::class                 => \DI\autowire( UserController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
@@ -498,7 +482,7 @@ return array(
 	SourceIndexViewModelInterface::class             => \DI\autowire( SourceIndexViewModel::class ),
 	SourceShowViewModelInterface::class              => \DI\autowire( SourceShowViewModel::class ),
 	SourceStoreViewModelInterface::class             => \DI\autowire( SourceStoreViewModel::class ),
-	TaxonomyEditViewModelInterface::class            => \DI\autowire( TaxonomyEditViewModel::class ),
+	TermEditViewModelInterface::class                => \DI\autowire( TermEditViewModel::class ),
 	TokenMetaEditViewModelInterface::class           => \DI\autowire( TokenMetaEditViewModel::class ),
 	VendorViewModelInterface::class                  => \DI\autowire( VendorViewModel::class ),
 	WhitelistViewModelInterface::class               => \DI\autowire( WhitelistViewModel::class ),
@@ -553,7 +537,7 @@ return array(
 	PromiseMetaInterface::class            => \DI\autowire( PromiseMeta::class ), 
 	QuantityInterface::class               => \DI\autowire( Quantity::class ),
 	SourceInterface::class                 => \DI\autowire( Source::class ),
-	TermInterface::class                   => \DI\autowire( TermInterface::class ), 
+	TermInterface::class                   => \DI\autowire( Term::class ), 
 	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
 	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
 	UserInterface::class                   => \DI\autowire( User::class ),

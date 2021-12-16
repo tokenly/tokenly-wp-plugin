@@ -26,14 +26,14 @@ class PromiseController implements PromiseControllerInterface {
 		$this->promise_edit_view_model = $promise_edit_view_model;
 	}
 	
-	public function show( PromiseInterface $promise ) {
-		error_log(d($_GET));
+	public function show() {
+		if ( !isset( $_GET['promise'] ) ) {
+			return false;
+		}
 		$input_data = array(
-			'promise' => $promise,
+			'promise_id' => intval( $_GET['promise'] ),
 		);
-		error_log( d( $promise ) );
 		$view_data = $this->promise_show_view_model->prepare( $input_data );
-		
 		return array(
 			'view' => 'promise-show',
 			'data' => $view_data,

@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TermCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\TermMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 
 /**
  * Manages terms
@@ -15,6 +16,7 @@ class TermRepository implements TermRepositoryInterface {
 	protected $term_factory;
 	protected $term_collection_factory;
 	protected $term_meta_repository;
+	protected $tca_rule_collection_factory;
 	protected $meta = array(
 		'tca_rules',
 	);
@@ -22,11 +24,13 @@ class TermRepository implements TermRepositoryInterface {
 	public function __construct(
 		TermFactoryInterface $term_factory,
 		TermCollectionFactoryInterface $term_collection_factory,
-		TermMetaRepositoryInterface $term_meta_repository
+		TermMetaRepositoryInterface $term_meta_repository,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory
 	) {
 		$this->term_factory = $term_factory;
 		$this->term_collection_factory = $term_collection_factory;
 		$this->term_meta_repository = $term_meta_repository;
+		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
 	}
 
 	/**
@@ -37,6 +41,9 @@ class TermRepository implements TermRepositoryInterface {
 	public function index( array $params = array() ) {
 		$args = $this->get_query_args( $params );
 		$terms = $this->query( $args );
+		if ( !$terms ) {
+			$terms = array();
+		}
 		$terms = $this->append_meta_collection( $terms );
 		$terms = $this->term_collection_factory->create( $terms );
 		return $terms;
@@ -72,6 +79,9 @@ class TermRepository implements TermRepositoryInterface {
 		if ( isset( $params['taxonomy'] ) ) {
 			$args['taxonomy'] = $params['taxonomy'];
 		}
+		if ( isset( $params['include'] ) ) {
+			$args['include'] = $params['include'];
+		}
 		if ( isset( $params['id'] ) ) {
 			$args['object_ids'] = $params['id'];
 		}
@@ -102,7 +112,7 @@ class TermRepository implements TermRepositoryInterface {
 	 */
 	protected function query( array $args = array() ) {
 		$query = new \WP_Term_Query( $args );
-		$terms = $query->get_terms();
+		$terms = $query->terms;
 		return $terms;
 	}
 
@@ -114,7 +124,7 @@ class TermRepository implements TermRepositoryInterface {
 	 */
 	public function update( TermInterface $term, array $params = array() ) {
 		$params = $this->filter_meta_params( $params );
-		$this->term_meta_repository( $term->term_id, $params );
+		$this->term_meta_repository->update( $term->term_id, $params );
 		return $term;
 	}
 
@@ -136,6 +146,9 @@ class TermRepository implements TermRepositoryInterface {
 	 */
 	protected function load_meta( \WP_Term $term ) {
 		$meta = $this->term_meta_repository->index( $term->term_id, ...$this->meta );
+		if ( isset( $meta['tca_rules'] ) && is_array( $meta['tca_rules'] ) ) {
+			$meta['tca_rules'] = $this->tca_rule_collection_factory->create( $meta['tca_rules'] );
+		}
 		return $meta;
 	}
 

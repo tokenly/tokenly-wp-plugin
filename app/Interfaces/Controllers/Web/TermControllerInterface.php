@@ -2,6 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Controllers\Web;
 
-interface TaxonomyControllerInterface {
+interface TermControllerInterface {
 	public function edit( \WP_Term $tag );
 }

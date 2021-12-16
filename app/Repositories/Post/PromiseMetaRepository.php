@@ -10,6 +10,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInte
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 
 /**
  * Manages promise meta data
@@ -21,13 +22,16 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 		PromiseMetaFactoryInterface $post_factory,
 		PromiseMetaCollectionFactoryInterface $post_collection_factory,
 		MetaRepositoryInterface $meta_repository,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
 		string $namespace
+		
 	) {
 		$this->namespace = $namespace;
 		parent::__construct(
 			$post_factory,
 			$post_collection_factory,
-			$meta_repository
+			$meta_repository,
+			$tca_rule_collection_factory
 		);
 	}
 

@@ -121,7 +121,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		return $this;
 	}
 
-	protected function check_token_access( TcaRuleCollectionInterface $rules ) {
+	public function check_token_access( TcaRuleCollectionInterface $rules ) {
 		if ( $this instanceof GuestUserInterface === true ) {
 			return false;
 		}

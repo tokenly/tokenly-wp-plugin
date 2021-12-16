@@ -9,6 +9,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterf
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 
 /**
  * Manages token meta data
@@ -20,13 +21,15 @@ class TokenMetaRepository extends PostRepository implements TokenMetaRepositoryI
 		TokenMetaFactoryInterface $post_factory,
 		TokenMetaCollectionFactoryInterface $post_collection_factory,
 		MetaRepositoryInterface $meta_repository,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
 		parent::__construct(
 			$post_factory,
 			$post_collection_factory,
-			$meta_repository
+			$meta_repository,
+			$tca_rule_collection_factory
 		);
 	}
 

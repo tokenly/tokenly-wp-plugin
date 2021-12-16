@@ -93,7 +93,7 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return void
 	 */
 	public function embed_tokenpass_login() {
-		do_shortcode( "[{$this->namespace}_login]" );
+		echo do_shortcode( "[{$this->namespace}_login]" );
 	}
 
 	/**

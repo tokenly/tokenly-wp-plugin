@@ -376,7 +376,6 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		if ( isset( $route['callable'] ) ) {
 			$callable = $route['callable'];
 			$route['callable'] = function() use ( $callable ) {
-				error_log('rendering route');
 				$this->render_route( $callable );
 			};
 		}

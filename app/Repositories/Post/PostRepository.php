@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 
 /**
  * Manages post data
@@ -17,17 +18,20 @@ class PostRepository implements PostRepositoryInterface {
 	protected $meta_repository;
 	protected $meta = array();
 	protected $post_type = 'any';
+	protected $tca_rule_collection_factory;
 	
 	public function __construct(
 		PostFactoryInterface $post_factory,
 		PostCollectionFactoryInterface $post_collection_factory,
-		MetaRepositoryInterface $meta_repository
+		MetaRepositoryInterface $meta_repository,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory
 	) {
 		$this->post_factory = $post_factory;
 		$this->post_collection_factory = $post_collection_factory;
 		$this->meta_repository = $meta_repository;
 		$this->meta = $this->get_meta_fields();
 		$this->post_type = $this->get_post_type();
+		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
 	}
 
 	/**
@@ -198,6 +202,9 @@ class PostRepository implements PostRepositoryInterface {
 	 */
 	protected function load_meta( \WP_Post $post ) {
 		$meta = $this->meta_repository->index( $post->ID, $this->meta );
+		if ( isset( $meta['tca_rules'] ) && is_array( $meta['tca_rules'] ) ) {
+			$meta['tca_rules'] = $this->tca_rule_collection_factory->create( $meta['tca_rules'] );
+		}
 		return $meta;
 	}
 

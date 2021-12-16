@@ -22,7 +22,7 @@ class TermMetaRepository implements TermMetaRepositoryInterface {
 	 * @param array $keys Keys to retrieve
 	 * @return array
 	 */
-	public function index( $term_id, $keys ) {
+	public function index( int $term_id, ...$keys ) {
 		$options = array();
 		foreach ( $keys as $key ) {
 			$options[ $key ] = $this->show( $term_id, $key );
@@ -36,7 +36,7 @@ class TermMetaRepository implements TermMetaRepositoryInterface {
 	 * @param string $key Key of the meta item to retrieve
 	 * @return string
 	 */
-	public function show( $term_id, $key ) {
+	public function show( int $term_id, $key ) {
 		$key = "{$this->namespace}_{$key}";
 		$option = get_term_meta( $term_id, $key , true );
 		return $option;
@@ -48,7 +48,7 @@ class TermMetaRepository implements TermMetaRepositoryInterface {
 	 * @param array $payload Key-value pairs (meta key and value)
 	 * @return void
 	 */
-	public function update( $term_id, $payload ) {
+	public function update( int $term_id, $payload ) {
 		foreach ( $payload as $key => $value ) {
 			$key = "{$this->namespace}_{$key}";
 			update_term_meta( $term_id, $key, $value );

@@ -98,11 +98,12 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	public function on_post_save( int $post_id, \WP_Post $post, bool $update ) {
 		$post_type = $post->post_type;
 		$post_type_key = str_replace( "{$this->namespace}_", '', $post_type );
-		$params = $_POST[ "{$this->namespace}_data" ] ?? array();
-		if ( $params ) {
-			$params = wp_unslash( $params );
-			$params = json_decode( $params, true );
+		if ( !isset( $_POST[ "{$this->namespace}_data" ] ) ) {
+			return;
 		}
+		$params = $_POST[ "{$this->namespace}_data" ];
+		$params = wp_unslash( $params );
+		$params = json_decode( $params, true );
 		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['show_callback'] ) ) {
 			$post = call_user_func(
 				$this->routes[ $post_type_key ]['show_callback'],
@@ -280,9 +281,11 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			$current_post_id = $post->ID;
 		}
 		foreach ( (array) $post_collection as $key => $post ) {
-			$post_id = $post->ID;
+			if ( $current_post_id == $post->ID ) {
+				continue;
+			}
 			$can_access = $post->can_access_post( $this->current_user );
-			if ( $can_access === false && $current_post_id != $post_id ) {			
+			if ( $can_access == false ) {
 				unset( $posts[ $key ] );
 			}
 		}

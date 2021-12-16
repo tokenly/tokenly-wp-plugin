@@ -5,7 +5,8 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Routes\Router;
 use Tokenly\Wp\Interfaces\Routes\TaxonomyRouterInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\TaxonomyControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\TermControllerInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 use Twig\Environment;
 
 /**
@@ -14,20 +15,28 @@ use Twig\Environment;
 class TaxonomyRouter extends Router implements TaxonomyRouterInterface {
 	protected $namespace;
 	protected $tca_settings;
-	protected $taxonomy_controller;
+	protected $term_controller;
+	protected $term_service;
 	protected $twig;
 	protected $default_template = 'Dynamic.twig';
 	
 	public function __construct(
 		string $namespace,
 		TcaSettingsInterface $tca_settings,
-		TaxonomyControllerInterface $taxonomy_controller,
+		TermControllerInterface $term_controller,
+		TermServiceInterface $term_service,
 		Environment $twig
 	) {
 		$this->namespace = $namespace;
 		$this->tca_settings = $tca_settings;
-		$this->taxonomy_controller = $taxonomy_controller;
+		$this->term_controller = $term_controller;
+		$this->term_service = $term_service;
 		$this->twig = $twig;
+	}
+
+	public function register() {
+		parent::register();
+		add_action( 'saved_term', array( $this, 'on_saved_term' ), 10, 4 );
 	}
 
 	protected function get_routes() {
@@ -52,7 +61,7 @@ class TaxonomyRouter extends Router implements TaxonomyRouterInterface {
 			}
 			$routes[ $key ] = array(
 				'name'          => $key,
-				'edit_callback' => array( $this->taxonomy_controller, 'edit' ),
+				'edit_callback' => array( $this->term_controller, 'edit' ),
 			);
 		}
 		return $routes;
@@ -67,39 +76,30 @@ class TaxonomyRouter extends Router implements TaxonomyRouterInterface {
 					$this->render_route( $callable, $arguments );
 				};
 				$route['edit_callback'] = $callable;
-				add_action( "{$key}_add_form", $route['edit_callback'] );
+				//add_action( "{$key}_add_form", $route['edit_callback'] );
 				add_action( "{$key}_edit_form", $route['edit_callback'] );
 			}
 		}
 	}
 
-	/**
-	 * Passes the data from the post edit page to
-	 * the post type service
-	 * @param int $post_id Post index
-	 * @param \WP_Post $post Post object
-	 * @param bool $update Is existing post
-	 * @return void
-	 */
-	public function on_term_save( int $post_id, \WP_Post $post, bool $update ) {
-		$post_type = $post->post_type;
-		$post_type_key = str_replace( "{$this->namespace}_", '', $post_type );
-		$params = $_POST[ "{$this->namespace}_data" ] ?? array();
-		if ( $params ) {
-			$params = wp_unslash( $params );
-			$params = json_decode( $params, true );
+	public function on_saved_term( int $term_id, int $tt_id, string $taxonomy, bool $update ) {
+		if ( !array_key_exists( $taxonomy, $this->routes ) ) {
+			return;
 		}
-		if ( isset( $this->routes[ $post_type_key ] ) && isset( $this->routes[ $post_type_key ]['show_callback'] ) ) {
-			$post = call_user_func(
-				$this->routes[ $post_type_key ]['show_callback'],
-				array(
-					'id' => $post_id,
-				)
-			);
-			if ( !$post ) {
-				return;
-			}
-			$post->update( $params );
+		if ( !isset( $_POST[ "{$this->namespace}_data" ] ) ) {
+			return;
 		}
+		$term = $this->term_service->show( array(
+			'include'  => $term_id,
+			'taxonomy' => $taxonomy,
+		) );
+		if ( !$term ) {
+			return;
+		}
+		$params = $_POST[ "{$this->namespace}_data" ];
+		$params = wp_unslash( $params );
+		$params = json_decode( $params, true );
+		$term->update( $params );
+		return $term;
 	}
 }

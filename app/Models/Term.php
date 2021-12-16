@@ -42,15 +42,15 @@ class Term extends Model implements TermInterface {
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->post, $method ), $args );
+		return call_user_func_array( array( $this->term, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->post->$key;
+		return $this->term->$key;
 	}
 
 	public function __set( $key, $val ) {
-		return $this->post->$key = $val;
+		return $this->term->$key = $val;
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Term extends Model implements TermInterface {
 		if ( $tca_enabled === false ) {
 			return true;
 		}
-		if ( count( (array) $this->tca_rules ) === 0 ) {
+		if ( count( (array) $this->tca_rules ) == 0 ) {
 			return true;
 		}
 		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;

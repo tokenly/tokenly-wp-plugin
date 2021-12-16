@@ -29,4 +29,12 @@ class GuestUser extends Model implements UserInterface, GuestUserInterface, Curr
 	public function can_connect() {
 		return false;
 	}
+
+	public function check_token_access() {
+		return false;
+	}
+
+	public function has_cap() {
+		return false;
+	}
 }

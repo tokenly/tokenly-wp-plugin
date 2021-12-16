@@ -3,11 +3,11 @@
 namespace Tokenly\Wp\Presentation\Views\Admin;
 
 use Tokenly\Wp\Presentation\Views\ViewModel;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TaxonomyEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TermEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
-class TaxonomyEditViewModel extends ViewModel implements TaxonomyEditViewModelInterface {
+class TermEditViewModel extends ViewModel implements TermEditViewModelInterface {
 	protected $tca_settings;
 	protected $term_service;
 	
@@ -29,7 +29,7 @@ class TaxonomyEditViewModel extends ViewModel implements TaxonomyEditViewModelIn
 		$term_id = $term->term_id;
 		$term = $this->term_service->show( array(
 			'taxonomy' => $taxonomy,
-			'id'       => $term_id,
+			'include'  => $term_id,
 		) );
 		$tca_rules = array();
 		if ( $term && isset( $term->tca_rules ) && is_object( $term->tca_rules ) ) {

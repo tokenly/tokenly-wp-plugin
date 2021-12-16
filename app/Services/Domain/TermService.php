@@ -19,6 +19,16 @@ class TermService extends DomainService implements TermServiceInterface {
 	}
 
 	/**
+	 * Searches for terms using the specified parameters
+	 * @param array $params Term search params 
+	 * @return array
+	 */
+	protected function _index( array $params = array() ) {
+		$term = $this->term_repository->index( $params );
+		return $term;
+	}
+
+	/**
 	 * Searches for term using the specified parameters
 	 * @param array $params Term search params 
 	 * @return array
