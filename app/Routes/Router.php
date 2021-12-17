@@ -12,6 +12,7 @@ use Twig\Environment;
 class Router extends Service implements RouterInterface {
 	protected $routes = array();
 	protected $default_template;
+	protected $middleware = array();
 
 	/**
 	 * Hooks the router to WordPress
@@ -19,6 +20,16 @@ class Router extends Service implements RouterInterface {
 	public function register() {
 		$this->routes = $this->get_routes();
 		$this->register_routes();
+		$this->register_middleware();
+	}
+	
+	/**
+	 * Registers all middleware
+	 */
+	public function register_middleware() {
+		foreach ( $this->middleware as $middleware ) {
+			$middleware->register();
+		}
 	}
 
 	/**

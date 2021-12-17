@@ -75,7 +75,7 @@ class Term extends Model implements TermInterface {
 		if ( $tca_enabled === false ) {
 			return true;
 		}
-		if ( count( (array) $this->tca_rules ) == 0 ) {
+		if ( count( (array) $this->tca_rules ) == 0 || !is_object( $this->tca_rules ) ) {
 			return true;
 		}
 		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;

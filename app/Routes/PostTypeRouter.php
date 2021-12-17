@@ -15,6 +15,9 @@ use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Twig\Environment;
+use Tokenly\Wp\Interfaces\Middleware\Tca\MenuItemFilterMiddlewareInterface;
+use Tokenly\Wp\Interfaces\Middleware\Tca\PostResultsFilterMiddlewareInterface;
+use Tokenly\Wp\Interfaces\Middleware\Tca\PostGuardMiddlewareInterface;
 
 /**
  * Manages routing for the post type views
@@ -27,7 +30,6 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $current_user;
 	protected $tca_settings;
 	protected $post_service;
-	protected $post_collection_factory;
 	protected $twig;
 	protected $default_template = 'Index.twig';
 	
@@ -41,16 +43,22 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
 		TcaSettingsInterface $tca_settings,
-		PostCollectionFactoryInterface $post_collection_factory,
 		Environment $twig,
-		string $namespace
+		string $namespace,
+		MenuItemFilterMiddlewareInterface $tca_menu_item_filter_middleware,
+		PostResultsFilterMiddlewareInterface $tca_post_results_filter_middleware,
+		PostGuardMiddlewareInterface $tca_post_guard_middleware
 	) {
+		$this->middleware = array(
+			'tca_menu_item_filter'    => $tca_menu_item_filter_middleware,
+			'tca_post_results_filter' => $tca_post_results_filter_middleware,
+			'tca_post_guard'          => $tca_post_guard_middleware,
+		);
 		$this->integration = $integration;
 		$this->current_user = $current_user;
 		$this->tca_settings = $tca_settings;
 		$this->namespace = $namespace;
 		$this->post_service = $post_service;
-		$this->post_collection_factory = $post_collection_factory;
 		$this->twig = $twig;
 		$this->post_types = array(
 			'token_meta' => array(
@@ -69,22 +77,8 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	}
 
 	public function register() {
-		$this->routes = $this->get_routes();
-		$this->register_routes();
-		add_action( 'template_redirect', array( $this, 'on_template_redirect' ) );
+		parent::register();
 		add_action( 'save_post', array( $this, 'on_post_save' ), 10, 3 );
-		if (
-			isset( $this->tca_settings->filter_menu_items ) &&
-			$this->tca_settings->filter_menu_items == true
-		) {
-			add_filter( 'wp_get_nav_menu_items', array( $this, 'tca_on_get_nav_menu_items' ), 10, 3 );
-		}
-		if (
-			isset( $this->tca_settings->filter_post_results ) &&
-			$this->tca_settings->filter_post_results == true
-		) {
-			add_filter( 'posts_results', array( $this, 'tca_on_posts_results' ), 10, 3 );
-		}
 	}
 
 	/**
@@ -181,114 +175,48 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			return;
 		}
 		foreach ( $this->routes as $key => $route ) {
-			$name = $route['name'];
-			if ( isset( $route['post_type'] ) ) {
-				$args = $route['post_type']->get_args();
-				$slug = $route['slug'];
-				$args['rewrite'] = array( 'slug' => $slug );
-				register_post_type( $name, $args );
-			}
-			if ( isset( $route['edit_callback'] ) ) {
-				$callable = $route['edit_callback'];
-				$callable = function() use ( $callable, $name ) {
-					$this->render_route( $callable );
-				};
-				$route['edit_callback'] = $callable;
-				add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
-					$meta_box_name = "{$this->namespace}_data";
-					$meta_box_title = ucfirst( $this->namespace );
-					add_meta_box(
-						$meta_box_name,
-						__( $meta_box_title, 'textdomain' ),
-						$callable,
-						$name,
-						'advanced',
-						'high'
-					);
-				} );
-			}
+			$this->register_post_type( $route );
+			$route = $this->register_edit_callback( $route );
 		}
 	}
-
-	/**
-	 * Prevents access to post if the TCA check was not passed
-	 * @return void
-	 */
-	public function on_template_redirect() {
-		$is_virtual = boolval( get_query_var( "{$this->namespace}_virtual" ) ) ?? false;
-		if ( $is_virtual === true ) {
+	
+	protected function register_post_type( array $route ) {
+		if ( !isset( $route['post_type'] ) ) {
 			return;
 		}
-		$post_id = get_the_ID();
-		$post = $this->post_service->show( array(
-			'id' => $post_id,
-		) );
-		if ( !$post ) {
-			return;
-		}
-		$can_access = $post->can_access_post( $this->current_user );
-		if ( $can_access === false ) {
-			if ( is_admin() === true ) {
-				wp_die( 'Access denied by TCA.' );
-			} else {
-				wp_redirect( "/{$this->namespace}/access-denied" );
-				exit;
-			}
-		}
+		$name = $route['name'];
+		$args = $route['post_type']->get_args();
+		$slug = $route['slug'];
+		$args['rewrite'] = array( 'slug' => $slug );
+		register_post_type( $name, $args );
 	}
-
-	/**
-	 * Filters the reuslts of navigation menu item queries by checking
-	 * if the current user can access the post associated with it
-	 * @param array $item Navigation items
-	 * @param object $menu Navigation menu
-	 * @param array $args Additional arguments
-	 * @return array
-	 */
-	public function tca_on_get_nav_menu_items( array $items, object $menu, array $args ) {
-		foreach ( $items as $key => $item ) {
-			$post_id = $item->object_id;
-			$post = $this->post_service->show( array(
-				'id' => $post_id,
-			) );
-			$can_access = $post->can_access_post( $this->current_user );
-			if ( $can_access === false ) {
-				unset( $items[ $key ] );
-			}
+	
+	protected function register_edit_callback( array $route ) {
+		if ( !isset( $route['edit_callback'] ) ) {
+			return $route;
 		}
-		return $items;
+		$name = $route['name'];
+		$callable = $route['edit_callback'];
+		$callable = function() use ( $callable, $name ) {
+			$this->render_route( $callable );
+		};
+		$route['edit_callback'] = $callable;
+		add_action( 'add_meta_boxes', function() use ( $callable, $name ) {
+			$this->render_edit_callback( $callable, $name );
+		} );
+		return $route;
 	}
-
-	/**
-	 * Filters the results of post queries by checking
-	 * if the current user can access them
-	 * @param array $posts
-	 * @return array
-	 */
-	public function tca_on_posts_results( array $posts, $query ) {
-		$post_collection = array();
-		foreach( $posts as $post ) {
-			$post_collection[] = array(
-				'post' => $post,
-			);
-		}
-		$post_collection = $this->post_collection_factory->create( $post_collection );
-		$post_collection->load( array( 'meta' ) );
-		$current_post_id = 0;
-		$is_singular = $query->is_singular;
-		if ( $is_singular == true && isset( $query->posts[0] )) {
-			$post = $query->posts[0];
-			$current_post_id = $post->ID;
-		}
-		foreach ( (array) $post_collection as $key => $post ) {
-			if ( $current_post_id == $post->ID ) {
-				continue;
-			}
-			$can_access = $post->can_access_post( $this->current_user );
-			if ( $can_access == false ) {
-				unset( $posts[ $key ] );
-			}
-		}
-		return $posts;
+	
+	protected function render_edit_callback( callable $callable, string $name ) {
+		$meta_box_name = "{$this->namespace}_data";
+		$meta_box_title = ucfirst( $this->namespace );
+		add_meta_box(
+			$meta_box_name,
+			__( $meta_box_title, 'textdomain' ),
+			$callable,
+			$name,
+			'advanced',
+			'high'
+		);
 	}
 }

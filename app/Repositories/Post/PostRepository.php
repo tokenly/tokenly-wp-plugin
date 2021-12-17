@@ -6,6 +6,7 @@ use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
+use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 
@@ -42,8 +43,7 @@ class PostRepository implements PostRepositoryInterface {
 	public function index( array $params = array() ) {
 		$args = $this->get_query_args( $params );
 		$posts = $this->query( $args );
-		$posts = $this->append_meta_collection( $posts );
-		$posts = $this->post_collection_factory->create( $posts );
+		$posts = $this->complete_collection( $posts );
 		return $posts;
 	}
 
@@ -60,8 +60,7 @@ class PostRepository implements PostRepositoryInterface {
 			return;
 		}
 		$post = $posts[0];
-		$post = $this->append_meta( $post );
-		$post = $this->post_factory->create( $post );
+		$post = $this->complete( $post );
 		return $post;
 	}
 
@@ -107,7 +106,29 @@ class PostRepository implements PostRepositoryInterface {
 	public function destroy( $post ) {
 		wp_delete_post( $post->ID );
 	}
-
+	
+	/**
+	 * Decorates a single post
+	 * @param \WP_Post $post Post to decorate
+	 * @return PostInterface
+	 */
+	public function complete( \WP_Post $post ) {
+		$post = $this->append_meta( $post );
+		$post = $this->post_factory->create( $post );
+		return $post;
+	}
+	
+	/**
+	 * Decorates a collection of posts
+	 * @param \WP_Post[] $posts Posts to decorate
+	 * @return PostCollectionsInterface
+	 */
+	public function complete_collection( array $posts ) {
+		$posts = $this->append_meta_collection( $posts );
+		$posts = $this->post_collection_factory->create( $posts );
+		return $posts;
+	}
+	
 	/**
 	 * Filters the specified array accoring to the meta property
 	 * @param array $params Array to filter
@@ -167,6 +188,9 @@ class PostRepository implements PostRepositoryInterface {
 		}
 		if ( isset( $params['id'] ) ) {
 			$args['p'] = $params['id'];
+		}
+		if ( isset( $params['ids'] ) ) {
+			$args['post__in'] = $params['ids'];
 		}
 		return $args;
 	}

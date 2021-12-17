@@ -68,14 +68,14 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 								<Button
 									isPrimary
 									disabled={ this.props.pageData.status }
-									href="/tokenly/oauth/connect"
+									href="/tokenly/oauth/connect?tokenly_success_url=/wp-admin/admin.php?page=tokenly-connection"
 								>
 									Connect to Tokenpass
 								</Button>
 								<Button
 									isPrimary
 									disabled={ !this.props.pageData.status }
-									href="/tokenly/oauth/disconnect"
+									href="/tokenly/oauth/disconnect?tokenly_success_url=/wp-admin/admin.php?page=tokenly-connection"
 								>
 									Disconnect from Tokenpass
 								</Button>

@@ -174,6 +174,11 @@ class WebRouter extends Router implements WebRouterInterface {
 		return $vars_processed;
 	}
 
+	/**
+	 * Prefixes the query variables associated with the routes
+	 * @param string[] $vars Query variables
+	 * @return string[]
+	 */
 	protected function prefix_vars( array $vars ) {
 		$vars_prefixed = array();
 		foreach ( $vars as $key => $var ) {

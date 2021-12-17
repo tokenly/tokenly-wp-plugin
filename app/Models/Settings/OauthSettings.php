@@ -6,10 +6,10 @@ use Tokenly\Wp\Models\Settings;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 
 class OauthSettings extends Settings implements OauthSettingsInterface {
-	public $use_single_sign_on;
-	public $success_url;
-	public $allow_no_email;
-	public $allow_unconfirmed_email;
+	public $use_single_sign_on = false;
+	public $success_url = '/tokenly/user/me/';
+	public $allow_no_email = false;
+	public $allow_unconfirmed_email = false;
 	protected $option_prefix = 'oauth';
 	protected $fillable = array(
 		'use_single_sign_on',

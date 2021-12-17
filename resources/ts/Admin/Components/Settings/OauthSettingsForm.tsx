@@ -38,6 +38,7 @@ export class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSe
 					label="Redirect URL"
 					value={ this.props.settings.success_url }
 					help="Default redirect URL on success for the login shortcode and the main login form."
+					placeholder="/tokenly/user/me/"
 					onChange={ ( value ) => {
 						const state = Object.assign( {}, this.props.settings );
 						state.success_url = value;

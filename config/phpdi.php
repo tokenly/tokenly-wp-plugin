@@ -106,6 +106,9 @@ use Tokenly\Wp\Models\Settings\OauthSettings;
 use Tokenly\Wp\Models\Settings\IntegrationSettings;
 use Tokenly\Wp\Models\Settings\TcaSettings;
 use Tokenly\Wp\Models\Settings\WhitelistSettings;
+use Tokenly\Wp\Middleware\Tca\MenuItemFilterMiddleware;
+use Tokenly\Wp\Middleware\Tca\PostGuardMiddleware;
+use Tokenly\Wp\Middleware\Tca\PostResultsFilterMiddleware;
 use Tokenly\Wp\Presentation\Blocks\AppCreditItemCardListBlockModel;
 use Tokenly\Wp\Presentation\Blocks\TokenItemCardListBlockModel;
 use Tokenly\Wp\Presentation\Blocks\UserInfoBlockModel;
@@ -275,6 +278,9 @@ use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
+use Tokenly\Wp\Interfaces\Middleware\Tca\MenuItemFilterMiddlewareInterface;
+use Tokenly\Wp\Interfaces\Middleware\Tca\PostGuardMiddlewareInterface;
+use Tokenly\Wp\Interfaces\Middleware\Tca\PostResultsFilterMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Shortcodes\LogoutButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Blocks\AppCreditItemCardListBlockModelInterface;
@@ -487,8 +493,8 @@ return array(
 	VendorViewModelInterface::class                  => \DI\autowire( VendorViewModel::class ),
 	WhitelistViewModelInterface::class               => \DI\autowire( WhitelistViewModel::class ),
 	//Presentation - View models - Web
-	PostAccessDeniedViewModelInterface::class        => \DI\autowire( PostAccessDeniedViewModel::class ),
-	UserViewModelInterface::class                    => \DI\autowire( UserViewModel::class ),
+	PostAccessDeniedViewModelInterface::class    => \DI\autowire( PostAccessDeniedViewModel::class ),
+	UserViewModelInterface::class                => \DI\autowire( UserViewModel::class ),
 	//Collections
 	CollectionInterface::class                   => \DI\autowire( Collection::class ),
 	AddressCollectionInterface::class            => \DI\autowire( AddressCollection::class ),
@@ -529,24 +535,29 @@ return array(
 		}
 		return $user;
 	} ),
-	GuestUserInterface::class              => \DI\autowire( GuestUser::class ),
-	IntegrationInterface::class            => \DI\autowire( Integration::class ),
-	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
-	PostInterface::class                   => \DI\autowire( Post::class ),
-	PromiseInterface::class                => \DI\autowire( Promise::class ),
-	PromiseMetaInterface::class            => \DI\autowire( PromiseMeta::class ), 
-	QuantityInterface::class               => \DI\autowire( Quantity::class ),
-	SourceInterface::class                 => \DI\autowire( Source::class ),
-	TermInterface::class                   => \DI\autowire( Term::class ), 
-	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
-	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
-	UserInterface::class                   => \DI\autowire( User::class ),
-	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
+	GuestUserInterface::class      => \DI\autowire( GuestUser::class ),
+	IntegrationInterface::class    => \DI\autowire( Integration::class ),
+	OauthUserInterface::class      => \DI\autowire( OauthUser::class ),
+	PostInterface::class           => \DI\autowire( Post::class ),
+	PromiseInterface::class        => \DI\autowire( Promise::class ),
+	PromiseMetaInterface::class    => \DI\autowire( PromiseMeta::class ), 
+	QuantityInterface::class       => \DI\autowire( Quantity::class ),
+	SourceInterface::class         => \DI\autowire( Source::class ),
+	TermInterface::class           => \DI\autowire( Term::class ), 
+	TokenMetaInterface::class      => \DI\autowire( TokenMeta::class ), 
+	TcaRuleInterface::class        => \DI\autowire( TcaRule::class ), 
+	UserInterface::class           => \DI\autowire( User::class ),
+	WhitelistItemInterface::class  => \DI\autowire( WhitelistItem::class ),
 	//Models - Settings
-	OauthSettingsInterface::class          => \DI\autowire( OauthSettings::class ),
-	IntegrationSettingsInterface::class    => \DI\autowire( IntegrationSettings::class ),
-	TcaSettingsInterface::class            => \DI\autowire( TcaSettings::class ),
-	WhitelistSettingsInterface::class      => \DI\autowire( WhitelistSettings::class ),
+	OauthSettingsInterface::class               => \DI\autowire( OauthSettings::class ),
+	IntegrationSettingsInterface::class         => \DI\autowire( IntegrationSettings::class ),
+	TcaSettingsInterface::class                 => \DI\autowire( TcaSettings::class ),
+	WhitelistSettingsInterface::class           => \DI\autowire( WhitelistSettings::class ),
+	//Middleware - TCA
+	MenuItemFilterMiddlewareInterface::class    => \DI\autowire( MenuItemFilterMiddleware::class ),
+	PostGuardMiddlewareInterface::class         => \DI\autowire( PostGuardMiddleware::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	PostResultsFilterMiddlewareInterface::class => \DI\autowire( PostResultsFilterMiddleware::class ),
 	//Factories - Models
 	AddressFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, AddressInterface::class ) extends ConcreteFactory implements AddressFactoryInterface {};
