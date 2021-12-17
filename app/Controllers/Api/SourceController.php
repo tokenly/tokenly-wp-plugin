@@ -33,8 +33,10 @@ class SourceController implements SourceControllerInterface {
 	 */
 	public function store( \WP_REST_Request $request ) {
 		$params = $request->get_params();
-		$source = $this->source_service->store( $params );
-		return $source;
+		$this->source_service->store( $params );
+		return array(
+			'status' => "Source successfully created!",
+		);
 	}
 
 	/**
@@ -56,8 +58,10 @@ class SourceController implements SourceControllerInterface {
 				'status' => "Not updated. Source not found.",
 			);
 		}
-		$source = $source->update( $params );
-		return $source;
+		$source->update( $params );
+		return array(
+			'status' => "Source successfully updated!",
+		);
 	}
 
 	/**
@@ -80,7 +84,7 @@ class SourceController implements SourceControllerInterface {
 		}
 		$source->destroy();
 		return array(
-			'status' => "Address successfully destroyed!",
+			'status' => "Source successfully destroyed!",
 		);
 	}
 }

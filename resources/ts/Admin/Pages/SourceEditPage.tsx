@@ -54,7 +54,9 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 
 	onSave( source: SourceData ) {
 		this.setState( { saving: true } );
-		this.sourceRepository.update( this.props.pageData.source.address_id, source ).then( ( result: any ) => {
+		const sourceData = Object.assign( {}, source );
+		delete sourceData.address;
+		this.sourceRepository.update( this.props.pageData.source.address_id, sourceData ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});

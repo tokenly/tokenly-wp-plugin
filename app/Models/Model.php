@@ -79,6 +79,14 @@ class Model implements ModelInterface {
 		}
 		return $this->domain_repository->update( $this, $save_data );
 	}
+	
+	/**
+	 * Deletes the model
+	 * @return object
+	 */
+	public function destroy() {
+		return $this->domain_repository->destroy( $this );
+	}
 
 	/**
 	 * Loads the specified relations

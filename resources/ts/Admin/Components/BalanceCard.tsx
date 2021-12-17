@@ -27,8 +27,8 @@ export class BalanceCard extends Component<BalanceCardProps, BalanceCardState> {
 	
 	getName() {
 		let name = this.props.balance.asset;
-		if ( this.props.balance?.meta?.name ) {
-			name = this.props.balance.meta.name;
+		if ( this.props.balance?.token_meta?.name ) {
+			name = this.props.balance.token_meta.name;
 		}
 		return name;
 	}
@@ -40,7 +40,7 @@ export class BalanceCard extends Component<BalanceCardProps, BalanceCardState> {
 					<strong title={ this.props?.balance?.asset }>{ this.getName() }</strong>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
-					{ this.props?.balance?.balance ?? 0 }
+					{ this.props?.balance?.quantity?.value ?? 0 }
 				</CardBody>
 			</Card>
 		);

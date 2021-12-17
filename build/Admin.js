@@ -5187,17 +5187,17 @@ class BalanceCard extends react_1.Component {
     getName() {
         var _a, _b;
         let name = this.props.balance.asset;
-        if ((_b = (_a = this.props.balance) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.name) {
-            name = this.props.balance.meta.name;
+        if ((_b = (_a = this.props.balance) === null || _a === void 0 ? void 0 : _a.token_meta) === null || _b === void 0 ? void 0 : _b.name) {
+            name = this.props.balance.token_meta.name;
         }
         return name;
     }
     render() {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
                 React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.asset }, this.getName())),
-            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_e = (_d = (_c = this.props) === null || _c === void 0 ? void 0 : _c.balance) === null || _d === void 0 ? void 0 : _d.balance) !== null && _e !== void 0 ? _e : 0)));
+            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_f = (_e = (_d = (_c = this.props) === null || _c === void 0 ? void 0 : _c.balance) === null || _d === void 0 ? void 0 : _d.quantity) === null || _e === void 0 ? void 0 : _e.value) !== null && _f !== void 0 ? _f : 0)));
     }
 }
 exports.BalanceCard = BalanceCard;
@@ -8253,7 +8253,9 @@ class SourceEditPage extends react_1.Component {
     }
     onSave(source) {
         this.setState({ saving: true });
-        this.sourceRepository.update(this.props.pageData.source.address_id, source).then((result) => {
+        const sourceData = Object.assign({}, source);
+        delete sourceData.address;
+        this.sourceRepository.update(this.props.pageData.source.address_id, sourceData).then((result) => {
             this.setState({ saving: false });
             this.return();
         });
