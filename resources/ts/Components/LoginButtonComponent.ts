@@ -4,7 +4,7 @@ import { TYPES } from './../Types';
 import { Component } from './Component';
 
 @injectable()
-export class ButtonLoginComponent extends Component {
+export class LoginButtonComponent extends Component {
 	authService: AuthServiceInterface;
 	element: HTMLElement;
 	

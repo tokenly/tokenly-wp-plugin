@@ -22,7 +22,7 @@ class TokenItemCardComponentModel extends ComponentModel implements TokenItemCar
 		$balance = $data['balance'];
 		$name = $balance->name;
 		$asset = $balance->asset;
-		$amount = $balance->balance;
+		$amount = $balance->quantity->get_value();
 		$description = 'No description.';
 		$image = '';
 		$extra = array();

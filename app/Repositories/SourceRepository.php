@@ -7,20 +7,24 @@ use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
 
 /**
  * Manages sources for promise type transactions
  */
 class SourceRepository implements SourceRepositoryInterface {
 	protected $client;
+	protected $source_factory;
 	protected $source_collection_factory;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
+		SourceFactoryInterface $source_factory,
 		SourceCollectionFactoryInterface $source_collection_factory
 	) {
 		$this->client = $client;
 		$this->source_collection_factory = $source_collection_factory;
+		$this->source_factory = $source_factory;
 	}
 
 	/**
@@ -49,9 +53,13 @@ class SourceRepository implements SourceRepositoryInterface {
 			return;
 		}
 		$address = $params['address'];
-		$sources = $this->index();
-		$source = $sources[ $address ] ?? null;
-		return $source;
+		$sources = $this->index( $params );
+		if ( !is_object( $sources ) ) {
+			return;
+		}
+		if ( $sources && is_object( $sources ) ) {
+			return $sources[ $address ] ?? null;
+		}
 	}
 
 
@@ -68,8 +76,6 @@ class SourceRepository implements SourceRepositoryInterface {
 			$params['proof'] ?? null,
 			$params['assets'] ?? null,
 		);
-		$source = $this->source_factory->create( $source );
-		return $source;
 	}
 
 	/**

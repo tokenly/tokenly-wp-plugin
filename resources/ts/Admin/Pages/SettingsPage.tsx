@@ -57,6 +57,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		},
 		tcaSettings: {
 			post_types: {},
+			taxonomies: {},
 			filter_menu_items: null,
 			filter_post_results: null,
 		},
@@ -80,9 +81,8 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 		this.onOauthSettingsChange = this.onOauthSettingsChange.bind( this );
 		this.state.integrationSettings = Object.assign( this.state.integrationSettings, this.props.pageData.integration_settings );
 		this.state.tcaSettings = Object.assign( {}, this.props.pageData?.tca_settings );
-		if ( !this.state.tcaSettings.post_types ) {
-			this.state.tcaSettings.post_types = {};
-		}
+		this.state.tcaSettings.post_types = Object.assign( {}, this.state.tcaSettings.post_types );
+		this.state.tcaSettings.taxonomies = Object.assign( {}, this.state.tcaSettings.taxonomies );
 		this.state.oauthSettings = Object.assign( this.state.oauthSettings, this.props.pageData.oauth_settings );
 	}
 	

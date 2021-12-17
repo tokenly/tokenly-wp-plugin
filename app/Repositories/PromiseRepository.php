@@ -8,21 +8,24 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterface;
-
+use Tokenly\Wp\Interfaces\Factories\Models\QuantityFactoryInterface;
 
 class PromiseRepository implements PromiseRepositoryInterface {
 	protected $client;
 	protected $promise_factory;
 	protected $promise_collection_factory;
+	protected $quantity_factory;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		PromiseFactoryInterface $promise_factory,
-		PromiseCollectionFactoryInterface $promise_collection_factory
+		PromiseCollectionFactoryInterface $promise_collection_factory,
+		QuantityFactoryInterface $quantity_factory
 	) {
 		$this->client = $client;
 		$this->promise_factory = $promise_factory;
 		$this->promise_collection_factory = $promise_collection_factory;
+		$this->quantity_factory = $quantity_factory;
 	}
 
 	/**
@@ -48,7 +51,9 @@ class PromiseRepository implements PromiseRepositoryInterface {
 		if ( !$promise ) {
 			return false;
 		}
+		
 		$promise = $this->remap_fields( $promise );
+
 		$promise = $this->promise_factory->create( $promise );
 		return $promise;
 	}
@@ -103,6 +108,14 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	}
 
 	protected function remap_fields( array $promise ) {
+		$quantity_fields = array();
+		if ( isset( $promise['quantity'] ) ) {
+			$quantity_fields[ 'value_sat' ] = $promise['quantity'];
+		}
+		if ( isset( $promise['precision'] ) ) {
+			$quantity_fields[ 'precision' ] = $promise['precision'];
+		}
+		$promise['quantity'] = $this->quantity_factory->create( $quantity_fields );
 		$promise['source_id'] = $promise['source'];
 		unset( $promise['source'] );
 		return $promise;

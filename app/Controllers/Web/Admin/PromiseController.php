@@ -6,6 +6,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseShowViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseStoreViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PromiseEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 
 /**
  * Serves the admin promise views

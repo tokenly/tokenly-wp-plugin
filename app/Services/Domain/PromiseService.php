@@ -174,16 +174,14 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 			return $quantity;
 		}
 		$balance = $balance[ $asset ];
-		if ( !isset( $balance->precision ) ) {
+		if ( !isset( $balance->quantity ) || !isset( $balance->quantity->precision ) ) {
 			return $quantity;
 		}
-		$precision = $balance->precision;
+		$precision = $balance->quantity->precision;
 		if ( $precision > 0 ) {
 			$multiplier = intval( 1 . str_repeat( 0, $precision ) );
 			$quantity = $quantity * $multiplier;
 		}
 		return $quantity;
 	}
-
-
 }

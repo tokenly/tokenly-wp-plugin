@@ -33,6 +33,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 	}
 	constructor( props: PromiseShowPageProps ) {
 		super( props );
+		this.getProperties = this.getProperties.bind( this );
 	}
 	
 	dateFormatted( date: Date ) {
@@ -41,8 +42,46 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 		}
 		return;
 	}
+
+	getProperties() {
+		return [
+			{
+				label: 'Asset',
+				value: this.props.pageData.promise?.asset,
+			},
+			{
+				label: 'Quantity (Sat)',
+				value: this.props.pageData.promise?.quantity?.value_sat,
+			},
+			{
+				label: 'Ref',
+				value: this.props.pageData.promise?.ref,
+			},
+			{
+				label: 'Note',
+				value: this.props.pageData.promise?.note,
+			},
+			{
+				label: 'Created at',
+				value: this.dateFormatted( this.props.pageData.promise?.created_at ),
+			},
+			{
+				label: 'Updated at',
+				value: this.dateFormatted( this.props.pageData.promise?.updated_at ),
+			},
+		]
+	}
 	
 	render() {
+		const properties = this.getProperties();
+		const listItems = properties.map( ( property ) => {
+			return (
+				<div>
+					<span>{ property.label }: </span>
+					<span style={{ opacity: property.value ? 1 : 0.6 }}><strong>{ property.value ? property.value : 'No data' }</strong></span>
+				</div>
+			);
+		} );
 		return (
 			<Page title={ 'Promise details' }>
 				<div style={{marginBottom: '8px'}}>
@@ -55,12 +94,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 								<div style={ { flex: 1 } }>
 									<PromiseSourceInfo promise={ this.props.pageData.promise } sources={ this.props.pageData.sources } />
 									<PromiseParticipants promise={ this.props.pageData.promise } />
-									<div><span>Asset: </span><strong>{ this.props.pageData.promise.asset }</strong></div>
-									<div><span>Quantity: </span><strong>{ this.props.pageData.promise.quantity }</strong></div>
-									<div><span>Ref: </span><span><strong>{this.props.pageData.promise.ref}</strong></span></div>
-									<div><span>Note: </span><span><strong>{this.props.pageData.promise.note}</strong></span></div>
-									<div><span>Created at: </span><span><strong>{this.dateFormatted( this.props.pageData.promise.created_at ) }</strong></span></div>
-									<div><span>Updated at: </span><span><strong>{this.dateFormatted( this.props.pageData.promise.updated_at ) }</strong></span></div>
+									{ listItems }
 								</div>
 							</Flex>
 						</PanelRow>

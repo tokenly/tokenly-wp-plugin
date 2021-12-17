@@ -74,10 +74,15 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	 * @return bool
 	 */
 	public function can_connect() {
-		$can_connect =  $this->user_meta_repository->show( $this->ID, 'can_connect' ) ?? false;
-		return $can_connect;
+		return $this->can_connect;
 	}
 
+	/**
+	 * Connects the user to Tokenpass
+	 * @param OauthUserInterface $oauth_user OAuth user to associate the current user with
+	 * @param string $oauth_token OAuth token of the OAuth user
+	 * @return self
+	 */
 	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
 		$this->update( array(
 			'uuid'        => $oauth_user->id,
@@ -85,6 +90,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 			'can_connect' => true,
 		) );
 		$this->add_cap( 'use_tokenpass' );
+		return $this;
 	}
 
 	/**
@@ -94,13 +100,14 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	public function disconnect() {
 		$this->user_meta_repository->destroy( $this->ID, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
 		$this->remove_cap( 'use_tokenpass');
+		return $this;
 	}
 
 	/**
 	 * Retrieves oauth user from the API
 	 * @return self
 	 */
-	protected function load_oauth_user( array $relations ) {
+	protected function load_oauth_user( array $relations = array() ) {
 		if ( isset( $this->oauth_user ) ) {
 			return $this;
 		}
@@ -112,5 +119,20 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		);
 		$this->oauth_user = $oauth_user;
 		return $this;
+	}
+
+	public function check_token_access( TcaRuleCollectionInterface $rules ) {
+		if ( $this instanceof GuestUserInterface === true ) {
+			return false;
+		}
+		if ( user_can( $this, 'administrator' ) ) {
+			return true;
+		}
+		$this->load( array( 'oauth_user' ) );
+		if ( !isset( $this->oauth_user ) ) {
+			return false;
+		}
+		$oauth_user_can_access = $this->oauth_user->check_token_access( $rules );
+		return $oauth_user_can_access;
 	}
 }

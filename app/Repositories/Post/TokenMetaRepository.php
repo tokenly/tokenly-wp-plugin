@@ -2,92 +2,59 @@
 
 namespace Tokenly\Wp\Repositories\Post;
 
+use Tokenly\Wp\Repositories\Post\PostRepository;
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TokenMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
 
 /**
  * Manages token meta data
  */
-class TokenMetaRepository implements TokenMetaRepositoryInterface {
-	protected $token_meta_collection_factory;
-	protected $meta_repository;
+class TokenMetaRepository extends PostRepository implements TokenMetaRepositoryInterface {
 	protected $namespace;
 	
 	public function __construct(
-		TokenMetaCollectionFactoryInterface $token_meta_collection_factory,
+		TokenMetaFactoryInterface $post_factory,
+		TokenMetaCollectionFactoryInterface $post_collection_factory,
 		MetaRepositoryInterface $meta_repository,
+		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
 		string $namespace
 	) {
-		$this->token_meta_collection_factory = $token_meta_collection_factory;
-		$this->meta_repository = $meta_repository;
 		$this->namespace = $namespace;
+		parent::__construct(
+			$post_factory,
+			$post_collection_factory,
+			$meta_repository,
+			$tca_rule_collection_factory
+		);
 	}
 
-	/**
-	 * Queries all the post meta matching the params
-	 * @param array $params Search params
-	 * @return TokenMetaCollectionInterface
-	 */
-	public function index( array $params = array() ) {
-		$query_args = array(
-			'post_type'   => "{$this->namespace}_token_meta",
-			'meta_query'  => array(),
-		);
-		if ( isset( $params['id'] ) ) {
-			$query_args['p'] = $params['id'];
-		}
+	protected function get_query_args( array $params = array() ) {
+		$args = parent::get_query_args( $params );
 		if ( isset( $params['assets'] ) ) {
-			$query_args['meta_query'][] = array(
+			$args['meta_query'][] = array(
 				'key'     => "{$this->namespace}_asset",
 				'value'   => $params['assets'] ?? null,
 				'compare' => 'IN',
 			);
 		}
-		$query_meta = new \WP_Query( $query_args );
-		$posts = $query_meta->posts;
-		$posts_formatted = array();
-		foreach ( $posts as $post ) {
-			$meta = $this->meta_repository->index( $post->ID, array(
-				'asset',
-				'extra',
-			) );
-			$posts_formatted[] = array_merge( $meta, array(
-				'post' => $post,
-			) );
-		}
-		$posts = $this->token_meta_collection_factory->create( $posts_formatted );
-		return $posts;
+		return $args;
 	}
 
-	/**
-	 * Retrieves a single token meta post
-	 * @param integer $params Post search params
-	 * @return TokenMetaInterface
-	 */
-	public function show( array $params = array() ) {
-		$posts = $this->index( $params );
-		if ( isset( $posts[0] ) ) {
-			return $posts[0];
-		}
+	protected function get_meta_fields() {
+		$meta = parent::get_meta_fields();
+		$meta = array_merge( $meta, array(
+			'asset',
+			'extra',
+		) );
+		return $meta;
 	}
 
-	/**
-	 * Updates the specific token meta post
-	 * @param TokenMetaInterface $post Target post
-	 * @param array $params Update parameters
-	 * @return void
-	 */
-	public function update( TokenMetaInterface $post, array $params = array() ) {
-		$update_params = array();
-		if ( isset( $params['asset'] ) ) {
-			$update_params['asset'] = $params['asset'];
-		}
-		if ( isset( $params['extra'] ) ) {
-			$update_params['extra'] = $params['extra'];
-		}
-		$this->meta_repository->update( $post->ID, $update_params );
+	protected function get_post_type() {
+		return "{$this->namespace}_token_meta";
 	}
 }

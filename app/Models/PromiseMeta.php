@@ -10,6 +10,7 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 
 class PromiseMeta extends Model implements PromiseMetaInterface {
 	public $promise_id;
@@ -51,7 +52,12 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 		return $this->post->$key = $val;
 	}
 
-	protected function load_source_user( array $relations ) {
+	/**
+	 * Loads the source user relation
+	 * @param string[] $relations Further relations
+	 * @return self 
+	 */
+	protected function load_source_user( array $relations = array() ) {
 		$user = $this->user_service->show( array(
 			'uuid' => $this->source_user_id,
 			'with' => $relations,
@@ -60,7 +66,12 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 		return $this;
 	}
 
-	protected function load_destination_user( array $relations ) {
+	/**
+	 * Loads the destination user relation
+	 * @param string[] $relations Further relations
+	 * @return self
+	 */
+	protected function load_destination_user( array $relations = array() ) {
 		$user = $this->user_service->show( array(
 			'uuid' => $this->destination_user_id,
 			'with' => $relations,

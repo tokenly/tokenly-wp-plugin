@@ -7,10 +7,12 @@ use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 class TcaSettings extends Settings implements TcaSettingsInterface {
 	public $post_types = array();
+	public $taxonomies = array();
 	public $filter_menu_items = true;
 	public $filter_post_results = true;
 	protected $option_prefix = 'tca';
 	protected $fillable = array(
+		'taxonomies',
 		'post_types',
 		'filter_menu_items',
 		'filter_post_results',
@@ -26,6 +28,15 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	}
 
 	/**
+	 * Checks whether the specified taxonomy has TCA enabled
+	 * @param string $taxonomy Taxonomy to check
+	 * @return bool
+	 */
+	public function is_enabled_for_taxonomy( string $taxonomy ) {
+		return $this->taxonomies[ $taxonomy ] ?? false;
+	}
+
+	/**
 	 * Returns an array of post types for which TCA can be enabled
 	 * @return array
 	 */
@@ -36,5 +47,18 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 			$post_types[ $post_type_object->name ] = $post_type_object->label; 
 		}
 		return $post_types;
+	}
+
+	/**
+	 * Returns an array of taxonomies for which TCA can be enabled
+	 * @return array
+	 */
+	public function get_available_taxonomies() {
+		$taxonomy_objects = get_taxonomies( array(), 'object_type' );
+		$taxonomies = array();
+		foreach ( $taxonomy_objects as $taxonomy_object ) {
+			$taxonomies[ $taxonomy_object->name ] = $taxonomy_object->label; 
+		}
+		return $taxonomies;
 	}
 }

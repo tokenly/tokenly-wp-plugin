@@ -24,6 +24,7 @@ import SourceStorePage from './Admin/Pages/SourceStorePage';
 import SourceEditPage from './Admin/Pages/SourceEditPage';
 import DashboardPage from './Admin/Pages/DashboardPage';
 import PostEditPage from './Admin/Pages/PostEditPage';
+import TaxonomyEditPage from './Admin/Pages/TaxonomyEditPage';
 import TokenMetaEditPage from './Admin/Pages/TokenMetaEditPage';
 
 import { Redirect } from './Interfaces';
@@ -89,6 +90,7 @@ class AdminApp extends App {
 			'source-store'              : SourceStorePage,
 			'source-edit'               : SourceEditPage,
 			'post-edit'                 : PostEditPage,
+			'taxonomy-edit'             : TaxonomyEditPage,
 			'token-meta-edit'           : TokenMetaEditPage,
 		} as any;
 		return routes;

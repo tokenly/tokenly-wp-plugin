@@ -10,17 +10,14 @@ use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 class Balance extends Model implements BalanceInterface {
 	public $asset;
 	public $name;
-	public $balance;
-	public $balance_sat;
+	public $quantity;
 	public $precision;
 	public $token_meta;
 	protected $token_meta_service;
 	protected $fillable = array(
 		'asset',
 		'name',
-		'balance',
-		'balance_sat',
-		'precision',
+		'quantity',
 		'token_meta',
 	);
 
@@ -30,35 +27,6 @@ class Balance extends Model implements BalanceInterface {
 	) {
 		$this->token_meta_service = $token_meta_service;
 		parent::__construct( $data );
-	}
-
-	public function fill( array $data = array() ) {
-		parent::fill( $data );
-		if ( 
-			isset( $this->balance ) === false && 
-			isset( $this->balance_sat ) == true && 
-			isset( $this->precision ) === true
-		) {
-			$this->balance = $this->from_sat( floatval( $this->balance_sat ), intval( $this->precision ) );
-		}
-	}
-
-	public function from_sat( float $value, int $precision = 1 ) {
-		if ( $precision == 0 ) {
-			return $value;
-		}
-		$divisor = intval( 1 . str_repeat( 0, $precision ) );
-		$value = $value / $divisor;
-		return $value;
-	}
-
-	public function to_sat( float $value, int $precision ) {
-		if ( $precision == 0 ) {
-			return $value;
-		}
-		$multiplier = intval( 1 . str_repeat( 0, $precision ) );
-		$value = $value * $divisor;
-		return $value;
 	}
 
 	/**

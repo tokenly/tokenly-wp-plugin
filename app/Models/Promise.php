@@ -15,7 +15,6 @@ class Promise extends Model implements PromiseInterface {
 	public $destination;
 	public $asset;
 	public $quantity;
-	public $quantity_sat;
 	public $fingerprint;
 	public $txid;
 	public $created_at;
@@ -27,7 +26,6 @@ class Promise extends Model implements PromiseInterface {
 	public $protocol;
 	public $chain;
 	public $promise_id;
-	public $precision;
 	public $promise_meta;
 	protected $promise_meta_service;
 	protected $promise_repository;
@@ -37,7 +35,6 @@ class Promise extends Model implements PromiseInterface {
 		'destination',
 		'asset',
 		'quantity',
-		'quantity_sat',
 		'fingerprint',
 		'txid',
 		'created_at',
@@ -49,7 +46,6 @@ class Promise extends Model implements PromiseInterface {
 		'protocol',
 		'chain',
 		'promise_id',
-		'precision',
 		'promise_meta',
 	);
 

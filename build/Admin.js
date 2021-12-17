@@ -5187,17 +5187,17 @@ class BalanceCard extends react_1.Component {
     getName() {
         var _a, _b;
         let name = this.props.balance.asset;
-        if ((_b = (_a = this.props.balance) === null || _a === void 0 ? void 0 : _a.meta) === null || _b === void 0 ? void 0 : _b.name) {
-            name = this.props.balance.meta.name;
+        if ((_b = (_a = this.props.balance) === null || _a === void 0 ? void 0 : _a.token_meta) === null || _b === void 0 ? void 0 : _b.name) {
+            name = this.props.balance.token_meta.name;
         }
         return name;
     }
     render() {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
                 React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.balance) === null || _b === void 0 ? void 0 : _b.asset }, this.getName())),
-            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_e = (_d = (_c = this.props) === null || _c === void 0 ? void 0 : _c.balance) === null || _d === void 0 ? void 0 : _d.balance) !== null && _e !== void 0 ? _e : 0)));
+            React.createElement(components_1.CardBody, { style: { width: '100%' } }, (_f = (_e = (_d = (_c = this.props) === null || _c === void 0 ? void 0 : _c.balance) === null || _d === void 0 ? void 0 : _d.quantity) === null || _e === void 0 ? void 0 : _e.value) !== null && _f !== void 0 ? _f : 0)));
     }
 }
 exports.BalanceCard = BalanceCard;
@@ -5496,24 +5496,42 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CreditTransactionCard = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
+const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
+const UserLink_1 = __webpack_require__(/*! ./UserLink */ "./resources/ts/Admin/Components/UserLink.tsx");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class CreditTransactionCard extends react_1.Component {
     constructor(props) {
         super(props);
+        console.log(this.props);
+    }
+    dateFormatted(date) {
+        if (date) {
+            return dayjs(date).format('MMMM D, YYYY h:mm A');
+        }
+        return;
     }
     render() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
-                React.createElement("div", null, this.props.creditTransaction.uuid)),
+                React.createElement("div", null,
+                    "\u2116 ",
+                    React.createElement("strong", null, this.props.creditTransaction.tx_uuid))),
             React.createElement(components_1.CardBody, { style: { width: '100%' } },
                 React.createElement(components_1.Flex, { style: { width: '100%', alignItems: 'center' } },
                     React.createElement("div", { style: { flex: 1 } },
-                        React.createElement("div", null,
-                            React.createElement("span", null, "UUID: "),
-                            React.createElement("strong", null, this.props.creditTransaction.account_uuid)),
+                        React.createElement(components_1.Flex, { justify: "flex-start" },
+                            React.createElement("span", null, "User: "),
+                            React.createElement(UserLink_1.UserLink, { id: (_b = (_a = this.props.creditTransaction) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id, name: ((_d = (_c = this.props.creditTransaction) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.name) ? (_f = (_e = this.props.creditTransaction) === null || _e === void 0 ? void 0 : _e.user) === null || _f === void 0 ? void 0 : _f.name : (_g = this.props.creditTransaction) === null || _g === void 0 ? void 0 : _g.account, alt: this.props.creditTransaction.account })),
                         React.createElement("div", null,
                             React.createElement("span", null, "Amount: "),
-                            React.createElement("strong", null, this.props.creditTransaction.amount)))))));
+                            React.createElement("strong", null, this.props.creditTransaction.amount)),
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Created at: "),
+                            React.createElement("strong", null, this.dateFormatted((_h = this.props.creditTransaction) === null || _h === void 0 ? void 0 : _h.created_at))),
+                        React.createElement("div", null,
+                            React.createElement("span", null, "Updated at: "),
+                            React.createElement("strong", null, this.dateFormatted((_j = this.props.creditTransaction) === null || _j === void 0 ? void 0 : _j.updated_at))))))));
     }
 }
 exports.CreditTransactionCard = CreditTransactionCard;
@@ -5586,6 +5604,7 @@ class CreditTransactionStoreForm extends react_1.Component {
             }
         };
         this.onSubmit = this.onSubmit.bind(this);
+        this.getSourceLabel = this.getSourceLabel.bind(this);
         this.getCreditGroupOptions = this.getCreditGroupOptions.bind(this);
         this.state.creditGroupOptions = this.getCreditGroupOptions();
         if ((_a = this.state.creditGroupOptions[0]) !== null && _a !== void 0 ? _a : null) {
@@ -5609,6 +5628,18 @@ class CreditTransactionStoreForm extends react_1.Component {
             });
         });
         return options;
+    }
+    getSourceLabel() {
+        let label = '';
+        switch (this.state.transaction.type) {
+            case 'debit':
+                label = 'Destination';
+                break;
+            case 'credit':
+                label = 'Source';
+                break;
+        }
+        return label;
     }
     render() {
         return (React.createElement("form", { style: { width: '100%', maxWidth: "400px" } },
@@ -5644,7 +5675,7 @@ class CreditTransactionStoreForm extends react_1.Component {
                                 } }))),
                     React.createElement("div", null,
                         React.createElement("label", null,
-                            "Source",
+                            this.getSourceLabel(),
                             React.createElement("div", { style: { opacity: 0.8, marginBottom: '12px' } }, "WordPress username. (optional)"),
                             React.createElement(UserSearchField_1.UserSearchField, { onChange: (value) => {
                                     const state = Object.assign({}, this.state.transaction);
@@ -5701,7 +5732,7 @@ class PromiseCard extends react_1.Component {
         super(props);
     }
     render() {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return (React.createElement(components_1.Card, { size: "extraSmall", style: { width: '100%' } },
             React.createElement(components_1.CardHeader, null,
                 React.createElement(components_1.Flex, { align: "center", justify: "flex-start" },
@@ -5722,7 +5753,7 @@ class PromiseCard extends react_1.Component {
                             React.createElement("strong", null, this.props.promise.asset)),
                         React.createElement("div", null,
                             React.createElement("span", null, "Quantity: "),
-                            React.createElement("strong", null, this.props.promise.quantity))))),
+                            React.createElement("strong", null, (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.quantity) === null || _d === void 0 ? void 0 : _d.value))))),
             React.createElement(components_1.CardFooter, null,
                 React.createElement(components_1.Flex, { justify: "flex-start" },
                     React.createElement(components_1.Button, { isSecondary: true, isSmall: true, href: `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }, "Details"),
@@ -5818,6 +5849,7 @@ const react_1 = __webpack_require__(/*! react */ "react");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class PromiseEditForm extends react_1.Component {
     constructor(props) {
+        var _a, _b;
         super(props);
         this.state = {
             promise: {},
@@ -5826,7 +5858,7 @@ class PromiseEditForm extends react_1.Component {
         this.onDelete = this.onDelete.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.state.promise = {
-            quantity: this.props.promise.quantity,
+            quantity: (_b = (_a = this.props.promise) === null || _a === void 0 ? void 0 : _a.quantity) === null || _b === void 0 ? void 0 : _b.value_sat,
             expiration: null,
             txid: null,
             fingerprint: null,
@@ -5950,24 +5982,19 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PromiseParticipants = void 0;
 const React = __webpack_require__(/*! react */ "react");
 const react_1 = __webpack_require__(/*! react */ "react");
+const UserLink_1 = __webpack_require__(/*! ./UserLink */ "./resources/ts/Admin/Components/UserLink.tsx");
 const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 class PromiseParticipants extends react_1.Component {
     constructor(props) {
         super(props);
     }
     render() {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
         return (React.createElement(components_1.Flex, { gap: 0, align: "center", justify: "flex-start" },
             React.createElement("span", null, "Participants: "),
-            React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", { title: (_b = (_a = this.props) === null || _a === void 0 ? void 0 : _a.promise) === null || _b === void 0 ? void 0 : _b.destination }, ((_e = (_d = (_c = this.props.promise) === null || _c === void 0 ? void 0 : _c.promise_meta) === null || _d === void 0 ? void 0 : _d.source_user) === null || _e === void 0 ? void 0 : _e.id)
-                ? React.createElement("a", { href: `/tokenly/user/${(_g = (_f = this.props.promise.promise_meta) === null || _f === void 0 ? void 0 : _f.source_user) === null || _g === void 0 ? void 0 : _g.id}` }, (_l = (_k = (_j = (_h = this.props) === null || _h === void 0 ? void 0 : _h.promise) === null || _j === void 0 ? void 0 : _j.promise_meta) === null || _k === void 0 ? void 0 : _k.source_user) === null || _l === void 0 ? void 0 : _l.name)
-                : React.createElement("span", null, "unknown")),
+            React.createElement(UserLink_1.UserLink, { id: (_c = (_b = (_a = this.props.promise) === null || _a === void 0 ? void 0 : _a.promise_meta) === null || _b === void 0 ? void 0 : _b.source_user) === null || _c === void 0 ? void 0 : _c.id, alt: (_e = (_d = this.props) === null || _d === void 0 ? void 0 : _d.promise) === null || _e === void 0 ? void 0 : _e.source_id, name: (_j = (_h = (_g = (_f = this.props) === null || _f === void 0 ? void 0 : _f.promise) === null || _g === void 0 ? void 0 : _g.promise_meta) === null || _h === void 0 ? void 0 : _h.source_user) === null || _j === void 0 ? void 0 : _j.name }),
             React.createElement(components_1.Dashicon, { style: { margin: '0 5px' }, icon: "arrow-right-alt" }),
-            React.createElement(components_1.Dashicon, { icon: "admin-users" }),
-            React.createElement("strong", { title: (_o = (_m = this.props) === null || _m === void 0 ? void 0 : _m.promise) === null || _o === void 0 ? void 0 : _o.source_id }, ((_r = (_q = (_p = this.props.promise) === null || _p === void 0 ? void 0 : _p.promise_meta) === null || _q === void 0 ? void 0 : _q.destination_user) === null || _r === void 0 ? void 0 : _r.id)
-                ? React.createElement("a", { href: `/tokenly/user/${(_u = (_t = (_s = this.props.promise) === null || _s === void 0 ? void 0 : _s.promise_meta) === null || _t === void 0 ? void 0 : _t.destination_user) === null || _u === void 0 ? void 0 : _u.id}` }, (_x = (_w = (_v = this.props.promise) === null || _v === void 0 ? void 0 : _v.promise_meta) === null || _w === void 0 ? void 0 : _w.destination_user) === null || _x === void 0 ? void 0 : _x.name)
-                : React.createElement("span", null, "unknown"))));
+            React.createElement(UserLink_1.UserLink, { id: (_m = (_l = (_k = this.props.promise) === null || _k === void 0 ? void 0 : _k.promise_meta) === null || _l === void 0 ? void 0 : _l.destination_user) === null || _m === void 0 ? void 0 : _m.id, alt: (_p = (_o = this.props) === null || _o === void 0 ? void 0 : _o.promise) === null || _p === void 0 ? void 0 : _p.destination, name: (_t = (_s = (_r = (_q = this.props) === null || _q === void 0 ? void 0 : _q.promise) === null || _r === void 0 ? void 0 : _r.promise_meta) === null || _s === void 0 ? void 0 : _s.destination_user) === null || _t === void 0 ? void 0 : _t.name })));
     }
 }
 exports.PromiseParticipants = PromiseParticipants;
@@ -6149,9 +6176,8 @@ class PromiseStoreForm extends react_1.Component {
         if (!asset) {
             return null;
         }
-        const balance = parseFloat(asset.balance);
-        console.log(balance);
-        return balance;
+        const quantity = parseFloat(asset.quantity.value);
+        return quantity;
     }
     isAssetValid() {
         var _a, _b;
@@ -6210,7 +6236,7 @@ class PromiseStoreForm extends react_1.Component {
                         React.createElement("label", null,
                             "Quantity",
                             React.createElement(components_1.Flex, { justify: "flex-start", align: "center", style: { paddingTop: '12px' } },
-                                React.createElement(components_1.__experimentalNumberControl, { type: "number", value: this.state.promise.quantity, min: 0, style: { maxWidth: '100px' }, onChange: (value) => {
+                                React.createElement(components_1.TextControl, { type: "number", value: this.state.promise.quantity, min: 0, style: { maxWidth: '100px' }, onChange: (value) => {
                                         const state = Object.assign({}, this.state.promise);
                                         state.quantity = value;
                                         this.setState({ promise: state });
@@ -6219,7 +6245,7 @@ class PromiseStoreForm extends react_1.Component {
                                     React.createElement("span", null,
                                         React.createElement("span", null, "of / "),
                                         React.createElement("span", { title: this.getMaxCount() },
-                                            React.createElement("strong", null, this.getMaxCount().toFixed(4)))))),
+                                            React.createElement("strong", null, parseFloat(this.getMaxCount().toFixed(4))))))),
                         React.createElement(components_1.TextControl, { label: "Ref", help: "Extra reference data", value: this.state.promise.ref, onChange: (value) => {
                                 const state = Object.assign({}, this.state.promise);
                                 state.ref = value;
@@ -6405,7 +6431,7 @@ class OauthSettingsForm extends react_1.Component {
         , { 
             //@ts-ignore
             direction: "column" },
-            React.createElement(components_1.TextControl, { label: "Redirect URL", value: this.props.settings.success_url, help: "Default redirect URL on success for the login shortcode and the main login form.", onChange: (value) => {
+            React.createElement(components_1.TextControl, { label: "Redirect URL", value: this.props.settings.success_url, help: "Default redirect URL on success for the login shortcode and the main login form.", placeholder: "/tokenly/user/me/", onChange: (value) => {
                     const state = Object.assign({}, this.props.settings);
                     state.success_url = value;
                     this.onChange(state);
@@ -6417,12 +6443,12 @@ class OauthSettingsForm extends react_1.Component {
                 } }),
             React.createElement(components_1.ToggleControl, { label: "Allow accounts without email", help: "Allows connecting Tokenpass accounts which have no email accounts associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
                     const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
+                    state.allow_no_email = value;
                     this.onChange(state);
                 } }),
-            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_no_email, onChange: (value) => {
+            React.createElement(components_1.ToggleControl, { label: "Allow accounts without a confirmed email", help: "Allow connecting Tokenpass accounts which have an unconfirmed email account associated.", checked: this.props.settings.allow_unconfirmed_email, onChange: (value) => {
                     const state = Object.assign({}, this.props.settings);
-                    state.use_single_sign_on = value;
+                    state.allow_unconfirmed_email = value;
                     this.onChange(state);
                 } })));
     }
@@ -6450,7 +6476,7 @@ class TcaSettingsForm extends react_1.Component {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.isPostTypeChecked = this.isPostTypeChecked.bind(this);
-        console.log(this.props);
+        this.isTaxonomyChecked = this.isTaxonomyChecked.bind(this);
     }
     onChange(newSettings) {
         this.props.onChange(newSettings);
@@ -6463,18 +6489,44 @@ class TcaSettingsForm extends react_1.Component {
         }
         return checked;
     }
+    isTaxonomyChecked(key) {
+        var _a, _b;
+        let checked = false;
+        if (((_a = this.props.settings) === null || _a === void 0 ? void 0 : _a.taxonomies) && ((_b = this.props.settings) === null || _b === void 0 ? void 0 : _b.taxonomies[key])) {
+            checked = this.props.settings.taxonomies[key];
+        }
+        return checked;
+    }
     render() {
-        let listItems = [];
-        Object.keys(this.props.data.post_types).map((key, index) => {
-            const label = this.props.data.post_types[key];
-            const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
-                    let settings = Object.assign({}, this.props.settings);
-                    settings.post_types[key] = value;
-                    this.onChange(settings);
-                } }));
-            listItems.push(item);
-        });
-        return (React.createElement("div", null,
+        const postTypes = [];
+        if (this.props.data.post_types) {
+            Object.keys(this.props.data.post_types).map((key, index) => {
+                const label = this.props.data.post_types[key];
+                const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isPostTypeChecked(key), onChange: (value) => {
+                        let settings = Object.assign({}, this.props.settings);
+                        settings.post_types[key] = value;
+                        this.onChange(settings);
+                    } }));
+                postTypes.push(item);
+            });
+        }
+        const taxonomies = [];
+        if (this.props.data.taxonomies) {
+            Object.keys(this.props.data.taxonomies).map((key, index) => {
+                const label = this.props.data.taxonomies[key];
+                const item = (React.createElement(components_1.CheckboxControl, { label: label, checked: this.isTaxonomyChecked(key), onChange: (value) => {
+                        let settings = Object.assign({}, this.props.settings);
+                        settings.taxonomies[key] = value;
+                        this.onChange(settings);
+                    } }));
+                taxonomies.push(item);
+            });
+        }
+        return (React.createElement(components_1.Flex
+        //@ts-ignore
+        , { 
+            //@ts-ignore
+            direction: "column" },
             React.createElement("fieldset", null,
                 React.createElement(components_1.Flex
                 //@ts-ignore
@@ -6499,13 +6551,27 @@ class TcaSettingsForm extends react_1.Component {
                         } }))),
             React.createElement("hr", null),
             React.createElement("div", null,
-                React.createElement("strong", null, "TCA post types"),
-                React.createElement("div", null, "The selected post types will be able to use the TCA functions.")),
+                React.createElement("strong", null, "Post types"),
+                React.createElement("div", null,
+                    "The selected post types will be able to use the TCA functions. ",
+                    React.createElement("br", null),
+                    " The rule editor will be available at the post editing screen.")),
             React.createElement(components_1.Flex
             //@ts-ignore
             , { 
                 //@ts-ignore
-                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, listItems)));
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, postTypes.length > 0 ? postTypes : React.createElement("div", { style: { opacity: 0.6 } }, "No post types found")),
+            React.createElement("div", { style: { marginTop: '12px' } },
+                React.createElement("strong", null, "Taxonomies"),
+                React.createElement("div", null,
+                    "The selected taxonomies will be able to use the TCA functions. ",
+                    React.createElement("br", null),
+                    " The rule editor will be available at the taxonomy term editing screen.")),
+            React.createElement(components_1.Flex
+            //@ts-ignore
+            , { 
+                //@ts-ignore
+                direction: "column", style: { flex: '1', maxWidth: '468px', marginTop: '12px' } }, taxonomies.length > 0 ? taxonomies : React.createElement("div", { style: { opacity: 0.6 } }, "No taxonomies found"))));
     }
 }
 exports.TcaSettingsForm = TcaSettingsForm;
@@ -6911,6 +6977,44 @@ exports["default"] = TcaRuleEditor;
 
 /***/ }),
 
+/***/ "./resources/ts/Admin/Components/UserLink.tsx":
+/*!****************************************************!*\
+  !*** ./resources/ts/Admin/Components/UserLink.tsx ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UserLink = void 0;
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const components_1 = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+class UserLink extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    getUserUrl(id = null) {
+        if (id) {
+            return `/tokenly/user/${id}`;
+        }
+        else {
+            return false;
+        }
+    }
+    render() {
+        return (React.createElement("div", null,
+            React.createElement(components_1.Dashicon, { icon: "admin-users", style: { marginRight: '2px' } }),
+            React.createElement("strong", { title: this.props.alt },
+                React.createElement("a", { href: this.getUserUrl(this.props.id) },
+                    React.createElement("span", null, this.props.name ? this.props.name : 'unknown')))));
+    }
+}
+exports.UserLink = UserLink;
+
+
+/***/ }),
+
 /***/ "./resources/ts/Admin/Components/UserSearchField.tsx":
 /*!***********************************************************!*\
   !*** ./resources/ts/Admin/Components/UserSearchField.tsx ***!
@@ -7157,8 +7261,8 @@ class ConnectionPage extends react_1.Component {
                                         React.createElement("strong", null, `${(_c = (_b = this.props.pageData) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.name} (${(_e = (_d = this.props.pageData) === null || _d === void 0 ? void 0 : _d.user) === null || _e === void 0 ? void 0 : _e.username})`))))),
                     React.createElement(components_1.PanelRow, null,
                         React.createElement(components_1.Flex, { justify: 'flex-start' },
-                            React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, href: "/tokenly/oauth/connect" }, "Connect to Tokenpass"),
-                            React.createElement(components_1.Button, { isPrimary: true, disabled: !this.props.pageData.status, href: "/tokenly/oauth/disconnect" }, "Disconnect from Tokenpass")))))));
+                            React.createElement(components_1.Button, { isPrimary: true, disabled: this.props.pageData.status, href: "/tokenly/oauth/connect?tokenly_success_url=/wp-admin/admin.php?page=tokenly-connection" }, "Connect to Tokenpass"),
+                            React.createElement(components_1.Button, { isPrimary: true, disabled: !this.props.pageData.status, href: "/tokenly/oauth/disconnect?tokenly_success_url=/wp-admin/admin.php?page=tokenly-connection" }, "Disconnect from Tokenpass")))))));
     }
 }
 __decorate([
@@ -7550,6 +7654,12 @@ class DashboardPage extends react_1.Component {
                     icon: 'share',
                     url: '/wp-admin/admin.php?page=tokenly-vendor',
                 },
+                credits: {
+                    title: 'App Credits',
+                    description: 'Manage credit groups and transactions.',
+                    icon: 'money-alt',
+                    url: '/wp-admin/admin.php?page=tokenly-credit-group-index',
+                },
                 whitelist: {
                     title: 'Whitelist',
                     description: 'Configure a filter for tokens displayed on the inventory pages.',
@@ -7576,6 +7686,7 @@ class DashboardPage extends react_1.Component {
                 'settings',
             ],
             adminRoutes: [
+                'credits',
                 'vendor',
                 'meta',
                 'settings',
@@ -7810,6 +7921,7 @@ class PromiseShowPage extends react_1.Component {
         this.state = {
         //
         };
+        this.getProperties = this.getProperties.bind(this);
     }
     dateFormatted(date) {
         if (date) {
@@ -7817,7 +7929,45 @@ class PromiseShowPage extends react_1.Component {
         }
         return;
     }
+    getProperties() {
+        var _a, _b, _c, _d, _e, _f, _g;
+        return [
+            {
+                label: 'Asset',
+                value: (_a = this.props.pageData.promise) === null || _a === void 0 ? void 0 : _a.asset,
+            },
+            {
+                label: 'Quantity (Sat)',
+                value: (_c = (_b = this.props.pageData.promise) === null || _b === void 0 ? void 0 : _b.quantity) === null || _c === void 0 ? void 0 : _c.value_sat,
+            },
+            {
+                label: 'Ref',
+                value: (_d = this.props.pageData.promise) === null || _d === void 0 ? void 0 : _d.ref,
+            },
+            {
+                label: 'Note',
+                value: (_e = this.props.pageData.promise) === null || _e === void 0 ? void 0 : _e.note,
+            },
+            {
+                label: 'Created at',
+                value: this.dateFormatted((_f = this.props.pageData.promise) === null || _f === void 0 ? void 0 : _f.created_at),
+            },
+            {
+                label: 'Updated at',
+                value: this.dateFormatted((_g = this.props.pageData.promise) === null || _g === void 0 ? void 0 : _g.updated_at),
+            },
+        ];
+    }
     render() {
+        const properties = this.getProperties();
+        const listItems = properties.map((property) => {
+            return (React.createElement("div", null,
+                React.createElement("span", null,
+                    property.label,
+                    ": "),
+                React.createElement("span", { style: { opacity: property.value ? 1 : 0.6 } },
+                    React.createElement("strong", null, property.value ? property.value : 'No data'))));
+        });
         return (React.createElement(Page_1.default, { title: 'Promise details' },
             React.createElement("div", { style: { marginBottom: '8px' } },
                 React.createElement("a", { style: { display: 'inline-block' }, href: '/wp-admin/admin.php?page=tokenly-vendor' }, "Back to vendor")),
@@ -7828,28 +7978,7 @@ class PromiseShowPage extends react_1.Component {
                             React.createElement("div", { style: { flex: 1 } },
                                 React.createElement(PromiseSourceInfo_1.PromiseSourceInfo, { promise: this.props.pageData.promise, sources: this.props.pageData.sources }),
                                 React.createElement(PromiseParticipants_1.PromiseParticipants, { promise: this.props.pageData.promise }),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Asset: "),
-                                    React.createElement("strong", null, this.props.pageData.promise.asset)),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Quantity: "),
-                                    React.createElement("strong", null, this.props.pageData.promise.quantity)),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Ref: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.props.pageData.promise.ref))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Note: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.props.pageData.promise.note))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Created at: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.promise.created_at)))),
-                                React.createElement("div", null,
-                                    React.createElement("span", null, "Updated at: "),
-                                    React.createElement("span", null,
-                                        React.createElement("strong", null, this.dateFormatted(this.props.pageData.promise.updated_at))))))))),
+                                listItems))))),
             React.createElement(components_1.Panel, null,
                 React.createElement(components_1.PanelBody, null,
                     React.createElement(components_1.PanelRow, null,
@@ -7968,6 +8097,7 @@ class SettingsPage extends react_1.Component {
             },
             tcaSettings: {
                 post_types: {},
+                taxonomies: {},
                 filter_menu_items: null,
                 filter_post_results: null,
             },
@@ -7989,9 +8119,8 @@ class SettingsPage extends react_1.Component {
         this.onOauthSettingsChange = this.onOauthSettingsChange.bind(this);
         this.state.integrationSettings = Object.assign(this.state.integrationSettings, this.props.pageData.integration_settings);
         this.state.tcaSettings = Object.assign({}, (_a = this.props.pageData) === null || _a === void 0 ? void 0 : _a.tca_settings);
-        if (!this.state.tcaSettings.post_types) {
-            this.state.tcaSettings.post_types = {};
-        }
+        this.state.tcaSettings.post_types = Object.assign({}, this.state.tcaSettings.post_types);
+        this.state.tcaSettings.taxonomies = Object.assign({}, this.state.tcaSettings.taxonomies);
         this.state.oauthSettings = Object.assign(this.state.oauthSettings, this.props.pageData.oauth_settings);
     }
     setClientId(value) {
@@ -8124,7 +8253,9 @@ class SourceEditPage extends react_1.Component {
     }
     onSave(source) {
         this.setState({ saving: true });
-        this.sourceRepository.update(this.props.pageData.source.address_id, source).then((result) => {
+        const sourceData = Object.assign({}, source);
+        delete sourceData.address;
+        this.sourceRepository.update(this.props.pageData.source.address_id, sourceData).then((result) => {
             this.setState({ saving: false });
             this.return();
         });
@@ -8360,6 +8491,34 @@ __decorate([
     __metadata("design:type", Object)
 ], SourceStorePage.prototype, "sourceRepository", void 0);
 exports["default"] = SourceStorePage;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Admin/Pages/TaxonomyEditPage.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/ts/Admin/Pages/TaxonomyEditPage.tsx ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const React = __webpack_require__(/*! react */ "react");
+const react_1 = __webpack_require__(/*! react */ "react");
+const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+class TaxonomyEditPage extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        //
+        };
+    }
+    render() {
+        return (React.createElement(element_1.Fragment, null));
+    }
+}
+exports["default"] = TaxonomyEditPage;
 
 
 /***/ }),
@@ -8650,97 +8809,6 @@ exports["default"] = App;
 
 /***/ }),
 
-/***/ "./resources/ts/Components/ButtonLoginComponent.ts":
-/*!*********************************************************!*\
-  !*** ./resources/ts/Components/ButtonLoginComponent.ts ***!
-  \*********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ButtonLoginComponent = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
-const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
-let ButtonLoginComponent = class ButtonLoginComponent extends Component_1.Component {
-    constructor(authService) {
-        super();
-        this.authService = authService;
-    }
-    register(selector) {
-        this.element.addEventListener('click', () => {
-            this.element.classList.add('loading');
-        });
-    }
-};
-ButtonLoginComponent = __decorate([
-    (0, inversify_1.injectable)(),
-    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AuthServiceInterface)),
-    __metadata("design:paramtypes", [Object])
-], ButtonLoginComponent);
-exports.ButtonLoginComponent = ButtonLoginComponent;
-
-
-/***/ }),
-
-/***/ "./resources/ts/Components/CardTokenItemComponent.ts":
-/*!***********************************************************!*\
-  !*** ./resources/ts/Components/CardTokenItemComponent.ts ***!
-  \***********************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CardTokenItemComponent = void 0;
-const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
-const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
-let CardTokenItemComponent = class CardTokenItemComponent extends Component_1.Component {
-    constructor() {
-        super();
-    }
-    register(selector) {
-        const extraButton = this.element.querySelector('.extra-button');
-        extraButton.addEventListener('click', () => {
-            this.element.classList.add('extra-shown');
-        });
-        const closeButton = this.element.querySelector('.close-button');
-        closeButton.addEventListener('click', () => {
-            this.element.classList.remove('extra-shown');
-        });
-    }
-};
-CardTokenItemComponent = __decorate([
-    (0, inversify_1.injectable)(),
-    __metadata("design:paramtypes", [])
-], CardTokenItemComponent);
-exports.CardTokenItemComponent = CardTokenItemComponent;
-
-
-/***/ }),
-
 /***/ "./resources/ts/Components/Component.ts":
 /*!**********************************************!*\
   !*** ./resources/ts/Components/Component.ts ***!
@@ -8774,6 +8842,101 @@ Component = __decorate([
     __metadata("design:paramtypes", [])
 ], Component);
 exports.Component = Component;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Components/LoginButtonComponent.ts":
+/*!*********************************************************!*\
+  !*** ./resources/ts/Components/LoginButtonComponent.ts ***!
+  \*********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LoginButtonComponent = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Types_1 = __webpack_require__(/*! ./../Types */ "./resources/ts/Types.ts");
+const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
+let LoginButtonComponent = class LoginButtonComponent extends Component_1.Component {
+    constructor(authService) {
+        super();
+        this.authService = authService;
+    }
+    register(selector) {
+        this.element.addEventListener('click', () => {
+            this.element.classList.add('loading');
+        });
+    }
+};
+LoginButtonComponent = __decorate([
+    (0, inversify_1.injectable)(),
+    __param(0, (0, inversify_1.inject)(Types_1.TYPES.AuthServiceInterface)),
+    __metadata("design:paramtypes", [Object])
+], LoginButtonComponent);
+exports.LoginButtonComponent = LoginButtonComponent;
+
+
+/***/ }),
+
+/***/ "./resources/ts/Components/TokenItemCardComponent.ts":
+/*!***********************************************************!*\
+  !*** ./resources/ts/Components/TokenItemCardComponent.ts ***!
+  \***********************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TokenItemCardComponent = void 0;
+const inversify_1 = __webpack_require__(/*! inversify */ "./node_modules/inversify/es/inversify.js");
+const Component_1 = __webpack_require__(/*! ./Component */ "./resources/ts/Components/Component.ts");
+let TokenItemCardComponent = class TokenItemCardComponent extends Component_1.Component {
+    constructor() {
+        super();
+    }
+    register(selector) {
+        const extraButton = this.element.querySelector('.extra-button');
+        if (extraButton) {
+            extraButton.addEventListener('click', () => {
+                this.element.classList.add('extra-shown');
+            });
+        }
+        const closeButton = this.element.querySelector('.close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                this.element.classList.remove('extra-shown');
+            });
+        }
+    }
+};
+TokenItemCardComponent = __decorate([
+    (0, inversify_1.injectable)(),
+    __metadata("design:paramtypes", [])
+], TokenItemCardComponent);
+exports.TokenItemCardComponent = TokenItemCardComponent;
 
 
 /***/ }),
@@ -8835,8 +8998,8 @@ const WhitelistSettingsRepository_1 = __webpack_require__(/*! ./Repositories/Set
 // Implementations - Service providers
 const ComponentServiceProvider_1 = __webpack_require__(/*! ./Providers/ComponentServiceProvider */ "./resources/ts/Providers/ComponentServiceProvider.ts");
 // Implementations - Components
-const ButtonLoginComponent_1 = __webpack_require__(/*! ./Components/ButtonLoginComponent */ "./resources/ts/Components/ButtonLoginComponent.ts");
-const CardTokenItemComponent_1 = __webpack_require__(/*! ./Components/CardTokenItemComponent */ "./resources/ts/Components/CardTokenItemComponent.ts");
+const LoginButtonComponent_1 = __webpack_require__(/*! ./Components/LoginButtonComponent */ "./resources/ts/Components/LoginButtonComponent.ts");
+const TokenItemCardComponent_1 = __webpack_require__(/*! ./Components/TokenItemCardComponent */ "./resources/ts/Components/TokenItemCardComponent.ts");
 const container = new inversify_1.Container();
 exports.container = container;
 // Services - Application
@@ -8856,10 +9019,10 @@ container.bind(Types_1.TYPES.OauthSettingsRepositoryInterface).to(OauthSettingsR
 container.bind(Types_1.TYPES.TcaSettingsRepositoryInterface).to(TcaSettingsRepository_1.TcaSettingsRepository);
 // Components
 container.bind(Types_1.TYPES.ComponentServiceProviderInterface).to(ComponentServiceProvider_1.ComponentServiceProvider);
-container.bind(Types_1.TYPES.ButtonLoginComponentInterface).to(ButtonLoginComponent_1.ButtonLoginComponent);
-container.bind(Types_1.TYPES.CardTokenItemComponentInterface).to(CardTokenItemComponent_1.CardTokenItemComponent);
-container.bind('Component').to(ButtonLoginComponent_1.ButtonLoginComponent).whenTargetNamed('buttonLoginComponent');
-container.bind('Component').to(CardTokenItemComponent_1.CardTokenItemComponent).whenTargetNamed('cardTokenItemComponent');
+container.bind(Types_1.TYPES.LoginButtonComponentInterface).to(LoginButtonComponent_1.LoginButtonComponent);
+container.bind(Types_1.TYPES.TokenItemCardComponentInterface).to(TokenItemCardComponent_1.TokenItemCardComponent);
+container.bind('Component').to(LoginButtonComponent_1.LoginButtonComponent).whenTargetNamed('loginButtonComponent');
+container.bind('Component').to(TokenItemCardComponent_1.TokenItemCardComponent).whenTargetNamed('tokenItemCardComponent');
 container.bind('Factory<Component>')
     .toAutoNamedFactory('Component');
 
@@ -8985,11 +9148,11 @@ let ComponentServiceProvider = class ComponentServiceProvider extends ServicePro
     get components() {
         return [
             {
-                name: 'buttonLoginComponent',
+                name: 'loginButtonComponent',
                 selector: 'a.tokenpass-login',
             },
             {
-                name: 'cardTokenItemComponent',
+                name: 'tokenItemCardComponent',
                 selector: '.component-card-token-item',
             }
         ];
@@ -9973,8 +10136,8 @@ const TYPES = {
     // Service providers
     ComponentServiceProviderInterface: Symbol.for('ComponentServiceProviderInterface'),
     // Components
-    ButtonLoginComponentInterface: Symbol.for('ButtonLoginComponentInterface'),
-    CardTokenItemComponentInterface: Symbol.for('CardTokenItemComponentInterface'),
+    LoginButtonComponentInterface: Symbol.for('LoginButtonComponentInterface'),
+    TokenItemCardComponentInterface: Symbol.for('TokenItemCardComponentInterface'),
 };
 exports.TYPES = TYPES;
 
@@ -10118,6 +10281,7 @@ const SourceStorePage_1 = __webpack_require__(/*! ./Admin/Pages/SourceStorePage 
 const SourceEditPage_1 = __webpack_require__(/*! ./Admin/Pages/SourceEditPage */ "./resources/ts/Admin/Pages/SourceEditPage.tsx");
 const DashboardPage_1 = __webpack_require__(/*! ./Admin/Pages/DashboardPage */ "./resources/ts/Admin/Pages/DashboardPage.tsx");
 const PostEditPage_1 = __webpack_require__(/*! ./Admin/Pages/PostEditPage */ "./resources/ts/Admin/Pages/PostEditPage.tsx");
+const TaxonomyEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TaxonomyEditPage */ "./resources/ts/Admin/Pages/TaxonomyEditPage.tsx");
 const TokenMetaEditPage_1 = __webpack_require__(/*! ./Admin/Pages/TokenMetaEditPage */ "./resources/ts/Admin/Pages/TokenMetaEditPage.tsx");
 const element_1 = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 class AdminApp extends App_1.default {
@@ -10167,6 +10331,7 @@ class AdminApp extends App_1.default {
             'source-store': SourceStorePage_1.default,
             'source-edit': SourceEditPage_1.default,
             'post-edit': PostEditPage_1.default,
+            'taxonomy-edit': TaxonomyEditPage_1.default,
             'token-meta-edit': TokenMetaEditPage_1.default,
         };
         return routes;

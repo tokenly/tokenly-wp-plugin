@@ -33,7 +33,7 @@ export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEdit
 		this.onDelete = this.onDelete.bind( this );
 		this.onCancel = this.onCancel.bind( this );
 		this.state.promise = {
-			quantity: this.props.promise.quantity,
+			quantity: this.props.promise?.quantity?.value_sat,
 			expiration: null,
 			txid: null,
 			fingerprint: null,

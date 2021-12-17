@@ -34,6 +34,9 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
 			$history = $this->client->getAppCreditGroupHistory( $group_uuid );
+			foreach ( $history['transactions'] as &$transaction ) {
+				$transaction = $this->remap_fields( $transaction );
+			}
 		}
 		if ( !$history ) {
 			return false;
@@ -91,5 +94,13 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 			$transactions['credit'] = $this->credit_transaction_collection_factory->create( $transactions_credit );
 		}
 		return $transactions;
+	}
+
+	protected function remap_fields( array $transaction ) {
+		if ( isset( $transaction['tokenpass_user'] ) ) {
+			$transaction['oauth_user_id'] = $transaction['tokenpass_user'];
+			unset( $transaction['tokenpass_user'] );
+		}
+		return $transaction;
 	}
 }

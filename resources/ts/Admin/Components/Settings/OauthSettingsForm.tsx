@@ -38,6 +38,7 @@ export class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSe
 					label="Redirect URL"
 					value={ this.props.settings.success_url }
 					help="Default redirect URL on success for the login shortcode and the main login form."
+					placeholder="/tokenly/user/me/"
 					onChange={ ( value ) => {
 						const state = Object.assign( {}, this.props.settings );
 						state.success_url = value;
@@ -60,17 +61,17 @@ export class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSe
 					checked={ this.props.settings.allow_no_email }
 					onChange={ ( value ) => {
 						const state = Object.assign( {}, this.props.settings );
-						state.use_single_sign_on = value;
+						state.allow_no_email = value;
 						this.onChange( state );
 					} }
 				/>
 				<ToggleControl
 					label="Allow accounts without a confirmed email"
 					help="Allow connecting Tokenpass accounts which have an unconfirmed email account associated."
-					checked={ this.props.settings.allow_no_email }
+					checked={ this.props.settings.allow_unconfirmed_email }
 					onChange={ ( value ) => {
 						const state = Object.assign( {}, this.props.settings );
-						state.use_single_sign_on = value;
+						state.allow_unconfirmed_email = value;
 						this.onChange( state );
 					} }
 				/>

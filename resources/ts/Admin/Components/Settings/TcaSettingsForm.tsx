@@ -23,7 +23,7 @@ export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettings
 		super( props );
 		this.onChange = this.onChange.bind( this );
 		this.isPostTypeChecked = this.isPostTypeChecked.bind( this );
-		console.log(this.props);
+		this.isTaxonomyChecked = this.isTaxonomyChecked.bind( this );
 	}
 
 	onChange( newSettings: any ) {
@@ -38,25 +38,56 @@ export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettings
 		return checked;
 	}
 
+	isTaxonomyChecked( key: string ) {
+		let checked = false;
+		if ( this.props.settings?.taxonomies && this.props.settings?.taxonomies[ key ] ) {
+			checked = this.props.settings.taxonomies[ key ]
+		}
+		return checked;
+	}
+
 	render() {
-		let listItems: any = [];
-		Object.keys( this.props.data.post_types ).map( ( key: string, index: number ) => {
-			const label = this.props.data.post_types[ key ];
-			const item = (
-				<CheckboxControl
-					label={ label }
-					checked={ this.isPostTypeChecked( key ) }
-					onChange={ ( value: any ) => {
-						let settings = Object.assign( {}, this.props.settings );
-						settings.post_types[ key ] = value;
-						this.onChange( settings );
-					} }
-				/>
-			);
-			listItems.push( item );
-		});
+		const postTypes: any = [];
+		if ( this.props.data.post_types ) {
+			Object.keys( this.props.data.post_types ).map( ( key: string, index: number ) => {
+				const label = this.props.data.post_types[ key ];
+				const item = (
+					<CheckboxControl
+						label={ label }
+						checked={ this.isPostTypeChecked( key ) }
+						onChange={ ( value: any ) => {
+							let settings = Object.assign( {}, this.props.settings );
+							settings.post_types[ key ] = value;
+							this.onChange( settings );
+						} }
+					/>
+				);
+				postTypes.push( item );
+			});
+		}
+		const taxonomies: any = [];
+		if ( this.props.data.taxonomies ) {
+			Object.keys( this.props.data.taxonomies ).map( ( key: string, index: number ) => {
+				const label = this.props.data.taxonomies[ key ];
+				const item = (
+					<CheckboxControl
+						label={ label }
+						checked={ this.isTaxonomyChecked( key ) }
+						onChange={ ( value: any ) => {
+							let settings = Object.assign( {}, this.props.settings );
+							settings.taxonomies[ key ] = value;
+							this.onChange( settings );
+						} }
+					/>
+				);
+				taxonomies.push( item );
+			});
+		}
 		return (
-			<div>
+			<Flex
+				//@ts-ignore
+				direction="column"
+			>
 				<fieldset>
 					<Flex
 						//@ts-ignore
@@ -91,17 +122,28 @@ export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettings
 				</fieldset>
 				<hr></hr>
 				<div>
-					<strong>TCA post types</strong>
-					<div>The selected post types will be able to use the TCA functions.</div>
+					<strong>Post types</strong>
+					<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
 				</div>
 				<Flex
 					//@ts-ignore
 					direction="column"
 					style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
 				>
-					{ listItems }
+					{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
 				</Flex>
-			</div>
+				<div style={{marginTop: '12px'}}>
+					<strong>Taxonomies</strong>
+					<div>The selected taxonomies will be able to use the TCA functions. <br/> The rule editor will be available at the taxonomy term editing screen.</div>
+				</div>
+				<Flex
+					//@ts-ignore
+					direction="column"
+					style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+				>
+					{ taxonomies.length > 0 ? taxonomies : <div style={{opacity: 0.6}}>No taxonomies found</div>}
+				</Flex>
+			</Flex>
 		);
 	}
 }

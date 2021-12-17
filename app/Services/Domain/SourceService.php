@@ -58,7 +58,12 @@ class SourceService extends DomainService implements SourceServiceInterface {
 		if ( empty( $assets ) ) {
 			$assets = null;
 		}
-		$source = $this->source_repository->store( $address, $type, $proof, $assets );
+		$source = $this->source_repository->store( array(
+			'address' => $address,
+			'type'    => $type,
+			'proof'   => $proof,
+			'assets'  => $assets,
+		) );
 		return $source;
 	}
 

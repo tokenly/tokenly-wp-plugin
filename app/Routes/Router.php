@@ -12,12 +12,24 @@ use Twig\Environment;
 class Router extends Service implements RouterInterface {
 	protected $routes = array();
 	protected $default_template;
+	protected $middleware = array();
 
 	/**
 	 * Hooks the router to WordPress
 	 */
 	public function register() {
-		//
+		$this->routes = $this->get_routes();
+		$this->register_routes();
+		$this->register_middleware();
+	}
+	
+	/**
+	 * Registers all middleware
+	 */
+	public function register_middleware() {
+		foreach ( $this->middleware as $middleware ) {
+			$middleware->register();
+		}
 	}
 
 	/**
@@ -40,8 +52,8 @@ class Router extends Service implements RouterInterface {
 	 * Executes the specified render callback
 	 * @param callable $render_function Controller's render function
 	 */
-	public function render_route( callable $render_function ) {
-		$controller_response = call_user_func( $render_function );
+	public function render_route( callable $render_function, array $arguments = array() ) {
+		$controller_response = call_user_func( $render_function, ...$arguments );
 		if ( !$controller_response ) {
 			return;
 		}

@@ -141,9 +141,8 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 		if ( !asset ) {
 			return null;
 		}
-		const balance = parseFloat( asset.balance );
-		console.log(balance);
-		return balance;
+		const quantity = parseFloat( asset.quantity.value );
+		return quantity;
 	}
 
 	isAssetValid() {
@@ -229,7 +228,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 							<label>
 								Quantity
 								<Flex justify="flex-start" align="center" style={ { paddingTop: '12px' } }>
-									<NumberControl
+									<TextControl
 										type="number"
 										value={ this.state.promise.quantity }
 										min={ 0 }
@@ -244,7 +243,7 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 										<span>
 											<span>of / </span>
 											<span title={ this.getMaxCount() as any }>
-												<strong>{ this.getMaxCount().toFixed( 4 ) }</strong>
+												<strong>{ parseFloat( this.getMaxCount().toFixed( 4 ) ) }</strong>
 											</span>
 										</span>
 									}

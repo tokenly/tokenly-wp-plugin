@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from '../../Interfaces';
+import { UserLink } from './UserLink';
 
 import { 
 	 Flex,
@@ -25,26 +26,17 @@ export class PromiseParticipants extends Component<PromiseParticipantsProps, Pro
 		return (
 			<Flex gap={ 0 } align="center" justify="flex-start">
 				<span>Participants: </span>
-				<Dashicon icon="admin-users" />
-				<strong title={ this.props?.promise?.destination }>
-					{ this.props.promise?.promise_meta?.source_user?.id
-						?	<a href={ `/tokenly/user/${ this.props.promise.promise_meta?.source_user?.id }` } >
-								{ this.props?.promise?.promise_meta?.source_user?.name }
-							</a>
-						:	<span>unknown</span>
-					}
-				</strong>
+				<UserLink
+					id={ this.props.promise?.promise_meta?.source_user?.id }
+					alt={ this.props?.promise?.source_id }
+					name={ this.props?.promise?.promise_meta?.source_user?.name }
+				/>
 				<Dashicon style={ { margin: '0 5px' } } icon="arrow-right-alt" />
-				<Dashicon icon="admin-users" />
-				<strong title={ this.props?.promise?.source_id }>
-					{ this.props.promise?.promise_meta?.destination_user?.id
-						?	<a href={ `/tokenly/user/${ this.props.promise?.promise_meta?.destination_user?.id }` } >
-								{ this.props.promise?.promise_meta?.destination_user?.name }
-							</a>
-						:	<span>unknown</span>
-					}
-
-				</strong>
+				<UserLink
+					id={ this.props.promise?.promise_meta?.destination_user?.id }
+					alt={ this.props?.promise?.destination }
+					name={ this.props?.promise?.promise_meta?.destination_user?.name }
+				/>
 			</Flex>
 		);
 	}

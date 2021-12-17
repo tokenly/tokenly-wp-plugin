@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\AddressCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\QuantityFactoryInterface;
 
 /**
  * Manages blockchain addresses
@@ -17,18 +18,20 @@ class AddressRepository implements AddressRepositoryInterface {
 	protected $address_factory;
 	protected $address_collection_factory;
 	protected $balance_collection_factory;
-	protected $address_cache = array();
+	protected $quantity_factory;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		AddressFactoryInterface $address_factory,
 		AddressCollectionFactoryInterface $address_collection_factory,
-		BalanceCollectionFactoryInterface $balance_collection_factory
+		BalanceCollectionFactoryInterface $balance_collection_factory,
+		QuantityFactoryInterface $quantity_factory
 	) {
 		$this->client = $client;
 		$this->address_collection_factory = $address_collection_factory;
 		$this->address_factory = $address_factory;
 		$this->balance_collection_factory = $balance_collection_factory;
+		$this->quantity_factory = $quantity_factory;
 	}
 
 	/**
@@ -75,7 +78,10 @@ class AddressRepository implements AddressRepositoryInterface {
 			foreach ( $address['balances'] as $key => &$balance ) {
 				$balance['asset'] = $key;
 				$balance['name'] = $key;
-				$balance['balance_sat'] = $balance['value'] ?? null;
+				$balance['quantity'] = $this->quantity_factory->create( array(
+					'value_sat' => $balance['value'],
+					'precision' => $balance['precision'],
+				) );
 				unset( $balance['value'] );
 			}
 			$address['balance'] = $address['balances'];
