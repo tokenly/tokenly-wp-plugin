@@ -62,7 +62,7 @@ class Router extends Service implements RouterInterface {
 		if ( isset( $controller_response['template'] ) ) {
 			$template = $controller_response['template'];
 		}
-		if ( isset( $controller_response['data'] ) ) {
+		if ( isset( $controller_response['data'] ) && is_array( $controller_response['data'] ) ) {
 			$view_data = array_merge( $view_data, $controller_response['data'] );
 		}
 		if ( isset( $controller_response['view'] ) ) {

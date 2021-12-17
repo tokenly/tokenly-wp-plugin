@@ -5,9 +5,11 @@ The plugin integrates Tokenly & Tokenpass features into a WordPress website.
 ## Installation
 
 1. Clone the repository from the /plugins directory.
-2. Run `composer install` within the plugin's directory once to install the dependencies.
-3. Activate the WordPress plugin.
-4. Follow the instructions on the Tokenly > Settings page.
+2. Run `npm install` within the plugin's directory once to install the JavaScript dependencies.
+3. Run `npm run build` or `npm run start` to build the JavaScript files.
+4. Run `composer install` within the plugin's directory once to install the PHP dependencies.
+5. Activate the WordPress plugin.
+6. Follow the instructions on the Tokenly > Settings page.
 
 If it is not working, make sure your permalink rewrite rules cache is flushed.
 
