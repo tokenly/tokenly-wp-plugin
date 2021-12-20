@@ -79,7 +79,7 @@ use Tokenly\Wp\Collections\PromiseCollection;
 use Tokenly\Wp\Collections\PromiseMetaCollection;
 use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Collections\SourceCollection;
-use Tokenly\Wp\Collections\TcaAccessReportCollection;
+use Tokenly\Wp\Collections\TcaRuleCheckResultCollection;
 use Tokenly\Wp\Collections\TermCollection;
 use Tokenly\Wp\Collections\TokenMetaCollection;
 use Tokenly\Wp\Collections\TcaRuleCollection;
@@ -99,7 +99,8 @@ use Tokenly\Wp\Models\Integration;
 use Tokenly\Wp\Models\Source;
 use Tokenly\Wp\Models\Term;
 use Tokenly\Wp\Models\TokenMeta;
-use Tokenly\Wp\Models\TcaAccessReport;
+use Tokenly\Wp\Models\TcaRuleCheckResult;
+use Tokenly\Wp\Models\TcaAccessVerdict;
 use Tokenly\Wp\Models\TcaRule;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Models\GuestUser;
@@ -223,7 +224,8 @@ use Tokenly\Wp\Interfaces\Factories\Models\PromiseFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PromiseMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\QuantityFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\SourceFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessReportFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleCheckResultFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TokenMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleFactoryInterface;
@@ -238,7 +240,7 @@ use Tokenly\Wp\Interfaces\Factories\Collections\PromiseCollectionFactoryInterfac
 use Tokenly\Wp\Interfaces\Factories\Collections\PromiseMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\SourceCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaAccessReportCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCheckResultCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TermCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TokenMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
@@ -254,7 +256,7 @@ use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\TcaAccessReportCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TokenMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
@@ -275,7 +277,8 @@ use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
+use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\QuantityInterface;
@@ -512,7 +515,7 @@ return array(
 	PromiseMetaCollectionInterface::class        => \DI\autowire( PromiseMetaCollection::class ),
 	PostCollectionInterface::class               => \DI\autowire( PostCollection::class ),
 	SourceCollectionInterface::class             => \DI\autowire( SourceCollection::class ),
-	TcaAccessReportCollectionInterface::class    => \DI\autowire( TcaAccessReportCollection::class ),
+	TcaRuleCheckResultCollectionInterface::class => \DI\autowire( TcaRuleCheckResultCollection::class ),
 	TermCollectionInterface::class               => \DI\autowire( TermCollection::class ),
 	TokenMetaCollectionInterface::class          => \DI\autowire( TokenMetaCollection::class ),
 	TcaRuleCollectionInterface::class            => \DI\autowire( TcaRuleCollection::class ),
@@ -542,20 +545,21 @@ return array(
 		}
 		return $user;
 	} ),
-	GuestUserInterface::class       => \DI\autowire( GuestUser::class ),
-	IntegrationInterface::class     => \DI\autowire( Integration::class ),
-	OauthUserInterface::class       => \DI\autowire( OauthUser::class ),
-	PostInterface::class            => \DI\autowire( Post::class ),
-	PromiseInterface::class         => \DI\autowire( Promise::class ),
-	PromiseMetaInterface::class     => \DI\autowire( PromiseMeta::class ), 
-	QuantityInterface::class        => \DI\autowire( Quantity::class ),
-	SourceInterface::class          => \DI\autowire( Source::class ),
-	TcaAccessReportInterface::class => \DI\autowire( TcaAccessReport::class ), 
-	TermInterface::class            => \DI\autowire( Term::class ), 
-	TokenMetaInterface::class       => \DI\autowire( TokenMeta::class ), 
-	TcaRuleInterface::class         => \DI\autowire( TcaRule::class ), 
-	UserInterface::class            => \DI\autowire( User::class ),
-	WhitelistItemInterface::class   => \DI\autowire( WhitelistItem::class ),
+	GuestUserInterface::class           => \DI\autowire( GuestUser::class ),
+	IntegrationInterface::class         => \DI\autowire( Integration::class ),
+	OauthUserInterface::class           => \DI\autowire( OauthUser::class ),
+	PostInterface::class                => \DI\autowire( Post::class ),
+	PromiseInterface::class             => \DI\autowire( Promise::class ),
+	PromiseMetaInterface::class         => \DI\autowire( PromiseMeta::class ), 
+	QuantityInterface::class            => \DI\autowire( Quantity::class ),
+	SourceInterface::class              => \DI\autowire( Source::class ),
+	TcaAccessVerdictInterface::class    => \DI\autowire( TcaAccessVerdict::class ), 
+	TcaRuleCheckResultInterface::class  => \DI\autowire( TcaRuleCheckResult::class ), 
+	TermInterface::class                => \DI\autowire( Term::class ), 
+	TokenMetaInterface::class           => \DI\autowire( TokenMeta::class ), 
+	TcaRuleInterface::class             => \DI\autowire( TcaRule::class ), 
+	UserInterface::class                => \DI\autowire( User::class ),
+	WhitelistItemInterface::class       => \DI\autowire( WhitelistItem::class ),
 	//Models - Settings
 	OauthSettingsInterface::class               => \DI\autowire( OauthSettings::class ),
 	IntegrationSettingsInterface::class         => \DI\autowire( IntegrationSettings::class ),
@@ -600,8 +604,11 @@ return array(
 	SourceFactoryInterface::class                   => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, SourceInterface::class ) extends ConcreteFactory implements SourceFactoryInterface {};
 	} ),
-	TcaAccessReportFactoryInterface::class          => \DI\factory( function( ContainerInterface $container ) {
-		return new class( $container, TcaAccessReportInterface::class ) extends ConcreteFactory implements TcaAccessReportFactoryInterface {};
+	TcaAccessVerdictFactoryInterface::class          => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, TcaAccessVerdictInterface::class ) extends ConcreteFactory implements TcaAccessVerdictFactoryInterface {};
+	} ),
+	TcaRuleCheckResultFactoryInterface::class          => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, TcaRuleCheckResultInterface::class ) extends ConcreteFactory implements TcaRuleCheckResultFactoryInterface {};
 	} ),
 	TcaRuleFactoryInterface::class                  => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, TcaRuleInterface::class ) extends ConcreteFactory implements TcaRuleFactoryInterface {};
@@ -647,8 +654,8 @@ return array(
 	PromiseCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, PromiseFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, PromiseCollectionInterface::class ) extends ConcreteCollectionFactory implements PromiseCollectionFactoryInterface {};
 	} ),
-	TcaAccessReportCollectionFactoryInterface::class      => \DI\factory( function( ContainerInterface $container, TcaAccessReportFactoryInterface $item_factory ) {
-		return new class( $container, $item_factory, TcaAccessReportCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaAccessReportCollectionFactoryInterface {};
+	TcaRuleCheckResultCollectionFactoryInterface::class      => \DI\factory( function( ContainerInterface $container, TcaRuleCheckResultFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, TcaRuleCheckResultCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaRuleCheckResultCollectionFactoryInterface {};
 	} ),
 	TcaRuleCollectionFactoryInterface::class              => \DI\factory( function( ContainerInterface $container, TcaRuleFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TcaRuleCollectionInterface::class ) extends ConcreteCollectionFactory implements TcaRuleCollectionFactoryInterface {};
@@ -763,7 +770,7 @@ class ConcreteCollectionFactory {
 		$this->class = $class;
 	}
 
-	public function create( array $data, $args = array() ) {
+	public function create( array $data = array(), $args = array() ) {
 		foreach ( $data as &$item ) {
 			$item = $this->item_factory->create( $item );
 		};
