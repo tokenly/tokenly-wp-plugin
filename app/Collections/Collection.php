@@ -27,8 +27,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	public function fill( array $items ) {
 		foreach ( $items as $item )
 		{
-			if ($item instanceof $this->item_type === FALSE )
-			{
+			if ($item instanceof $this->item_type === FALSE ) {
 				throw new Exception("Cannot append non " . $this->item_type . " to collection");
 			}
 		}
@@ -58,6 +57,20 @@ class Collection extends \ArrayObject implements CollectionInterface {
 			$keyed[ $item->$field ] = $item;
 		}
 		$this->exchangeArray( $keyed );
+		return $this;
+	}
+
+	/**
+	 * Merges the specified collection
+	 * @param ColectionInterface $collection Collection to merge
+	 * @return self
+	 */
+	public function merge( CollectionInterface $collection ) {
+		foreach ( ( array ) $collection as $item ) {
+			if ( $item instanceof $this->item_type === true ) {
+				$this[] = $item;
+			}
+		}
 		return $this;
 	}
 

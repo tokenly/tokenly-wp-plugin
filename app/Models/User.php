@@ -8,13 +8,17 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessReportFactoryInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+
 
 class User extends Model implements UserInterface, CurrentUserInterface {
 	public $user;
@@ -24,6 +28,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	public $can_connect;
 	protected $oauth_user_service;
 	protected $user_meta_repository;
+	protected $tca_access_report_factory;
 	protected $fillable = array(
 		'user',
 		'oauth_user',
@@ -36,11 +41,13 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		OauthUserServiceInterface $oauth_user_service,
 		UserMetaRepositoryInterface $user_meta_repository,
 		UserRepositoryInterface $domain_repository,
+		TcaAccessReportFactoryInterface $tca_access_report_factory,
 		array $data = array()
 	) {
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_meta_repository = $user_meta_repository;
 		$this->domain_repository = $domain_repository;
+		$this->tca_access_report_factory = $tca_access_report_factory;
 		parent::__construct( $data );
 	}
 
@@ -104,7 +111,25 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	}
 
 	/**
+	 * Checks if the user can pass the specified TCA rules
+	 * @param TcaRuleCollectionInteface $rules Rules to test
+	 * @return TcaAccessReportInterface
+	 */
+	public function check_token_access( TcaRuleCollectionInterface $rules ) {
+		if ( $need_test === true ) {
+			$access_report = $this->oauth_user->check_token_access( $rules );
+		} else {
+			$access_report = $this->tca_access_report_factory->create( array(
+				'hash'   => $hash,
+				'status' => $user_status,
+			) );
+		}
+		return $access_report;
+	}
+
+	/**
 	 * Retrieves oauth user from the API
+	 * @param string[] $relations Further relations
 	 * @return self
 	 */
 	protected function load_oauth_user( array $relations = array() ) {
@@ -119,20 +144,5 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		);
 		$this->oauth_user = $oauth_user;
 		return $this;
-	}
-
-	public function check_token_access( TcaRuleCollectionInterface $rules ) {
-		if ( $this instanceof GuestUserInterface === true ) {
-			return false;
-		}
-		if ( user_can( $this, 'administrator' ) ) {
-			return true;
-		}
-		$this->load( array( 'oauth_user' ) );
-		if ( !isset( $this->oauth_user ) ) {
-			return false;
-		}
-		$oauth_user_can_access = $this->oauth_user->check_token_access( $rules );
-		return $oauth_user_can_access;
 	}
 }

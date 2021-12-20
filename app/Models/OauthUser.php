@@ -3,19 +3,21 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+
+use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessReportFactoryInterface;
+use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
+use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
+use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
-use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\CreditAccountServiceInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
@@ -40,6 +42,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	protected $credit_account_collection_factory;
 	protected $oauth_settings;
 	protected $client;
+	protected $tca_access_report_factory;
 	protected $fillable = array(
 		'id',
 		'username',
@@ -62,6 +65,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		CreditAccountServiceInterface $credit_account_service,
 		TokenpassAPIInterface $client,
 		OauthSettingsInterface $oauth_settings,
+		TcaAccessReportFactoryInterface $tca_access_report_factory,
 		array $data = array()
 	) {
 		$this->address_service = $address_service;
@@ -73,6 +77,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		$this->credit_group_service = $credit_group_service;
 		$this->credit_account_service = $credit_account_service;
 		$this->client = $client;
+		$this->tca_access_report_factory = $tca_access_report_factory;
 		parent::__construct( $data );
 	}
 
@@ -92,14 +97,53 @@ class OauthUser extends Model implements OauthUserInterface {
 		return true;
 	}
 
+	/**
+	 * Makes a credit transaction (app credits) for the user
+	 * @param array $parameters Transaction parameters
+	 * @return array
+	 */
 	public function credit_app_credits( array $parameters = array() ) {
-		$this->make_transaction( 'credit', $parameters );
+		$transactions = $this->make_transaction( 'credit', $parameters );
+		return $transactions;
 	}
 
+	/**
+	 * Makes a debit transaction (app credits) for the user
+	 * @param array $parameters Transaction parameters
+	 * @return array
+	 */
 	public function debit_app_credits( array $parameters = array() ) {
-		$this->make_transaction( 'debit', $parameters );
+		$transactions = $this->make_transaction( 'debit', $parameters );
+		return $transactions;
 	}
 
+	/**
+	 * Checks if the user can pass TCA check with
+	 * the specified rules
+	 * @param TcaRuleCollectionInterface $rules Rules to use
+	 * @return TcaAccessReportInterface
+	 */
+	public function check_token_access( TcaRuleCollectionInterface $rules ) {
+		if ( !isset( $this->username ) || !isset( $this->oauth_token ) ) {
+			return;
+		}
+		$username = $this->username;
+		$oauth_token = $this->oauth_token;
+		$rules_formatted = $rules->format_rules();
+		$status = boolval( $this->client->checkTokenAccess( $username, $rules_formatted, $oauth_token ) ) ?? false;
+		$report = $this->tca_access_report_factory->create( array(
+			'hash'   => $rules->to_hash(),
+			'status' => $status,
+		) );
+		return $report;
+	}
+
+	/**
+	 * Makes a transaction of the specified type
+	 * @param string $type Transaction type
+	 * @param array $parameters Transaction parameters
+	 * @return array
+	 */
 	protected function make_transaction( string $type, array $parameters = array() ) {
 		$parameters['type'] = $type;
 		$parameters['account'] = $this;
@@ -129,6 +173,26 @@ class OauthUser extends Model implements OauthUserInterface {
 		}
 		$user->oauth_user->ensure_credit_account_exists( $group_uuid );
 		return $user->oauth_user;
+	}
+
+	/**
+	 * Checks if the user has an existing credit account and if not creates a new one
+	 * for the specified credit group
+	 * @param string $group_id Index of the token group
+	 * @return void
+	 */
+	protected function ensure_credit_account_exists( string $group_uuid ) {
+		$account = $this->credit_account_service->show( array(
+			'account_uuid' => $this->id,
+			'group_uuid'   => $group_uuid,
+		) );
+		if( !$account ){
+			$account = $this->credit_account_service->store( array(
+				'account_uuid' => $this->id,
+				'group_uuid'   => $group_uuid,
+			) );
+		}
+		return $this;
 	}
 
 	/**
@@ -183,42 +247,5 @@ class OauthUser extends Model implements OauthUserInterface {
 		$accounts = $this->credit_account_collection_factory->create( $accounts );
 		$this->credit_account = $accounts;
 		return $this;
-	}
-	
-	/**
-	 * Checks if the user has an existing credit account and if not creates a new one
-	 * for the specified credit group
-	 * @param string $group_id Index of the token group
-	 * @return void
-	 */
-	protected function ensure_credit_account_exists( string $group_uuid ) {
-		$account = $this->credit_account_service->show( array(
-			'account_uuid' => $this->id,
-			'group_uuid'   => $group_uuid,
-		) );
-		if( !$account ){
-			$account = $this->credit_account_service->store( array(
-				'account_uuid' => $this->id,
-				'group_uuid'   => $group_uuid,
-			) );
-		}
-		return $this;
-	}
-	
-	/**
-	 * Checks if the user can pass TCA check with
-	 * the specified rules
-	 * @param TcaRuleCollectionInterface $rules Rules to use
-	 * @return bool
-	 */
-	public function check_token_access( TcaRuleCollectionInterface $rules ) {
-		$username = $this->username;
-		$oauth_token = $this->oauth_token;
-		if ( !$username || !$oauth_token ) {
-			return;
-		}
-		$rules = $rules->format_rules();
-		$can_access = boolval( $this->client->checkTokenAccess( $username, $rules, $oauth_token ) ) ?? false;
-		return $can_access;
 	}
 }

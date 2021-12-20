@@ -8,11 +8,13 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
-use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
+
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
+use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
@@ -66,19 +68,24 @@ class Term extends Model implements TermInterface {
 	/**
 	 * Check if the specified user is allowed to access the term
 	 * @param UserInterface $user User to check
-	 * @return bool
+	 * @return TcaAccessReportInterface
 	 */
 	protected function test_access( UserInterface $user ) {
+		$term_status = false;
+		$need_test = true;
 		$term_id = $this->term_id;
-		$can_access = false;
 		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $this->taxonomy );
 		if ( $tca_enabled === false ) {
-			return true;
+			return;
 		}
-		if ( count( (array) $this->tca_rules ) == 0 || !is_object( $this->tca_rules ) ) {
-			return true;
+		if ( $need_test === true ) {
+			$access_report = $user->check_token_access( $this->tca_rules );
+		} else {
+			$access_report = $this->tca_access_report_factory->create( array(
+				'hash'   => $hash,
+				'status' => $term_status,
+			) );
 		}
-		$tca_allowed = $user->check_token_access( $this->tca_rules ) ?? false;
-		return $tca_allowed;
+		return $access_report;
 	}
 }

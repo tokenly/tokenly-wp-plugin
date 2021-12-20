@@ -25,4 +25,14 @@ class TcaRuleCollection extends Collection implements TcaRuleCollectionInterface
 		}
 		return $rules;
 	}
+
+	/**
+	 * Generates the hash of the rule
+	 * @return string
+	 */
+	public function to_hash() {
+		$rules = serialize( $this->format_rules() );
+		$hash = md5( $rules );
+		return $hash;
+	}
 }

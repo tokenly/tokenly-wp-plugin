@@ -8,6 +8,7 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
+
 use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
 
 class TokenMeta extends Model implements TokenMetaInterface {
