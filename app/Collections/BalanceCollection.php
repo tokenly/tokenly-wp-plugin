@@ -54,7 +54,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 
 	/**
 	 * Loads the token meta relation
-	 * @param array $relation Further relations
+	 * @param string[] $relations Further relations
 	 * @return self
 	 */
 	protected function load_token_meta( array $relations ) {

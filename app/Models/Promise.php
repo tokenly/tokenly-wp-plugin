@@ -86,14 +86,16 @@ class Promise extends Model implements PromiseInterface {
 		$this->promise_repository->destroy( $this );
 	}
 
+	/**
+	 * Loads the promise meta relation
+	 * @param string[] $relations Further relations
+	 * @return PromiseMetaInterface
+	 */
 	protected function load_promise_meta( array $relations ) {
 		$promise_meta = $this->promise_meta_service->show( array(
 			'with'        => $relations,
 			'promise_ids' => array( $this->promise_id ), 
 		) );
-		if ( $promise_meta ) {
-			$this->promise_meta = $promise_meta;
-		}
-		return $this;
+		return $promise_meta;
 	}
 }

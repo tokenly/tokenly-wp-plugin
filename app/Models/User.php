@@ -11,10 +11,12 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessReportFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleCheckResultFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
@@ -28,7 +30,8 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	public $can_connect;
 	protected $oauth_user_service;
 	protected $user_meta_repository;
-	protected $tca_access_report_factory;
+	protected $tca_rule_check_result_factory;
+	protected $tca_access_verdict_factory;
 	protected $fillable = array(
 		'user',
 		'oauth_user',
@@ -41,13 +44,15 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		OauthUserServiceInterface $oauth_user_service,
 		UserMetaRepositoryInterface $user_meta_repository,
 		UserRepositoryInterface $domain_repository,
-		TcaAccessReportFactoryInterface $tca_access_report_factory,
+		TcaRuleCheckResultFactoryInterface $tca_rule_check_result_factory,
+		TcaAccessVerdictFactoryInterface $tca_access_verdict_factory,
 		array $data = array()
 	) {
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_meta_repository = $user_meta_repository;
 		$this->domain_repository = $domain_repository;
-		$this->tca_access_report_factory = $tca_access_report_factory;
+		$this->tca_rule_check_result_factory = $tca_rule_check_result_factory;
+		$this->tca_access_verdict_factory = $tca_access_verdict_factory;
 		parent::__construct( $data );
 	}
 
@@ -113,36 +118,62 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	/**
 	 * Checks if the user can pass the specified TCA rules
 	 * @param TcaRuleCollectionInteface $rules Rules to test
-	 * @return TcaAccessReportInterface
+	 * @return TcaRuleCheckResultInterface
 	 */
 	public function check_token_access( TcaRuleCollectionInterface $rules ) {
-		if ( $need_test === true ) {
+		$this->load( array( 'oauth_user' ) );
+		if ( $this->oauth_user instanceof OauthUserInterface ) {
 			$access_report = $this->oauth_user->check_token_access( $rules );
-		} else {
-			$access_report = $this->tca_access_report_factory->create( array(
-				'hash'   => $hash,
-				'status' => $user_status,
-			) );
 		}
 		return $access_report;
 	}
 
 	/**
-	 * Retrieves oauth user from the API
+	 * Loads the oauth_user relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return OauthUserInterface
 	 */
 	protected function load_oauth_user( array $relations = array() ) {
-		if ( isset( $this->oauth_user ) ) {
-			return $this;
-		}
 		$oauth_user = $this->oauth_user_service->show(
 			array(
 				'id'   => $this->ID,
 				'with' => $relations,
 			)
 		);
-		$this->oauth_user = $oauth_user;
-		return $this;
+		return $oauth_user;
+	}
+
+	/**
+	 * Tests the user before starting TCA check
+	 * @return array
+	 */
+	public function get_tca_precheck_data() {
+		$status = false;
+		$note = '';
+		$need_test = true;
+		if ( user_can( $this, 'administrator' ) ) {
+			$status = true;
+			$need_test = false;
+		}
+		if ( $this instanceof GuestUserInterface === true ) {
+			$status = false;
+			$need_test = false;
+			$note .= 'The user is not logged in.';
+		}
+		$this->load( array( 'oauth_user' ) );
+		if ( $this->oauth_user instanceof OauthUserInterface === false ) {
+			$status = false;
+			$need_test = false;
+			$note .= 'The user is not connected.';
+		}
+		$verdict = $this->tca_access_verdict_factory->create( array(
+			'status'    => $status,
+			'note'      => $note,
+			'reports'   => null,
+		) );
+		return array(
+			'need_test' => $need_test,
+			'verdict'   => $verdict
+		);
 	}
 }

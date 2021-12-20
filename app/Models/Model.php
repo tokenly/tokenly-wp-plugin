@@ -99,14 +99,19 @@ class Model implements ModelInterface {
 				continue;
 			}
 			$relation_formatted = $this->format_relation( $relation );
-			
-			if ( isset( $this->{$relation_formatted['root']} ) && is_object( $this->{$relation_formatted['root']} ) ) {
-				$this->{$relation_formatted['root']}->load( array( $relation_formatted['relations'] ) );
+			if ( !isset( $relation_formatted['root'] ) ) {
 				continue;
 			}
-			$method = "load_{$relation_formatted['root']}";
-			if ( method_exists( $this, $method ) ) {
-				call_user_func( array( $this, $method ), array( $relation_formatted['relations'] ) );
+			$relation = $relation_formatted['root'];
+			$relations_nested = $relation_formatted['relations'] ?? null;
+			if ( isset( $this->{$relation} ) && is_object( $this->{$relation} ) ) {
+				$this->{$relation}->load( array( $relations_nested ) );
+				continue;
+			} else {
+				$method = "load_{$relation}";
+				if ( method_exists( $this, $method ) ) {
+					$this->{$relation} = call_user_func( array( $this, $method ), array( $relations_nested ) );
+				}
 			}
 		}
 		return $this;

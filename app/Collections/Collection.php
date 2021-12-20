@@ -28,7 +28,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 		foreach ( $items as $item )
 		{
 			if ($item instanceof $this->item_type === FALSE ) {
-				throw new Exception("Cannot append non " . $this->item_type . " to collection");
+				throw new \Exception("Cannot append non " . $this->item_type . " to collection");
 			}
 		}
 		$this->exchangeArray( $items );
@@ -75,8 +75,8 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	}
 
 	/**
-	 * Loads the specified relations
-	 * @param string[] $relations List of relations to load
+	 * Loads the specified relations.
+	 * @param string[] $relations Relations to load
 	 * @return self
 	 */
 	public function load( array $relations = array() ) {

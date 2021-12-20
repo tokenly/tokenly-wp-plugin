@@ -57,12 +57,16 @@ class PostGuardMiddleware extends Middleware implements PostGuardMiddlewareInter
 		if ( !$post ) {
 			return;
 		}
-		$can_access = $post->can_access_post( $this->current_user );
-		if ( $can_access === false ) {
+		$verdict = $post->can_access_post( $this->current_user );
+		$rules = $post->get_all_tca_rules();
+		if ( $verdict->status === false ) {
 			if ( is_admin() === true ) {
 				wp_die( 'Access denied by TCA.' );
 			} else {
-				$view_data = $this->post_access_denied_view_model->prepare();
+				$view_data = $this->post_access_denied_view_model->prepare( array(
+					'verdict' => $verdict,
+					'rules'   => $rules,
+				) );
 				echo $this->twig->render( 'Denied.twig', $view_data );
 				exit;
 			}

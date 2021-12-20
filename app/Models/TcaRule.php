@@ -6,9 +6,25 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
 
 class TcaRule extends Model implements TcaRuleInterface {
+	/**
+	 * Asset name.
+	 * @var string 
+	 */
 	public $asset;
+	/**
+	 * Quantity to compare.
+	 * @var float 
+	 */
 	public $quantity;
+	/**
+	 * Logical operator.
+	 * @var string 
+	 */
 	public $op;
+	/**
+	 * Group operator.
+	 * @var string 
+	 */
 	public $stackOp;
 	protected $fillable = array(
 		'asset',

@@ -6,11 +6,14 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\CreditAccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessReportFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleCheckResultFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
 use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
@@ -29,7 +32,8 @@ class OauthUser extends Model implements OauthUserInterface {
 	public $oauth_token;
 	public $balance;
 	/**
-	 * @var AddressCollectionInterface $address Collection of blockchain addresses assigned to this account
+	 * Collection of blockchain addresses assigned to this account
+	 * @var AddressCollectionInterface $address
 	 */
 	public $address;
 	public $credit_account;
@@ -42,7 +46,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	protected $credit_account_collection_factory;
 	protected $oauth_settings;
 	protected $client;
-	protected $tca_access_report_factory;
+	protected $tca_rule_check_result_factory;
 	protected $fillable = array(
 		'id',
 		'username',
@@ -65,7 +69,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		CreditAccountServiceInterface $credit_account_service,
 		TokenpassAPIInterface $client,
 		OauthSettingsInterface $oauth_settings,
-		TcaAccessReportFactoryInterface $tca_access_report_factory,
+		TcaRuleCheckResultFactoryInterface $tca_rule_check_result_factory,
 		array $data = array()
 	) {
 		$this->address_service = $address_service;
@@ -77,7 +81,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		$this->credit_group_service = $credit_group_service;
 		$this->credit_account_service = $credit_account_service;
 		$this->client = $client;
-		$this->tca_access_report_factory = $tca_access_report_factory;
+		$this->tca_rule_check_result_factory = $tca_rule_check_result_factory;
 		parent::__construct( $data );
 	}
 
@@ -121,7 +125,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	 * Checks if the user can pass TCA check with
 	 * the specified rules
 	 * @param TcaRuleCollectionInterface $rules Rules to use
-	 * @return TcaAccessReportInterface
+	 * @return TcaRuleCheckResultInterface
 	 */
 	public function check_token_access( TcaRuleCollectionInterface $rules ) {
 		if ( !isset( $this->username ) || !isset( $this->oauth_token ) ) {
@@ -131,7 +135,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		$oauth_token = $this->oauth_token;
 		$rules_formatted = $rules->format_rules();
 		$status = boolval( $this->client->checkTokenAccess( $username, $rules_formatted, $oauth_token ) ) ?? false;
-		$report = $this->tca_access_report_factory->create( array(
+		$report = $this->tca_rule_check_result_factory->create( array(
 			'hash'   => $rules->to_hash(),
 			'status' => $status,
 		) );
@@ -161,9 +165,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		$user = null;
 		$user = $this->user_service->show( array(
 			'id'   => $source,
-			'with' => array(
-				'oauth_user',
-			),
+			'with' => array( 'oauth_user' ),
 		) );
 		if ( !$user ) {
 			return;
@@ -198,42 +200,40 @@ class OauthUser extends Model implements OauthUserInterface {
 	/**
 	 * Loads the balance relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return BalanceCollectionInterface
 	 */
 	protected function load_balance( array $relations = array() ) {
 		$balance = $this->balance_service->index( array(
 			'oauth_token'  => $this->oauth_token,
 			'with'         => $relations,
 		) );
-		$this->balance = $balance;
-		return $this;
+		return $balance;
 	}
 
 	/**
 	 * Loads the address relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return AddressCollectionInterface
 	 */
 	protected function load_address( array $relations = array() ) {
 		$address = $this->address_service->index( array(
 			'username' => $this->username,
 			'with'     => $relations,
 		) );
-		$this->address = $address;
-		return $this;
+		return $address;
 	}
 	
 	/**
-	 * Loads the credit account relation
+	 * Loads the credit_account relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return CreditAccountCollectionInterface
 	 */
 	protected function load_credit_account( array $relations = array() ) {
 		$credit_groups = $this->credit_group_service->index();
 		$group_uuids = array_map( function( CreditGroupInterface $credit_group ) {
 			return $credit_group->uuid;
 		}, ( array ) $credit_groups );
-		$accounts = array();;
+		$credit_account = array();;
 		foreach ( $group_uuids as $group_uuid ) {
 			$account = $this->credit_account_service->show( array(
 				'group_uuid'   => $group_uuid,
@@ -242,10 +242,9 @@ class OauthUser extends Model implements OauthUserInterface {
 			if ( !$account ) {
 				continue;
 			}
-			$accounts[ $group_uuid ] = $account;
+			$credit_account[ $group_uuid ] = $account;
 		}
-		$accounts = $this->credit_account_collection_factory->create( $accounts );
-		$this->credit_account = $accounts;
-		return $this;
+		$credit_account = $this->credit_account_collection_factory->create( $credit_account );
+		return $credit_account;
 	}
 }

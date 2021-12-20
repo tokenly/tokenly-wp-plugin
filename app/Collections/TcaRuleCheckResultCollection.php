@@ -7,11 +7,11 @@
 namespace Tokenly\Wp\Collections;
 
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Collections\TcaAccessReportCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessReportnterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
 
-class TcaAccessReportCollection extends Collection implements TcaAccessReportCollectionInterface {
-	protected $item_type = TcaAccessReportnterface::class;
+class TcaRuleCheckResultCollection extends Collection implements TcaRuleCheckResultCollectionInterface {
+	protected $item_type = TcaRuleCheckResultInterface::class;
 
 	/**
 	 * Checks if the collection has any rule

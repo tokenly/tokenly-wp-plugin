@@ -4,9 +4,11 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
+
+use Tokenly\Wp\Interfaces\Models\AddressInterface;
+use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class Source extends Model implements SourceInterface {
 	public $address_id;
@@ -37,16 +39,13 @@ class Source extends Model implements SourceInterface {
 	/**
 	 * Loads the address relation
 	 * @param array $relations Further relations
-	 * @return self 
+	 * @return AddressInterface 
 	 */
 	protected function load_address( array $relations = array() ) {
 		$address = $this->address_service->show( array(
 			'address' => $this->address_id,
 			'with'    => $relations,
 		) );
-		if ( $address ) {
-			$this->address = $address;
-		}
-		return $this;
+		return $address;
 	}
 }

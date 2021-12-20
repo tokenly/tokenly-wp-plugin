@@ -36,6 +36,6 @@ class Address extends Model implements AddressInterface {
 		if ( isset( $this->balance ) ) {
 			$this->balance->load( $relations );
 		}
-		return $this;
+		return $this->balance;
 	}
 }

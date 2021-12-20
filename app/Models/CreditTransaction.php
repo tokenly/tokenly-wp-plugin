@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\CreditTransactionInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
@@ -46,14 +47,13 @@ class CreditTransaction extends Model implements CreditTransactionInterface {
 	/**
 	 * Loads the user relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return UserInterface
 	 */
 	protected function load_user( array $relations = array() ) {
 		$user = $this->user_service->show( array(
 			'uuid' => $this->account,
 			'with' => $relations,
 		) );
-		$this->user = $user;
-		return $this;
+		return $user;
 	}
 }

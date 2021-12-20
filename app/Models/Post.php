@@ -11,10 +11,14 @@ use Tokenly\Wp\Interfaces\Models\PostInterface;
 
 use Tokenly\Wp\Interfaces\Collections\TcaAccessReportCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaAccessReportCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCheckResultCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
@@ -27,6 +31,8 @@ class Post extends Model implements PostInterface {
 	protected $post = null;
 	protected $meta_repository;
 	protected $tca_settings;
+	protected $tca_access_verdict_factory;
+	protected $tca_rule_check_result_collection_factory;
 	protected $tca_rule_collection_factory;
 	protected $term_service;
 	protected $fillable = array(
@@ -37,7 +43,8 @@ class Post extends Model implements PostInterface {
 	public function __construct(
 		PostRepositoryInterface $domain_repository,
 		MetaRepositoryInterface $meta_repository,
-		TcaAccessReportCollectionFactoryInterface $tca_access_report_collection_factory,
+		TcaAccessVerdictFactoryInterface $tca_access_verdict_factory,
+		TcaRuleCheckResultCollectionFactoryInterface $tca_rule_check_result_collection_factory,
 		TcaSettingsInterface $tca_settings,
 		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
 		TermServiceInterface $term_service,
@@ -46,7 +53,8 @@ class Post extends Model implements PostInterface {
 		$this->domain_repository = $domain_repository;
 		$this->meta_repository = $meta_repository;
 		$this->tca_settings = $tca_settings;
-		$this->tca_access_report_collection_factory = $tca_access_report_collection_factory;
+		$this->tca_access_verdict_factory = $tca_access_verdict_factory;
+		$this->tca_rule_check_result_collection_factory = $tca_rule_check_result_collection_factory;
 		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
 		$this->term_service = $term_service;
 		parent::__construct( $data );
@@ -71,101 +79,128 @@ class Post extends Model implements PostInterface {
 	 * @return array
 	 */
 	public function can_access_post( UserInterface $user ) {
-		if ( user_can( $user, 'administrator' ) ) {
-			$user_status = true;
-			$need_test = false;
-		}
-		if ( $user instanceof GuestUserInterface === true ) {
-			$user_status = false;
-			$need_test = false;
-			$note = 'The user is not logged in.';
-		}
-		$user->load( array( 'oauth_user' ) );
-		if ( !isset( $user->oauth_user ) ) {
-			$user_status = false;
-			$need_test = false;
-			$note = 'The user is not connected.';
-		}
-		if ( $need_test ) {
-			$access_verdict = $this->test_access( $user );
+		$precheck = $user->get_tca_precheck_data();
+		$verdict = null;
+		if ( $precheck['need_test'] === true ) {
+			$verdict = $this->test_access( $user );
 		} else {
-			$access_verdict = array(
-				'status'  => $user_status,
-				'note'    => $note,
-				'reports' => null,
-			);
+			$verdict = $precheck['verdict'];
 		}
-		return $access_verdict;
+		return $verdict;
+	}
+
+	public function get_all_tca_rules() {
+		$rules = array();
+		if ( isset( $this->tca_rules ) && $this->tca_rules instanceof TcaRuleCollectionInterface ) {
+			$rules[] = $this->tca_rules;
+		}
+		$this->load( array( 'term' ) );
+		if ( isset( $this->term ) && $this->term instanceof TermCollectionInterface ) {
+			$term_rules = $this->term->get_all_tca_rules();
+			if ( $term_rules && $term_rules instanceof TcaRuleCollectionInterface ) {
+				$rules[] = $term_rules;
+			}
+		}
+		$rules_keyed = array();
+		foreach ( $rules as $rule ) {
+			$rules_keyed[ $rule->to_hash() ] = $rule;
+		}
+		return $rules_keyed;
 	}
 
 	/**
 	 * Checks if the specified user can access the post and its terms
 	 * @param UserInterface $user User to check
-	 * @return TcaAccessReportCollectionInterface
+	 * @return TcaAccessVerdictInterface
 	 */
 	protected function test_access( UserInterface $user ) {
-		$reports = $this->tca_access_report_collection_factory->create();
-		$term_reports = $this->test_access_terms( $user );
-		$post_report = $this->test_access_post( $user );
-		if ( $term_reports instanceof TcaAccessReportCollectionInterface ) {
-			$reports->merge( $term_reports );
+		$status = false;
+		$reports = $this->tca_rule_check_result_collection_factory->create();
+		$term_verdict = $this->test_access_terms( $user );
+		$post_verdict = $this->test_access_post( $user );
+		if (
+			$term_verdict->status === false ||
+			$post_verdict->status === false
+		) {
+			$status = false;
+		} else {
+			$status = true;
 		}
-		if ( $post_report instanceof TcaAccessReportInterface ) {
-			$reports[] = $post_report;
+		if (
+			$term_verdict instanceof TcaAccessVerdictInterface &&
+			isset( $term_verdict->reports ) &&
+			$term_verdict->reports instanceof TcaRuleCheckResultCollectionInterface
+		) {
+			$reports = $reports->merge( $term_verdict->reports );
 		}
-		$status = $reports->can_pass();
-		return array(
+		if (
+			$post_verdict instanceof TcaAccessVerdictInterface &&
+			isset( $post_verdict->reports ) &&
+			$post_verdict->reports instanceof TcaRuleCheckResultCollectionInterface
+		) {
+			$reports = $reports->merge( $post_verdict->reports );
+		}
+		$verdict = $this->tca_access_verdict_factory->create( array(
 			'status'  => $status,
-			'note'    => null,
-			'reports' => $reports
-		);
+			'reports' => $reports,
+		) );
+		$rules = $this->get_all_tca_rules();
+		return $verdict;
 	}
 
 	/**
 	 * Checks if the specified user can access the post
 	 * @param UserInterface $user User to check
-	 * @return TcaAccessReportInterface
+	 * @return TcaAccessVerdictInterface
 	 */
 	protected function test_access_post( UserInterface $user ) {
+		$need_test = true;
+		$status = false;
 		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $this->post_type );
-		if ( $tca_enabled === false ) {
-			return;
+		if (
+			$tca_enabled === false ||
+			count( (array) $this->tca_rules ) == 0
+		) {
+			$status = true;
+			$need_test = false;
 		}
-		if ( count( (array) $this->tca_rules ) == 0 ) {
-			return;
+		$reports = null;
+		if ( $need_test === true ) {
+			$result = $user->check_token_access( $this->tca_rules );
+			$status = $result->status;
+			$reports = $this->tca_rule_check_result_collection_factory->create( array( $result ) );
 		}
-		$access_report = $user->check_token_access( $this->tca_rules );
-		return $access_report;
+		$verdict = $this->tca_access_verdict_factory->create( array(
+			'status'  => $status,
+			'reports' => $reports,
+		) );
+		return $verdict;
 	}
 
 	/**
 	 * Checks if the terms associated with the post can be
 	 * accessed by the specified user
 	 * @param UserInterface $user User to test
-	 * @return TcaAccessReportCollectionInterface
+	 * @return TcaAccessVerdictInterface
 	 */
 	protected function test_access_terms( UserInterface $user ) {
 		$this->load( array( 'term' ) );
-		if ( !$this->term || !is_object( $this->term ) ) {
-			return;
+		$verdict = null;
+		if ( $this->term && $this->term instanceof TermCollectionInterface ) {
+			$verdict = $this->term->can_access( $user );
 		}
-		$access_reports = $this->term->can_access( $user );
-		return $access_reports;
+		return $verdict;
 	}
 
 	/**
 	 * Loads the term relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return TermCollectionInterface
 	 */
 	protected function load_term( array $relations = array() ) {
-		$terms = $this->term_service->index( array(
+		$term = $this->term_service->index( array(
 			'id' => $this->ID,
 		) );
-		if ( !$terms ) {
-			return;
-		}
-		$this->term = $terms;
-		return $this;
+		return $term;
 	}
 }

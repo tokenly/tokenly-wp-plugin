@@ -38,6 +38,10 @@ class Integration extends Model implements IntegrationInterface {
 		}
 	}
 
+	/**
+	 * Updates the connection state of the integration
+	 * @return self
+	 */
 	public function check_connection() {
 		$can_connect = false;
 		$result = $this->source_repository->index();
@@ -51,16 +55,20 @@ class Integration extends Model implements IntegrationInterface {
 		) );
 		$this->can_connect = $can_connect;
 		$this->save();
+		return $this;
 	}
 	
 	/**
-	 * Tests whether the integration can connect
+	 * Gets the current state of connection
 	 * @return bool
 	 */
 	public function can_connect() {
 		return $this->can_connect ?? false;
 	}
 
+	/**
+	 * Saves the integration data
+	 */
 	public function save() {
 		$save_data = $this->to_array();
 		$save_data_formatted = array();
@@ -68,5 +76,6 @@ class Integration extends Model implements IntegrationInterface {
 			$save_data_formatted[ "integration_{$key}" ] = $save_data_item;
 		}
 		$this->option_repository->update( $save_data_formatted );
+		return $this;
 	}
 }

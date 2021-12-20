@@ -2,6 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Factories\Models;
 
-interface TcaAccessReportFactoryInterface {
+interface TcaRuleCheckResultFactoryInterface {
 	//
 }

@@ -30,18 +30,15 @@ class Balance extends Model implements BalanceInterface {
 	}
 
 	/**
-	 * Loads the token meta relation
+	 * Loads the token_meta relation
 	 * @param string[] $relations Further relations
-	 * @return self
+	 * @return TokenMetaInterface
 	 */
 	protected function load_token_meta( array $relations ) {
 		$token_meta = $this->token_meta_service->show( array(
 			'assets' => array( $this->asset ),
 			'with'   => $relations,
 		) );
-		if ( $token_meta ) {
-			$this->token_meta = $token_meta;
-		}
-		return $this;
+		return $token_meta;
 	}
 }
