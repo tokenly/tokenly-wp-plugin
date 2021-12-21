@@ -36,11 +36,16 @@ class TermCollection extends Collection implements TermCollectionInterface {
 		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
 	}
 
-	public function get_all_tca_rules() {
-		$rules = $this->tca_rule_collection_factory->create();
+	/**
+	 * Gets TCA rules of all the terms in the collection
+	 * @return array
+	 */
+	public function get_tca_rules() {
+		$rules = array();
 		foreach ( ( array ) $this as $term ) {
-			if ( isset( $term->tca_rules ) && $term->tca_rules instanceof TcaRuleCollectionInterface ) {
-				$rules = $rules->merge( $term->tca_rules );
+			$term_rules = $term->get_tca_rules();
+			if ( $term_rules && is_array( $term_rules ) ) {
+				$rules = array_merge( $rules, $term_rules );
 			}
 		}
 		return $rules;

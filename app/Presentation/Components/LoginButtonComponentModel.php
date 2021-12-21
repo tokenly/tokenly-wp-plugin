@@ -26,17 +26,24 @@ class LoginButtonComponentModel extends ComponentModel implements LoginButtonCom
 	}
 
 	public function prepare( array $data = array() ) {
+		$label = 'Login with Tokenpass';
+		if ( isset( $data['label'] ) ) {
+			$label = $data['label'];
+		}
+		$redirect = $this->oauth_settings->success_url;
+		if ( isset( $data['redirect'] ) ) {
+			$redirect = $data['redirect'];
+		}
 		$can_connect = $this->integration->can_connect();
 		$is_logged_in = is_user_logged_in();
 		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
-		$success_url = $this->oauth_settings->success_url;
 		$use_single_sign_on = $this->oauth_settings->use_single_sign_on;
 		$url = "/{$this->namespace}/oauth/connect";
-		if ( $success_url ) {
-			$url = add_query_arg( "{$this->namespace}_success_url", $success_url, $url );
+		if ( $redirect ) {
+			$url = add_query_arg( "{$this->namespace}_success_url", $redirect, $url );
 		}
 		return array(
-			'label'               => 'Login with Tokenpass',
+			'label'               => $label,
 			'logo'                => $logo,
 			'url'                 => $url,
 			'can_connect'         => $can_connect,

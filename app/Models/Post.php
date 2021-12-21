@@ -70,9 +70,13 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 		$rules = array();
 		$this->load( array( 'term' ) );
 		if ( isset( $this->term ) && $this->term instanceof TermCollectionInterface ) {
-			$term_rules = $this->term->get_all_tca_rules();
-			if ( $term_rules && $term_rules instanceof TcaRuleCollectionInterface ) {
-				$rules[] = $term_rules;
+			$term_rules = $this->term->get_tca_rules();
+			if (
+				$term_rules &&
+				is_array( $term_rules ) &&
+				count( $term_rules ) > 0
+			) {
+				$rules = array_merge( $rules, $term_rules );
 			}
 		}
 		return $rules;

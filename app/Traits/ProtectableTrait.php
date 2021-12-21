@@ -67,7 +67,6 @@ trait ProtectableTrait {
 	public function is_protected() {
 		$root_protected = $this->check_root_protected();
 		$relations_protected = $this->check_relations_protected();
-		$rules_total = count( ( array ) $this->tca_rules );
 		if ( $root_protected === true || $relations_protected === true ) {
 			return true;
 		} else {
@@ -81,7 +80,13 @@ trait ProtectableTrait {
 	 */
 	public function get_tca_rules() {
 		$rules = array();
-		if ( isset( $this->tca_rules ) && $this->tca_rules instanceof TcaRuleCollectionInterface ) {
+		$tca_enabled = $this->check_tca_enabled();
+		if (
+			$tca_enabled === true &&
+			isset( $this->tca_rules ) &&
+			$this->tca_rules instanceof TcaRuleCollectionInterface &&
+			count( ( array ) $this->tca_rules ) > 0
+		) {
 			$rules[] = $this->tca_rules;
 		}
 		$relation_rules = $this->get_tca_rules_relation();
@@ -109,7 +114,6 @@ trait ProtectableTrait {
 			$status = true;
 		}
 		foreach ( array( $root_verdict, $relation_verdict ) as $verdict ) {
-			
 			if (
 				$verdict instanceof TcaAccessVerdictInterface &&
 				isset( $verdict->reports ) &&
@@ -134,8 +138,8 @@ trait ProtectableTrait {
 		$need_test = true;
 		$status = false;
 		$reports = null;
-		$is_protected = $this->is_protected();
-		if ( $is_protected === false ) {
+		$tca_enabled = $this->check_tca_enabled();
+		if ( $tca_enabled === false ) {
 			$status = true;
 			$need_test = false;
 		}

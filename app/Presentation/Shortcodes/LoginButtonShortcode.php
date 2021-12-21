@@ -1,9 +1,9 @@
 <?php
 
-namespace Tokenly\Wp\Shortcodes;
+namespace Tokenly\Wp\Presentation\Shortcodes;
 
-use Tokenly\Wp\Shortcodes\Shortcode;
-use Tokenly\Wp\Interfaces\Shortcodes\LoginButtonShortcodeInterface;
+use Tokenly\Wp\Presentation\Shortcodes\Shortcode;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Components\LoginButtonComponentModelInterface;
 
 class LoginButtonShortcode extends Shortcode implements LoginButtonShortcodeInterface {
@@ -15,8 +15,8 @@ class LoginButtonShortcode extends Shortcode implements LoginButtonShortcodeInte
 		$this->login_button_component_model = $login_button_component_model;
 	}
 
-	public function shortcode_callback() {
-		$data = $this->login_button_component_model->prepare();
+	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ) {
+		$data = $this->login_button_component_model->prepare( $atts );
 		return array(
 			'template' => 'shortcodes/LoginButtonShortcode.twig',
 			'data'     => $data,

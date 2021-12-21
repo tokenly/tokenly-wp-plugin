@@ -56,8 +56,8 @@ class PostResultsFilterMiddleware implements PostResultsFilterMiddlewareInterfac
 			if ( $current_post_id == $post->ID ) {
 				continue;
 			}
-			$can_access = $post->can_access( $this->current_user );
-			if ( $can_access == false ) {
+			$verdict = $post->can_access( $this->current_user );
+			if ( $verdict->status === false ) {
 				unset( $posts[ $key ] );
 			}
 		}

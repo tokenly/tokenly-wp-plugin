@@ -48,6 +48,9 @@ class UserService extends DomainService implements UserServiceInterface {
 	 * @return UserInterface
 	 */
 	protected function _show( array $params = array() ) {
+		if ( isset( $params['id'] ) && $params['id'] == 'me' ) {
+			$params['id'] = get_current_user_id();
+		}
 		$user = $this->user_repository->show( $params );
 		return $user;
 	}

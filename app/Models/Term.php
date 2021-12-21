@@ -54,6 +54,7 @@ class Term extends Model implements TermInterface, ProtectableInterface {
 	/* Protectable trait */
 
 	protected function check_tca_enabled() {
-		return $this->tca_settings->is_enabled_for_taxonomy( $this->taxonomy ) ?? false;
+		$is_enabled = $this->tca_settings->is_enabled_for_taxonomy( $this->taxonomy ) ?? false;
+		return $is_enabled;
 	}
 }

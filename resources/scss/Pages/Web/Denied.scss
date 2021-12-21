@@ -1,5 +1,6 @@
 .tokenly-access-denied {
 	min-height: 550px;
+	margin: auto;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -8,28 +9,41 @@
 		margin-top: 24px;
 	}
 	.rule-groups {
+		margin-top: 12px;
 		min-width: 300px;
+		max-width: 300px;
 		display: grid;
 		grid-auto-flow: row;
+		grid-row-gap: 14px;
 		.rule-group {
-			box-shadow: 12px 12px 8px 0px rgb(0 0 0 / 4%);
+			box-shadow: 0px 7px 8px 7px rgb(0 0 0 / 4%);
 			border-radius: 12px;
-			padding: 12px;
+			padding: 12px 24px;
+			hr {
+				margin: 4px !important;
+			}
 			.rules {
 				display: grid;
 				grid-auto-flow: row;
 				.rule {
 					display: flex;
 					justify-content: space-between;
-					.status {
-							&.passed {
-								color: #7cb342;
-							}
-							&.failed {
-								color: red;
-							}
+					align-items: center;
+					.attributes {
+						display: grid;
+						grid-auto-flow: row;
+						width: 100%;
+						.group-operator {
+							font-size: 0.75rem;
+							text-align: center;
+						}
 					}
 				}
+			}
+			.status {
+				font-weight: 500;
+				font-size: 0.875rem;
+				text-align: center;
 			}
 		}
 	}

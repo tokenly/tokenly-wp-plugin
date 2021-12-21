@@ -52,8 +52,8 @@ class MenuItemFilterMiddleware extends Middleware implements MenuItemFilterMiddl
 			$post = $this->post_service->show( array(
 				'id' => $post_id,
 			) );
-			$can_access = $post->can_access( $this->current_user );
-			if ( $can_access === false ) {
+			$verdict = $post->can_access( $this->current_user );
+			if ( $verdict->status === false ) {
 				unset( $items[ $key ] );
 			}
 		}

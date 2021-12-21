@@ -20,6 +20,7 @@ class PostAccessDeniedViewModel extends ViewModel implements PostAccessDeniedVie
 			$verdict = $data['verdict'];
 			$verdict = $verdict->to_array();
 			if ( isset( $verdict['reports'] ) ) {
+				$verdict['note'] = "Please, make sure you can pass the following requirements:";
 				$reports = $verdict['reports'];
 				$reports_formatted = array();
 				foreach ( $reports as $report ) {
