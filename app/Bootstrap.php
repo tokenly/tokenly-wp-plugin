@@ -45,6 +45,7 @@ final class Bootstrap {
 	protected function build_container() {
 		$builder = new \DI\ContainerBuilder();
 		$builder->addDefinitions( __DIR__ . './../config/phpdi.php' );
+		$builder->useAnnotations( true );
 		$container = $builder->build();
 		return $container;
 	}

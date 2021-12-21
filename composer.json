@@ -6,7 +6,8 @@
 		"tokenly/api-client": "dev-master",
 		"tokenly/tokenpass-client": "dev-main",
 		"php-di/php-di": "^6.3",
-		"twig/twig": "^3"
+		"twig/twig": "^3",
+		"doctrine/annotations": "^1.13"
 	},
 	"autoload": {
 		"psr-4": {

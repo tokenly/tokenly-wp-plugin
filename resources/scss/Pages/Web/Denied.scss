@@ -7,5 +7,31 @@
 	.back-button {
 		margin-top: 24px;
 	}
+	.rule-groups {
+		min-width: 300px;
+		display: grid;
+		grid-auto-flow: row;
+		.rule-group {
+			box-shadow: 12px 12px 8px 0px rgb(0 0 0 / 4%);
+			border-radius: 12px;
+			padding: 12px;
+			.rules {
+				display: grid;
+				grid-auto-flow: row;
+				.rule {
+					display: flex;
+					justify-content: space-between;
+					.status {
+							&.passed {
+								color: #7cb342;
+							}
+							&.failed {
+								color: red;
+							}
+					}
+				}
+			}
+		}
+	}
 }
 

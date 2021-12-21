@@ -3,6 +3,23 @@
 	<div class="tokenly-access-denied">
 		<h1>Access denied</h1>
 		<div>Reason: Token controlled access not passed</div>
+		<div class="rule-groups">
+			{% for key, rule_group in rule_groups %}
+				{% set counter = ( counter | default(0) ) + 1 %}
+				<div class="rule-group">
+					<span>{{counter}}</span>
+					<div class="rules">
+						{% for rule in rule_group %}
+							<div class="rule">
+								<div class="attributes" >{{ rule.asset }} {{ rule.op }} {{ rule.quantity }}</div>
+								<div class="status {{verdict.reports[key] | lower}}">{{ verdict.reports[key] }}</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
 		<a href="{{back_url}}" class="tokenly-component-button back-button">Return</a>
+
 	</div>
 {% endblock %}

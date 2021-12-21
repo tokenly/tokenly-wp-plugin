@@ -12,7 +12,6 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleCheckResultFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
@@ -20,7 +19,6 @@ use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
-
 
 class User extends Model implements UserInterface, CurrentUserInterface {
 	public $user;
@@ -31,7 +29,6 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	protected $oauth_user_service;
 	protected $user_meta_repository;
 	protected $tca_rule_check_result_factory;
-	protected $tca_access_verdict_factory;
 	protected $fillable = array(
 		'user',
 		'oauth_user',
@@ -45,14 +42,12 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		UserMetaRepositoryInterface $user_meta_repository,
 		UserRepositoryInterface $domain_repository,
 		TcaRuleCheckResultFactoryInterface $tca_rule_check_result_factory,
-		TcaAccessVerdictFactoryInterface $tca_access_verdict_factory,
 		array $data = array()
 	) {
 		$this->oauth_user_service = $oauth_user_service;
 		$this->user_meta_repository = $user_meta_repository;
 		$this->domain_repository = $domain_repository;
 		$this->tca_rule_check_result_factory = $tca_rule_check_result_factory;
-		$this->tca_access_verdict_factory = $tca_access_verdict_factory;
 		parent::__construct( $data );
 	}
 
@@ -123,24 +118,8 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 	public function check_token_access( TcaRuleCollectionInterface $rules ) {
 		$this->load( array( 'oauth_user' ) );
 		if ( $this->oauth_user instanceof OauthUserInterface ) {
-			$access_report = $this->oauth_user->check_token_access( $rules );
+			return $access_report = $this->oauth_user->check_token_access( $rules );
 		}
-		return $access_report;
-	}
-
-	/**
-	 * Loads the oauth_user relation
-	 * @param string[] $relations Further relations
-	 * @return OauthUserInterface
-	 */
-	protected function load_oauth_user( array $relations = array() ) {
-		$oauth_user = $this->oauth_user_service->show(
-			array(
-				'id'   => $this->ID,
-				'with' => $relations,
-			)
-		);
-		return $oauth_user;
 	}
 
 	/**
@@ -158,22 +137,33 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		if ( $this instanceof GuestUserInterface === true ) {
 			$status = false;
 			$need_test = false;
-			$note .= 'The user is not logged in.';
+			$note = 'The user is not logged in.';
 		}
 		$this->load( array( 'oauth_user' ) );
 		if ( $this->oauth_user instanceof OauthUserInterface === false ) {
 			$status = false;
 			$need_test = false;
-			$note .= 'The user is not connected.';
+			$note = 'The user is not connected.';
 		}
-		$verdict = $this->tca_access_verdict_factory->create( array(
-			'status'    => $status,
-			'note'      => $note,
-			'reports'   => null,
-		) );
 		return array(
 			'need_test' => $need_test,
-			'verdict'   => $verdict
+			'status'    => $status,
+			'note'      => $note,
 		);
+	}
+
+	/**
+	 * Loads the oauth_user relation
+	 * @param string[] $relations Further relations
+	 * @return OauthUserInterface
+	 */
+	protected function load_oauth_user( array $relations = array() ) {
+		$oauth_user = $this->oauth_user_service->show(
+			array(
+				'id'   => $this->ID,
+				'with' => $relations,
+			)
+		);
+		return $oauth_user;
 	}
 }

@@ -1,23 +1,15 @@
 <?php
 
-/**
- * WP_Post decorator
- */
-
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
+use Tokenly\Wp\Interfaces\Models\ProtectableInterface;
+use Tokenly\Wp\Traits\ProtectableTrait;
 
-use Tokenly\Wp\Interfaces\Collections\TcaAccessReportCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCheckResultCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
 use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
@@ -25,15 +17,17 @@ use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
-class Post extends Model implements PostInterface {
+/**
+ * WP_Post decorator
+ */
+class Post extends Model implements PostInterface, ProtectableInterface {
+	use ProtectableTrait;
+
 	public $tca_rules;
 	public $term;
 	protected $post = null;
 	protected $meta_repository;
 	protected $tca_settings;
-	protected $tca_access_verdict_factory;
-	protected $tca_rule_check_result_collection_factory;
-	protected $tca_rule_collection_factory;
 	protected $term_service;
 	protected $fillable = array(
 		'post',
@@ -43,19 +37,13 @@ class Post extends Model implements PostInterface {
 	public function __construct(
 		PostRepositoryInterface $domain_repository,
 		MetaRepositoryInterface $meta_repository,
-		TcaAccessVerdictFactoryInterface $tca_access_verdict_factory,
-		TcaRuleCheckResultCollectionFactoryInterface $tca_rule_check_result_collection_factory,
 		TcaSettingsInterface $tca_settings,
-		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
 		TermServiceInterface $term_service,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
 		$this->meta_repository = $meta_repository;
 		$this->tca_settings = $tca_settings;
-		$this->tca_access_verdict_factory = $tca_access_verdict_factory;
-		$this->tca_rule_check_result_collection_factory = $tca_rule_check_result_collection_factory;
-		$this->tca_rule_collection_factory = $tca_rule_collection_factory;
 		$this->term_service = $term_service;
 		parent::__construct( $data );
 	}
@@ -72,28 +60,14 @@ class Post extends Model implements PostInterface {
 		return $this->post->$key = $val;
 	}
 
+	/* Protectable trait */
+
 	/**
-	 * Main pipeline for post access check
-	 * @param int $post_id ID of the post to check
-	 * @param UserInterface $user User to check
+	 * Gets the TCA rules associated with the relations
 	 * @return array
 	 */
-	public function can_access_post( UserInterface $user ) {
-		$precheck = $user->get_tca_precheck_data();
-		$verdict = null;
-		if ( $precheck['need_test'] === true ) {
-			$verdict = $this->test_access( $user );
-		} else {
-			$verdict = $precheck['verdict'];
-		}
-		return $verdict;
-	}
-
-	public function get_all_tca_rules() {
+	protected function get_tca_rules_relation() {
 		$rules = array();
-		if ( isset( $this->tca_rules ) && $this->tca_rules instanceof TcaRuleCollectionInterface ) {
-			$rules[] = $this->tca_rules;
-		}
 		$this->load( array( 'term' ) );
 		if ( isset( $this->term ) && $this->term instanceof TermCollectionInterface ) {
 			$term_rules = $this->term->get_all_tca_rules();
@@ -101,89 +75,40 @@ class Post extends Model implements PostInterface {
 				$rules[] = $term_rules;
 			}
 		}
-		$rules_keyed = array();
-		foreach ( $rules as $rule ) {
-			$rules_keyed[ $rule->to_hash() ] = $rule;
-		}
-		return $rules_keyed;
+		return $rules;
 	}
 
 	/**
-	 * Checks if the specified user can access the post and its terms
-	 * @param UserInterface $user User to check
-	 * @return TcaAccessVerdictInterface
+	 * Checks if TCA is enabled for the post type
+	 * @return bool
 	 */
-	protected function test_access( UserInterface $user ) {
-		$status = false;
-		$reports = $this->tca_rule_check_result_collection_factory->create();
-		$term_verdict = $this->test_access_terms( $user );
-		$post_verdict = $this->test_access_post( $user );
-		if (
-			$term_verdict->status === false ||
-			$post_verdict->status === false
-		) {
-			$status = false;
+	protected function check_tca_enabled() {
+		return $this->tca_settings->is_enabled_for_post_type( $this->post_type ) ?? false;
+	}
+
+	/**
+	 * Checks if any relations are protected
+	 * @return bool
+	 */
+	protected function check_relations_protected() {
+		$terms_protected = false;
+		$this->load( array( 'term' ) );
+		if ( isset( $this->term ) && $this->term instanceof TermCollectionInterface ) {
+			$terms_protected = $this->term->is_protected();
+		}
+		if ( $terms_protected === true ) {
+			return true;
 		} else {
-			$status = true;
+			return false;
 		}
-		if (
-			$term_verdict instanceof TcaAccessVerdictInterface &&
-			isset( $term_verdict->reports ) &&
-			$term_verdict->reports instanceof TcaRuleCheckResultCollectionInterface
-		) {
-			$reports = $reports->merge( $term_verdict->reports );
-		}
-		if (
-			$post_verdict instanceof TcaAccessVerdictInterface &&
-			isset( $post_verdict->reports ) &&
-			$post_verdict->reports instanceof TcaRuleCheckResultCollectionInterface
-		) {
-			$reports = $reports->merge( $post_verdict->reports );
-		}
-		$verdict = $this->tca_access_verdict_factory->create( array(
-			'status'  => $status,
-			'reports' => $reports,
-		) );
-		$rules = $this->get_all_tca_rules();
-		return $verdict;
 	}
 
 	/**
-	 * Checks if the specified user can access the post
-	 * @param UserInterface $user User to check
-	 * @return TcaAccessVerdictInterface
-	 */
-	protected function test_access_post( UserInterface $user ) {
-		$need_test = true;
-		$status = false;
-		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $this->post_type );
-		if (
-			$tca_enabled === false ||
-			count( (array) $this->tca_rules ) == 0
-		) {
-			$status = true;
-			$need_test = false;
-		}
-		$reports = null;
-		if ( $need_test === true ) {
-			$result = $user->check_token_access( $this->tca_rules );
-			$status = $result->status;
-			$reports = $this->tca_rule_check_result_collection_factory->create( array( $result ) );
-		}
-		$verdict = $this->tca_access_verdict_factory->create( array(
-			'status'  => $status,
-			'reports' => $reports,
-		) );
-		return $verdict;
-	}
-
-	/**
-	 * Checks if the terms associated with the post can be
-	 * accessed by the specified user
+	 * Test if the specified user is allowed to access the relations
 	 * @param UserInterface $user User to test
 	 * @return TcaAccessVerdictInterface
 	 */
-	protected function test_access_terms( UserInterface $user ) {
+	protected function test_access_relations( UserInterface $user ) {
 		$this->load( array( 'term' ) );
 		$verdict = null;
 		if ( $this->term && $this->term instanceof TermCollectionInterface ) {
@@ -191,6 +116,8 @@ class Post extends Model implements PostInterface {
 		}
 		return $verdict;
 	}
+
+	/* Relations */
 
 	/**
 	 * Loads the term relation

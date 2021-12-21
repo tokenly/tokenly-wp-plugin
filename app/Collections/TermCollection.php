@@ -46,6 +46,18 @@ class TermCollection extends Collection implements TermCollectionInterface {
 		return $rules;
 	}
 
+	public function is_protected() {
+		$results = array();
+		foreach ( ( array ) $this as $term ) {
+			$results[] = $term->is_protected();
+		}
+		if ( in_array( true, $results ) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Tests if the specified user can pass all of the TCA rules
 	 * of the terms in the collection
