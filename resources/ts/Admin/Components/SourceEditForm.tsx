@@ -74,6 +74,9 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 						>
 							Save source
 						</Button>
+						{this.props.saving === true &&
+							<Spinner/>
+						}
 						<Button
 							isSecondary
 							disabled={ this.props.deleting }
@@ -83,6 +86,9 @@ export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFor
 						>
 							Delete source
 						</Button>
+						{this.props.deleting === true &&
+							<Spinner/>
+						}
 						<Button
 							isTertiary
 							disabled={ this.props.deleting }

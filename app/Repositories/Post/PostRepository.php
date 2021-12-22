@@ -92,7 +92,7 @@ class PostRepository implements PostRepositoryInterface {
 	 * @param array $params Update parameters
 	 * @return object
 	 */
-	public function update( $post, array $params = array() ) {
+	public function update( PostInterface $post, array $params = array() ) {
 		$params = $this->filter_meta_params( $params );
 		$this->meta_repository->update( $post->ID, $params );
 		return $post;
@@ -103,7 +103,7 @@ class PostRepository implements PostRepositoryInterface {
 	 * @param object $post Post to delete
 	 * @return void 
 	 */
-	public function destroy( $post ) {
+	public function destroy( PostInterface $post ) {
 		wp_delete_post( $post->ID );
 	}
 	

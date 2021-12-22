@@ -85,29 +85,6 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		$this->integration->can_connect();
 		$this->routes = $this->get_routes();
 		add_action( 'admin_menu', array( $this, 'register_routes' ), 9 );
-		add_action( 'admin_print_scripts', array( $this, 'add_redirects' ) );
-	}
-
-	/**
-	 * Redirects some admin menu pages
-	 * @return void
-	 */
-	public function add_redirects() {
-		$id = get_current_user_id();
-		echo "	
-			<script type='text/javascript'>
-				window.tokenpassRedirects = [
-					{
-						from: '{$this->namespace}-inventory',
-						to: '/{$this->namespace}/user/me',
-					},
-					{
-						from: '{$this->namespace}-dashboard',
-						to: '{$this->api_host}/dashboard',
-					},
-				];
-			</script>
-		"; 
 	}
 	
 	/**

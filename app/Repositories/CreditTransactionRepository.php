@@ -26,8 +26,9 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 	}
 
 	/**
-	 * Retrieves a collection of credit transactions
-	 * @return array
+	 * Gets a collection of credit transactions
+	 * @param array $params Search parameters
+	 * @return CreditTransactionCollectionInterface
 	 */
 	public function index( array $params = array() ) {
 		$history = null;

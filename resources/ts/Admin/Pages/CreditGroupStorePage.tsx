@@ -17,7 +17,7 @@ import {
 } from '@wordpress/components';
 
 interface CreditGroupStorePageData {
-	addresses: Array<any>;
+	client_id: string;
 }
 
 interface CreditGroupStorePageProps {
@@ -48,7 +48,13 @@ export default class CreditGroupStorePage extends Component<CreditGroupStorePage
 	}
 	
 	onSubmit( creditGroup: any ) {
+		this.setState( {
+			storingCreditGroup: true,
+		} );
 		this.creditGroupRepository.store( creditGroup ).then( ( result: any ) => {
+			this.setState( {
+				storingCreditGroup: false,
+			} );
 			this.return();
 		});
 	}
@@ -67,6 +73,7 @@ export default class CreditGroupStorePage extends Component<CreditGroupStorePage
 								onCancel={ this.return }
 								saving={ this.state.storingCreditGroup }
 								style={ { marginBottom: '12px' } }
+								client_id={ this.props.pageData.client_id }
 							/>
 						</PanelRow>
 					</PanelBody>

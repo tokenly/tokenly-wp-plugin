@@ -6,27 +6,37 @@
 
 namespace Tokenly\Wp\Collections;
 
+use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\AddressInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\AddressFactoryInterface;
-use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Factories\Collections\BalanceCollectionFactoryInterface;
+
+use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 
 class AddressCollection extends Collection implements AddressCollectionInterface {
 	protected $item_type = AddressInterface::class;
-	protected $balance_collection_factory;
+	protected $source_service;
 	
 	public function __construct(
-		BalanceCollectionFactoryInterface $balance_collection_factory,
+		SourceServiceInterface $source_service,
 		array $items
 	) {
-		$this->balance_collection_factory = $balance_collection_factory;
+		$this->source_service = $source_service;
 		parent::__construct( $items );
+	}
+
+	public function filter_registered() {
+		$sources = clone $this->source_service->index();
+		$sources = $sources->key_by_field( 'address_id' );
+		foreach ( ( array ) $this as $key => &$address ) {
+			if ( isset( $sources[ $address->address ] ) ) {
+				unset( $this[ $key ] );
+			}
+		}
 	}
 	
 	/**
 	 * Loads the balance relation
-	 * @param array $relations Further relations
+	 * @param string[] $relations Further relations
 	 * @return self
 	 */
 	protected function load_balance( array $relations ) {
@@ -34,14 +44,5 @@ class AddressCollection extends Collection implements AddressCollectionInterface
 			$address->balance = $address->balance->load( $relations );
 		}
 		return $this;
-	}
-	
-	public function get_combined_balance() {
-		$balances = array();
-		foreach ( ( array ) $this as $address ) {
-			$balances = array_merge( $balances, ( array ) $address->balance );
-		}
-		$balances = $this->balance_collection_factory->create( $balances );
-		return $balances;
 	}
 }

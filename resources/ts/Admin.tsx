@@ -95,6 +95,44 @@ class AdminApp extends App {
 		} as any;
 		return routes;
 	}
+
+	getRedirects() {
+		const redirects = [
+			{
+				from: 'tokenly-inventory',
+				to: '/tokenly/user/me',
+			},
+			{
+				from: 'tokenly-dashboard',
+				to: 'https://tokenpass.tokenly.com/dashboard',
+			},
+		];
+		return redirects;
+	}
+
+	getHighlights() {
+		const highlights = {
+			'tokenly-vendor': [
+				'balances-show',
+				'promise-show',
+				'promise-store',
+				'promise-edit',
+				'source-index',
+				'source-show',
+				'source-store',
+				'source-edit',
+			],
+			'tokenly-credit-group-index': [
+				'credit-group-index',
+				'credit-group-show',
+				'credit-group-store',
+				'credit-group-edit',
+				'credit-transaction-index',
+				'credit-transaction-store',
+			],
+		} as any;
+		return highlights;
+	}
 	
 	render( ViewComponent: any ) {
 		if ( !this.pageElement ) {
@@ -113,17 +151,16 @@ class AdminApp extends App {
 	}
 
 	registerRedirects() {
+		const redirects = this.getRedirects();
 		document.addEventListener( 'DOMContentLoaded', () => {
-			if ( window['tokenpassRedirects'] ) {
-				window['tokenpassRedirects'].forEach( ( redirect: Redirect ) => {
-					const element: any = document.querySelector( `[href='${redirect.from}']` );
-					if ( element ) {
-						element.href = redirect.to;
-						element.target = '_blank';
-					}
-				} );
-			}
-		})
+			redirects.forEach( ( redirect: Redirect ) => {
+				const element: any = document.querySelector( `[href='${redirect.from}']` );
+				if ( element ) {
+					element.href = redirect.to;
+					element.target = '_blank';
+				}
+			} );
+		} );
 	}
 	
 	highlightMenu() {
@@ -133,6 +170,18 @@ class AdminApp extends App {
 		}
 		adminMenu.classList.remove( 'wp-not-current-submenu' );
 		adminMenu.classList.add( 'wp-has-current-submenu', 'wp-menu-open' );
+		const highlights = this.getHighlights();
+		const view = this.view;
+		Object.keys( highlights ).forEach( key => {
+			const selector = `a[href='admin.php?page=${key}']`;
+			let menuItemElement = adminMenu.querySelector( selector );
+			if ( menuItemElement ) {
+				menuItemElement = menuItemElement.closest( 'li' );
+				if ( highlights[key].includes( view ) ) {
+					menuItemElement.classList.add( 'current' );
+				}
+			}
+		} );
 	}
 }
 

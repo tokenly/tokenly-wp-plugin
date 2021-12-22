@@ -1,26 +1,23 @@
 <?php
 
-/**
- * WP_Post decorator
- */
-
 namespace Tokenly\Wp\Models;
 
-use Tokenly\Wp\Models\Model;
+use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 
-use Tokenly\Wp\Interfaces\Modles\UserInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
-class PromiseMeta extends Model implements PromiseMetaInterface {
+class PromiseMeta extends Post implements PromiseMetaInterface {
 	public $promise_id;
 	public $source_user_id;
 	public $source_user;
 	public $destination_user_id;
 	public $destination_user;
-	public $post;
 	protected $user_service;
 	protected $fillable = array(
 		'post',
@@ -33,25 +30,22 @@ class PromiseMeta extends Model implements PromiseMetaInterface {
 	);
 
 	public function __construct(
+		//Parent dependencies
+		TcaSettingsInterface $tca_settings,
+		TermServiceInterface $term_service,
+		//Parent dependencides - end
 		UserServiceInterface $user_service,
 		PromiseMetaRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
 		$this->user_service = $user_service;
 		$this->domain_repository = $domain_repository;
-		parent::__construct( $data );
-	}
-
-	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->post, $method ), $args );
-	}
-
-	public function __get( $key ) {
-		return $this->post->$key;
-	}
-
-	public function __set( $key, $val ) {
-		return $this->post->$key = $val;
+		parent::__construct(
+			$domain_repository,
+			$tca_settings,
+			$term_service,
+			$data
+		);
 	}
 
 	/**

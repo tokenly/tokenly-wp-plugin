@@ -62,28 +62,29 @@ class DomainService extends Service implements DomainServiceInterface {
 	}
 
 	/**
-	 * Checks if the called method has an underscore version
-	 * if it does attempts to retrieve a memoized instance and load relations
-	 * @param string $name Method name
+	 * Searches for a cached instance for the specified method, if none
+	 * found calls the method.
+	 * @param string $method Method name
 	 * @param array $params Method arguments
 	 * @return object
 	 */
-	public function __call( string $name, array $arguments ) {
-		if ( !method_exists( $this, "_{$name}" ) ) {
-			return false;
+	protected function handle_method( string $method, array $arguments ) {
+		$method_cacheable = "{$method}_cacheable";
+		if ( !method_exists( $this, $method_cacheable ) ) {
+			throw new \Exception( "Cacheable method not found!" );
 		}
-		$instance = $this->show_memoize( $name, $arguments );
+		$instance = $this->show_memoize( $method, $arguments );
 		if ( $instance ) {
 			return $instance;
 		}
-		$instance = $this->{"_{$name}"}( ...$arguments );
+		$instance = $this->{$method_cacheable}( ...$arguments );
 		if ( !$instance ) {
 			return false;
 		}
 		if ( is_object( $instance ) && isset( $arguments[0] ) && isset( $arguments[0]['with'] ) ) {
 			$instance->load( $arguments[0]['with'] );
 		}
-		$this->store_memoize( $name, $arguments, $instance );
+		$this->store_memoize( $method, $arguments, $instance );
 		return $instance;
 	}
 }

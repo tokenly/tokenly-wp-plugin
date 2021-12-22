@@ -33,30 +33,25 @@ class UserService extends DomainService implements UserServiceInterface {
 	}
 
 	/**
-	 * Retrieves a collection of users
+	 * Gets a collection of users
 	 * @param array $params Search parameters
 	 * @return UserCollectionInterface
 	 */
-	protected function _index( array $params = array() ) {
-		$users = $this->user_repository->index( $params );
-		return $users;
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
-	 * Retrieves a single user
-	 * @param array $params Search params
+	 * Gets a single user
+	 * @param array $params Search parameters
 	 * @return UserInterface
 	 */
-	protected function _show( array $params = array() ) {
-		if ( isset( $params['id'] ) && $params['id'] == 'me' ) {
-			$params['id'] = get_current_user_id();
-		}
-		$user = $this->user_repository->show( $params );
-		return $user;
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
-	 * Generates a new WordPress user using OAuth user data
+	 * Makes a new WordPress user using OAuth user data
 	 * @param OauthUserInterface $oauth_user Reference user
 	 * @return UserInterface New user
 	 */
@@ -67,6 +62,33 @@ class UserService extends DomainService implements UserServiceInterface {
 		$user = $this->user_repository->store( $username, $password, $email );
 		return $user;
 	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return UserCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ) {
+		$users = $this->user_repository->index( $params );
+		return $users;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return UserInterface
+	 */
+	protected function show_cacheable( array $params = array() ) {
+		if ( isset( $params['id'] ) && $params['id'] == 'me' ) {
+			$params['id'] = get_current_user_id();
+		}
+		$user = $this->user_repository->show( $params );
+		return $user;
+	}
+
+
 
 	/**
 	 * Adds an inventory link to WordPress admin user list

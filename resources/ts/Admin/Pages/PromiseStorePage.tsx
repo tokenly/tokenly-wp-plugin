@@ -45,7 +45,6 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	constructor( props: PromiseStorePageProps ) {
 		super( props );
 		this.onSubmit = this.onSubmit.bind( this );
-		this.onCancel = this.onCancel.bind( this );
 	}
 	
 	return() {
@@ -53,7 +52,13 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 
 	onSubmit( params: PromiseStoreParams ) {
+		this.setState( {
+			storingPromise: true,
+		} );
 		this.promiseRepository.store( params ).then( result => {
+			this.setState( {
+				storingPromise: false,
+			} );
 			this.return();
 		});
 	}

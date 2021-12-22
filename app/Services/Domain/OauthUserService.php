@@ -27,7 +27,17 @@ class OauthUserService extends DomainService implements OauthUserServiceInterfac
 	 * @param array $params Search parameters
 	 * @return OauthUserInterface 
 	 */
-	protected function _show( array $params = array() ) {
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return OauthUserInterface 
+	 */
+	protected function show_cacheable( array $params = array() ) {
 		$oauth_token;
 		if ( isset( $params['id'] ) ) {
 			$user_id = $params['id'];

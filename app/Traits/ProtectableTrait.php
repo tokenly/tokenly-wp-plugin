@@ -14,15 +14,20 @@ use Tokenly\Wp\Interfaces\Models\UserInterface;
  */
 trait ProtectableTrait {
 	/**
-     * @Inject
-     * @var TcaAccessVerdictFactoryInterface
-     */
-    private $tca_access_verdict_factory;
+	 * Associated TCA rules
+	 * @var TcaRuleCollectionInterface
+	 */
+	public $tca_rules;
 	/**
-     * @Inject
-     * @var TcaRuleCheckResultCollectionFactoryInterface
-     */
-    private $tca_rule_check_result_collection_factory;
+	 * @Inject
+	 * @var TcaAccessVerdictFactoryInterface
+	 */
+	private $tca_access_verdict_factory;
+	/**
+	 * @Inject
+	 * @var TcaRuleCheckResultCollectionFactoryInterface
+	 */
+	private $tca_rule_check_result_collection_factory;
 
 	/**
 	 * Begins the TCA check procedure

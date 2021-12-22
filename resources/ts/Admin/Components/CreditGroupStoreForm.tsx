@@ -11,6 +11,7 @@ import {
 } from '@wordpress/components';
 
 interface CreditGroupStoreFormProps {
+	client_id?: string;
 	saving: boolean;
 	onSubmit: any;
 	onCancel: any;
@@ -25,13 +26,16 @@ interface CreditGroupStoreFormState {
 
 export class CreditGroupStoreForm extends Component<CreditGroupStoreFormProps, CreditGroupStoreFormState> {
 	state: CreditGroupStoreFormState = {
-		name: null,
+		name: 'New credit group',
 		appWhitelist: null,
 	};
 	
 	constructor( props: CreditGroupStoreFormProps ) {
 		super( props );
 		this.onSubmit = this.onSubmit.bind( this );
+		if ( this.props.client_id ) {
+			this.state.appWhitelist = this.props.client_id;
+		}
 	}
 	
 	onSubmit() {
@@ -75,7 +79,7 @@ export class CreditGroupStoreForm extends Component<CreditGroupStoreFormProps, C
 					>
 						<Button
 							isPrimary 
-							disabled={ this.state.name === null }
+							disabled={ this.state.name === null || this.props.saving }
 							onClick={ () => {
 								this.onSubmit();
 							}}
@@ -95,9 +99,6 @@ export class CreditGroupStoreForm extends Component<CreditGroupStoreFormProps, C
 						>
 							Cancel
 						</Button>
-						{this.props.saving === true &&
-							<Spinner/>
-						}
 					</Flex>
 				</div>
 			</form>

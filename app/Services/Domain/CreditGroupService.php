@@ -19,32 +19,52 @@ class CreditGroupService extends DomainService implements CreditGroupServiceInte
 	}
 
 	/**
-	 * Retrieves a collection of credit groups
+	 * Gets a collection of credit groups
 	 * @param array $params Search parameters
 	 * @return CreditGroupCollectionInterface Credit groups found
 	 */
-	protected function _index( array $params = array() ) {
-		$credit_groups = $this->credit_group_repository->index();
-		return $credit_groups;
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
-	 * Retrieves a single credit group
+	 * Gets a single credit group
 	 * @param array $params Search parameters
 	 * @return CreditGroupInterface Credit group found
 	 */
-	protected function _show( array $params = array() ) {
-		$credit_group = $this->credit_group_repository->show( $params );
-		return $credit_group;
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
-	
+
 	/**
-	 * Stores a new credit group
+	 * Makes a new credit group
 	 * @param array $params New credit group parameters
 	 * @return CreditGroupInterface
 	 */
 	public function store( array $params = array() ) {
 		$credit_group = $this->credit_group_repository->store( $params );
+		return $credit_group;
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return CreditGroupCollectionInterface Credit groups found
+	 */
+	protected function index_cacheable( array $params = array() ) {
+		$credit_groups = $this->credit_group_repository->index();
+		return $credit_groups;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return CreditGroupInterface Credit group found
+	 */
+	protected function show_cacheable( array $params = array() ) {
+		$credit_group = $this->credit_group_repository->show( $params );
 		return $credit_group;
 	}
 }

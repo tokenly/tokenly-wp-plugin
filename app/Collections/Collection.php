@@ -40,9 +40,10 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * @return array
 	 */
 	public function to_array() {
-		$array = array_map( function( $item ) {
-			return $item->to_array();
-		}, ( array ) $this );
+		$array = array();
+		foreach ( ( array ) $this as $item ) {
+			$array[] = $item->to_array();
+		}
 		return $array;
 	}
 

@@ -24,6 +24,7 @@ class PromiseShowViewModel extends ViewModel implements PromiseShowViewModelInte
 		$promise = $this->promise_service->show( array(
 			'promise_id' => $promise_id,
 			'with'       => array(
+				'source.address',
 				'promise_meta.source_user',
 				'promise_meta.destination_user'
 			),
@@ -32,13 +33,8 @@ class PromiseShowViewModel extends ViewModel implements PromiseShowViewModelInte
 			return false;
 		}
 		$promise = $promise->to_array();
-		$sources = $this->source_service->index( array(
-			'with' => array( 'address' ),
-		) );
-		$sources = $sources->to_array();
 		return array(
 			'promise' => $promise,
-			'sources' => $sources,
 		);
 	}
 }

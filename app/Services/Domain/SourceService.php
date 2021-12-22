@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
@@ -21,22 +22,21 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	}
 
 	/**
-	 * Gets the list of registered source addresses
-	 * @return array
+	 * Gets a collection of sources
+	 * @param array $params Search parameters
+	 * @return SourceCollectionInterface
 	 */
-	protected function _index( array $params = array() ) {	
-		$sources = $this->source_repository->index();
-		return $sources;
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
-	 * Gets the source data by address
-	 * @param string $address Source address
+	 * Gets a single source
+	 * @param string $params Search parameters
 	 * @return SourceInterface
 	 */
-	protected function _show( array $params = array() ) {
-		$source = $this->source_repository->show( $params );
-		return $source;
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 	
 	/**
@@ -64,6 +64,28 @@ class SourceService extends DomainService implements SourceServiceInterface {
 			'proof'   => $proof,
 			'assets'  => $assets,
 		) );
+		return $source;
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return SourceCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ) {	
+		$sources = $this->source_repository->index( $params );
+		return $sources;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param string $params Search parameters
+	 * @return SourceInterface
+	 */
+	protected function show_cacheable( array $params = array() ) {
+		$source = $this->source_repository->show( $params );
 		return $source;
 	}
 

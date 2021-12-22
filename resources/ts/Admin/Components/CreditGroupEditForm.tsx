@@ -79,6 +79,9 @@ export class CreditGroupEditForm extends Component<CreditGroupEditFormProps, Cre
 						>
 							Save credit group
 						</Button>
+						{this.props.saving === true &&
+							<Spinner/>
+						}
 						<Button
 							isTertiary
 							onClick={ () => {

@@ -92,7 +92,12 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 						<PanelRow>
 							<Flex style={ { width: '100%', alignItems: 'center' } }>
 								<div style={ { flex: 1 } }>
-									<PromiseSourceInfo promise={ this.props.pageData.promise } sources={ this.props.pageData.sources } />
+									<div>
+										<span>Source: </span>
+										<a href={`/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.pageData.promise?.source_id}`}>
+											<strong>{this.props.pageData.promise?.source?.address.label}</strong>
+										</a>
+									</div>
 									<PromiseParticipants promise={ this.props.pageData.promise } />
 									{ listItems }
 								</div>

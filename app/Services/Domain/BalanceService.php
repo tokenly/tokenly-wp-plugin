@@ -20,11 +20,21 @@ class BalanceService extends DomainService implements BalanceServiceInterface {
 	}
 
 	/**
-	 * Retrieves balances associated with the specified oauth token
+	 * Gets a collection of addresses
 	 * @param array $params Search parameters
 	 * @return BalanceCollectionInterface
 	 */
-	protected function _index( array $params = array() ) {
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return BalanceCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ) {
 		if ( !isset( $params['oauth_token'] ) ) {
 			return false;
 		}

@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\PromiseRepositoryInterface;
 
 class Promise extends Model implements PromiseInterface {
@@ -29,6 +30,7 @@ class Promise extends Model implements PromiseInterface {
 	public $promise_meta;
 	protected $promise_meta_service;
 	protected $promise_repository;
+	protected $source_service;
 	protected $fillable = array(
 		'source',
 		'source_id',
@@ -50,14 +52,14 @@ class Promise extends Model implements PromiseInterface {
 	);
 
 	public function __construct(
-		PromiseServiceInterface $domain_service,
 		PromiseMetaServiceInterface $promise_meta_service,
 		PromiseRepositoryInterface $promise_repository,
+		SourceServiceInterface $source_service,
 		array $data = array()
 	) {
-		$this->domain_service = $domain_service;
+		$this->domain_repository = $promise_repository;
 		$this->promise_meta_service = $promise_meta_service;
-		$this->promise_repository = $promise_repository;
+		$this->source_service = $source_service;
 		parent::__construct( $data );
 	}
 
@@ -75,15 +77,14 @@ class Promise extends Model implements PromiseInterface {
 	}
 
 	/**
-	 * Destroys the existing promise
-	 * @param integer $promise_id Tokenpass promise index
+	 * Destroys the promise
 	 * @return void
 	 */
 	public function destroy() {
-		if ( isset( $this->promise_meta ) ) {
+		if ( isset( $this->promise_meta ) && $this->promise_meta instanceof PromiseMetaInterface ) {
 			$this->promise_meta->destroy();	
 		}
-		$this->promise_repository->destroy( $this );
+		parent::destroy();
 	}
 
 	/**
@@ -97,5 +98,18 @@ class Promise extends Model implements PromiseInterface {
 			'promise_ids' => array( $this->promise_id ), 
 		) );
 		return $promise_meta;
+	}
+
+	/**
+	 * Loads the source relation
+	 * @param string[] $relations Further relations
+	 * @return SourceInterface
+	 */
+	protected function load_source( array $relations ) {
+		$source = $this->source_service->show( array(
+			'address' => $this->source_id,
+			'with'    => $relations,
+		) );
+		return $source;
 	}
 }

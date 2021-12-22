@@ -19,11 +19,21 @@ class CreditTransactionService extends DomainService implements CreditTransactio
 	}
 
 	/**
-	 * Retrieves a collection of credit transactions
+	 * Gets a collection of credit transactions
 	 * @param array $params Search parameters
 	 * @return CreditTransactionCollectionInterface Credit transactions found
 	 */
-	protected function _index( array $params = array() ) {
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return CreditTransactionCollectionInterface Credit transactions found
+	 */
+	protected function index_cacheable( array $params = array() ) {
 		$credit_transactions = $this->credit_transaction_repository->index( $params );
 		return $credit_transactions;
 	}

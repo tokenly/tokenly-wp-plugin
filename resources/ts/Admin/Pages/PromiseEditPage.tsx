@@ -108,16 +108,14 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<div>
-								<PromiseEditForm
-									onSave={ this.onSave }
-									onDelete={ this.onDelete }
-									onCancel={ this.onCancel }
-									saving={this.state.saving}
-									deleting={this.state.deleting}
-									promise={this.props.pageData.promise}
-								/>
-							</div>
+							<PromiseEditForm
+								onSave={ this.onSave }
+								onDelete={ this.onDelete }
+								onCancel={ this.onCancel }
+								saving={this.state.saving}
+								deleting={this.state.deleting}
+								promise={this.props.pageData.promise}
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

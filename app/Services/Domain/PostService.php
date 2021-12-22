@@ -19,15 +19,14 @@ class PostService extends DomainService implements PostServiceInterface {
 	) {
 		$this->post_repository = $post_repository;
 	}
-	
+
 	/**
 	 * Queries all the posts matching the params
 	 * @param array $params Search params
 	 * @return PostCollectionInterface
 	 */
-	protected function _index( array $params = array() ) {
-		$posts = $this->post_repository->index( $params );
-		return $posts;
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
@@ -35,11 +34,10 @@ class PostService extends DomainService implements PostServiceInterface {
 	 * @param array $params Post search params 
 	 * @return array
 	 */
-	protected function _show( array $params = array() ) {
-		$post = $this->post_repository->show( $params );
-		return $post;
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
-	
+
 	/**
 	 * Decorates a single post
 	 * @param \WP_Post $post Post to decorate
@@ -58,6 +56,28 @@ class PostService extends DomainService implements PostServiceInterface {
 	public function complete_collection( array $posts ) {
 		$posts = $this->post_repository->complete_collection( $posts );
 		return $posts;
+	}
+	
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search params
+	 * @return PostCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ) {
+		$posts = $this->post_repository->index( $params );
+		return $posts;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Post search params 
+	 * @return PostInterface
+	 */
+	protected function show_cacheable( array $params = array() ) {
+		$post = $this->post_repository->show( $params );
+		return $post;
 	}
 }
 

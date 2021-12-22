@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { SourceStoreParams } from '../../Interfaces';
 
 import { 
 	Button,
 	Spinner,
-	TextControl,
 	SelectControl,
 	Flex,
 	TextareaControl,
@@ -97,25 +95,38 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 		return (
 			<form style={ { width: '100%', maxWidth: "400px" } }>
 				<div>
-					<SelectControl
-						label="Address"
-						value={ this.state.address }
-						style={{width: '100%'}}
-						options={ this.state.addressOptions }
-						help=" Blockchain wallet address"
-						onChange={ ( value: any ) => {
-							this.setState( { address: value } );
-							this.props.onChange( this.props.addresses[value] );
-						} }
-					/>
-					{ this.state.address != null &&
-						<div>
-							<div style={{margin: '10px 0'}}>
+					{ this.props.addresses.length > 0 
+					?	<Flex
+							//@ts-ignore
+							direction="column"
+						>
+							<SelectControl
+								label="Address"
+								value={ this.state.address }
+								style={{width: '100%'}}
+								options={ this.state.addressOptions }
+								help=" Blockchain wallet address"
+								onChange={ ( value: any ) => {
+									this.setState( { address: value } );
+									this.props.onChange( this.props.addresses[value] );
+								} }
+							/>
+							<Flex
+								//@ts-ignore
+								direction="column"
+								gap={0.5}
+							>
 								<div>Address info:</div>
-								<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
-								<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
-								<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.getCurrentAddress() }` } >View balances</a></div>
-							</div>
+								<Flex
+									//@ts-ignore
+									direction="column"
+									gap={0}
+								>
+									<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
+									<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
+									<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.getCurrentAddress() }` } >View balances</a></div>
+								</Flex>
+							</Flex>
 							<TextareaControl
 								label="Whitelisted assets"
 								help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
@@ -124,8 +135,10 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 									this.setState( { assets: value } );
 								} }
 							/>
-
-						</div>
+						</Flex>
+					:	<Flex>
+							<span style={{opacity: 0.8}}>No addresses are available for registration.</span>
+						</Flex>
 					}
 					<Flex
 						style={ { marginTop: '12px' } }

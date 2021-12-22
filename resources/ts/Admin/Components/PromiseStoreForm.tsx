@@ -155,11 +155,11 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 
 	render() {
 		return (
-			<form style={ { width: '100%', maxWidth: '320px' } }>
+			<form style={ { width: '100%' } }>
 				<Flex
 					//@ts-ignore
 					direction="column"
-					style={ { width: '100%' } }
+					style={ { maxWidth: '320px' } }
 				>
 					<SelectControl
 						label="Source"
@@ -272,18 +272,17 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						</div>
 					}
 				</Flex>
-				<Flex justify="flex-start">
+				<Flex justify="flex-start" align="center" style={ { marginTop: '12px' } }>
 					<Button
 						isPrimary
 						disabled={ this.props.saving }
 						onClick={ () => {
 							this.onSubmit();
-						}}
-						style={ { marginTop: '12px' } }
+						} }
 					>
 						Create promise
 					</Button>
-					{this.props.saving === true &&
+					{ this.props.saving === true &&
 						<Spinner/>
 					}
 					<Button
@@ -292,7 +291,6 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						onClick={ () => {
 							this.onCancel();
 						}}
-						style={ { marginTop: '12px' } }
 					>
 						Cancel
 					</Button>

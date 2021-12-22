@@ -68,6 +68,18 @@ class TermRepository implements TermRepositoryInterface {
 	}
 
 	/**
+	 * Updates the specific term
+	 * @param TermInterface $term Target term
+	 * @param array $params New data
+	 * @return void
+	 */
+	public function update( TermInterface $term, array $params = array() ) {
+		$params = $this->filter_meta_params( $params );
+		$this->term_meta_repository->update( $term->term_id, $params );
+		return $term;
+	}
+
+	/**
 	 * Gets the query arguments for the Show and Index methods
 	 * @param array $params Search parameters
 	 * @return array
@@ -114,18 +126,6 @@ class TermRepository implements TermRepositoryInterface {
 		$query = new \WP_Term_Query( $args );
 		$terms = $query->terms;
 		return $terms;
-	}
-
-	/**
-	 * Updates the specific term
-	 * @param TermInterface $term Target term
-	 * @param array $params New data
-	 * @return void
-	 */
-	public function update( TermInterface $term, array $params = array() ) {
-		$params = $this->filter_meta_params( $params );
-		$this->term_meta_repository->update( $term->term_id, $params );
-		return $term;
 	}
 
 	/**

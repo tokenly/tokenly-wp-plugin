@@ -46,9 +46,9 @@ export default class CreditGroupEditPage extends Component<CreditGroupEditPagePr
 	}
 
 	onSave( creditGroup: any ) {
-		this.setState( { saving: true } );
 		let updateParams = Object.assign( {}, creditGroup );
 		updateParams.uuid = this.props.pageData.credit_group.uuid;
+		this.setState( { saving: true } );
 		this.creditGroupRepository.update( updateParams ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();

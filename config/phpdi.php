@@ -124,6 +124,7 @@ use Tokenly\Wp\Presentation\Views\Admin\ConnectionViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\CreditGroupEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\CreditGroupIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\CreditGroupShowViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\CreditGroupStoreViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\CreditTransactionIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\CreditTransactionStoreViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\DashboardViewModel;
@@ -310,6 +311,7 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\ConnectionViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditGroupStoreViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditTransactionIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\CreditTransactionStoreViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\DashboardViewModelInterface;
@@ -484,6 +486,7 @@ return array(
 	CreditGroupEditViewModelInterface::class         => \DI\autowire( CreditGroupEditViewModel::class ),
 	CreditGroupIndexViewModelInterface::class        => \DI\autowire( CreditGroupIndexViewModel::class ),
 	CreditGroupShowViewModelInterface::class         => \DI\autowire( CreditGroupShowViewModel::class ),
+	CreditGroupStoreViewModelInterface::class        => \DI\autowire( CreditGroupStoreViewModel::class ),
 	CreditTransactionIndexViewModelInterface::class  => \DI\autowire( CreditTransactionIndexViewModel::class ),
 	CreditTransactionStoreViewModelInterface::class  => \DI\autowire( CreditTransactionStoreViewModel::class ),
 	DashboardViewModelInterface::class               => \DI\autowire( DashboardViewModel::class ),

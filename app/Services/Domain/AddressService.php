@@ -28,7 +28,26 @@ class AddressService extends DomainService implements AddressServiceInterface {
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface
 	 */
-	protected function _index( array $params = array() ) {
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Gets a single address
+	 * @param array $params Search parameters
+	 * @return AddressInterface
+	 */
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return AddressCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ) {
 		if ( !isset( $params['username'] ) ) {
 			return;
 		}
@@ -36,7 +55,13 @@ class AddressService extends DomainService implements AddressServiceInterface {
 		return $address;
 	}
 
-	protected function _show( array $params = array() ) {
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return AddressInterface
+	 */
+	protected function show_cacheable( array $params = array() ) {
 		if ( !isset( $params['address'] ) ) {
 			return;
 		}

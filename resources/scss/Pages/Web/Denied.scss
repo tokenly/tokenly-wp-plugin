@@ -13,6 +13,7 @@
 		min-width: 300px;
 		max-width: 300px;
 		display: grid;
+		/* autoprefixer: ignore next */
 		grid-auto-flow: row;
 		grid-row-gap: 14px;
 		.rule-group {
@@ -24,6 +25,7 @@
 			}
 			.rules {
 				display: grid;
+				/* autoprefixer: ignore next */
 				grid-auto-flow: row;
 				.rule {
 					display: flex;
@@ -31,6 +33,7 @@
 					align-items: center;
 					.attributes {
 						display: grid;
+						/* autoprefixer: ignore next */
 						grid-auto-flow: row;
 						width: 100%;
 						.group-operator {

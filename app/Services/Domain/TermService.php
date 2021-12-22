@@ -4,6 +4,9 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
+
+use Tokenly\Wp\Interfaces\Models\TermInterface;
+use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 
 /**
@@ -19,21 +22,41 @@ class TermService extends DomainService implements TermServiceInterface {
 	}
 
 	/**
-	 * Searches for terms using the specified parameters
-	 * @param array $params Term search params 
-	 * @return array
+	 * Gets a collection of terms
+	 * @param array $params Search parameters 
+	 * @return TermCollectionInterface
 	 */
-	protected function _index( array $params = array() ) {
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Gets a single term
+	 * @param array $params Search parameters
+	 * @return TermInterface
+	 */
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters 
+	 * @return TermCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ) {
 		$term = $this->term_repository->index( $params );
 		return $term;
 	}
 
 	/**
-	 * Searches for term using the specified parameters
-	 * @param array $params Term search params 
-	 * @return array
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return TermInterface
 	 */
-	protected function _show( array $params = array() ) {
+	protected function show_cacheable( array $params = array() ) {
 		$term = $this->term_repository->show( $params );
 		return $term;
 	}

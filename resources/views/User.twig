@@ -1,10 +1,11 @@
 {% extends "Index.twig" %}
+{% from 'blocks/SectionBlock.twig' import section_block %}
 {% block content %}
 	<div class="tokenly-component spacer lg"></div>
-	{{ do_shortcode( "[tokenly_user_info]" ) | raw }}
+	{{ section_block( do_shortcode( "[tokenly_user_info]" ) ) }}
 	<div class="tokenly-component spacer lg"></div>
-	{{ do_shortcode( "[tokenly_token_inventory]" ) | raw }}
+	{{ section_block( do_shortcode( "[tokenly_token_inventory]" ) ) }}
 	<div class="tokenly-component spacer lg"></div>
-	{{ do_shortcode( "[tokenly_app_credit_inventory]" ) | raw }}
+	{{ section_block( do_shortcode( "[tokenly_app_credit_inventory]" ) ) }}
 	<div class="tokenly-component spacer lg"></div>
 {% endblock %}

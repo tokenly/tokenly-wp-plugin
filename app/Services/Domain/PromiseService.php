@@ -39,33 +39,27 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	}
 
 	/**
-	 * Fetches all currently promised transactions
+	 * Gets a collection of promises
 	 * @param array $params Search parameters
 	 * @return PromiseCollectionInterface Promises found
 	 */
-	protected function _index( array $params = array() ) {
-		$promises = $this->promise_repository->index();
-		return $promises;
+	public function index( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
-	 * Fetches the specific promised transaction
+	 * Gets a single promise
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return PromiseInterface Promise found
 	 */
-	protected function _show( array $params = array() ) {
-		if ( !isset( $params['promise_id'] ) ) {
-			return false;
-		}
-		$promise_id = $params['promise_id'];
-		$promise = $this->promise_repository->show( $promise_id );
-		return $promise;
+	public function show( array $params = array() ) {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
-	
+
 	/**
-	 * Creates a new promised transaction
-	 * @param array $params New promise properties
-	 * @return void
+	 * Makes a new promise
+	 * @param array $params New promise data
+	 * @return PromiseInterface
 	 */
 	public function store( array $params = array() ) {
 		if (
@@ -143,6 +137,32 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		}
 		$promise_meta = $this->promise_meta_service->store( $promise_meta_data );
 		$promise->associate_meta( $promise_meta );
+		return $promise;
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return PromiseCollectionInterface Promises found
+	 */
+	protected function index_cacheable( array $params = array() ) {
+		$promises = $this->promise_repository->index();
+		return $promises;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param integer $promise_id Tokenpass promise index
+	 * @return PromiseInterface Promise found
+	 */
+	protected function show_cacheable( array $params = array() ) {
+		if ( !isset( $params['promise_id'] ) ) {
+			return false;
+		}
+		$promise_id = $params['promise_id'];
+		$promise = $this->promise_repository->show( $promise_id );
 		return $promise;
 	}
 
