@@ -13,7 +13,8 @@ import {
 } from '@wordpress/components';
 
 interface BalancesShowPageData {
-	address: any;
+	balance: any;
+	entity: any;
 }
 
 interface BalancesShowPageProps {
@@ -34,7 +35,7 @@ export default class BalancesShowPage extends Component<BalancesShowPageProps, B
 	
 	render() {
 		return (
-			<Page title={'Address balances'}>
+			<Page title={'Token balances'}>
 				<div style={{marginBottom: '8px'}}>
 					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-source-index'>To source list</a>
 				</div>
@@ -43,12 +44,9 @@ export default class BalancesShowPage extends Component<BalancesShowPageProps, B
 						<PanelRow>
 							<div style={{width: '100%'}} >
 								<div style={{marginBottom: '12px'}}>
-									<span>Address: </span>
-									<strong>
-										{ this.props.pageData?.address?.address }
-									</strong>
+									Owner ({ this.props.pageData.entity.type }): <strong>{ this.props.pageData.entity.name }</strong>
 								</div>
-								<BalanceList balance={ this.props.pageData?.address?.balance ?? [] } />
+								<BalanceList balance={ this.props.pageData?.balance ?? [] } />
 							</div>
 						</PanelRow>
 					</PanelBody>

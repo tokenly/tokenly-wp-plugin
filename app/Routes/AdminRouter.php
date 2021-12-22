@@ -4,16 +4,17 @@ namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\BalancesControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditGroupControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\VendorControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\WhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\PromiseControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SourceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\BalanceControllerInterface as CreditBalanceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\GroupControllerInterface as CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\BalanceControllerInterface as TokenBalanceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\VendorControllerInterface as TokenVendorControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\SourceControllerInterface as TokenSourceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\WhitelistControllerInterface as TokenWhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
@@ -43,19 +44,20 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		string $namespace,
 		string $api_host,
 		AuthServiceInterface $auth_service,
-		BalancesControllerInterface $balances_controller,
-		DashboardControllerInterface $dashboard_controller,
+		ConnectionControllerInterface $connection_controller,
+		CreditBalanceControllerInterface $credit_balance_controller,
 		CreditGroupControllerInterface $credit_group_controller,
 		CreditTransactionControllerInterface $credit_transaction_controller,
-		VendorControllerInterface $vendor_controller,
-		WhitelistControllerInterface $whitelist_controller,
-		ConnectionControllerInterface $connection_controller,
-		SettingsControllerInterface $settings_controller,
-		PromiseControllerInterface $promise_controller,
-		SourceControllerInterface $source_controller,
-		IntegrationInterface $integration,
 		CurrentUserInterface $current_user,
-		Environment $twig
+		DashboardControllerInterface $dashboard_controller,
+		Environment $twig,
+		IntegrationInterface $integration,
+		SettingsControllerInterface $settings_controller,
+		TokenBalanceControllerInterface $token_balance_controller,
+		TokenPromiseControllerInterface $token_promise_controller,
+		TokenSourceControllerInterface $token_source_controller,
+		TokenWhitelistControllerInterface $token_whitelist_controller,
+		TokenVendorControllerInterface $token_vendor_controller
 	) {
 		$this->root_dir = $root_dir;
 		$this->api_host = $api_host;
@@ -64,16 +66,17 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		$this->current_user = $current_user;
 		$this->auth_service = $auth_service;
 		$this->controllers = array(
-			'dashboard'           => $dashboard_controller,
+			'connection'          => $connection_controller,
+			'credit-balance'      => $credit_balance_controller,
 			'credit-transaction'  => $credit_transaction_controller,
 			'credit-group'        => $credit_group_controller,
-			'vendor'              => $vendor_controller,
-			'whitelist'           => $whitelist_controller,
-			'connection'          => $connection_controller,
+			'dashboard'           => $dashboard_controller,
 			'settings'            => $settings_controller,
-			'promise'             => $promise_controller,
-			'source'              => $source_controller,
-			'balances'            => $balances_controller,
+			'token-vendor'        => $token_vendor_controller,
+			'token-whitelist'     => $token_whitelist_controller,
+			'token-promise'       => $token_promise_controller,
+			'token-source'        => $token_source_controller,
+			'token-balance'       => $token_balance_controller,
 		);
 		$this->twig = $twig;
 	}
@@ -143,18 +146,6 @@ class AdminRouter extends Router implements AdminRouterInterface {
 				'icon_url'   => 'data:image/svg+xml;base64,' . base64_encode( file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' ) ),
 				'position'   => 3,
 				'subroutes'   => array(
-					'dashboard' => array(
-						'page_title' => 'Dashboard',
-						'menu_title' => 'Dashboard',
-						'menu_slug'  => 'dashboard',
-						'capability' => 'use_tokenpass',
-					),
-					'inventory' => array(
-						'page_title' => 'Inventory',
-						'menu_title' => 'Inventory',
-						'menu_slug'  => 'inventory',
-						'capability' => 'use_tokenpass',
-					),
 					'connection' => array(
 						'page_title' => 'Connection Status',
 						'menu_title' => 'Connection',
@@ -162,64 +153,32 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'callable'   => array( $this->controllers['connection'], 'show' ),
 						'capability' => 'read',
 					),
-					'vendor' => array(
-						'page_title' => 'Tokenly Vendor',
-						'menu_title' => 'Vendor',
-						'menu_slug'  => 'vendor',
-						'callable'   => array( $this->controllers['vendor'], 'show' ),
-						'capability' => 'manage_options',
-					),
-					'balances-show' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Show source balances',
-						'menu_title'  => 'Source balances',
-						'menu_slug'   => 'balances-show',
-						'callable'    => array( $this->controllers['balances'], 'show' ),
-						'capability'  => 'manage_options',
-					),
-					'promise-show' => array(
-						'parent_slug' => null,
-						'page_title'  => 'View token promise',
-						'menu_title'  => 'View promise',
-						'menu_slug'   => 'promise-show',
-						'callable'    => array( $this->controllers['promise'], 'show' ),
-						'capability'  => 'manage_options',
-					),
-					'promise-store' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Create token promise',
-						'menu_title'  => 'Create promise',
-						'menu_slug'   => 'promise-store',
-						'callable'    => array( $this->controllers['promise'], 'store' ),
-						'capability'  => 'manage_options',
-					),
-					'promise-edit' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Manage token promise',
-						'menu_title'  => 'Manage promise',
-						'menu_slug'   => 'promise-edit',
-						'callable'    => array( $this->controllers['promise'], 'edit' ),
+					'credit-balance-index' => array(
+						'page_title'  => 'Credit balance details',
+						'menu_title'  => 'Credit balance details',
+						'menu_slug'   => 'credit-balance-index',
+						'callable'    => array( $this->controllers['credit-balance'], 'index' ),
 						'capability'  => 'manage_options',
 					),
 					'credit-group-index' => array(
-						'page_title'  => 'App Credits',
-						'menu_title'  => 'App Credits',
+						'page_title'  => 'Credit group list',
+						'menu_title'  => 'Credit group list',
 						'menu_slug'   => 'credit-group-index',
 						'callable'    => array( $this->controllers['credit-group'], 'index' ),
 						'capability'  => 'manage_options',
 					),
 					'credit-group-store' => array(
 						'parent_slug' => null,
-						'page_title'  => 'Create credit group',
-						'menu_title'  => 'Create credit group',
+						'page_title'  => 'Credit group creator',
+						'menu_title'  => 'Credit group creator',
 						'menu_slug'   => 'credit-group-store',
 						'callable'    => array( $this->controllers['credit-group'], 'store' ),
 						'capability'  => 'manage_options',
 					),
 					'credit-group-edit' => array(
 						'parent_slug' => null,
-						'page_title'  => 'Manage credit group',
-						'menu_title'  => 'Manage credit group',
+						'page_title'  => 'Credit group editor',
+						'menu_title'  => 'Credit group editor',
 						'menu_slug'   => 'credit-group-edit',
 						'callable'    => array( $this->controllers['credit-group'], 'edit' ),
 						'capability'  => 'manage_options',
@@ -234,58 +193,25 @@ class AdminRouter extends Router implements AdminRouterInterface {
 					),
 					'credit-transaction-index' => array(
 						'parent_slug' => null,
-						'page_title'  => 'App Credits list',
-						'menu_title'  => 'App Credits list',
+						'page_title'  => 'Credit transaction list',
+						'menu_title'  => 'Credit transaction list',
 						'menu_slug'   => 'credit-transaction-index',
 						'callable'    => array( $this->controllers['credit-transaction'], 'index' ),
 						'capability'  => 'manage_options',
 					),
 					'credit-transaction-store' => array(
 						'parent_slug' => null,
-						'page_title'  => 'App Credits create transaction',
-						'menu_title'  => 'App Credits create transaction',
+						'page_title'  => 'Credit transaction creator',
+						'menu_title'  => 'Credit transaction creator',
 						'menu_slug'   => 'credit-transaction-store',
 						'callable'    => array( $this->controllers['credit-transaction'], 'store' ),
 						'capability'  => 'manage_options',
 					),
-					'source-index' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Manage source addresses',
-						'menu_title'  => 'Source',
-						'menu_slug'   => 'source-index',
-						'callable'    => array( $this->controllers['source'], 'index' ),
-						'capability'  => 'manage_options',
-					),
-					'source-show' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Show source address details',
-						'menu_title'  => 'Source details',
-						'menu_slug'   => 'source-show',
-						'callable'    => array( $this->controllers['source'], 'show' ),
-						'capability'  => 'manage_options',
-					),
-					'source-store' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Register source address',
-						'menu_title'  => 'Register source',
-						'menu_slug'   => 'source-store',
-						'callable'    => array( $this->controllers['source'], 'store' ),
-						'capability'  => 'manage_options',
-					),
-					'source-edit' => array(
-						'parent_slug' => null,
-						'page_title'  => 'Manage source address',
-						'menu_title'  => 'Manage source',
-						'menu_slug'   => 'source-edit',
-						'callable'    => array( $this->controllers['source'], 'edit' ),
-						'capability'  => 'manage_options',
-					),
-					'whitelist' => array(
-						'page_title' => 'Gallery Token Whitelist',
-						'menu_title' => 'Whitelist',
-						'menu_slug'  => 'whitelist',
-						'callable'   => array( $this->controllers['whitelist'], 'show' ),
-						'capability' => 'manage_options',
+					'dashboard' => array(
+						'page_title' => 'Dashboard',
+						'menu_title' => 'Dashboard',
+						'menu_slug'  => 'dashboard',
+						'capability' => 'use_tokenpass',
 					),
 					'settings' => array(
 						'page_title' => 'Settings',
@@ -293,6 +219,90 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'menu_slug'  => 'settings',
 						'callable'   => array( $this->controllers['settings'], 'show' ),
 						'capability' => 'manage_options',
+					),
+					'token-vendor' => array(
+						'page_title' => 'Token vendor',
+						'menu_title' => 'Vendor',
+						'menu_slug'  => 'token-vendor',
+						'callable'   => array( $this->controllers['token-vendor'], 'show' ),
+						'capability' => 'manage_options',
+					),
+					'token-balance-index' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token balance details',
+						'menu_title'  => 'Token balance details',
+						'menu_slug'   => 'token-balance-index',
+						'callable'    => array( $this->controllers['token-balance'], 'index' ),
+						'capability'  => 'manage_options',
+					),
+					'token-promise-show' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token promise details',
+						'menu_title'  => 'Token promise details',
+						'menu_slug'   => 'token-promise-show',
+						'callable'    => array( $this->controllers['token-promise'], 'show' ),
+						'capability'  => 'manage_options',
+					),
+					'token-promise-store' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Create token promise',
+						'menu_title'  => 'Create promise',
+						'menu_slug'   => 'token-promise-store',
+						'callable'    => array( $this->controllers['token-promise'], 'store' ),
+						'capability'  => 'manage_options',
+					),
+					'token-promise-edit' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token promise editor',
+						'menu_title'  => 'Token promise editor',
+						'menu_slug'   => 'token-promise-edit',
+						'callable'    => array( $this->controllers['token-promise'], 'edit' ),
+						'capability'  => 'manage_options',
+					),
+					'token-source-index' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token source list',
+						'menu_title'  => 'Token source list',
+						'menu_slug'   => 'token-source-index',
+						'callable'    => array( $this->controllers['token-source'], 'index' ),
+						'capability'  => 'manage_options',
+					),
+					'token-source-show' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token source details',
+						'menu_title'  => 'Token source details',
+						'menu_slug'   => 'token-source-show',
+						'callable'    => array( $this->controllers['token-source'], 'show' ),
+						'capability'  => 'manage_options',
+					),
+					'token-source-store' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token source creator',
+						'menu_title'  => 'Token source creator',
+						'menu_slug'   => 'token-source-store',
+						'callable'    => array( $this->controllers['token-source'], 'store' ),
+						'capability'  => 'manage_options',
+					),
+					'token-source-edit' => array(
+						'parent_slug' => null,
+						'page_title'  => 'Token source editor',
+						'menu_title'  => 'Token source editor',
+						'menu_slug'   => 'token-source-edit',
+						'callable'    => array( $this->controllers['token-source'], 'edit' ),
+						'capability'  => 'manage_options',
+					),
+					'token-whitelist' => array(
+						'page_title' => 'Token whitelist editor',
+						'menu_title' => 'Whitelist',
+						'menu_slug'  => 'token-whitelist-edit',
+						'callable'   => array( $this->controllers['token-whitelist'], 'edit' ),
+						'capability' => 'manage_options',
+					),
+					'inventory' => array(
+						'page_title' => 'Inventory',
+						'menu_title' => 'Inventory',
+						'menu_slug'  => 'inventory',
+						'capability' => 'use_tokenpass',
 					),
 				),
 			),

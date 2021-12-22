@@ -5,15 +5,15 @@ namespace Tokenly\Wp\Routes;
 use Tokenly\Wp\Routes\Router;
 use Tokenly\Wp\Interfaces\Routes\ApiRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\PromiseControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\CreditGroupControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\SourceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenTokenSourceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterface as IntegrationSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\Token\WhitelistControllerInterface as TokenWhitelistSettingsControllerInterface;
 
 /**
  * Manages routing for the REST API endpoints
@@ -25,30 +25,30 @@ class ApiRouter extends Router implements ApiRouterInterface {
 
 	public function __construct(
 		AuthControllerInterface $auth_controller,
-		PromiseControllerInterface $promise_controller,
 		CreditGroupControllerInterface $credit_group_controller,
 		CreditTransactionControllerInterface $credit_transaction_controller,
-		SourceControllerInterface $source_controller,
+		TokenPromiseControllerInterface $token_promise_controller,
+		TokenSourceControllerInterface $token_source_controller,
 		UserControllerInterface $user_controller,
-		IntegrationSettingsControllerInterface $settings_integration_controller,
-		TcaSettingsControllerInterface $settings_tca_controller,
-		OauthSettingsControllerInterface $settings_oauth_controller,
-		WhitelistSettingsControllerInterface $settings_whitelist_controller,
+		IntegrationSettingsControllerInterface $integration_settings_controller,
+		TcaSettingsControllerInterface $tca_settings_controller,
+		OauthSettingsControllerInterface $oauth_settings_controller,
+		TokenWhitelistSettingsControllerInterface $token_whitelist_settings_controller,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
 		$this->api_namespace = "{$this->namespace}/v1";
 		$this->controllers = array(
-			'auth'                   => $auth_controller,
-			'credit-group'           => $credit_group_controller,
-			'credit-transaction'     => $credit_transaction_controller,
-			'promise'                => $promise_controller,
-			'source'                 => $source_controller,
-			'user'                   => $user_controller,
-			'settings-integration'   => $settings_integration_controller,
-			'settings-tca'           => $settings_tca_controller,
-			'settings-oauth'         => $settings_oauth_controller,
-			'settings-whitelist'     => $settings_whitelist_controller,
+			'auth'                     => $auth_controller,
+			'credit-group'             => $credit_group_controller,
+			'credit-transaction'       => $credit_transaction_controller,
+			'token-promise'            => $token_promise_controller,
+			'token-source'             => $token_source_controller,
+			'user'                     => $user_controller,
+			'integration-settings'     => $integration_settings_controller,
+			'tca-settings'             => $tca_settings_controller,
+			'oauth-settings'           => $oauth_settings_controller,
+			'token-whitelist-settings' => $token_whitelist_settings_controller,
 		);
 	}
 
@@ -97,48 +97,88 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'promise-index' => array(
-				'path' => '/promise',
+			'token-promise-index' => array(
+				'path' => '/token/promise',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['promise'], 'index' ),
+					'callback'            => array( $this->controllers['token-promise'], 'index' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
 			),
-			'promise-store' => array(
-				'path' => '/promise',
+			'token-promise-store' => array(
+				'path' => '/token/promise',
 				'args' => array(
 					'methods'             => 'POST',
-					'callback'            => array( $this->controllers['promise'], 'store' ),
+					'callback'            => array( $this->controllers['token-promise'], 'store' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
 			),
-			'promise-update' => array(
-				'path' => '/promise/(?P<promise>[\d]+)',
+			'token-promise-update' => array(
+				'path' => '/token/promise/(?P<promise>[\d]+)',
 				'args' => array(
 					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['promise'], 'update' ),
+					'callback'            => array( $this->controllers['token-promise'], 'update' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
 			),
-			'promise-destroy' => array(
-				'path' => '/promise/(?P<promise>[\d]+)',
+			'token-promise-destroy' => array(
+				'path' => '/token/promise/(?P<promise>[\d]+)',
 				'args' => array(
 					'methods'             => 'DELETE',
-					'callback'            => array( $this->controllers['promise'], 'destroy' ),
+					'callback'            => array( $this->controllers['token-promise'], 'destroy' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'token-source-index' => array(
+				'path' => '/token/source',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['token-source'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'token-source-store' => array(
+				'path' => '/token/source',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['token-source'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'token-source-update' => array(
+				'path' => '/token/source/(?P<address>[a-zA-Z0-9-]+)',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['token-source'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'token-source-destroy' => array(
+				'path' => '/token/source/(?P<address>[a-zA-Z0-9-]+)',
+				'args' => array(
+					'methods'             => 'DELETE',
+					'callback'            => array( $this->controllers['token-source'], 'destroy' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
 			),
 			'credit-group-index' => array(
-				'path' => '/credit-group',
+				'path' => '/credit/group',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['credit-group'], 'index' ),
@@ -148,7 +188,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'credit-group-store' => array(
-				'path' => '/credit-group',
+				'path' => '/credit/group',
 				'args' => array(
 					'methods'             => 'POST',
 					'callback'            => array( $this->controllers['credit-group'], 'store' ),
@@ -158,7 +198,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'credit-group-update' => array(
-				'path' => '/credit-group',
+				'path' => '/credit/group',
 				'args' => array(
 					'methods'             => 'PUT',
 					'callback'            => array( $this->controllers['credit-group'], 'update' ),
@@ -168,7 +208,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'credit-transaction-index' => array(
-				'path' => '/credit-transaction',
+				'path' => '/credit/transaction',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['credit-transaction'], 'index' ),
@@ -178,50 +218,10 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'credit-transaction-store' => array(
-				'path' => '/credit-transaction',
+				'path' => '/credit/transaction',
 				'args' => array(
 					'methods'             => 'POST',
 					'callback'            => array( $this->controllers['credit-transaction'], 'store' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'source-index' => array(
-				'path' => '/source',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['source'], 'index' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'source-store' => array(
-				'path' => '/source',
-				'args' => array(
-					'methods'             => 'POST',
-					'callback'            => array( $this->controllers['source'], 'store' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'source-update' => array(
-				'path' => '/source/(?P<address>[a-zA-Z0-9-]+)',
-				'args' => array(
-					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['source'], 'update' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'source-destroy' => array(
-				'path' => '/source/(?P<address>[a-zA-Z0-9-]+)',
-				'args' => array(
-					'methods'             => 'DELETE',
-					'callback'            => array( $this->controllers['source'], 'destroy' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
@@ -261,7 +261,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'tca',
 			'integration',
 			'oauth',
-			'whitelist',
+			'token-whitelist',
 		);
 	}
 
@@ -274,21 +274,21 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		$routes = array();
 		foreach ( $sections as $section ) {
 			$routes = array_merge( $routes, array(
-				"settings-{$section}-show" => array(
+				"{$section}-settings-show" => array(
 					'path' => "/settings/{$section}",
 					'args' => array(
 						'methods'             => 'GET',
-						'callback'            => array( $this->controllers["settings-{$section}"], 'show' ),
+						'callback'            => array( $this->controllers["{$section}-settings"], 'show' ),
 						'permission_callback' => function () {
 							return current_user_can( 'manage_options' );
 						},
 					),
 				),
-				"settings-{$section}-update" => array(
+				"{$section}-settings-update" => array(
 					'path' => "/settings/{$section}",
 					'args' => array(
 						'methods'             => 'PUT',
-						'callback'            => array( $this->controllers["settings-{$section}"], 'update' ),
+						'callback'            => array( $this->controllers["{$section}-settings"], 'update' ),
 						'permission_callback' => function () {
 							return current_user_can( 'manage_options' );
 						},
