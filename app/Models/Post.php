@@ -7,14 +7,11 @@ use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\ProtectableInterface;
 use Tokenly\Wp\Traits\ProtectableTrait;
 
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
 use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
 /**
@@ -23,10 +20,8 @@ use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 class Post extends Model implements PostInterface, ProtectableInterface {
 	use ProtectableTrait;
 
-	public $tca_rules;
 	public $term;
 	protected $post = null;
-	protected $meta_repository;
 	protected $tca_settings;
 	protected $term_service;
 	protected $fillable = array(
@@ -36,13 +31,11 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 
 	public function __construct(
 		PostRepositoryInterface $domain_repository,
-		MetaRepositoryInterface $meta_repository,
 		TcaSettingsInterface $tca_settings,
 		TermServiceInterface $term_service,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
-		$this->meta_repository = $meta_repository;
 		$this->tca_settings = $tca_settings;
 		$this->term_service = $term_service;
 		parent::__construct( $data );
