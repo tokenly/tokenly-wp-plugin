@@ -20,7 +20,11 @@ class PromiseStoreViewModel extends ViewModel implements PromiseStoreViewModelIn
 		$sources = $this->source_service->index( array(
 			'with' => array( 'address' ),
 		) );
-		$sources = $sources->to_array();
+		if ( $sources ) {
+			$sources = clone $sources;
+			$sources->key_by_field( 'address_id' );
+			$sources = $sources->to_array();
+		}
 		return array(
 			'sources' => $sources,
 		);
