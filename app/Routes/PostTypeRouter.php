@@ -145,10 +145,10 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	}
 
 	protected function add_tca_routes( array $routes ) {
-		if ( !isset( $this->tca_settings->post_types ) ) {
-			return $routes;
+		$tca_post_types = array();
+		if ( isset( $this->tca_settings->post_types ) ) {
+			$tca_post_types = $this->tca_settings->post_types;
 		}
-		$tca_post_types = $this->tca_settings->post_types;
 		foreach ( $routes as $key => &$route ) {
 			$route['name'] = "{$this->namespace}_{$route['name']}";
 			$route['slug'] = "{$this->namespace}-{$route['slug']}";
