@@ -14,7 +14,7 @@ class Balance extends Model implements BalanceInterface {
 	public $quantity;
 	public $precision;
 	public $token_meta;
-	protected $token_meta_service;
+	protected $meta_service;
 	protected $fillable = array(
 		'asset',
 		'name',
@@ -23,20 +23,20 @@ class Balance extends Model implements BalanceInterface {
 	);
 
 	public function __construct(
-		TokenMetaServiceInterface $token_meta_service,
+		MetaServiceInterface $meta_service,
 		array $data = array()
 	) {
-		$this->token_meta_service = $token_meta_service;
+		$this->meta_service = $meta_service;
 		parent::__construct( $data );
 	}
 
 	/**
 	 * Loads the token_meta relation
 	 * @param string[] $relations Further relations
-	 * @return TokenMetaInterface
+	 * @return MetaInterface
 	 */
 	protected function load_token_meta( array $relations ) {
-		$token_meta = $this->token_meta_service->show( array(
+		$token_meta = $this->meta_service->show( array(
 			'assets' => array( $this->asset ),
 			'with'   => $relations,
 		) );

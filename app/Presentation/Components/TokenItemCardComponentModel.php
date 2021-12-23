@@ -4,13 +4,13 @@ namespace Tokenly\Wp\Presentation\Components;
 
 use Tokenly\Wp\Presentation\Components\ComponentModel;
 use Tokenly\Wp\Interfaces\Presentation\Components\TokenItemCardComponentModelInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 
 class TokenItemCardComponentModel extends ComponentModel implements TokenItemCardComponentModelInterface {	
 	protected $meta_repository;
 	
 	public function __construct(
-		MetaRepositoryInterface $meta_repository
+		PostMetaRepositoryInterface $meta_repository
 	) {
 		$this->meta_repository = $meta_repository;
 	}

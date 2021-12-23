@@ -9,7 +9,7 @@ use Tokenly\Wp\Traits\ProtectableTrait;
 
 use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 /**
@@ -29,7 +29,7 @@ class Term extends Model implements TermInterface, ProtectableInterface {
 
 	public function __construct(
 		TermRepositoryInterface $domain_repository,
-		MetaRepositoryInterface $meta_repository,
+		PostMetaRepositoryInterface $meta_repository,
 		TcaSettingsInterface $tca_settings,
 		array $data = array()
 	) {

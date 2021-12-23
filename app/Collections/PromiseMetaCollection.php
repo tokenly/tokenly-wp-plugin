@@ -9,7 +9,7 @@ namespace Tokenly\Wp\Collections;
 use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Repositories\General\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 
 class PromiseMetaCollection extends Collection implements PromiseMetaCollectionInterface {
 	protected $item_type = PromiseMetaInterface::class;
@@ -17,7 +17,7 @@ class PromiseMetaCollection extends Collection implements PromiseMetaCollectionI
 
 	public function __construct(
 		array $items,
-		MetaRepositoryInterface $meta_repository
+		PostMetaRepositoryInterface $meta_repository
 	) {
 		parent::__construct( $items );
 		$this->meta_repository = $meta_repository;
