@@ -52,7 +52,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 		flush_rewrite_rules();
 	}
 
-	protected function get_current_git_commit( string $branch = 'dev' ) {
+	protected function get_current_git_commit( string $branch = 'main' ) {
 		$path = "{$this->root_dir}/.git/refs/heads/{$branch}";
 		if ( !file_exists( $path ) ) {
 			return;
@@ -70,7 +70,6 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 		if ( $this->version == $persisted_version || !isset( $this->version ) || empty( $this->version ) ) {
 			return true;
 		}
-		error_log('refresh');
 		$this->refresh();
 		$this->option_repository->update( array(
 			'version' => $this->version,
