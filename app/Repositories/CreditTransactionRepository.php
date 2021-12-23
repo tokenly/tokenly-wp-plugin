@@ -30,20 +30,18 @@ class CreditTransactionRepository implements CreditTransactionRepositoryInterfac
 	 * @return array
 	 */
 	public function index( array $params = array() ) {
-		$history = null;
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
 			$history = $this->client->getAppCreditGroupHistory( $group_uuid );
-			foreach ( $history['transactions'] as &$transaction ) {
-				$transaction = $this->remap_fields( $transaction );
+			if ( $history && isset( $history['transactions'] ) && is_array( $history['transactions'] ) ) {
+				foreach ( $history['transactions'] as &$transaction ) {
+					$transaction = $this->remap_fields( $transaction );
+				}
+				$transactions = $history['transactions'];
+				$transactions = $this->credit_transaction_collection_factory->create( $transactions );
+				return $transactions;
 			}
 		}
-		if ( !$history ) {
-			return false;
-		}
-		$transactions = $history['transactions'];
-		$transactions = $this->credit_transaction_collection_factory->create( $transactions );
-		return $transactions;
 	}
 
 	/**

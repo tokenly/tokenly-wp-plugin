@@ -7,17 +7,21 @@ use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 
 /**
  * Manages the sources
  */
 class SourceService extends DomainService implements SourceServiceInterface {
 	protected $source_repository;
+	protected $integration_settings;
 
 	public function __construct(
-		SourceRepositoryInterface $source_repository
+		SourceRepositoryInterface $source_repository,
+		IntegrationSettingsInterface $integration_settings
 	) {
 		$this->source_repository = $source_repository;
+		$this->integration_settings = $integration_settings;
 	}
 
 	/**
@@ -58,6 +62,7 @@ class SourceService extends DomainService implements SourceServiceInterface {
 		if ( empty( $assets ) ) {
 			$assets = null;
 		}
+		error_log(d( $proof ));
 		$source = $this->source_repository->store( array(
 			'address' => $address,
 			'type'    => $type,
@@ -73,10 +78,7 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	 * @return string
 	 */
 	protected function make_proof( string $address ) {
-		if ( !isset( $this->settings->client_id ) ) {
-			return;
-		}
-		$hash = hash( 'sha256', $this->settings_client_id );
+		$hash = hash( 'sha256', $this->integration_settings->client_id );
 		$proof =  "{$address}_{$hash}";
 		return $proof;
 	}

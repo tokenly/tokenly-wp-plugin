@@ -58,6 +58,7 @@ class TermRepository implements TermRepositoryInterface {
 		$params['number'] = 1;
 		$args = $this->get_query_args( $params );
 		$terms = $this->query( $args );
+		error_log( d($params) );
 		if ( !isset( $terms[0] ) ) {
 			return;
 		}
@@ -75,6 +76,7 @@ class TermRepository implements TermRepositoryInterface {
 	protected function get_query_args( array $params = array() ) {
 		$args = array(
 			'meta_query' => array(),
+			'hide_empty' => false,
 		);
 		if ( isset( $params['taxonomy'] ) ) {
 			$args['taxonomy'] = $params['taxonomy'];

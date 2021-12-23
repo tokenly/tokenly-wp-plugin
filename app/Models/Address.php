@@ -20,16 +20,8 @@ class Address extends Model implements AddressInterface {
 	);
 
 	public function __construct(
-<<<<<<< HEAD
 		AddressRepositoryInterface $domain_repository,
 		array $data = array()
-=======
-		string $address,
-		string $type,
-		string $label,
-		BalanceCollectionInterface $balances,
-		SourceServiceInterface $source_service
->>>>>>> main
 	) {
 		$this->domain_repository = $domain_repository;
 		parent::__construct( $data );
