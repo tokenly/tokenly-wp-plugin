@@ -4,12 +4,13 @@
  * Collection of Source objects
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Token;
 
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Collections\SourceCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\SourceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\SourceCollectionInterface;
+
+use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
 
 class SourceCollection extends Collection implements SourceCollectionInterface {
 	protected $item_type = SourceInterface::class;

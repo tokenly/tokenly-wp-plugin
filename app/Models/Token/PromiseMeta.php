@@ -6,8 +6,8 @@ use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface;
 
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\TcaInterface as TcaSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\PromiseMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;

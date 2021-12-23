@@ -14,6 +14,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 
 	protected $item_type;
 	protected $domain_service;
+	protected $keyed = false;
 
 	public function __construct( array $items ) {
 		$this->fill( $items );
@@ -41,8 +42,13 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 */
 	public function to_array() {
 		$array = array();
-		foreach ( ( array ) $this as $item ) {
-			$array[] = $item->to_array();
+		foreach ( ( array ) $this as $key => $item ) {
+			$item_array = $item->to_array();
+			if ( $this->keyed === true ) {
+				$array[ $key ] = $item_array;
+			} else {
+				$array[] = $item_array;
+			}
 		}
 		return $array;
 	}
@@ -53,6 +59,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * @return self
 	 */
 	public function key_by_field( string $field ) {
+		$this->keyed = true;
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
 			$keyed[ $item->$field ] = $item;

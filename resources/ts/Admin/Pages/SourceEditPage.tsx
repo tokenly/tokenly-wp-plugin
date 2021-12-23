@@ -49,7 +49,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-source-index';
+		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
 	}
 
 	onSave( source: SourceData ) {
@@ -108,14 +108,14 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		return (
 			<Page title={ 'Manage source' }>
 				<div style={ { marginBottom: '8px' } }>
-					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-source-index'>Back to source list</a>
+					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-token-source-index'>Back to source list</a>
 				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
 							<div>
 								<div><span>Source: </span><strong>
-									<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-source-show&source=${ source.address_id }` }>{ source?.address?.label }</a>
+									<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ source.address_id }` }>{ source?.address?.label }</a>
 								</strong></div>
 								<div>
 									<SourceEditForm

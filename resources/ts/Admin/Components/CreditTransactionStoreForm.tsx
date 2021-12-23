@@ -201,9 +201,6 @@ export class CreditTransactionStoreForm extends Component<CreditTransactionStore
 						>
 							Cancel
 						</Button>
-						{this.props.saving === true &&
-							<Spinner/>
-						}
 					</Flex>
 				</div>
 			</form>

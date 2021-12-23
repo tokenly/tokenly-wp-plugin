@@ -3,12 +3,12 @@
 namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 
 use Tokenly\Wp\Presentation\Views\ViewModel;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\BalanceShowViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\BalanceIndexViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
-class BalanceShowViewModel extends ViewModel implements BalanceShowViewModelInterface {
+class BalanceIndexViewModel extends ViewModel implements BalanceIndexViewModelInterface {
 	protected $address_service;
 	protected $user_service;
 	

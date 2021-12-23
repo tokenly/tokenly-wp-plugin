@@ -1,15 +1,15 @@
 <?php
 
-namespace Tokenly\Wp\Models;
+namespace Tokenly\Wp\Models\Token;
 
 use Tokenly\Wp\Models\Post;
-use Tokenly\Wp\Interfaces\Models\TokenMetaInterface;
+use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
 
-use Tokenly\Wp\Interfaces\Repositories\Post\TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
-class TokenMeta extends Post implements TokenMetaInterface {
+class Meta extends Post implements MetaInterface {
 	public $asset;
 	public $extra;
 	protected $fillable = array(
@@ -23,7 +23,7 @@ class TokenMeta extends Post implements TokenMetaInterface {
 		TcaSettingsInterface $tca_settings,
 		TermServiceInterface $term_service,
 		//Parent dependencides - end
-		TokenMetaRepositoryInterface $domain_repository,
+		MetaRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;

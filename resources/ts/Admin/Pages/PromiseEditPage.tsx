@@ -49,7 +49,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-vendor';
+		window.location = '/wp-admin/admin.php?page=tokenly-token-vendor';
 	}
 
 	onSave( promise: PromiseUpdateParams ) {
@@ -102,7 +102,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 		return (
 			<Page title={'Manage promise'}>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-vendor'>Back to vendor</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
 					<div><span>Promise ID: </span><strong>{this.props.pageData.promise.promise_id}</strong></div>
 				</div>
 				<Panel>

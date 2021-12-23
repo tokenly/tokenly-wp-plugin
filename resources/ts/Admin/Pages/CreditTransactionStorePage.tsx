@@ -47,7 +47,9 @@ export default class CreditTransactionStorePage extends Component<CreditTransact
 	}
 	
 	onSubmit( creditGroup: any ) {
+		this.setState( { storingCreditTransaction: true } );
 		this.creditGroupRepository.store( creditGroup ).then( ( result: any ) => {
+			this.setState( { storingCreditTransaction: false } );
 			this.return();
 		});
 	}

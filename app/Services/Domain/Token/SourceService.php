@@ -8,16 +8,20 @@ use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 
 /**
  * Manages the sources
  */
 class SourceService extends DomainService implements SourceServiceInterface {
 	protected $source_repository;
+	protected $integration_settings;
 
 	public function __construct(
+		IntegrationSettingsInterface $integration_settings,
 		SourceRepositoryInterface $source_repository
 	) {
+		$this->integration_settings = $integration_settings;
 		$this->source_repository = $source_repository;
 	}
 
@@ -95,10 +99,7 @@ class SourceService extends DomainService implements SourceServiceInterface {
 	 * @return string
 	 */
 	protected function make_proof( string $address ) {
-		if ( !isset( $this->settings->client_id ) ) {
-			return;
-		}
-		$hash = hash( 'sha256', $this->settings_client_id );
+		$hash = hash( 'sha256', $this->integration_settings->client_id );
 		$proof =  "{$address}_{$hash}";
 		return $proof;
 	}

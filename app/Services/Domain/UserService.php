@@ -102,8 +102,8 @@ class UserService extends DomainService implements UserServiceInterface {
 			'id' => $user_id,
 		) );
 		if ( $user && $user->can_connect() ) {
-			$actions["{$this->namespace}_token_inventory"] = "<a href='/wp-admin/admin.php?page=tokenly-token-balance-show&user={$user_id}'>Token inventory</a>";
-			$actions["{$this->namespace}_credit_inventory"] = "<a href='/wp-admin/admin.php?page=tokenly-credit-balance-show&user={$user_id}'>Credit inventory</a>";
+			$actions["{$this->namespace}_token_inventory"] = "<a href='/wp-admin/admin.php?page=tokenly-token-balance-index&user={$user_id}'>Token inventory</a>";
+		//	$actions["{$this->namespace}_credit_inventory"] = "<a href='/wp-admin/admin.php?page=tokenly-credit-balance-index&user={$user_id}'>Credit inventory</a>";
 		}
 		return $actions;
 	}

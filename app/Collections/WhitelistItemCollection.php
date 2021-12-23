@@ -8,7 +8,8 @@ namespace Tokenly\Wp\Collections;
 
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Interfaces\Collections\WhitelistItemCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
+
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistItemInterface;
 
 class WhitelistItemCollection extends Collection implements WhitelistItemCollectionInterface {
 	protected $item_type = WhitelistItemInterface::class;

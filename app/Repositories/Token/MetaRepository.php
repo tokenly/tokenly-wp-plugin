@@ -3,25 +3,25 @@
 namespace Tokenly\Wp\Repositories\Token;
 
 use Tokenly\Wp\Repositories\PostRepository;
-use Tokenly\Wp\Interfaces\Repositories\Token\PostMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 
 use Tokenly\Wp\Interfaces\Factories\Models\Token\MetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Token\MetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface as GeneralMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 
 /**
  * Manages meta data
  */
-class MetaRepository extends PostRepository implements PostMetaRepositoryInterface {
+class MetaRepository extends PostRepository implements MetaRepositoryInterface {
 	protected $namespace;
 	
 	public function __construct(
 		MetaFactoryInterface $post_factory,
 		MetaCollectionFactoryInterface $post_collection_factory,
-		GeneralMetaRepositoryInterface $meta_repository,
+		PostMetaRepositoryInterface $meta_repository,
 		RuleCollectionFactoryInterface $tca_rule_collection_factory,
 		string $namespace
 	) {

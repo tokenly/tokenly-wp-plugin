@@ -4,18 +4,19 @@ namespace Tokenly\Wp\Controllers\Api\Credit;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\CreditTransactionServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Credit\TransactionServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
 /**
- * Defines promise-related endpoints
+ * Defines transaction endpoints
  */
 class TransactionController implements TransactionControllerInterface {
 	protected $transaction_service;
 	protected $user_service;
 
 	public function __construct(
-		CreditTransactionServiceInterface $transaction_service,
+		TransactionServiceInterface $transaction_service,
 		UserServiceInterface $user_service
 	) {
 		$this->transaction_service = $transaction_service;
@@ -23,9 +24,9 @@ class TransactionController implements TransactionControllerInterface {
 	}
 	
 	/**
-	 * Retrieves a collection of credit groups
+	 * Gets a collection of transactions
 	 * @param \WP_REST_Request $request Request data
-	 * @return CreditTransactionCollectionInterface
+	 * @return TransactionCollectionInterface
 	 */
 	public function index( \WP_REST_Request $request ) {
 		$credit_transactions = $this->transaction_service->index();
@@ -34,7 +35,7 @@ class TransactionController implements TransactionControllerInterface {
 	}
 
 	/**
-	 * Creates a new credit group
+	 * Makes a new transaction
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */

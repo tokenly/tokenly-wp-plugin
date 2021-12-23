@@ -3,11 +3,11 @@
 namespace Tokenly\Wp\Presentation\Shortcodes;
 
 use Tokenly\Wp\Presentation\Shortcodes\Shortcode;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\AppCreditInventoryShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\CreditInventoryShortcodeInterface;
 
 use Tokenly\Wp\Interfaces\Presentation\Blocks\AppCreditItemCardListBlockModelInterface;
 
-class AppCreditInventoryShortcode extends Shortcode implements AppCreditInventoryShortcodeInterface {
+class CreditInventoryShortcode extends Shortcode implements CreditInventoryShortcodeInterface {
 	protected $app_credit_item_card_list_block_model;
 
 	public function __construct(
@@ -19,7 +19,7 @@ class AppCreditInventoryShortcode extends Shortcode implements AppCreditInventor
 	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ) {
 		$data = $this->app_credit_item_card_list_block_model->prepare( $atts );
 		return array(
-			'template' => 'shortcodes/AppCreditInventoryShortcode.twig',
+			'template' => 'shortcodes/CreditInventoryShortcode.twig',
 			'data'     => $data,
 		);
 	}

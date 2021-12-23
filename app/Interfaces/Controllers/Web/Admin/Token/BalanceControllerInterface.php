@@ -3,5 +3,5 @@
 namespace Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token;
 
 interface BalanceControllerInterface {
-	public function show();
+	public function index();
 }

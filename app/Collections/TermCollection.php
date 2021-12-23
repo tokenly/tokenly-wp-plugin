@@ -9,12 +9,12 @@ namespace Tokenly\Wp\Collections;
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
 
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCheckResultCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCheckResultCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\Tca\AccessVerdictFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCheckResultCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 
@@ -25,9 +25,9 @@ class TermCollection extends Collection implements TermCollectionInterface {
 	protected $tca_rule_collection_factory;
 
 	public function __construct(
-		TcaRuleCheckResultCollectionFactoryInterface $tca_rule_check_result_collection_factory,
-		TcaAccessVerdictFactoryInterface $tca_access_verdict_factory,
-		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
+		RuleCheckResultCollectionFactoryInterface $tca_rule_check_result_collection_factory,
+		AccessVerdictFactoryInterface $tca_access_verdict_factory,
+		RuleCollectionFactoryInterface $tca_rule_collection_factory,
 		array $items
 	) {
 		parent::__construct( $items );
@@ -67,7 +67,7 @@ class TermCollection extends Collection implements TermCollectionInterface {
 	 * Tests if the specified user can pass all of the TCA rules
 	 * of the terms in the collection
 	 * @param UserInterface $user User to test
-	 * @return TcaAccessVerdictInterface
+	 * @return AccessVerdictInterface
 	 */
 	public function can_access( UserInterface $user ) {
 		$status = false;
@@ -87,7 +87,7 @@ class TermCollection extends Collection implements TermCollectionInterface {
 		}
 		$reports = $this->tca_rule_check_result_collection_factory->create();
 		foreach ( $verdicts as $verdict ) {
-			if ( isset( $verdict->reports ) && $verdict->reports instanceof TcaRuleCheckResultCollectionInterface )
+			if ( isset( $verdict->reports ) && $verdict->reports instanceof RuleCheckResultCollectionInterface )
 			$reports = $reports->merge( $verdict->reports );
 		}
 		$verdict = $this->tca_access_verdict_factory->create(

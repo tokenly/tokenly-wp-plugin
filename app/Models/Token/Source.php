@@ -1,14 +1,14 @@
 <?php
 
-namespace Tokenly\Wp\Models;
+namespace Tokenly\Wp\Models\Token;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Models\SourceInterface;
+use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
 
-use Tokenly\Wp\Interfaces\Models\AddressInterface;
+use Tokenly\Wp\Interfaces\Models\Token\AddressInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
 
 class Source extends Model implements SourceInterface {
 	public $address_id;

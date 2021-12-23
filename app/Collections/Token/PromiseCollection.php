@@ -4,12 +4,13 @@
  * Collection of Promise objects
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Token;
 
-use Tokenly\Wp\Interfaces\Collections\PromiseCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface;
+
+use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseMetaServiceInterface;
 
 class PromiseCollection extends Collection implements PromiseCollectionInterface {
 	protected $item_type = PromiseInterface::class;

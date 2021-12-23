@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseStoreViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 class PromiseStoreViewModel extends ViewModel implements PromiseStoreViewModelInterface {
 	protected $source_service;

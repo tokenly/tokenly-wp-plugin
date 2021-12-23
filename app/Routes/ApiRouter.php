@@ -9,11 +9,11 @@ use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenTokenSourceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterface as IntegrationSettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\Token\WhitelistControllerInterface as TokenWhitelistSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistControllerInterface as WhitelistSettingsControllerInterface;
 
 /**
  * Manages routing for the REST API endpoints
@@ -33,7 +33,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		IntegrationSettingsControllerInterface $integration_settings_controller,
 		TcaSettingsControllerInterface $tca_settings_controller,
 		OauthSettingsControllerInterface $oauth_settings_controller,
-		TokenWhitelistSettingsControllerInterface $token_whitelist_settings_controller,
+		WhitelistSettingsControllerInterface $whitelist_settings_controller,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -48,7 +48,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'integration-settings'     => $integration_settings_controller,
 			'tca-settings'             => $tca_settings_controller,
 			'oauth-settings'           => $oauth_settings_controller,
-			'token-whitelist-settings' => $token_whitelist_settings_controller,
+			'whitelist-settings'       => $whitelist_settings_controller,
 		);
 	}
 
@@ -261,7 +261,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'tca',
 			'integration',
 			'oauth',
-			'token-whitelist',
+			'whitelist',
 		);
 	}
 

@@ -124,7 +124,7 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 								>
 									<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
 									<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
-									<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.getCurrentAddress() }` } >View balances</a></div>
+									<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.getCurrentAddress() }` } >View balances</a></div>
 								</Flex>
 							</Flex>
 							<TextareaControl
@@ -166,9 +166,6 @@ export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStore
 						>
 							Cancel
 						</Button>
-						{this.props.saving === true &&
-							<Spinner/>
-						}
 					</Flex>
 				</div>
 			</form>

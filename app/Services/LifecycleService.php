@@ -53,11 +53,12 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	}
 
 	protected function get_current_git_commit( string $branch = 'dev' ) {
-		if ( $hash = file_get_contents( "{$this->root_dir}/.git/refs/heads/{$branch}" ) ) {
-			return $hash;
-		} else {
-			return false;
+		$path = "{$this->root_dir}/.git/refs/heads/{$branch}";
+		if ( !file_exists( $path ) ) {
+			return;
 		}
+		$hash = file_get_contents( $path );
+		return $hash;
 	}
 
 	/**
@@ -66,9 +67,10 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 */
 	protected function check_version() {
 		$persisted_version = $this->option_repository->show( 'version' );
-		if ( $this->version == $persisted_version ) {
+		if ( $this->version == $persisted_version || !isset( $this->version ) || empty( $this->version ) ) {
 			return true;
 		}
+		error_log('refresh');
 		$this->refresh();
 		$this->option_repository->update( array(
 			'version' => $this->version,

@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Services\Domain;
 
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
 

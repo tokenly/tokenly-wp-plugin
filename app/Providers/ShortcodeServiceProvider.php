@@ -4,7 +4,7 @@ namespace Tokenly\Wp\Providers;
 
 use Tokenly\Wp\Providers\ServiceProvider;
 use Tokenly\Wp\Interfaces\Providers\ShortcodeServiceProviderInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\AppCreditInventoryShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\CreditInventoryShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LogoutButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\TokenInventoryShortcodeInterface;
@@ -20,7 +20,7 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 
 	public function __construct(
 		string $namespace,
-		AppCreditInventoryShortcodeInterface $app_credit_inventory_shortcode,
+		CreditInventoryShortcodeInterface $credit_inventory_shortcode,
 		LoginButtonShortcodeInterface $login_button_shortcode,
 		LogoutButtonShortcodeInterface $logout_button_shortcode,
 		TokenInventoryShortcodeInterface $token_inventory_shortcode,
@@ -30,7 +30,7 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 		$this->twig = $twig;
 		$this->namespace = $namespace;
 		$this->services = array(
-			'app_credit_inventory'  => $app_credit_inventory_shortcode,
+			'credit_inventory'      => $credit_inventory_shortcode,
 			'login'                 => $login_button_shortcode,
 			'logout'                => $logout_button_shortcode,
 			'token_inventory'       => $token_inventory_shortcode,

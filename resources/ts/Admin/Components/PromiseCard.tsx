@@ -40,7 +40,7 @@ export class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
 						<span>
 							<span>№ </span>
 							<strong>
-								<a href={ `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }>
+								<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.props.promise.promise_id}` }>
 									{ this.props.promise.promise_id }
 								</a>
 							</strong>
@@ -67,14 +67,14 @@ export class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-promise-show&promise=${this.props.promise.promise_id}` }
+							href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.props.promise.promise_id}` }
 						>
 							Details
 						</Button>
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${ this.props.promise.promise_id }` }
+							href={ `/wp-admin/admin.php?page=tokenly-token-promise-edit&promise=${ this.props.promise.promise_id }` }
 						>
 							Manage promise
 						</Button>

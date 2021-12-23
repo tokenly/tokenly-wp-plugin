@@ -4,14 +4,15 @@
  * Collection of TCA access reports
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Tca;
 
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCheckResultCollectionInterface;
 
-class TcaRuleCheckResultCollection extends Collection implements TcaRuleCheckResultCollectionInterface {
-	protected $item_type = TcaRuleCheckResultInterface::class;
+use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface;
+
+class RuleCheckResultCollection extends Collection implements RuleCheckResultCollectionInterface {
+	protected $item_type = RuleCheckResultInterface::class;
 
 	/**
 	 * Checks if the collection has any rule

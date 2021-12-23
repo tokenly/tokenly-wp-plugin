@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceIndexViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 class SourceIndexViewModel extends ViewModel implements SourceIndexViewModelInterface {
 	protected $source_service;

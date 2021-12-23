@@ -5,9 +5,9 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceStoreViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 class SourceStoreViewModel extends ViewModel implements SourceStoreViewModelInterface {
 	protected $current_user;

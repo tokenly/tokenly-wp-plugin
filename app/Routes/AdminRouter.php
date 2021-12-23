@@ -154,6 +154,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'capability' => 'read',
 					),
 					'credit-balance-index' => array(
+						'parent_slug' => null,
 						'page_title'  => 'Credit balance details',
 						'menu_title'  => 'Credit balance details',
 						'menu_slug'   => 'credit-balance-index',
@@ -162,7 +163,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 					),
 					'credit-group-index' => array(
 						'page_title'  => 'Credit group list',
-						'menu_title'  => 'Credit group list',
+						'menu_title'  => 'App Credits',
 						'menu_slug'   => 'credit-group-index',
 						'callable'    => array( $this->controllers['credit-group'], 'index' ),
 						'capability'  => 'manage_options',

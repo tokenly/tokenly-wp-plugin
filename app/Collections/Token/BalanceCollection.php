@@ -4,14 +4,15 @@
  * Collection of Balance objects
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Token;
 
-use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\BalanceInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\BalanceFactoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Collections\Collection;
+use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
+
+use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\Token\BalanceFactoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface;
 
 class BalanceCollection extends Collection implements BalanceCollectionInterface {
 	protected $item_type = BalanceInterface::class;
@@ -19,7 +20,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	public function __construct(
 		WhitelistSettingsInterface $whitelist,
 		BalanceFactoryInterface $balance_factory,
-		TokenMetaServiceInterface $token_meta_service,
+		MetaServiceInterface $token_meta_service,
 		array $items
 	) {
 		$this->whitelist = $whitelist;

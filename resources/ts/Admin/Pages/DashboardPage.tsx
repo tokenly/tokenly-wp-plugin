@@ -62,7 +62,7 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 				title: 'Vendor',
 				description: 'Manage token promises.',
 				icon: 'share',
-				url: '/wp-admin/admin.php?page=tokenly-vendor',
+				url: '/wp-admin/admin.php?page=tokenly-token-vendor',
 			},
 			credits: {
 				title: 'App Credits',
@@ -74,7 +74,7 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 				title: 'Whitelist',
 				description: 'Configure a filter for tokens displayed on the inventory pages.',
 				icon: 'forms',
-				url: '/wp-admin/admin.php?page=tokenly-whitelist',
+				url: '/wp-admin/admin.php?page=tokenly-token-whitelist-edit',
 			},
 			meta: {
 				title: 'Token Meta',

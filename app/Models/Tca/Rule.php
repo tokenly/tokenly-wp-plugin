@@ -1,11 +1,11 @@
 <?php
 
-namespace Tokenly\Wp\Models;
+namespace Tokenly\Wp\Models\Tca;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\RuleInterface;
 
-class TcaRule extends Model implements TcaRuleInterface {
+class Rule extends Model implements RuleInterface {
 	/**
 	 * Asset name.
 	 * @var string 

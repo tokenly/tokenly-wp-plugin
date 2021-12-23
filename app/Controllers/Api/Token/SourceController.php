@@ -3,7 +3,8 @@
 namespace Tokenly\Wp\Controllers\Api\Token;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 /**
  * Handles the source REST API endpoints

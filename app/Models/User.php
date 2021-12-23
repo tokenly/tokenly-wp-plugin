@@ -10,12 +10,12 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleCheckResultFactoryInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\Tca\RuleCheckResultFactoryInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
-use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
@@ -41,7 +41,7 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		OauthUserServiceInterface $oauth_user_service,
 		UserMetaRepositoryInterface $user_meta_repository,
 		UserRepositoryInterface $domain_repository,
-		TcaRuleCheckResultFactoryInterface $tca_rule_check_result_factory,
+		RuleCheckResultFactoryInterface $tca_rule_check_result_factory,
 		array $data = array()
 	) {
 		$this->oauth_user_service = $oauth_user_service;
@@ -112,10 +112,10 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 
 	/**
 	 * Checks if the user can pass the specified TCA rules
-	 * @param TcaRuleCollectionInteface $rules Rules to test
-	 * @return TcaRuleCheckResultInterface
+	 * @param RuleCollectionInteface $rules Rules to test
+	 * @return RuleCheckResultInterface
 	 */
-	public function check_token_access( TcaRuleCollectionInterface $rules ) {
+	public function check_token_access( RuleCollectionInterface $rules ) {
 		$this->load( array( 'oauth_user' ) );
 		if ( $this->oauth_user instanceof OauthUserInterface ) {
 			return $access_report = $this->oauth_user->check_token_access( $rules );

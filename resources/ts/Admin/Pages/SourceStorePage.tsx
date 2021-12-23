@@ -45,11 +45,13 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-source-index';
+		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
 	}
 	
 	onSubmit( promise: SourceData ) {
+		this.setState( { storingSource: true } );
 		this.sourceRepository.store( promise ).then( ( result: any ) => {
+			this.setState( { storingSource: false } );
 			this.return();
 		});
 	}
@@ -62,7 +64,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 		return (
 			<Page title={'Register source address'}>
 				<div style={ { marginBottom: '8px' } }>
-					<a href='/wp-admin/admin.php?page=tokenly-source-index'>Back to source address list</a>
+					<a href='/wp-admin/admin.php?page=tokenly-token-source-index'>Back to source address list</a>
 				</div>
 				<Panel>
 					<PanelBody>

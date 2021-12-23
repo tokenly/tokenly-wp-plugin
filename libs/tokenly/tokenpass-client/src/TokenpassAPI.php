@@ -677,6 +677,7 @@ class TokenpassAPI implements TokenpassAPIInterface
         }
         catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
+			error_log( $e->getMessage() );
             return false;
         }
         if (!isset($call['result'])){
@@ -853,12 +854,7 @@ class TokenpassAPI implements TokenpassAPIInterface
                 $params['name'] = $data['name'];
             }
             if (isset($data['app_whitelist'])){
-                if (is_string($data['app_whitelist'])){
-                    $params['app_whitelist'] = $data['app_whitelist'];
-                }
-                elseif (is_array($data['app_whitelist'])){
-                    $params['app_whitelist'] = join("\n", $data['app_whitelist']);
-                }
+                $params['app_whitelist'] = $data['app_whitelist'];
             }
             $response = $this->fetchFromTokenpassAPI('PATCH', 'credits/'.$id, $params);
         } catch (TokenpassAPIException $e) {
@@ -883,6 +879,18 @@ class TokenpassAPI implements TokenpassAPIInterface
         if (!isset($call['list'])){
             return false;
         }
+		if ( is_array( $call['list'] ) ) {
+			foreach ( $call['list'] as &$group ) {
+				if ( isset( $group['app_whitelist'] ) && is_array( $group['app_whitelist'] ) && isset( $group['app_whitelist'][0] ) ) {
+					$app_whitelist = $group['app_whitelist'][0];
+					$app_whitelist = preg_replace( '/\s+/', '', $app_whitelist );
+					$app_whitelist = explode( ',', $app_whitelist) ;
+					$group['app_whitelist'] = $app_whitelist;
+				} else {
+					$group['app_whitelist'] = array();
+				}
+			}
+		}
         return $call['list'];
     }
 

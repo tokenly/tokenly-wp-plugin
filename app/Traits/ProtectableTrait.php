@@ -2,11 +2,11 @@
 
 namespace Tokenly\Wp\Traits;
 
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCheckResultCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCheckResultCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaAccessVerdictFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCheckResultCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCheckResultCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\Tca\AccessVerdictFactoryInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 
 /**
@@ -15,24 +15,24 @@ use Tokenly\Wp\Interfaces\Models\UserInterface;
 trait ProtectableTrait {
 	/**
 	 * Associated TCA rules
-	 * @var TcaRuleCollectionInterface
+	 * @var RuleCollectionInterface
 	 */
 	public $tca_rules;
 	/**
 	 * @Inject
-	 * @var TcaAccessVerdictFactoryInterface
+	 * @var AccessVerdictFactoryInterface
 	 */
 	private $tca_access_verdict_factory;
 	/**
 	 * @Inject
-	 * @var TcaRuleCheckResultCollectionFactoryInterface
+	 * @var RuleCheckResultCollectionFactoryInterface
 	 */
 	private $tca_rule_check_result_collection_factory;
 
 	/**
 	 * Begins the TCA check procedure
 	 * @param UserInterface $user User to test
-	 * @return TcaAccessVerdictInterface
+	 * @return AccessVerdictInterface
 	 */
 	public function can_access( UserInterface $user ) {
 		$verdict = null;
@@ -89,7 +89,7 @@ trait ProtectableTrait {
 		if (
 			$tca_enabled === true &&
 			isset( $this->tca_rules ) &&
-			$this->tca_rules instanceof TcaRuleCollectionInterface &&
+			$this->tca_rules instanceof RuleCollectionInterface &&
 			count( ( array ) $this->tca_rules ) > 0
 		) {
 			$rules[] = $this->tca_rules;
@@ -103,7 +103,7 @@ trait ProtectableTrait {
 	/**
 	 * Checks if the specified user can access the post and its terms
 	 * @param UserInterface $user User to check
-	 * @return TcaAccessVerdictInterface
+	 * @return AccessVerdictInterface
 	 */
 	protected function test_access( UserInterface $user ) {
 		$status = false;
@@ -120,9 +120,9 @@ trait ProtectableTrait {
 		}
 		foreach ( array( $root_verdict, $relation_verdict ) as $verdict ) {
 			if (
-				$verdict instanceof TcaAccessVerdictInterface &&
+				$verdict instanceof AccessVerdictInterface &&
 				isset( $verdict->reports ) &&
-				$verdict->reports instanceof TcaRuleCheckResultCollectionInterface
+				$verdict->reports instanceof RuleCheckResultCollectionInterface
 			) {
 				$reports = $reports->merge( $verdict->reports );
 			}
@@ -137,7 +137,7 @@ trait ProtectableTrait {
 	/**
 	 * Checks if the specified user can access the post
 	 * @param UserInterface $user User to check
-	 * @return TcaAccessVerdictInterface
+	 * @return AccessVerdictInterface
 	 */
 	protected function test_access_root( UserInterface $user ) {
 		$need_test = true;
@@ -163,7 +163,7 @@ trait ProtectableTrait {
 	/**
 	 * Test if the specified user is allowed to access the relations
 	 * @param UserInterface $user User to test
-	 * @return TcaAccessVerdictInterface
+	 * @return AccessVerdictInterface
 	 */
 	protected function test_access_relations( UserInterface $user ) {
 		$verdict = $this->tca_access_verdict_factory->create( array(
@@ -205,7 +205,7 @@ trait ProtectableTrait {
 	protected function check_root_protected() {
 		$tca_enabled = $this->check_tca_enabled();
 		$rules_total = 0;
-		if ( isset( $this->tca_rules ) && $this->tca_rules instanceof TcaRuleCollectionInterface ) {
+		if ( isset( $this->tca_rules ) && $this->tca_rules instanceof RuleCollectionInterface ) {
 			$rules_total = count( ( array ) $this->tca_rules );
 		}
 		if ( $tca_enabled === true && $rules_total > 0 ) {

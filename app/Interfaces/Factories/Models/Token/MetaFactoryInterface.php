@@ -2,6 +2,6 @@
 
 namespace Tokenly\Wp\Interfaces\Factories\Models\Token;
 
-interface TokenMetaFactoryInterface {
+interface MetaFactoryInterface {
 	//
 }

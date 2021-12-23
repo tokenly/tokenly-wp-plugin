@@ -32,7 +32,7 @@ class SourceController implements SourceControllerInterface {
 	public function index() {
 		$view_data = $this->index_view_model->prepare();
 		return array(
-			'view' => 'source-index',
+			'view' => 'token-source-index',
 			'data' => $view_data,
 		);
 	}

@@ -45,7 +45,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	creditGroupIndex(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/credit-group' ).then( result => {
+			this.makeRequest( 'GET', '/credit/group' ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -55,7 +55,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	creditGroupStore( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'POST', '/credit-group', params ).then( result => {
+			this.makeRequest( 'POST', '/credit/group', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -65,7 +65,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	creditGroupUpdate( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/credit-group/', params ).then( result => {
+			this.makeRequest( 'PUT', '/credit/group/', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -75,7 +75,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	creditTransactionIndex(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/credit-transaction' ).then( result => {
+			this.makeRequest( 'GET', '/credit/transaction' ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -85,7 +85,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	creditTransactionStore( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'POST', '/credit-transaction', params ).then( result => {
+			this.makeRequest( 'POST', '/credit/transaction', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -95,7 +95,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	sourceIndex(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/source' ).then( result => {
+			this.makeRequest( 'GET', '/token/source' ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -105,7 +105,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	sourceStore( params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'POST', '/source', params ).then( result => {
+			this.makeRequest( 'POST', '/token/source', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -115,7 +115,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	sourceUpdate( address: string, params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/source/' + address, params ).then( result => {
+			this.makeRequest( 'PUT', '/token/source/' + address, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -125,7 +125,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	sourceDestroy( address: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'DELETE', '/source/' + address ).then( result => {
+			this.makeRequest( 'DELETE', '/token/source/' + address ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -135,7 +135,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	promiseIndex(): Promise<Array<PromiseData>> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/promise' ).then( ( result: Array<PromiseData> ) => {
+			this.makeRequest( 'GET', '/token/promise' ).then( ( result: Array<PromiseData> ) => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -145,7 +145,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	promiseStore( params: PromiseStoreParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'POST', '/promise', params ).then( result => {
+			this.makeRequest( 'POST', '/token/promise', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -155,7 +155,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	promiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', `/promise/${promiseId}`, params ).then( result => {
+			this.makeRequest( 'PUT', `/token/promise/${promiseId}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -165,7 +165,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	promiseDestroy( promiseId: number ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'DELETE', `/promise/${promiseId}` ).then( result => {
+			this.makeRequest( 'DELETE', `/token/promise/${promiseId}` ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -175,7 +175,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	tokenMetaShow( postId: number ): Promise<TokenMetaData> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', `/token-meta/${postId}` ).then( result => {
+			this.makeRequest( 'GET', `/token/meta/${postId}` ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -185,7 +185,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 
 	tokenMetaUpdate( postId: number, params: TokenMetaData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', `/token-meta/${postId}`, params ).then( result => {
+			this.makeRequest( 'PUT', `/token/meta/${postId}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );

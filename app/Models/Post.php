@@ -8,9 +8,9 @@ use Tokenly\Wp\Interfaces\Models\ProtectableInterface;
 use Tokenly\Wp\Traits\ProtectableTrait;
 
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessVerdictInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Repositories\Post\PostRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
@@ -103,7 +103,7 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 	/**
 	 * Test if the specified user is allowed to access the relations
 	 * @param UserInterface $user User to test
-	 * @return TcaAccessVerdictInterface
+	 * @return AccessVerdictInterface
 	 */
 	protected function test_access_relations( UserInterface $user ) {
 		$this->load( array( 'term' ) );

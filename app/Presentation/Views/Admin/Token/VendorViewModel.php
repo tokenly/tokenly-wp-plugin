@@ -5,8 +5,8 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\VendorViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class VendorViewModel extends ViewModel implements VendorViewModelInterface {
@@ -41,6 +41,8 @@ class VendorViewModel extends ViewModel implements VendorViewModelInterface {
 			'with' => array( 'address' ),
 		) );
 		if ( $sources && is_object( $sources ) ) {
+			$sources = clone $sources;
+			$sources->key_by_field( 'address_id' );
 			$sources = $sources->to_array();
 		}
 		return array(

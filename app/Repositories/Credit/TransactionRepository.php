@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\Credit\TransactionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Credit\TransactionCollectionFactoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class CreditTransactionRepository implements TransactionRepositoryInterface {
+class TransactionRepository implements TransactionRepositoryInterface {
 	protected $client;
 	protected $transaction_factory;
 	protected $transaction_collection_factory;
@@ -28,23 +28,21 @@ class CreditTransactionRepository implements TransactionRepositoryInterface {
 	/**
 	 * Gets a collection of credit transactions
 	 * @param array $params Search parameters
-	 * @return CreditTransactionCollectionInterface
+	 * @return TransactionCollectionInterface
 	 */
 	public function index( array $params = array() ) {
-		$history = null;
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
 			$history = $this->client->getAppCreditGroupHistory( $group_uuid );
-			foreach ( $history['transactions'] as &$transaction ) {
-				$transaction = $this->remap_fields( $transaction );
+			if ( $history && isset( $history['transactions'] ) ) {
+				foreach ( $history['transactions'] as &$transaction ) {
+					$transaction = $this->remap_fields( $transaction );
+				}
+				$transactions = $history['transactions'];
+				$transactions = $this->transaction_collection_factory->create( $transactions );
+				return $transactions;	
 			}
 		}
-		if ( !$history ) {
-			return false;
-		}
-		$transactions = $history['transactions'];
-		$transactions = $this->transaction_collection_factory->create( $transactions );
-		return $transactions;
 	}
 
 	/**

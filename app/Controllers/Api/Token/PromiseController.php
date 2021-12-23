@@ -3,8 +3,8 @@
 namespace Tokenly\Wp\Controllers\Api\Token;
 
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
 
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
 
 /**
@@ -81,7 +81,7 @@ class PromiseController implements PromiseControllerInterface {
 	/**
 	 * Retrieves queried promise
 	 * @param WP_REST_Request $request Request data
-	 * @return array
+	 * @return PromiseInterface
 	 */
 	protected function get_promise( \WP_REST_Request $request ) {
 		$promise_id = $request->get_param( 'promise' );
@@ -94,7 +94,6 @@ class PromiseController implements PromiseControllerInterface {
 		if ( !$promise ) {
 			return;
 		}
-		$promise = $promise->to_array();
 		return $promise;
 	}
 }

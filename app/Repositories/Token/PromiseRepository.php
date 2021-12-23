@@ -96,6 +96,9 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @return array
 	 */
 	public function update( PromiseInterface $promise, array $params = array() ) {
+		if ( isset( $params['destination'] ) ) {
+			unset( $params['destination'] );
+		}
 		$response = $this->client->updatePromisedTransaction( $promise->promise_id, $params );
 	}
 

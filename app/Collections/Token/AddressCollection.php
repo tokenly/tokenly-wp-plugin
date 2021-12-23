@@ -4,13 +4,13 @@
  * Collection of Address objects
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Token;
 
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\AddressInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Models\Token\AddressInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 class AddressCollection extends Collection implements AddressCollectionInterface {
 	protected $item_type = AddressInterface::class;

@@ -2,28 +2,31 @@
 
 namespace Tokenly\Wp\Controllers\Api\Credit;
 
-use Tokenly\Wp\Interfaces\Controllers\Api\GroupControllerInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface;
+
+use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\Credit\GroupCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface;
 
 /**
  * Defines promise-related endpoints
  */
 class GroupController implements GroupControllerInterface {
-	protected $credit_group_service;
+	protected $group_service;
 
 	public function __construct(
-		CreditGroupServiceInterface $credit_group_service
+		GroupServiceInterface $group_service
 	) {
-		$this->credit_group_service = $credit_group_service;
+		$this->group_service = $group_service;
 	}
 	
 	/**
 	 * Retrieves a collection of credit groups
 	 * @param \WP_REST_Request $request Request data
-	 * @return CreditGroupCollectionInterface
+	 * @return GroupCollectionInterface
 	 */
 	public function index( \WP_REST_Request $request ) {
-		$credit_groups = $this->credit_group_service->index();
+		$credit_groups = $this->group_service->index();
 		$credit_groups = $credit_groups->to_array();
 		return $credit_groups;
 	}
@@ -35,7 +38,7 @@ class GroupController implements GroupControllerInterface {
 	 */
 	public function store( \WP_REST_Request $request ) {
 		$params = $request->get_params();
-		$credit_group = $this->credit_group_service->store( $params );
+		$credit_group = $this->group_service->store( $params );
 		return array(
 			'credit_group' => $credit_group,
 			'status'  => 'Credit group created successfully',
@@ -49,7 +52,7 @@ class GroupController implements GroupControllerInterface {
 	 */
 	public function update( \WP_REST_Request $request ) {
 		$credit_group_id = $request->get_param( 'uuid' );
-		$credit_group = $this->credit_group_service->show( array(
+		$credit_group = $this->group_service->show( array(
 			'group_uuid' => $credit_group_id,
 		) );
 		if ( !$credit_group_id ) {
@@ -81,14 +84,14 @@ class GroupController implements GroupControllerInterface {
 	/**
 	 * Retrieves queried credit group
 	 * @param \WP_REST_Request $request Request data
-	 * @return PromiseInterface
+	 * @return GroupInterface
 	 */
 	protected function get_credit_group( \WP_REST_Request $request ) {
 		$credit_group_id = $request->get_param( 'credit_group' );
 		if ( !$credit_group_id ) {
 			return;
 		}
-		$credit_group = $this->credit_group_service->show( array(
+		$credit_group = $this->group_service->show( array(
 			'group_uuid' => $credit_group_id,
 		) );
 		return $credit_group;

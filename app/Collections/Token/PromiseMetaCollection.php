@@ -4,11 +4,12 @@
  * Collection of Promise meta objects
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Token;
 
-use Tokenly\Wp\Interfaces\Collections\PromiseMetaCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\PromiseMetaInterface;
 use Tokenly\Wp\Collections\Collection;
+use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface;
+
+use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 
 class PromiseMetaCollection extends Collection implements PromiseMetaCollectionInterface {

@@ -7,7 +7,6 @@ use Tokenly\Wp\Interfaces\Models\TermInterface;
 use Tokenly\Wp\Interfaces\Models\ProtectableInterface;
 use Tokenly\Wp\Traits\ProtectableTrait;
 
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;

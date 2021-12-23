@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\PostTypes\TokenMetaPostType;
 use Tokenly\Wp\PostTypes\PromiseMetaPostType;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface as TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;

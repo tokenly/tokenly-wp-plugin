@@ -4,18 +4,18 @@
  * Collection of TCA rule objects
  */
 
-namespace Tokenly\Wp\Collections;
+namespace Tokenly\Wp\Collections\Tca;
 
 use Tokenly\Wp\Collections\Collection;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\TcaRuleInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
 
-class TcaRuleCollection extends Collection implements TcaRuleCollectionInterface {
-	protected $item_type = TcaRuleInterface::class;
+use Tokenly\Wp\Interfaces\Models\Tca\RuleInterface;
+
+class RuleCollection extends Collection implements RuleCollectionInterface {
+	protected $item_type = RuleInterface::class;
 	
 	/**
 	 * Formats the TCA rules for request
-	 * @param TcaRuleCollectionInterface $rules
 	 * @return array
 	 */
 	public function format_rules() {

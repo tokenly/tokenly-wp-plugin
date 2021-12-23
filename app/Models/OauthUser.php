@@ -5,22 +5,22 @@ namespace Tokenly\Wp\Models;
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
-use Tokenly\Wp\Interfaces\Collections\AddressCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\CreditAccountCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\TcaRuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\CreditAccountCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\TcaRuleCheckResultFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\CreditGroupInterface;
-use Tokenly\Wp\Interfaces\Models\TcaAccessReportInterface;
-use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\Credit\AccountCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\Tca\RuleCheckResultFactoryInterface;
+use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\AccessReportInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\CreditTransactionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\CreditAccountServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\TransactionRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Credit\AccountServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\BalanceServiceInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
@@ -62,14 +62,14 @@ class OauthUser extends Model implements OauthUserInterface {
 	public function __construct(
 		AddressServiceInterface $address_service,
 		BalanceServiceInterface $balance_service,
-		CreditGroupServiceInterface $credit_group_service,
-		CreditTransactionRepositoryInterface $credit_transaction_repository,
+		GroupServiceInterface $credit_group_service,
+		TransactionRepositoryInterface $credit_transaction_repository,
 		UserServiceInterface $user_service,
-		CreditAccountCollectionFactoryInterface $credit_account_collection_factory,
-		CreditAccountServiceInterface $credit_account_service,
+		AccountCollectionFactoryInterface $credit_account_collection_factory,
+		AccountServiceInterface $credit_account_service,
 		TokenpassAPIInterface $client,
 		OauthSettingsInterface $oauth_settings,
-		TcaRuleCheckResultFactoryInterface $tca_rule_check_result_factory,
+		RuleCheckResultFactoryInterface $tca_rule_check_result_factory,
 		array $data = array()
 	) {
 		$this->address_service = $address_service;
@@ -124,10 +124,10 @@ class OauthUser extends Model implements OauthUserInterface {
 	/**
 	 * Checks if the user can pass TCA check with
 	 * the specified rules
-	 * @param TcaRuleCollectionInterface $rules Rules to use
-	 * @return TcaRuleCheckResultInterface
+	 * @param RuleCollectionInterface $rules Rules to use
+	 * @return RuleCheckResultInterface
 	 */
-	public function check_token_access( TcaRuleCollectionInterface $rules ) {
+	public function check_token_access( RuleCollectionInterface $rules ) {
 		if ( !isset( $this->username ) || !isset( $this->oauth_token ) ) {
 			return;
 		}
@@ -226,11 +226,11 @@ class OauthUser extends Model implements OauthUserInterface {
 	/**
 	 * Loads the credit_account relation
 	 * @param string[] $relations Further relations
-	 * @return CreditAccountCollectionInterface
+	 * @return AccountCollectionInterface
 	 */
 	protected function load_credit_account( array $relations = array() ) {
 		$credit_groups = $this->credit_group_service->index();
-		$group_uuids = array_map( function( CreditGroupInterface $credit_group ) {
+		$group_uuids = array_map( function( GroupInterface $credit_group ) {
 			return $credit_group->uuid;
 		}, ( array ) $credit_groups );
 		$credit_account = array();;

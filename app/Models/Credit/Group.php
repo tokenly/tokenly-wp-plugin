@@ -23,7 +23,7 @@ class Group extends Model implements GroupInterface {
 	);
 
 	public function __construct(
-		CreditGroupRepositoryInterface $domain_repository,
+		GroupRepositoryInterface $domain_repository,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;

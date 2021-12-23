@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseEditViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
 
 class PromiseEditViewModel extends ViewModel implements PromiseEditViewModelInterface {
 	protected $promise_service;

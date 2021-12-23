@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Services\Domain\Token;
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseMetaServiceInterface;
 
-use Tokenly\Wp\Interfaces\Repositories\Post\Token\PromiseMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\PromiseMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface;
 

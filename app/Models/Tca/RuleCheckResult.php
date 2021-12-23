@@ -1,11 +1,11 @@
 <?php
 
-namespace Tokenly\Wp\Models;
+namespace Tokenly\Wp\Models\Tca;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Models\TcaRuleCheckResultInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface;
 
-class TcaRuleCheckResult extends Model implements TcaRuleCheckResultInterface {
+class RuleCheckResult extends Model implements RuleCheckResultInterface {
 	/**
 	 * Hash based on the attributes of the rule.
 	 * @var string

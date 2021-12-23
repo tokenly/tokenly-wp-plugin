@@ -8,17 +8,17 @@ use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\AddressServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\BalanceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\CreditGroupServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\CreditTransactionServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseMetaServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface as CreditGroupServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Credit\TransactionServiceInterface as CreditTransactionServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface as TokenAddressServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\BalanceServiceInterface as TokenBalanceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseMetaServiceInterface as TokenPromiseMetaServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface as TokenPromiseServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface as TokenSourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface as TokenMetaServiceInterface;
 
 /**
  * Registers general plugin modules
@@ -33,15 +33,15 @@ class AppServiceProvider extends ServiceProvider implements AppServiceProviderIn
 		ResourceServiceInterface $resource_service,
 		QueryServiceInterface $query_service,
 		//Domain
-		AddressServiceInterface $address_service,
-		BalanceServiceInterface $balance_service,
 		CreditGroupServiceInterface $credit_group_service,
 		CreditTransactionServiceInterface $credit_transaction_service,
 		OauthUserServiceInterface $oauth_user_service,
 		PostServiceInterface $post_service,
-		PromiseMetaServiceInterface $promise_meta_service,
-		PromiseServiceInterface $promise_service,
-		SourceServiceInterface $source_service,
+		TokenAddressServiceInterface $token_address_service,
+		TokenBalanceServiceInterface $token_balance_service,
+		TokenPromiseMetaServiceInterface $token_promise_meta_service,
+		TokenPromiseServiceInterface $token_promise_service,
+		TokenSourceServiceInterface $token_source_service,
 		TokenMetaServiceInterface $token_meta_service,
 		UserServiceInterface $user_service
 	) {
@@ -52,15 +52,15 @@ class AppServiceProvider extends ServiceProvider implements AppServiceProviderIn
 			'resource'              => $resource_service,
 			'query'                 => $query_service,
 			//Domain
-			'address'               => $address_service,
-			'balance'               => $balance_service,
-			'credit-group'          => $credit_group_service,
-			'credit-transaction'    => $credit_transaction_service,
+			'credit_group'          => $credit_group_service,
+			'credit_transaction'    => $credit_transaction_service,
 			'oauth_user'            => $oauth_user_service,
 			'post'                  => $post_service,
-			'promise_meta'          => $promise_meta_service,
-			'promise'               => $promise_service,
-			'source'                => $source_service,
+			'token_address'         => $token_address_service,
+			'token_balance'         => $token_balance_service,
+			'token_promise_meta'    => $token_promise_meta_service,
+			'token_promise'         => $token_promise_service,
+			'token_source'          => $token_source_service,
 			'token_meta'            => $token_meta_service,
 			'user'                  => $user_service,
 		);

@@ -1,9 +1,9 @@
 <?php
 
-namespace Tokenly\Wp\Models;
+namespace Tokenly\Wp\Models\Settings;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Models\WhitelistItemInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistItemInterface;
 
 class WhitelistItem extends Model implements WhitelistItemInterface {
 	public $address = '';

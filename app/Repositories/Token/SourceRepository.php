@@ -34,7 +34,7 @@ class SourceRepository implements SourceRepositoryInterface {
 	 */
 	public function index( array $params = array() ) {
 		$sources = $this->client->getProvisionalSourceList();
-		if ( $sources == false ) {
+		if ( $sources === false ) {
 			return false;
 		}
 		foreach ( $sources as &$source ) {

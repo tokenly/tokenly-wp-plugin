@@ -5,8 +5,8 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseShowViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\PromiseServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 class PromiseShowViewModel extends ViewModel implements PromiseShowViewModelInterface {
 	protected $promise_service;

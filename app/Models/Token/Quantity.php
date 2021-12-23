@@ -1,9 +1,9 @@
 <?php
 
-namespace Tokenly\Wp\Models;
+namespace Tokenly\Wp\Models\Token;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Models\QuantityInterface;
+use Tokenly\Wp\Interfaces\Models\Token\QuantityInterface;
 
 class Quantity extends Model implements QuantityInterface {
 	public $value;

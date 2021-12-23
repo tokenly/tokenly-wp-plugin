@@ -23,7 +23,7 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 		PromiseMetaFactoryInterface $post_factory,
 		PromiseMetaCollectionFactoryInterface $post_collection_factory,
 		PostMetaRepositoryInterface $meta_repository,
-		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory,
+		RuleCollectionFactoryInterface $tca_rule_collection_factory,
 		string $namespace
 		
 	) {

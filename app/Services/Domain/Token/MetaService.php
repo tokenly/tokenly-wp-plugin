@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Services\Domain\Token;
 use Tokenly\Wp\Services\Domain\DomainService;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface;
 
-use Tokenly\Wp\Interfaces\Repositories\Post\Token\PostMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
 
@@ -16,7 +16,7 @@ class MetaService extends DomainService implements MetaServiceInterface {
 	protected $meta_repository;
 
 	public function __construct(
-		PostMetaRepositoryInterface $meta_repository
+		MetaRepositoryInterface $meta_repository
 	) {
 		$this->meta_repository = $meta_repository;
 	}

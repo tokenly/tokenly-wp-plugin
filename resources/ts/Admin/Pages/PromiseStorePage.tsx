@@ -48,7 +48,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 	
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-vendor';
+		window.location = '/wp-admin/admin.php?page=tokenly-token-vendor';
 	}
 
 	onSubmit( params: PromiseStoreParams ) {
@@ -71,7 +71,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 		return (
 			<Page title={'Create a token promise'}>
 				<div style={ { marginBottom: '8px' } }>
-					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-vendor'>Back to vendor</a>
+					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
 				</div>
 				<Panel>
 					<PanelBody>

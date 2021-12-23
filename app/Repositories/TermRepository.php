@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TermCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\TermMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\TcaRuleCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCollectionFactoryInterface;
 
 /**
  * Manages terms
@@ -25,7 +25,7 @@ class TermRepository implements TermRepositoryInterface {
 		TermFactoryInterface $term_factory,
 		TermCollectionFactoryInterface $term_collection_factory,
 		TermMetaRepositoryInterface $term_meta_repository,
-		TcaRuleCollectionFactoryInterface $tca_rule_collection_factory
+		RuleCollectionFactoryInterface $tca_rule_collection_factory
 	) {
 		$this->term_factory = $term_factory;
 		$this->term_collection_factory = $term_collection_factory;
@@ -87,6 +87,7 @@ class TermRepository implements TermRepositoryInterface {
 	protected function get_query_args( array $params = array() ) {
 		$args = array(
 			'meta_query' => array(),
+			'hide_empty' => false,
 		);
 		if ( isset( $params['taxonomy'] ) ) {
 			$args['taxonomy'] = $params['taxonomy'];

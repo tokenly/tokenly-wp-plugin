@@ -50,7 +50,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 		return (
 			<Page title={ 'Source details' }>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-vendor'>Back to vendor</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
 				</div>
 				<Panel header={ this.props.pageData.source.address.label }>
 					<PanelBody>
@@ -73,14 +73,14 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-source-edit&source=${ this.props.pageData.source.address_id }` }
+									href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.props.pageData.source.address_id }` }
 								>
 									Manage source
 								</Button>
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-balances-show&address=${ this.props.pageData.source.address_id }` }
+									href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.props.pageData.source.address_id }` }
 								>
 									View balances
 								</Button>

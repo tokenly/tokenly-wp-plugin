@@ -85,7 +85,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 		return (
 			<Page title={ 'Promise details' }>
 				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-vendor'>Back to vendor</a>
+					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
 				</div>
 				<Panel header={ `№ ${this.props.pageData.promise.promise_id}` }>
 					<PanelBody>
@@ -94,7 +94,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 								<div style={ { flex: 1 } }>
 									<div>
 										<span>Source: </span>
-										<a href={`/wp-admin/admin.php?page=tokenly-source-show&source=${this.props.pageData.promise?.source_id}`}>
+										<a href={`/wp-admin/admin.php?page=tokenly-token-source-show&source=${this.props.pageData.promise?.source_id}`}>
 											<strong>{this.props.pageData.promise?.source?.address.label}</strong>
 										</a>
 									</div>
@@ -112,7 +112,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-promise-edit&promise=${ this.props.pageData.promise.promise_id }` }
+									href={ `/wp-admin/admin.php?page=tokenly-token-promise-edit&promise=${ this.props.pageData.promise.promise_id }` }
 								>
 									Manage promise
 								</Button>

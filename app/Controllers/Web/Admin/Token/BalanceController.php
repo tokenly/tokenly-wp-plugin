@@ -28,7 +28,7 @@ class BalanceController implements BalanceControllerInterface {
 		}
 		$view_data = $this->index_view_model->prepare( $input_data );
 		return array(
-			'view' => 'token-balance-show',
+			'view' => 'token-balance-index',
 			'data' => $view_data,
 		);
 	}

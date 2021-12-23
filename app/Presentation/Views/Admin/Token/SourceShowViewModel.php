@@ -4,7 +4,8 @@ namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceShowViewModelInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\SourceServiceInterface;
+
+use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
 class SourceShowViewModel extends ViewModel implements SourceShowViewModelInterface {
 	protected $source_service;

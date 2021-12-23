@@ -13,7 +13,7 @@ use Tokenly\Wp\Services\Domain\PostService;
 use Tokenly\Wp\Services\Domain\TermService;
 use Tokenly\Wp\Services\Domain\UserService;
 use Tokenly\Wp\Services\Domain\Token\AddressService as TokenAddressService;
-use Tokenly\Wp\Services\Domain\Token\BalanceService as TokenBalanceSerevice;
+use Tokenly\Wp\Services\Domain\Token\BalanceService as TokenBalanceService;
 use Tokenly\Wp\Services\Domain\Token\PromiseMetaService as TokenPromiseMetaService;
 use Tokenly\Wp\Services\Domain\Token\PromiseService as TokenPromiseService;
 use Tokenly\Wp\Services\Domain\Token\SourceService as TokenSourceService;
@@ -28,7 +28,7 @@ use Tokenly\Wp\Repositories\UserRepository;
 use Tokenly\Wp\Repositories\Credit\AccountRepository as CreditAccountRepository;
 use Tokenly\Wp\Repositories\Credit\GroupRepository as CreditGroupRepository;
 use Tokenly\Wp\Repositories\Credit\TransactionRepository as CreditTransactionRepository;
-use Tokenly\Wp\Repositories\General\MetaRepository;
+use Tokenly\Wp\Repositories\General\PostMetaRepository;
 use Tokenly\Wp\Repositories\General\OptionRepository;
 use Tokenly\Wp\Repositories\General\TermMetaRepository;
 use Tokenly\Wp\Repositories\General\UserMetaRepository;
@@ -51,9 +51,10 @@ use Tokenly\Wp\Controllers\Web\UserController;
 use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
 use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
 use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
+use Tokenly\Wp\Controllers\Web\Admin\Credit\BalanceController as CreditBalanceController;
 use Tokenly\Wp\Controllers\Web\Admin\Credit\GroupController as CreditGroupController;
 use Tokenly\Wp\Controllers\Web\Admin\Credit\TransactionController as CreditTransactionController;
-use Tokenly\Wp\Controllers\Web\Admin\Token\BalancesController as TokenBalancesController;
+use Tokenly\Wp\Controllers\Web\Admin\Token\BalanceController as TokenBalanceController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\SourceController as TokenSourceController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\VendorController as TokenVendorController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\PromiseController as TokenPromiseController;
@@ -72,8 +73,8 @@ use Tokenly\Wp\Controllers\Api\Token\WhitelistController as TokenWhitelistApiCon
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Collections\TermCollection;
-use Tokenly\Wp\Collections\TokenMetaCollection;
 use Tokenly\Wp\Collections\UserCollection;
+use Tokenly\Wp\Collections\WhitelistItemCollection;
 use Tokenly\Wp\Collections\Tca\RuleCollection as TcaRuleCollection;
 use Tokenly\Wp\Collections\Tca\RuleCheckResultCollection as TcaRuleCheckResultCollection;
 use Tokenly\Wp\Collections\Token\AddressCollection as TokenAddressCollection;
@@ -81,7 +82,7 @@ use Tokenly\Wp\Collections\Token\BalanceCollection as TokenBalanceCollection;
 use Tokenly\Wp\Collections\Token\PromiseCollection as TokenPromiseCollection;
 use Tokenly\Wp\Collections\Token\PromiseMetaCollection as TokenPromiseMetaCollection;
 use Tokenly\Wp\Collections\Token\SourceCollection as TokenSourceCollection;
-use Tokenly\Wp\Collections\Token\WhitelistItemCollection as TokenWhitelistItemCollection;
+use Tokenly\Wp\Collections\Token\MetaCollection as TokenMetaCollection;
 use Tokenly\Wp\Collections\Credit\AccountCollection as CreditAccountCollection;
 use Tokenly\Wp\Collections\Credit\GroupCollection as CreditGroupCollection;
 use Tokenly\Wp\Collections\Credit\TransactionCollection as CreditTransactionCollection;
@@ -104,11 +105,11 @@ use Tokenly\Wp\Models\Token\PromiseMeta as TokenPromiseMeta;
 use Tokenly\Wp\Models\Token\Quantity as TokenQuantity;
 use Tokenly\Wp\Models\Token\Source as TokenSource;
 use Tokenly\Wp\Models\Token\Meta as TokenMeta;
-use Tokenly\Wp\Models\Token\WhitelistItem as TokenWhitelistItem;
 use Tokenly\Wp\Models\Settings\OauthSettings;
 use Tokenly\Wp\Models\Settings\IntegrationSettings;
 use Tokenly\Wp\Models\Settings\TcaSettings;
 use Tokenly\Wp\Models\Settings\WhitelistSettings;
+use Tokenly\Wp\Models\Settings\WhitelistItem;
 use Tokenly\Wp\Middleware\Tca\MenuItemFilterMiddleware as TcaMenuItemFilterMiddleware;
 use Tokenly\Wp\Middleware\Tca\PostGuardMiddleware as TcaPostGuardMiddleware;
 use Tokenly\Wp\Middleware\Tca\PostResultsFilterMiddleware as TcaPostResultsFilterMiddleware;
@@ -124,6 +125,8 @@ use Tokenly\Wp\Presentation\Views\Admin\DashboardViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\PostEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SettingsViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\TermEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\TokenMetaEditViewModel;
+use Tokenly\Wp\Presentation\Views\Admin\Credit\BalanceIndexViewModel as CreditBalanceIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupEditViewModel as CreditGroupEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupIndexViewModel as CreditGroupIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupShowViewModel as CreditGroupShowViewModel;
@@ -138,12 +141,11 @@ use Tokenly\Wp\Presentation\Views\Admin\Token\SourceEditViewModel as TokenSource
 use Tokenly\Wp\Presentation\Views\Admin\Token\SourceIndexViewModel as TokenSourceIndexViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Token\SourceShowViewModel as TokenSourceShowViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Token\SourceStoreViewModel as TokenSourceStoreViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\MetaEditViewModel as TokenMetaEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Token\VendorViewModel as TokenVendorViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Token\WhitelistEditViewModel as TokenWhitelistEditViewModel;
 use Tokenly\Wp\Presentation\Views\Web\PostAccessDeniedViewModel;
 use Tokenly\Wp\Presentation\Views\Web\UserViewModel;
-use Tokenly\Wp\Presentation\Shortcodes\AppCreditInventoryShortcode;
+use Tokenly\Wp\Presentation\Shortcodes\CreditInventoryShortcode;
 use Tokenly\Wp\Presentation\Shortcodes\LogoutButtonShortcode;
 use Tokenly\Wp\Presentation\Shortcodes\LoginButtonShortcode;
 use Tokenly\Wp\Presentation\Shortcodes\TokenInventoryShortcode;
@@ -180,7 +182,7 @@ use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface as Token
 use Tokenly\Wp\Interfaces\Repositories\Token\PromiseRepositoryInterface as TokenPromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface as TokenSourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\PromiseMetaRepositoryInterface as TokenPromiseMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Token\PostMetaRepositoryInterface as TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface as TokenMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\TermMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
@@ -194,12 +196,12 @@ use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiCont
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as PromiseApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as SourceApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthSettingsControllerInterface as OauthSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationSettingsControllerInterface as IntegrationSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaSettingsControllerInterface as TcaSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistSettingsControllerInterface as WhitelistSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterface as IntegrationSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistControllerInterface as WhitelistSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TermControllerInterface;
@@ -208,6 +210,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\BalanceControllerInterface as CreditBalanceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\GroupControllerInterface as CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\BalanceControllerInterface as TokenBalanceControllerInterface;
@@ -219,6 +222,7 @@ use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\PostFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Models\WhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Credit\AccountFactoryInterface as CreditAccountFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Credit\AccountHistoryFactoryInterface as CreditAccountHistoryFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Credit\GroupFactoryInterface as CreditGroupFactoryInterface;
@@ -234,10 +238,10 @@ use Tokenly\Wp\Interfaces\Factories\Models\Token\PromiseFactoryInterface as Toke
 use Tokenly\Wp\Interfaces\Factories\Models\Token\PromiseMetaFactoryInterface as TokenPromiseMetaFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Token\QuantityFactoryInterface as TokenQuantityFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Token\SourceFactoryInterface as TokenSourceFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Token\WhitelistItemFactoryInterface as TokenWhitelistItemFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\TermCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Factories\Collections\WhitelistItemCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Credit\AccountCollectionFactoryInterface as CreditAccountCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Credit\GroupCollectionFactoryInterface as CreditGroupCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Credit\TransactionCollectionFactoryInterface as CreditTransactionCollectionFactoryInterface;
@@ -249,11 +253,11 @@ use Tokenly\Wp\Interfaces\Factories\Collections\Token\PromiseCollectionFactoryIn
 use Tokenly\Wp\Interfaces\Factories\Collections\Token\PromiseMetaCollectionFactoryInterface as TokenPromiseMetaCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Token\SourceCollectionFactoryInterface as TokenSourceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Token\MetaCollectionFactoryInterface as TokenMetaCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Token\WhitelistItemCollectionFactoryInterface as TokenWhitelistItemCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\WhitelistItemCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface as CreditAccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\GroupCollectionInterface as CreditGroupCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface as CreditTransactionCollectionInterface;
@@ -265,7 +269,6 @@ use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface as TokenP
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface as TokenPromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\SourceCollectionInterface as TokenSourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface as TokenMetaCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Token\WhitelistItemCollectionInterface as TokenWhitelistItemCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
@@ -282,6 +285,7 @@ use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\WhitelistItemInterface;
 use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface as TcaRuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface as TcaAccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\Tca\RuleInterface as TcaRuleInterface;
@@ -290,11 +294,10 @@ use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface as TokenPromiseMetaI
 use Tokenly\Wp\Interfaces\Models\Token\SourceInterface as TokenSourceInterface;
 use Tokenly\Wp\Interfaces\Models\Token\MetaInterface as TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\Token\QuantityInterface as TokenQuantityInterface;
-use Tokenly\Wp\Interfaces\Models\Token\WhitelistItemInterface as TokenWhitelistItemInterface;
 use Tokenly\Wp\Interfaces\Middleware\Tca\MenuItemFilterMiddlewareInterface as TcaMenuItemFilterMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Middleware\Tca\PostGuardMiddlewareInterface as TcaPostGuardMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Middleware\Tca\PostResultsFilterMiddlewareInterface as TcaPostResultsFilterMiddlewareInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\AppCreditInventoryShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\CreditInventoryShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LogoutButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\TokenInventoryShortcodeInterface;
@@ -311,6 +314,8 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\DashboardViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SettingsViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TermEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
+use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\BalanceIndexViewModelInterface as CreditBalanceIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupEditViewModelInterface as CreditGroupEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupIndexViewModelInterface as CreditGroupIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupShowViewModelInterface as CreditGroupShowViewModelInterface;
@@ -325,7 +330,6 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceEditViewModelInte
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceIndexViewModelInterface as TokenSourceIndexViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceShowViewModelInterface as TokenSourceShowViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceStoreViewModelInterface as TokenSourceStoreViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\MetaEditViewModelInterface as TokenMetaEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\VendorViewModelInterface as TokenVendorViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\WhitelistEditViewModelInterface as TokenWhitelistEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
@@ -380,12 +384,13 @@ return array(
 	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
 	WhitelistSettingsApiControllerInterface::class    => \DI\autowire( WhitelistSettingsApiController::class ),
 	//Controllers - Admin
+	CreditBalanceControllerInterface::class        => \DI\autowire( CreditBalanceController::class ),
 	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
 	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
-	TokenBalanceControllerInterface::class         => \DI\autowire( TokenBalancesController::class ),
+	TokenBalanceControllerInterface::class         => \DI\autowire( TokenBalanceController::class ),
 	TokenPromiseControllerInterface::class         => \DI\autowire( TokenPromiseController::class ),
 	TokenSourceControllerInterface::class          => \DI\autowire( TokenSourceController::class ),
 	TokenVendorControllerInterface::class          => \DI\autowire( TokenVendorController::class ),
@@ -413,7 +418,6 @@ return array(
 	QueryServiceInterface::class                   => \DI\autowire( QueryService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Services - Domain
-
 	CreditAccountServiceInterface::class           => \DI\autowire( CreditAccountService::class ),
 	CreditGroupServiceInterface::class             => \DI\autowire( CreditGroupService::class ),
 	CreditTransactionServiceInterface::class       => \DI\autowire( CreditTransactionService::class ),
@@ -429,7 +433,7 @@ return array(
 	UserServiceInterface::class                    => \DI\autowire( UserService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Repositories - General
-	PostMetaRepositoryInterface::class                 => \DI\autowire( MetaRepository::class )
+	PostMetaRepositoryInterface::class             => \DI\autowire( PostMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	TermMetaRepositoryInterface::class             => \DI\autowire( TermMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
@@ -481,6 +485,7 @@ return array(
 	TokenItemCardComponentModelInterface::class      => \DI\autowire( TokenItemCardComponentModel::class ),
 	//Presentation - View models - Admin
 	ConnectionViewModelInterface::class              => \DI\autowire( ConnectionViewModel::class ),
+	CreditBalanceIndexViewModelInterface::class      => \DI\autowire( CreditBalanceIndexViewModel::class ),
 	CreditGroupEditViewModelInterface::class         => \DI\autowire( CreditGroupEditViewModel::class ),
 	CreditGroupIndexViewModelInterface::class        => \DI\autowire( CreditGroupIndexViewModel::class ),
 	CreditGroupShowViewModelInterface::class         => \DI\autowire( CreditGroupShowViewModel::class ),
@@ -492,6 +497,7 @@ return array(
 	SettingsViewModelInterface::class                => \DI\autowire( SettingsViewModel::class )
 		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
 	TermEditViewModelInterface::class                => \DI\autowire( TermEditViewModel::class ),
+	TokenBalanceIndexViewModelInterface::class       => \DI\autowire( TokenBalanceIndexViewModel::class ),
 	TokenSourceEditViewModelInterface::class         => \DI\autowire( TokenSourceEditViewModel::class ),
 	TokenSourceIndexViewModelInterface::class        => \DI\autowire( TokenSourceIndexViewModel::class ),
 	TokenSourceShowViewModelInterface::class         => \DI\autowire( TokenSourceShowViewModel::class ),
@@ -502,12 +508,11 @@ return array(
 	TokenPromiseEditViewModelInterface::class        => \DI\autowire( TokenPromiseEditViewModel::class ),
 	TokenPromiseShowViewModelInterface::class        => \DI\autowire( TokenPromiseShowViewModel::class ),
 	TokenPromiseStoreViewModelInterface::class       => \DI\autowire( TokenPromiseStoreViewModel::class ),
-	TokenBalanceIndexViewModelInterface::class       => \DI\autowire( TokenBalanceIndexViewModel::class ),
 	//Presentation - View models - Web
 	PostAccessDeniedViewModelInterface::class        => \DI\autowire( PostAccessDeniedViewModel::class ),
 	UserViewModelInterface::class                    => \DI\autowire( UserViewModel::class ),
 	//Presentation - Shortcodes
-	AppCreditInventoryShortcodeInterface::class      => \DI\autowire( AppCreditInventoryShortcode::class ),
+	CreditInventoryShortcodeInterface::class         => \DI\autowire( CreditInventoryShortcode::class ),
 	LoginButtonShortcodeInterface::class             => \DI\autowire( LoginButtonShortcode::class ),
 	LogoutButtonShortcodeInterface::class            => \DI\autowire( LogoutButtonShortcode::class ),
 	TokenInventoryShortcodeInterface::class          => \DI\autowire( TokenInventoryShortcode::class ),
@@ -526,9 +531,9 @@ return array(
 	TokenPromiseMetaCollectionInterface::class       => \DI\autowire( TokenPromiseMetaCollection::class ),
 	TokenSourceCollectionInterface::class            => \DI\autowire( TokenSourceCollection::class ),
 	TokenMetaCollectionInterface::class              => \DI\autowire( TokenMetaCollection::class ),
-	TokenWhitelistItemCollectionInterface::class     => \DI\autowire( TokenWhitelistItemCollection::class ),
 	PostCollectionInterface::class                   => \DI\autowire( PostCollection::class ),
 	UserCollectionInterface::class                   => \DI\autowire( UserCollection::class ),
+	WhitelistItemCollectionInterface::class          => \DI\autowire( WhitelistItemCollection::class ),
 	//Models
 	TokenAddressInterface::class           => \DI\autowire( TokenAddress::class ),
 	TokenBalanceInterface::class           => \DI\autowire( TokenBalance::class ),
@@ -564,20 +569,20 @@ return array(
 	TokenPromiseMetaInterface::class    => \DI\autowire( TokenPromiseMeta::class ), 
 	TokenQuantityInterface::class       => \DI\autowire( TokenQuantity::class ),
 	TokenSourceInterface::class         => \DI\autowire( TokenSource::class ),
-	TokenWhitelistItemInterface::class  => \DI\autowire( TokenWhitelistItem::class ),
 	TokenMetaInterface::class           => \DI\autowire( TokenMeta::class ), 
 	TermInterface::class                => \DI\autowire( Term::class ), 
 	UserInterface::class                => \DI\autowire( User::class ),
 	//Models - Settings
-	OauthSettingsInterface::class               => \DI\autowire( OauthSettings::class ),
-	IntegrationSettingsInterface::class         => \DI\autowire( IntegrationSettings::class ),
-	TcaSettingsInterface::class                 => \DI\autowire( TcaSettings::class ),
-	WhitelistSettingsInterface::class           => \DI\autowire( WhitelistSettings::class ),
+	OauthSettingsInterface::class       => \DI\autowire( OauthSettings::class ),
+	IntegrationSettingsInterface::class => \DI\autowire( IntegrationSettings::class ),
+	TcaSettingsInterface::class         => \DI\autowire( TcaSettings::class ),
+	WhitelistSettingsInterface::class   => \DI\autowire( WhitelistSettings::class ),
+	WhitelistItemInterface::class       => \DI\autowire( WhitelistItem::class ),
 	//Middleware - TCA
-	MenuItemFilterMiddlewareInterface::class    => \DI\autowire( MenuItemFilterMiddleware::class ),
-	PostGuardMiddlewareInterface::class         => \DI\autowire( PostGuardMiddleware::class )
+	TcaMenuItemFilterMiddlewareInterface::class    => \DI\autowire( TcaMenuItemFilterMiddleware::class ),
+	TcaPostGuardMiddlewareInterface::class         => \DI\autowire( TcaPostGuardMiddleware::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	PostResultsFilterMiddlewareInterface::class => \DI\autowire( PostResultsFilterMiddleware::class ),
+	TcaPostResultsFilterMiddlewareInterface::class => \DI\autowire( TcaPostResultsFilterMiddleware::class ),
 	//Factories - Models
 	CreditAccountFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, CreditAccountInterface::class ) extends ConcreteFactory implements CreditAccountFactoryInterface {};
@@ -612,9 +617,6 @@ return array(
 	TermFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, TermInterface::class ) extends ConcreteFactory implements TermFactoryInterface {};
 	} ),
-	TokenWhitelistItemFactoryInterface::class       => \DI\factory( function( ContainerInterface $container ) {
-		return new class( $container, TokenWhitelistItemInterface::class ) extends ConcreteFactory implements TokenWhitelistItemFactoryInterface {};
-	} ),
 	TokenPromiseFactoryInterface::class             => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, TokenPromiseInterface::class ) extends ConcreteFactory implements TokenPromiseFactoryInterface {};
 	} ),
@@ -630,7 +632,7 @@ return array(
 	TokenBalanceFactoryInterface::class             => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, TokenBalanceInterface::class ) extends ConcreteFactory implements TokenBalanceFactoryInterface {};
 	} ),
-	TokenPromiseMetaFactoryInterface::class              => \DI\factory( function( ContainerInterface $container ) {
+	TokenPromiseMetaFactoryInterface::class         => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, TokenPromiseMetaInterface::class ) extends ConcreteFactory implements TokenPromiseMetaFactoryInterface, PostFactoryInterface {};
 	} ),
 	TokenMetaFactoryInterface::class                => \DI\factory( function( ContainerInterface $container ) {
@@ -638,6 +640,9 @@ return array(
 	} ),
 	UserFactoryInterface::class                     => \DI\factory( function( ContainerInterface $container ) {
 		return new class( $container, UserInterface::class ) extends ConcreteFactory implements UserFactoryInterface {};
+	} ),
+	WhitelistItemFactoryInterface::class            => \DI\factory( function( ContainerInterface $container ) {
+		return new class( $container, WhitelistItemInterface::class ) extends ConcreteFactory implements WhitelistItemFactoryInterface {};
 	} ),
 	//Factories - Collections
 	CreditAccountCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, CreditAccountFactoryInterface $item_factory ) {
@@ -679,11 +684,11 @@ return array(
 	TokenBalanceCollectionFactoryInterface::class         => \DI\factory( function( ContainerInterface $container, TokenBalanceFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, TokenBalanceCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenBalanceCollectionFactoryInterface {};
 	} ),
-	TokenWhitelistItemCollectionFactoryInterface::class   => \DI\factory( function( ContainerInterface $container, TokenWhitelistItemFactoryInterface $item_factory ) {
-		return new class( $container, $item_factory, TokenWhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements TokenWhitelistItemCollectionFactoryInterface {};
-	} ),
 	UserCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, UserCollectionInterface::class ) extends ConcreteCollectionFactory implements UserCollectionFactoryInterface {};
+	} ),
+	WhitelistItemCollectionFactoryInterface::class   => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
+		return new class( $container, $item_factory, WhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements WhitelistItemCollectionFactoryInterface {};
 	} ),
 	//Third-party
 	TokenpassAPI::class => \DI\factory( function ( 

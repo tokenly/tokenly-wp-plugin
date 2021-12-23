@@ -6,7 +6,7 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 
 class Integration extends Model implements IntegrationInterface {
 	public $settings;

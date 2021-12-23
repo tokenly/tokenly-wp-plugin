@@ -31,10 +31,24 @@ export class CreditGroupEditForm extends Component<CreditGroupEditFormProps, Cre
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.state.creditGroup = Object.assign( this.state.creditGroup, this.props.creditGroup );
+		if ( Array.isArray( this.props.creditGroup.app_whitelist ) ) {
+			this.state.creditGroup.app_whitelist = this.props.creditGroup.app_whitelist.join( ', ' );
+		} else {
+			this.state.creditGroup.app_whitelist = '';
+		}
 	}
 	
 	onSave() {
-		this.props.onSave( this.state.creditGroup );
+		let whitelist = this.state.creditGroup.app_whitelist.replace( /\s/g, '' );
+		if ( whitelist == '' ) {
+			whitelist = [];
+		} else {
+			whitelist = whitelist.split(',');
+		}
+		this.props.onSave( {
+			name: this.state.creditGroup.name,
+			app_whitelist: whitelist,
+		} );
 	}
 
 	onCancel() {
