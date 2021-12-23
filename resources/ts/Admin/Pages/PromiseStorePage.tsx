@@ -44,6 +44,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 	constructor( props: PromiseStorePageProps ) {
 		super( props );
+		this.onCancel = this.onCancel.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
 	}
 	

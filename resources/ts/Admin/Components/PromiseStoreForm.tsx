@@ -156,7 +156,8 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 	render() {
 		return (
 			<form style={ { width: '100%' } }>
-				<Flex
+				{ this.state.source
+			?	<Flex
 					//@ts-ignore
 					direction="column"
 					style={ { maxWidth: '320px' } }
@@ -272,10 +273,12 @@ export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseSt
 						</div>
 					}
 				</Flex>
+			: 	<div style={{opacity: 0.8}}>No sources registered.</div>
+			}
 				<Flex justify="flex-start" align="center" style={ { marginTop: '12px' } }>
 					<Button
 						isPrimary
-						disabled={ this.props.saving }
+						disabled={ this.props.saving || !this.state.source }
 						onClick={ () => {
 							this.onSubmit();
 						} }
