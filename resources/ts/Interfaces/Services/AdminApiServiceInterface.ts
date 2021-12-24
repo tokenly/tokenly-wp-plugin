@@ -8,14 +8,14 @@ import {
 	UserShowParams,
 } from './../../Interfaces';
 
-export interface AdminApiServiceInterface {
+export default interface AdminApiServiceInterface {
 	settingsShow( type: string ): Promise<any>;
 	settingsUpdate( type: string, params: any ): Promise<any>;
 	sourceIndex( params: any ): Promise<Array<SourceData>>;
 	sourceStore( params: SourceData ): Promise<any>;
 	sourceUpdate( address: string, params: SourceData ): Promise<any>;
 	sourceDestroy( address: string ): Promise<any>;
-	creditGroupIndex(): Promise<Array<any>>;
+	creditGroupIndex( params: any ): Promise<Array<any>>;
 	creditGroupStore( params: any ): Promise<any>;
 	creditGroupUpdate( params: any ): Promise<any>;
 	creditTransactionIndex(): Promise<Array<any>>;

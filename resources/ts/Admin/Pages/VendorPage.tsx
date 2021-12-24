@@ -2,10 +2,10 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { PromiseRepositoryInterface } from '../../Interfaces/Repositories/PromiseRepositoryInterface';
-import { SourceRepositoryInterface } from '../../Interfaces/Repositories/SourceRepositoryInterface';
+import PromiseRepositoryInterface from '../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
+import SourceRepositoryInterface from '../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { PromiseData } from '../../Interfaces';
-import { PromiseList } from '../Components/PromiseList';
+import { PromiseList } from '../Components/Token/PromiseList';
 import { TYPES } from '../../Types';
 
 import { 

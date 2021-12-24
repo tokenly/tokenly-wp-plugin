@@ -3,10 +3,10 @@ const TYPES = {
 	AuthServiceInterface                    : Symbol.for( 'AuthServiceInterface' ),
 	AdminApiServiceInterface                : Symbol.for( 'AdminApiServiceInterface' ),
 	// Repositories
-	PromiseRepositoryInterface              : Symbol.for( 'PromiseRepositoryInterface' ),
 	CreditGroupRepositoryInterface          : Symbol.for( 'CreditGroupRepositoryInterface' ),
 	CreditTransactionRepositoryInterface    : Symbol.for( 'CreditTransactionRepositoryInterface' ),
-	SourceRepositoryInterface               : Symbol.for( 'SourceRepositoryInterface' ),
+	TokenPromiseRepositoryInterface         : Symbol.for( 'TokenPromiseRepositoryInterface' ),
+	TokenSourceRepositoryInterface          : Symbol.for( 'TokenSourceRepositoryInterface' ),
 	TokenMetaRepositoryInterface            : Symbol.for( 'TokenMetaRepositoryInterface' ),
 	UserRepositoryInterface                 : Symbol.for( 'UserRepositoryInterface' ),
 	// Repositories - Settings

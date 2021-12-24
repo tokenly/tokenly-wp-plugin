@@ -1,9 +1,9 @@
 import {
 	UserIndexParams,
 	UserShowParams,
-} from './../../Interfaces';
+} from '../../Interfaces';
 
-export interface UserRepositoryInterface {
+export default interface UserRepositoryInterface {
 	index( params: UserIndexParams ): Promise<any>;
 	show( userId: number, params: UserShowParams ): Promise<any>;
 }

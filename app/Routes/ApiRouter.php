@@ -97,6 +97,56 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
+			'credit-group-index' => array(
+				'path' => '/credit/group',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['credit-group'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-group-store' => array(
+				'path' => '/credit/group',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['credit-group'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-group-update' => array(
+				'path' => '/credit/group',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['credit-group'], 'update' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-transaction-index' => array(
+				'path' => '/credit/transaction',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['credit-transaction'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'credit-transaction-store' => array(
+				'path' => '/credit/transaction',
+				'args' => array(
+					'methods'             => 'POST',
+					'callback'            => array( $this->controllers['credit-transaction'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'token-promise-index' => array(
 				'path' => '/token/promise',
 				'args' => array(
@@ -172,56 +222,6 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'args' => array(
 					'methods'             => 'DELETE',
 					'callback'            => array( $this->controllers['token-source'], 'destroy' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'credit-group-index' => array(
-				'path' => '/credit/group',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['credit-group'], 'index' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'credit-group-store' => array(
-				'path' => '/credit/group',
-				'args' => array(
-					'methods'             => 'POST',
-					'callback'            => array( $this->controllers['credit-group'], 'store' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'credit-group-update' => array(
-				'path' => '/credit/group',
-				'args' => array(
-					'methods'             => 'PUT',
-					'callback'            => array( $this->controllers['credit-group'], 'update' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'credit-transaction-index' => array(
-				'path' => '/credit/transaction',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['credit-transaction'], 'index' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'credit-transaction-store' => array(
-				'path' => '/credit/transaction',
-				'args' => array(
-					'methods'             => 'POST',
-					'callback'            => array( $this->controllers['credit-transaction'], 'store' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

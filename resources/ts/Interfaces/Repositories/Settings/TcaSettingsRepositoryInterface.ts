@@ -1,5 +1,5 @@
-import { SettingsRepositoryInterface } from "../SettingsRepositoryInterface";
+import SettingsRepositoryInterface from "../SettingsRepositoryInterface";
 
-export interface TcaSettingsRepositoryInterface extends SettingsRepositoryInterface {
+export default interface TcaSettingsRepositoryInterface extends SettingsRepositoryInterface {
 	//
 }

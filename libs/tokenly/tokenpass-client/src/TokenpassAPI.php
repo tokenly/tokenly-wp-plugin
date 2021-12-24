@@ -677,7 +677,6 @@ class TokenpassAPI implements TokenpassAPIInterface
         }
         catch (TokenpassAPIException $e){
             self::$errors[] = $e->getMessage();
-			error_log( $e->getMessage() );
             return false;
         }
         if (!isset($call['result'])){

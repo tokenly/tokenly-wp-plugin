@@ -162,8 +162,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		if ( !isset( $params['promise_id'] ) ) {
 			return false;
 		}
-		$promise_id = $params['promise_id'];
-		$promise = $this->promise_repository->show( $promise_id );
+		$promise = $this->promise_repository->show( $params );
 		return $promise;
 	}
 

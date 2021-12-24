@@ -1,10 +1,10 @@
 import { injectable } from 'inversify';
 import { AuthData } from './../Interfaces';
-import { AuthServiceInterface } from './../Interfaces/Services/AuthServiceInterface';
+import AuthServiceInterface from './../Interfaces/Services/AuthServiceInterface';
 declare const wpApiSettings: any;
 
 @injectable()
-export class AuthService implements AuthServiceInterface {
+export default class AuthService implements AuthServiceInterface {
 	namespace = '/wp-json/tokenly/v1/';
 	
 	constructor() {

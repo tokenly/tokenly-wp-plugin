@@ -6,27 +6,26 @@ import App from './App';
 import AppLayout from './Layouts/AppLayout';
 import SettingsPage from './Admin/Pages/SettingsPage';
 import VendorPage from './Admin/Pages/VendorPage';
-import BalancesShowPage from './Admin/Pages/BalancesShowPage';
 import ConnectionPage from './Admin/Pages/ConnectionPage';
-import WhitelistPage from './Admin/Pages/WhitelistPage';
-import PromiseShowPage from './Admin/Pages/PromiseShowPage';
-import PromiseStorePage from './Admin/Pages/PromiseStorePage';
-import PromiseEditPage from './Admin/Pages/PromiseEditPage';
-import CreditGroupIndexPage from './Admin/Pages/CreditGroupIndexPage';
-import CreditGroupShowPage from './Admin/Pages/CreditGroupShowPage';
-import CreditGroupStorePage from './Admin/Pages/CreditGroupStorePage';
-import CreditGroupEditPage from './Admin/Pages/CreditGroupEditPage';
-import CreditTransactionIndexPage from './Admin/Pages/CreditTransactionIndexPage';
-import CreditTransactionStorePage from './Admin/Pages/CreditTransactionStorePage';
-import SourceIndexPage from './Admin/Pages/SourceIndexPage';
-import SourceShowPage from './Admin/Pages/SourceShowPage';
-import SourceStorePage from './Admin/Pages/SourceStorePage';
-import SourceEditPage from './Admin/Pages/SourceEditPage';
-import DashboardPage from './Admin/Pages/DashboardPage';
-import PostEditPage from './Admin/Pages/PostEditPage';
+import CreditGroupIndexPage from './Admin/Pages/Credit/GroupIndexPage';
+import CreditGroupShowPage from './Admin/Pages/Credit/GroupShowPage';
+import CreditGroupStorePage from './Admin/Pages/Credit/GroupStorePage';
+import CreditGroupEditPage from './Admin/Pages/Credit/GroupEditPage';
+import CreditTransactionIndexPage from './Admin/Pages/Credit/TransactionIndexPage';
+import CreditTransactionStorePage from './Admin/Pages/Credit/TransactionStorePage';
+import TokenBalanceIndexPage from './Admin/Pages/Token/BalanceIndexPage';
+import TokenPromiseShowPage from './Admin/Pages/Token/PromiseShowPage';
+import TokenPromiseStorePage from './Admin/Pages/Token/PromiseStorePage';
+import TokenPromiseEditPage from './Admin/Pages/Token/PromiseEditPage';
+import TokenSourceIndexPage from './Admin/Pages/Token/SourceIndexPage';
+import TokenSourceShowPage from './Admin/Pages/Token/SourceShowPage';
+import TokenSourceStorePage from './Admin/Pages/Token/SourceStorePage';
+import TokenSourceEditPage from './Admin/Pages/Token/SourceEditPage';
 import TaxonomyEditPage from './Admin/Pages/TaxonomyEditPage';
 import TokenMetaEditPage from './Admin/Pages/TokenMetaEditPage';
-
+import DashboardPage from './Admin/Pages/DashboardPage';
+import PostEditPage from './Admin/Pages/PostEditPage';
+import WhitelistPage from './Admin/Pages/WhitelistPage';
 import { Redirect } from './Interfaces';
 
 declare const document: any;
@@ -79,19 +78,20 @@ class AdminApp extends App {
 			'credit-group-edit'         : CreditGroupEditPage,
 			'credit-transaction-index'  : CreditTransactionIndexPage,
 			'credit-transaction-store'  : CreditTransactionStorePage,
-			'token-balance-index'       : BalancesShowPage,
+			'token-balance-index'       : TokenBalanceIndexPage,
+			'token-promise-show'        : TokenPromiseShowPage,
+			'token-promise-store'       : TokenPromiseStorePage,
+			'token-promise-edit'        : TokenPromiseEditPage,
+			'token-source-index'        : TokenSourceIndexPage,
+			'token-source-show'         : TokenSourceShowPage,
+			'token-source-store'        : TokenSourceStorePage,
+			'token-source-edit'         : TokenSourceEditPage,
+			'token-meta-edit'           : TokenMetaEditPage,
 			'token-vendor'              : VendorPage,
 			'token-whitelist-edit'      : WhitelistPage,
-			'token-promise-show'        : PromiseShowPage,
-			'token-promise-store'       : PromiseStorePage,
-			'token-promise-edit'        : PromiseEditPage,
-			'token-source-index'        : SourceIndexPage,
-			'token-source-show'         : SourceShowPage,
-			'token-source-store'        : SourceStorePage,
-			'token-source-edit'         : SourceEditPage,
 			'post-edit'                 : PostEditPage,
 			'taxonomy-edit'             : TaxonomyEditPage,
-			'token-meta-edit'           : TokenMetaEditPage,
+
 		} as any;
 		return routes;
 	}

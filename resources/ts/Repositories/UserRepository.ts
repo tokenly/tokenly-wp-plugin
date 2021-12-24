@@ -1,11 +1,11 @@
 import { injectable, inject } from 'inversify';
 import { UserIndexParams, UserShowParams } from '../Interfaces';
-import { UserRepositoryInterface } from './../Interfaces/Repositories/UserRepositoryInterface';
-import { AdminApiServiceInterface } from '../Interfaces/Services/AdminApiServiceInterface';
+import UserRepositoryInterface from './../Interfaces/Repositories/UserRepositoryInterface';
+import AdminApiServiceInterface from '../Interfaces/Services/AdminApiServiceInterface';
 import { TYPES } from './../Types';
 
 @injectable()
-export class UserRepository implements UserRepositoryInterface {
+export default class UserRepository implements UserRepositoryInterface {
 	adminApiService;
 
 	constructor(

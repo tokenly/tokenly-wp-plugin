@@ -8,12 +8,12 @@ import {
 	PromiseUpdateParams,
 	PromiseData,
 } from '../Interfaces';
-import { AdminApiServiceInterface } from './../Interfaces/Services/AdminApiServiceInterface';
+import AdminApiServiceInterface from './../Interfaces/Services/AdminApiServiceInterface';
 
 declare const wpApiSettings: any;
 
 @injectable()
-export class AdminApiService implements AdminApiServiceInterface {
+export default class AdminApiService implements AdminApiServiceInterface {
 	namespace = '/wp-json/tokenly/v1';
 
 	get headers() {
@@ -43,9 +43,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	creditGroupIndex(): Promise<any> {
+	creditGroupIndex( params: any = {} ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/credit/group' ).then( result => {
+			this.makeRequest( 'GET', '/credit/group', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
