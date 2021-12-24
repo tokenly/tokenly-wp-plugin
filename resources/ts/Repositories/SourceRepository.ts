@@ -14,9 +14,9 @@ export class SourceRepository implements SourceRepositoryInterface {
 		this.adminApiService = adminApiService;
 	}
 
-	index(): Promise<Array<SourceData>> {
+	index( params: any ): Promise<Array<SourceData>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.sourceIndex().then( ( result: Array<SourceData> ) => {
+			this.adminApiService.sourceIndex( params ).then( ( result: Array<SourceData> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

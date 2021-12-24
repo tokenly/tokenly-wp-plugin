@@ -3,10 +3,7 @@ import { Component } from 'react';
 
 import { 
 	Button,
-	Spinner,
-	Panel,
-	PanelBody,
-	PanelRow,
+	Flex,
 } from '@wordpress/components';
 
 interface IntegrationSettingsHelpProps {
@@ -15,13 +12,23 @@ interface IntegrationSettingsHelpProps {
 }
 
 interface IntegrationSettingsHelpState {
-	//
+	copiedHomepage: boolean;
 }
 
 export class IntegrationSettingsHelp extends Component<IntegrationSettingsHelpProps, IntegrationSettingsHelpState> {
-
+	state: IntegrationSettingsHelpState = {
+		copiedHomepage: false,
+	};
 	constructor( props: IntegrationSettingsHelpProps ) {
 		super( props );
+	}
+
+	copyToClipboard( text: string ) {
+		console.log(text);
+		if ( navigator && navigator.clipboard ) {
+			console.log(123);
+			navigator.clipboard.writeText( text );
+		}
 	}
 
 	render() {
@@ -37,24 +44,42 @@ export class IntegrationSettingsHelp extends Component<IntegrationSettingsHelpPr
 				</ul>
 				<div className="tk_app_details">
 					<h3>Register Client Application</h3>
-					<span>
+					<Flex align="center" justify="flex-start" gap={1}>
 						<span><b>CLIENT NAME: </b></span>
 						<span>Random Input</span>
-					</span>
-					<br/>
-					<span>
-						<span><b>APP HOMEPAGE URL: </b></span>
-						<a href={ this.props?.appHomepageUrl } target="_blank" >
-							{ this.props?.appHomepageUrl }
-						</a>
-					</span>
-					<br/>
-					<span>
-						<span><b>CLIENT AUTHORIZATION REDIRECT URL: </b></span>
-						<a href={ this.props?.clientAuthUrl } target="_blank" >
-							{ this.props?.clientAuthUrl }
-						</a>
-					</span>
+					</Flex>
+					<Flex align="center" justify="flex-start" gap={1}>
+						<span>
+							<span><b>APP HOMEPAGE URL: </b></span>
+							<a href={ this.props?.appHomepageUrl } target="_blank" >
+								{ this.props?.appHomepageUrl }
+							</a>
+						</span>
+						<Button
+							isSmall
+							title="Copy homepage URL"
+							icon="admin-page"
+							onClick={ () => {
+								this.copyToClipboard( this.props?.appHomepageUrl );
+							} }
+						/>
+					</Flex>
+					<Flex align="center" justify="flex-start" gap={1}>
+						<span>
+							<span><b>CLIENT AUTHORIZATION REDIRECT URL: </b></span>
+							<a href={ this.props?.clientAuthUrl } target="_blank" >
+								{ this.props?.clientAuthUrl }
+							</a>
+						</span>
+						<Button
+							isSmall
+							title="Copy redirect URL"
+							icon="admin-page"
+							onClick={ () => {
+								this.copyToClipboard( this.props?.clientAuthUrl );
+							} }
+						/>
+					</Flex>
 				</div>
 			</div>
 		);

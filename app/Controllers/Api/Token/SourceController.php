@@ -22,7 +22,13 @@ class SourceController implements SourceControllerInterface {
 	 * @return Source[]
 	 */
 	public function index( \WP_REST_Request $request ) {
-		$sources = $this->source_service->index();
+		$params = $request->get_params();
+		if ( isset( $params['with'] ) && is_string( $params['with'] ) ) {
+			$params['with'] = explode( ',', $params['with'] );
+		}
+		$sources = $this->source_service->index( $params );
+		$sources = clone $sources;
+		$sources->key_by_field( 'address_id' );
 		$sources = $sources->to_array();
 		return $sources;
 	}

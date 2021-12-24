@@ -148,7 +148,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	 * @return PromiseCollectionInterface Promises found
 	 */
 	protected function index_cacheable( array $params = array() ) {
-		$promises = $this->promise_repository->index();
+		$promises = $this->promise_repository->index( $params );
 		return $promises;
 	}
 

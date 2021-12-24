@@ -14,9 +14,9 @@ export class PromiseRepository implements PromiseRepositoryInterface {
 		this.adminApiService = adminApiService;
 	}
 
-	index(): Promise<Array<PromiseData>> {
+	index( params: any = {} ): Promise<Array<PromiseData>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.promiseIndex().then( ( result: Array<PromiseData> ) => {
+			this.adminApiService.promiseIndex( params ).then( ( result: Array<PromiseData> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

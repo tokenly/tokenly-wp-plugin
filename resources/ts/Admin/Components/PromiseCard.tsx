@@ -17,6 +17,7 @@ import {
 interface PromiseCardProps {
 	promise: PromiseData;
 	sources: any;
+	loadingSources: boolean;
 }
 
 interface PromiseCardState {
@@ -55,7 +56,7 @@ export class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
 				<CardBody style={ { width: '100%' } }>
 					<Flex style={ { width: '100%', alignItems: 'center' } }>
 						<div style={ { flex: 1 } }>
-							<PromiseSourceInfo promise={ this.props.promise } sources={ this.props.sources } />
+							<PromiseSourceInfo loadingSources={ this.props.loadingSources } promise={ this.props.promise } sources={ this.props.sources } />
 							<PromiseParticipants promise={ this.props.promise } />
 							<div><span>Asset: </span><strong>{ this.props.promise.asset }</strong></div>
 							<div><span>Quantity: </span><strong>{ this.props.promise?.quantity?.value }</strong></div>

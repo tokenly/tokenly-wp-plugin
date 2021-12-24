@@ -3,12 +3,14 @@ import { Component } from 'react';
 import { PromiseData } from '../../Interfaces';
 
 import { 
-	//
+	Flex,
+	Spinner,
 } from '@wordpress/components';
 
 interface PromiseSourceInfoProps {
 	promise: PromiseData;
 	sources: any; 
+	loadingSources: boolean;
 }
 
 interface PromiseSourceInfoState {
@@ -43,15 +45,22 @@ export class PromiseSourceInfo extends Component<PromiseSourceInfoProps, Promise
 
 	render() {
 		return (
-			<div>
-				<span>Source: </span>
-				{ this.sourceExists( this.props.promise )
-					? <a href={`/wp-admin/admin.php?page=tokenly-token-source-show&source=${this.props.promise.source_id}`}>
-						<strong>{ this.getPromiseSource( this.props.promise ) }</strong>
-					</a>
-					: <span><strong>{ this.props.promise.source_id }</strong></span>
-				}
-			</div>
+			<Flex>
+				<div>
+					<span>Source: </span>
+					{ !this.props.loadingSources &&
+						<span>
+							{ this.sourceExists( this.props.promise )
+								?	<a href={`/wp-admin/admin.php?page=tokenly-token-source-show&source=${this.props.promise.source_id}`}>
+										<strong>{ this.getPromiseSource( this.props.promise ) }</strong>
+									</a>
+								: 	<span><strong>{ this.props.promise.source_id }</strong></span>
+							}
+						</span>
+					}
+					<span style={{visibility: this.props.loadingSources ? 'visible' : 'hidden'}}><Spinner /></span>
+				</div>
+			</Flex>
 		);
 	}
 }

@@ -93,9 +93,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	sourceIndex(): Promise<any> {
+	sourceIndex( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/token/source' ).then( result => {
+			this.makeRequest( 'GET', '/token/source', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -133,9 +133,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	promiseIndex(): Promise<Array<PromiseData>> {
+	promiseIndex( params: any = {} ): Promise<Array<PromiseData>> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/token/promise' ).then( ( result: Array<PromiseData> ) => {
+			this.makeRequest( 'GET', '/token/promise', params ).then( ( result: Array<PromiseData> ) => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -213,7 +213,7 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	makeRequest( method: string = '', route: string = '', args: object = {} ): Promise<any> {
+	makeRequest( method: string = '', route: string = '', args: any = {} ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			const params: RequestInit = {
 				method: method,

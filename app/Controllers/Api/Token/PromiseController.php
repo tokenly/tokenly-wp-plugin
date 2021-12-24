@@ -6,6 +6,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface;
 
 /**
  * Defines promise-related endpoints
@@ -26,7 +27,11 @@ class PromiseController implements PromiseControllerInterface {
 	 * @return array
 	 */
 	public function index( \WP_REST_Request $request ) {
-		$promises = $this->promise_service->index();
+		$params = $request->get_params();
+		if ( isset( $params['with'] ) && is_string( $params['with'] ) ) {
+			$params['with'] = explode( ',', $params['with'] );
+		}
+		$promises = $this->promise_service->index( $params );
 		$promises = $promises->to_array();
 		return $promises;
 	}

@@ -3,9 +3,9 @@ import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
 import { PromiseRepositoryInterface } from '../../Interfaces/Repositories/PromiseRepositoryInterface';
+import { SourceRepositoryInterface } from '../../Interfaces/Repositories/SourceRepositoryInterface';
 import { PromiseData } from '../../Interfaces';
 import { PromiseList } from '../Components/PromiseList';
-import { PromiseDetailsModal } from '../Components/PromiseDetailsModal';
 import { TYPES } from '../../Types';
 
 import { 
@@ -15,6 +15,7 @@ import {
 	PanelBody,
 	PanelRow,
 	Modal,
+	Spinner,
 } from '@wordpress/components';
 
 interface VendorPageData {
@@ -32,17 +33,27 @@ interface VendorPageState {
 	isPromiseDetailsModalOpen: boolean;
 	storingPromise: boolean;
 	currentPromise: number;
+	promises: any;
+	sources: any;
+	loadingPromises: boolean;
+	loadingSources: boolean;
 }
 
 export default class VendorPage extends Component<VendorPageProps, VendorPageState> {
 	@resolve( TYPES.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
+	@resolve( TYPES.SourceRepositoryInterface )
+	sourceRepository: SourceRepositoryInterface;
 	
 	state: VendorPageState = {
 		promiseData: [],
 		isPromiseDetailsModalOpen: false,
 		storingPromise: false,
 		currentPromise: 0,
+		promises: [],
+		sources: {},
+		loadingPromises: true,
+		loadingSources: true,
 	}
 	constructor( props: VendorPageProps ) {
 		super( props );
@@ -62,16 +73,29 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 			isPromiseDetailsModalOpen: true,
 		} );
 	}
+
+	componentWillMount() {
+		this.promiseRepository.index( {
+			with: [ 'promise_meta.source_user', 'promise_meta.destination_user' ],
+		} ).then( ( promises ) => {
+			this.setState( {
+				loadingPromises: false,
+				promises: promises,
+			} );
+		} );
+		this.sourceRepository.index( {
+			with: [ 'address' ],
+		} ).then( ( sources ) => {
+			this.setState( {
+				loadingSources: false,
+				sources: sources,
+			} );
+		} );
+	}
 	
 	render() {
 		return (
 			<Page title={'Tokenpass Vendor'}>
-				{this.state.isPromiseDetailsModalOpen &&
-					<PromiseDetailsModal
-						onRequestClose={this.onDetailsModalRequestClose}
-						promise={this.props.pageData.promises[ this.state.currentPromise ]}
-					/>
-				}
 				<Panel header="Vendor actions">
 					<PanelBody>
 						<PanelRow>
@@ -98,14 +122,25 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				<Panel header="Current promises">
 					<PanelBody>
 						<PanelRow>
-							{ this.props.pageData?.promises?.length > 0
-								? <PromiseList
-									promises={ this.props.pageData.promises }
-									onDetails={ this.onDetails }
-									sources={ this.props.pageData.sources }
-								/>
-								: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
-							}
+							<Flex>
+								{ this.state.loadingPromises
+								?	<Flex justify="flex-start">
+										<span>Loading promises ... </span>
+										<Spinner />
+									</Flex>
+								:	<Flex>
+										{ this.state.promises?.length > 0
+											? <PromiseList
+												promises={ this.state.promises }
+												onDetails={ this.onDetails }
+												sources={ this.state.sources }
+												loadingSources={ this.state.loadingSources }
+											/>
+											: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
+										}
+									</Flex>
+								}
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

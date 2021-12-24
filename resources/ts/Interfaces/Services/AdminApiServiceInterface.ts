@@ -11,7 +11,7 @@ import {
 export interface AdminApiServiceInterface {
 	settingsShow( type: string ): Promise<any>;
 	settingsUpdate( type: string, params: any ): Promise<any>;
-	sourceIndex(): Promise<Array<SourceData>>;
+	sourceIndex( params: any ): Promise<Array<SourceData>>;
 	sourceStore( params: SourceData ): Promise<any>;
 	sourceUpdate( address: string, params: SourceData ): Promise<any>;
 	sourceDestroy( address: string ): Promise<any>;
@@ -20,7 +20,7 @@ export interface AdminApiServiceInterface {
 	creditGroupUpdate( params: any ): Promise<any>;
 	creditTransactionIndex(): Promise<Array<any>>;
 	creditTransactionStore( params: any ): Promise<any>;
-	promiseIndex(): Promise<Array<PromiseData>>;
+	promiseIndex( params: any ): Promise<Array<PromiseData>>;
 	promiseStore( params: PromiseStoreParams ): Promise<any>;
 	promiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any>;
 	promiseDestroy( promiseId: number ): Promise<any>;
