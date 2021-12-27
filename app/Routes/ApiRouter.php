@@ -167,6 +167,16 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
+			'token_promise_show' => array(
+				'path' => '/token/promise/(?P<promise>[\d]+)',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['token_promise'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'token_promise_store' => array(
 				'path' => '/token/promise',
 				'args' => array(
@@ -207,6 +217,16 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
+			'token_source_show' => array(
+				'path' => '/token/source/(?P<source>\S+)',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['token_source'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'token_source_store' => array(
 				'path' => '/token/source',
 				'args' => array(
@@ -218,7 +238,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'token_source_update' => array(
-				'path' => '/token/source/(?P<address>[a-zA-Z0-9-]+)',
+				'path' => '/token/source/(?P<source>\S+)',
 				'args' => array(
 					'methods'             => 'PUT',
 					'callback'            => array( $this->controllers['token_source'], 'update' ),
@@ -228,7 +248,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'token_source_destroy' => array(
-				'path' => '/token/source/(?P<address>[a-zA-Z0-9-]+)',
+				'path' => '/token/source/(?P<source>\S+)',
 				'args' => array(
 					'methods'             => 'DELETE',
 					'callback'            => array( $this->controllers['token_source'], 'destroy' ),
@@ -259,6 +279,33 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			),
 		);
 		$routes = array_merge( $routes, $this->get_settings_routes() );
+		$routes = $this->process_routes( $routes );
+		return $routes;
+	}
+
+	protected function process_routes( $routes ) {
+		foreach ( $routes as &$route ) {
+			$callback = $route['args']['callback'];
+			$route['args']['callback'] = function( $request ) use ( $callback ) {
+				$controller = $callback[0];
+				$method = $callback[1];
+				switch ( $method ) {
+					case 'index':
+					case 'show':
+					case 'update':
+					case 'destroy':
+						if ( method_exists( $controller, 'bind' ) ) {
+							$model = call_user_func( array( $controller, 'bind' ), $request, $method );
+							return call_user_func( $callback, $model, $request );
+						} else {
+							return call_user_func( $callback, $request );
+						}
+						break;
+					default:
+						return call_user_func( $callback, $request );
+				}
+			};
+		}
 		return $routes;
 	}
 

@@ -2,12 +2,13 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TermEditViewModelInterface;
+
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
-class TermEditViewModel extends ViewModel implements TermEditViewModelInterface {
+class TermEditViewModel extends DynamicViewModel implements TermEditViewModelInterface {
 	protected $tca_settings;
 	protected $term_service;
 	
@@ -19,7 +20,7 @@ class TermEditViewModel extends ViewModel implements TermEditViewModelInterface 
 		$this->term_service = $term_service;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		if ( !isset( $data['term'] ) ) {
 			return;
 		}

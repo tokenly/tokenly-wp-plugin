@@ -10,7 +10,7 @@ import {
 } from '../Interfaces';
 import AdminApiServiceInterface from './../Interfaces/Services/AdminApiServiceInterface';
 
-declare const wpApiSettings: any;
+declare const window: any;
 
 @injectable()
 export default class AdminApiService implements AdminApiServiceInterface {
@@ -19,7 +19,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 	get headers() {
 		return {
 			'Content-type': 'application/json; charset=UTF-8',
-			'X-WP-Nonce': wpApiSettings.nonce,
+			'X-WP-Nonce': window?.tokenpassData?.props?.nonce,
 		}
 	}
 	
@@ -103,7 +103,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	sourceIndex( params: any ): Promise<any> {
+	tokenSourceIndex( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/token/source', params ).then( result => {
 				resolve( result );
@@ -113,7 +113,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	sourceStore( params: SourceData ): Promise<any> {
+	tokenSourceStore( params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'POST', '/token/source', params ).then( result => {
 				resolve( result );
@@ -123,7 +123,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	sourceUpdate( address: string, params: SourceData ): Promise<any> {
+	tokenSourceUpdate( address: string, params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'PUT', '/token/source/' + address, params ).then( result => {
 				resolve( result );
@@ -133,7 +133,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	sourceDestroy( address: string ): Promise<any> {
+	tokenSourceDestroy( address: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'DELETE', '/token/source/' + address ).then( result => {
 				resolve( result );
@@ -143,7 +143,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	promiseIndex( params: any = {} ): Promise<Array<PromiseData>> {
+	tokenPromiseIndex( params: any = {} ): Promise<Array<PromiseData>> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/token/promise', params ).then( ( result: Array<PromiseData> ) => {
 				resolve( result );
@@ -153,7 +153,17 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	promiseStore( params: PromiseStoreParams ): Promise<any> {
+	tokenPromiseShow( id: number, params: any = {} ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/token/promise/${id}`, params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	tokenPromiseStore( params: PromiseStoreParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'POST', '/token/promise', params ).then( result => {
 				resolve( result );
@@ -163,7 +173,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	promiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any> {
+	tokenPromiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'PUT', `/token/promise/${promiseId}`, params ).then( result => {
 				resolve( result );
@@ -173,7 +183,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	promiseDestroy( promiseId: number ): Promise<any> {
+	tokenPromiseDestroy( promiseId: number ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'DELETE', `/token/promise/${promiseId}` ).then( result => {
 				resolve( result );

@@ -39,11 +39,6 @@ class SourceController implements SourceControllerInterface {
 
 	public function show() {
 		$input_data = array();
-		if ( isset( $_GET['source'] ) ) {
-			$input_data['source'] = $_GET['source'];
-		} else {
-			return false;
-		}
 		$view_data = $this->show_view_model->prepare( $input_data );
 		return array(
 			'view' => 'token-source-show',
@@ -61,11 +56,6 @@ class SourceController implements SourceControllerInterface {
 
 	public function edit() {
 		$input_data = array();
-		if ( isset( $_GET['source'] ) ) {
-			$input_data['source'] = $_GET['source'];
-		} else {
-			return false;
-		}
 		$view_data = $this->edit_view_model->prepare( $input_data );
 		return array(
 			'view' => 'token-source-edit',

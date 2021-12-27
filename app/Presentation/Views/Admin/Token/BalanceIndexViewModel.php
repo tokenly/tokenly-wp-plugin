@@ -2,13 +2,13 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\BalanceIndexViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
-class BalanceIndexViewModel extends ViewModel implements BalanceIndexViewModelInterface {
+class BalanceIndexViewModel extends DynamicViewModel implements BalanceIndexViewModelInterface {
 	protected $address_service;
 	protected $user_service;
 	
@@ -20,7 +20,7 @@ class BalanceIndexViewModel extends ViewModel implements BalanceIndexViewModelIn
 		$this->user_service = $user_service;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		$balance = array();
 		$address = null;
 		$user = null;

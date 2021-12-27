@@ -9,7 +9,7 @@ import {
 } from '@wordpress/components';
 
 interface PromiseParticipantsProps {
-	promise: PromiseData;
+	promise: any;
 }
 
 interface PromiseParticipantsState {

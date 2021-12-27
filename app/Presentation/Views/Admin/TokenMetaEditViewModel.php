@@ -2,12 +2,12 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface;
 
-class TokenMetaEditViewModel extends ViewModel implements TokenMetaEditViewModelInterface {
+class TokenMetaEditViewModel extends DynamicViewModel implements TokenMetaEditViewModelInterface {
 	protected $meta_service;
 	
 	public function __construct(
@@ -16,7 +16,7 @@ class TokenMetaEditViewModel extends ViewModel implements TokenMetaEditViewModel
 		$this->meta_service = $meta_service;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		$meta = $this->meta_service->show( array( 'id' => get_the_ID() ) );
 		if ( $meta && is_object( $meta ) ) {
 			$meta = $meta->to_array();

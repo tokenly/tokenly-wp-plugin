@@ -34,7 +34,7 @@ class Integration extends Model implements IntegrationInterface {
 			'can_connect' => $integration_data['integration_can_connect'],
 		);
 		parent::__construct( $fill_data );
-		if ( isset( $this->settings->settings_updated ) && $this->settings->settings_updated == true ) {
+		if ( isset( $this->settings->settings_updated ) && $this->settings->settings_updated === true ) {
 			$this->check_connection();
 		}
 	}

@@ -28,13 +28,7 @@ class TransactionController implements TransactionControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return TransactionCollectionInterface
 	 */
-	public function index( \WP_REST_Request $request ) {
-		$params = array();
-		if ( isset( $_GET['group'] ) ) {
-			$params['group_uuid'] = $_GET['group'];
-		} else {
-			return false;
-		}
+	public function index( TransactionCollectionInterface $transactions, \WP_REST_Request $request ) {
 		$transactions = $this->transaction_service->index( $params );
 		$transactions = $transactions->to_array();
 		return $transactions;
@@ -74,6 +68,26 @@ class TransactionController implements TransactionControllerInterface {
 		}
 		return array(
 			'transactions' => $transactions,
+		);
+	}
+
+	protected function remap_parameters( array $params = array() ) {
+		if ( isset( $params['group'] ) ) {
+			$params['group_uuid'] = $params['group'];
+			unset( $params['group'] );
+		}
+		return $params;
+	}
+
+	/**
+	 * Gets model binding parameters
+	 * @return array
+	 */
+	protected function get_bind_params() {
+		return array(
+			'service'                   => $this->transaction_service,
+			'collection_methods'        => array( 'index' ),
+			'collection_service_method' => 'index',
 		);
 	}
 }

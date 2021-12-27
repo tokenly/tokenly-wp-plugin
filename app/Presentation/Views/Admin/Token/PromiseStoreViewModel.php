@@ -2,12 +2,12 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseStoreViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
-class PromiseStoreViewModel extends ViewModel implements PromiseStoreViewModelInterface {
+class PromiseStoreViewModel extends DynamicViewModel implements PromiseStoreViewModelInterface {
 	protected $source_service;
 	
 	public function __construct(
@@ -16,7 +16,7 @@ class PromiseStoreViewModel extends ViewModel implements PromiseStoreViewModelIn
 		$this->source_service = $source_service;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		$sources = $this->source_service->index( array(
 			'with' => array( 'address' ),
 		) );

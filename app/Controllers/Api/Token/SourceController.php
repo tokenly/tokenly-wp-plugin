@@ -2,14 +2,17 @@
 
 namespace Tokenly\Wp\Controllers\Api\Token;
 
+use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\SourceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
 
 /**
  * Handles the source REST API endpoints
  */
-class SourceController implements SourceControllerInterface {
+class SourceController extends Controller implements SourceControllerInterface {
 	public function __construct(
 		SourceServiceInterface $source_service
 	) {
@@ -18,19 +21,26 @@ class SourceController implements SourceControllerInterface {
 	
 	/**
 	 * Responds with registered sources
+	 * @param SourceCollectionInterface $sources Bound sources
 	 * @param \WP_REST_Request $request Request data
-	 * @return Source[]
+	 * @return array
 	 */
-	public function index( \WP_REST_Request $request ) {
-		$params = $request->get_params();
-		if ( isset( $params['with'] ) && is_string( $params['with'] ) ) {
-			$params['with'] = explode( ',', $params['with'] );
-		}
-		$sources = $this->source_service->index( $params );
+	public function index( SourceCollectionInterface $sources, \WP_REST_Request $request ) {
 		$sources = clone $sources;
 		$sources->key_by_field( 'address_id' );
 		$sources = $sources->to_array();
 		return $sources;
+	}
+
+	/**
+	 * Gets a single source
+	 * @param SourceInterface $source Bound source
+	 * @param \WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function show( SourceInterface $source, \WP_REST_Request $request ) {
+		$source = $source->to_array();
+		return $source;
 	}
 
 	/**
@@ -47,24 +57,12 @@ class SourceController implements SourceControllerInterface {
 	}
 
 	/**
-	 * Updates a registered source
+	 * Updates the source
+	 * @param SourceInterface $source Bound source
 	 * @param \WP_REST_Request $request Request data
 	 * @return Source 
 	 */
-	public function update( \WP_REST_Request $request ) {
-		$params = $request->get_params();
-		$address = $params['address'] ?? null;
-		if ( !$address ) {
-			return array(
-				'status' => "Not updated. No address supplied.",
-			);
-		}
-		$source = $this->source_service->show( array( 'address' => $address ) );
-		if ( !$source ) {
-			return array(
-				'status' => "Not updated. Source not found.",
-			);
-		}
+	public function update( SourceInterface $source, \WP_REST_Request $request ) {
 		$source->update( $params );
 		return array(
 			'status' => "Source successfully updated!",
@@ -72,26 +70,31 @@ class SourceController implements SourceControllerInterface {
 	}
 
 	/**
-	 * Destroys a registered source
+	 * Deletes the source
+	 * @param SourceInterface $source Bound source
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( \WP_REST_Request $request ) {
-		$address = $request->get_param( 'address' );
-		if ( !$address ) {
-			return array(
-				'status' => "Not destroyed. No address supplied.",
-			);
-		}
-		$source = $this->source_service->show( array( 'address' => $address ) );
-		if ( !$source ) {
-			return array(
-				'status' => "Not destroyed. Address not found.",
-			);
-		}
+	public function destroy( SourceInterface $source, \WP_REST_Request $request ) {
 		$source->destroy();
 		return array(
 			'status' => "Source successfully destroyed!",
+		);
+	}
+
+	/**
+	 * Gets model binding parameters
+	 * @return array
+	 */
+	protected function get_bind_params() {
+		return array(
+			'service'                   => $this->source_service,
+			'query_parameter'           => 'source',
+			'single_service_parameter'  => 'address',
+			'single_service_method'     => 'show',
+			'single_methods'            => array( 'show', 'update', 'destroy' ),
+			'collection_methods'        => array( 'index' ),
+			'collection_service_method' => 'index',
 		);
 	}
 }

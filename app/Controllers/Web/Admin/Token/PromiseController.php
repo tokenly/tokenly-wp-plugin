@@ -32,11 +32,6 @@ class PromiseController implements PromiseControllerInterface {
 	 */
 	public function show() {
 		$input_data = array();
-		if ( isset( $_GET['promise'] ) ) {
-			$input_data['promise_id'] = intval( $_GET['promise'] );
-		} else {
-			return false;
-		}
 		$view_data = $this->show_view_model->prepare( $input_data );
 		return array(
 			'view' => 'token-promise-show',
@@ -62,11 +57,6 @@ class PromiseController implements PromiseControllerInterface {
 	 */
 	public function edit() {
 		$input_data = array();
-		if ( isset( $_GET['promise'] ) ) {
-			$input_data['promise_id'] = intval( $_GET['promise'] );
-		} else {
-			return false;
-		}
 		$view_data = $this->edit_view_model->prepare( $input_data );
 		return array(
 			'view' => 'token-promise-edit',

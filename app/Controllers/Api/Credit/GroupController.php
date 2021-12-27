@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Controllers\Api\Credit;
 
+use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface;
@@ -11,7 +12,7 @@ use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface;
 /**
  * Defines promise-related endpoints
  */
-class GroupController implements GroupControllerInterface {
+class GroupController extends Controller implements GroupControllerInterface {
 	protected $group_service;
 
 	public function __construct(
@@ -25,9 +26,7 @@ class GroupController implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return GroupCollectionInterface
 	 */
-	public function index( \WP_REST_Request $request ) {
-		$params = $request->get_params();
-		$groups = $this->group_service->index( $params );
+	public function index( GroupCollectionInterface $groups, \WP_REST_Request $request ) {
 		$groups = $groups->to_array();
 		return $groups;
 	}
@@ -37,8 +36,8 @@ class GroupController implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return GroupInterface
 	 */
-	public function show( \WP_REST_Request $request ) {
-		$group = $this->get_group( $request );
+	public function show( GroupInterface $group, \WP_REST_Request $request ) {
+		$group = $group->to_array();
 		return $group;
 	}
 
@@ -61,11 +60,7 @@ class GroupController implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function update( \WP_REST_Request $request ) {
-		$group = $this->get_group( $request );
-		if ( !$group ) {
-			return false;
-		}
+	public function update( GroupInterface $group, \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$group->update( $params );
 		return array(
@@ -78,30 +73,26 @@ class GroupController implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( \WP_REST_Request $request ) {
-		$group = $this->get_group( $request );
-		if ( !$credit_group ) {
-			return;
-		}
+	public function destroy( GroupInterface $group, \WP_REST_Request $request ) {
 		$group->destroy();
 		return array(
 			'status' => "Group successfully cancelled!",
 		);
 	}
-	
+
 	/**
-	 * Retrieves the queried group
-	 * @param \WP_REST_Request $request Request data
-	 * @return GroupInterface
+	 * Gets model binding parameters
+	 * @return array
 	 */
-	protected function get_group( \WP_REST_Request $request ) {
-		$group_id = $request->get_param( 'group' );
-		if ( !$group_id ) {
-			return;
-		}
-		$group = $this->group_service->show( array(
-			'group_uuid' => $group_id,
-		) );
-		return $group;
+	protected function get_bind_params() {
+		return array(
+			'service'                   => $this->group_service,
+			'query_parameter'           => 'group',
+			'single_service_parameter'  => 'group_uuid',
+			'single_service_method'     => 'show',
+			'single_methods'            => array( 'show', 'update', 'destroy' ),
+			'collection_methods'        => array( 'index' ),
+			'collection_service_method' => 'index',
+		);
 	}
 }

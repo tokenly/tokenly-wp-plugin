@@ -16,7 +16,8 @@ interface PromiseEditFormProps {
 	onSave: any;
 	onDelete: any;
 	onCancel: any;
-	promise: PromiseData;
+	loading?: boolean;
+	promise: any;
 }
 
 interface PromiseEditFormState {
@@ -25,21 +26,13 @@ interface PromiseEditFormState {
 
 export default class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEditFormState> {
 	state: PromiseEditFormState = {
-		promise: {} as any,
+		promise: null,
 	};
 	constructor( props: PromiseEditFormProps ) {
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onDelete = this.onDelete.bind( this );
 		this.onCancel = this.onCancel.bind( this );
-		this.state.promise = {
-			quantity: this.props.promise?.quantity?.value_sat,
-			expiration: null,
-			txid: null,
-			fingerprint: null,
-			ref: this.props.promise.ref,
-			note: this.props.promise.note,
-		};
 	}
 	
 	onSave() {
@@ -54,10 +47,30 @@ export default class PromiseEditForm extends Component<PromiseEditFormProps, Pro
 		this.props.onCancel();
 	}
 
+	componentWillReceiveProps( nextProps: any ) {
+		if ( !nextProps.promise ) {
+			return;
+		}
+		let promise = {
+			quantity: nextProps.promise?.quantity?.value_sat,
+			expiration: null,
+			txid: null,
+			fingerprint: null,
+			ref: nextProps.promise.ref,
+			note: nextProps.promise.note,
+		} as any;
+		this.setState( { promise: promise } );
+	}
+
 	render() {
 		return (
 			<form style={{width: '100%'}}>
-				<Flex
+			{ this.props.loading
+			?	<Flex justify="flex-start">
+					<span>Loading promise ... </span>
+					<Spinner />
+				</Flex>
+			:	<Flex
 					//@ts-ignore
 					direction="column"
 					style={ { maxWidth: "320px" } }
@@ -119,10 +132,11 @@ export default class PromiseEditForm extends Component<PromiseEditFormProps, Pro
 						} }
 					/>
 				</Flex>
+			}
 				<Flex justify="flex-start" align="center" style={ { marginTop: '12px' } }>
 					<Button
 						isPrimary
-						disabled={ this.props.saving }
+						disabled={ this.props.saving || !this.state?.promise }
 						onClick={ () => {
 							this.onSave();
 						}}

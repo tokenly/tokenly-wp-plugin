@@ -16,7 +16,7 @@ export default class SourceRepository implements SourceRepositoryInterface {
 
 	index( params: any ): Promise<Array<SourceData>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.sourceIndex( params ).then( ( result: Array<SourceData> ) => {
+			this.adminApiService.tokenSourceIndex( params ).then( ( result: Array<SourceData> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -26,7 +26,7 @@ export default class SourceRepository implements SourceRepositoryInterface {
 
 	store( params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.sourceStore( params ).then( result => {
+			this.adminApiService.tokenSourceStore( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -36,7 +36,7 @@ export default class SourceRepository implements SourceRepositoryInterface {
 
 	update( address: string, params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.sourceUpdate( address, params ).then( result => {
+			this.adminApiService.tokenSourceUpdate( address, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -46,7 +46,7 @@ export default class SourceRepository implements SourceRepositoryInterface {
 
 	destroy( address: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.sourceDestroy( address ).then( result => {
+			this.adminApiService.tokenSourceDestroy( address ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

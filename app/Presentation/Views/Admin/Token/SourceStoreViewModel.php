@@ -2,14 +2,14 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin\Token;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceStoreViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
-class SourceStoreViewModel extends ViewModel implements SourceStoreViewModelInterface {
+class SourceStoreViewModel extends DynamicViewModel implements SourceStoreViewModelInterface {
 	protected $current_user;
 	protected $source_service;
 	
@@ -21,7 +21,7 @@ class SourceStoreViewModel extends ViewModel implements SourceStoreViewModelInte
 		$this->source_service = $source_service;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		$this->current_user->load( array( 'oauth_user.address.balance.token_meta' ) );
 		$addresses = array();
 		if (

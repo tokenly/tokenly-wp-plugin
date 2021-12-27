@@ -16,7 +16,7 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 
 	index( params: any = {} ): Promise<Array<PromiseData>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.promiseIndex( params ).then( ( result: Array<PromiseData> ) => {
+			this.adminApiService.tokenPromiseIndex( params ).then( ( result: Array<PromiseData> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -24,9 +24,19 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		} );
 	}
 	
+	show( id: number, params?: any ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.tokenPromiseShow( id, params ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
 	store( params: PromiseStoreParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.promiseStore( params ).then( result => {
+			this.adminApiService.tokenPromiseStore( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -34,9 +44,9 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		});
 	}
 
-	update( promiseId: number, params: PromiseUpdateParams ): Promise<any> {
+	update( id: number, params: PromiseUpdateParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.promiseUpdate( promiseId, params ).then( result => {
+			this.adminApiService.tokenPromiseUpdate( id, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -44,9 +54,9 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		});
 	}
 
-	destroy( promiseId: number ): Promise<any> {
+	destroy( id: number ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.promiseDestroy( promiseId ).then( result => {
+			this.adminApiService.tokenPromiseDestroy( id ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
