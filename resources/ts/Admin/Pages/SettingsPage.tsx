@@ -2,15 +2,15 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
-import { SavePanel } from '../Components/SavePanel';
-import { IntegrationSettingsForm } from '../Components/Settings/IntegrationSettingsForm';
-import { IntegrationSettingsHelp } from '../Components/Settings/IntegrationSettingsHelp';
-import { TcaSettingsForm } from '../Components/Settings/TcaSettingsForm';
-import { OauthSettingsForm } from '../Components/Settings/OauthSettingsForm';
+import SavePanel from '../Components/SavePanel';
+import IntegrationSettingsForm from '../Components/Settings/IntegrationSettingsForm';
+import IntegrationSettingsHelp from '../Components/Settings/IntegrationSettingsHelp';
+import TcaSettingsForm from '../Components/Settings/TcaSettingsForm';
+import OauthSettingsForm from '../Components/Settings/OauthSettingsForm';
 import { IntegrationSettings, TcaSettings, OauthSettings } from '../../Interfaces';
-import { IntegrationSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
-import { TcaSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
-import { OauthSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
+import IntegrationSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
+import TcaSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
+import OauthSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
 
 import { 
@@ -43,11 +43,11 @@ interface SettingsPageState {
 }
 
 export default class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
-	@resolve( TYPES.IntegrationSettingsRepositoryInterface )
+	@resolve( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface )
 	integrationSettingsRepository: IntegrationSettingsRepositoryInterface;
-	@resolve( TYPES.TcaSettingsRepositoryInterface )
+	@resolve( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
 	tcaSettingsRepository: TcaSettingsRepositoryInterface;
-	@resolve( TYPES.OauthSettingsRepositoryInterface )
+	@resolve( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface )
 	oauthSettingsRepository: OauthSettingsRepositoryInterface;
 	
 	state: SettingsPageState = {

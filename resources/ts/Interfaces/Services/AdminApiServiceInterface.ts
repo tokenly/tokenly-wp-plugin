@@ -16,9 +16,10 @@ export default interface AdminApiServiceInterface {
 	sourceUpdate( address: string, params: SourceData ): Promise<any>;
 	sourceDestroy( address: string ): Promise<any>;
 	creditGroupIndex( params: any ): Promise<Array<any>>;
+	creditGroupShow( uuid: string, params?: any ): Promise<Array<any>>;
 	creditGroupStore( params: any ): Promise<any>;
 	creditGroupUpdate( params: any ): Promise<any>;
-	creditTransactionIndex(): Promise<Array<any>>;
+	creditTransactionIndex( params: any ): Promise<Array<any>>;
 	creditTransactionStore( params: any ): Promise<any>;
 	promiseIndex( params: any ): Promise<Array<PromiseData>>;
 	promiseStore( params: PromiseStoreParams ): Promise<any>;

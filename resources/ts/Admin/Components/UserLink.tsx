@@ -16,7 +16,7 @@ interface UserLinkState {
 	//
 }
 
-export class UserLink extends Component<UserLinkProps, UserLinkState> {
+export default class UserLink extends Component<UserLinkProps, UserLinkState> {
 
 	constructor( props: UserLinkProps ) {
 		super( props );

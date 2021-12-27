@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { ConfirmModal } from '../Admin/Components/ConfirmModal';
+import ConfirmModal from '../Admin/Components/ConfirmModal';
 import TcaRuleEditor from './../Admin/Components/TcaRuleEditor';
 import { ConfirmModalData } from '../Interfaces';
 import eventBus from "../EventBus";

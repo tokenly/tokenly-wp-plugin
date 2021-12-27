@@ -23,11 +23,6 @@ class TransactionController implements TransactionControllerInterface {
 
 	public function index() {
 		$input_data = array();
-		if ( isset( $_GET['credit_group'] ) ) {
-			$input_data['group_uuid'] = $_GET['credit_group'];
-		} else {
-			return false;
-		}
 		$view_data = $this->index_view_model->prepare( $input_data );
 		return array(
 			'view' => 'credit-transaction-index',

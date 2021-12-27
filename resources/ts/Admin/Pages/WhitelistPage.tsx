@@ -1,11 +1,11 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
-import { Whitelist } from '../Components/Whitelist';
-import { SavePanel } from '../Components/SavePanel';
+import Whitelist from '../Components/Whitelist';
+import SavePanel from '../Components/SavePanel';
 import { Component } from 'react';
 import { WhitelistData, WhitelistItem } from '../../Interfaces';
-import { WhitelistSettingsRepositoryInterface } from '../../Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
+import WhitelistSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
 import { 
 	Panel,
@@ -28,7 +28,7 @@ interface WhitelistPageState {
 }
 
 export default class WhitelistPage extends Component<WhitelistPageProps, WhitelistPageState> {
-	@resolve( TYPES.WhitelistSettingsRepositoryInterface )
+	@resolve( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface )
 	whitelistSettingsRepository: WhitelistSettingsRepositoryInterface;
 	
 	state: WhitelistPageState = {

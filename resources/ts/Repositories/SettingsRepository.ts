@@ -9,7 +9,7 @@ export default class SettingsRepository implements SettingsRepositoryInterface {
 	settingsType: string;
 	
 	constructor(
-		@inject( TYPES.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
 	) {
 		this.adminApiService = adminApiService;
 	}

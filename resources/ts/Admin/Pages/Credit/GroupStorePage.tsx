@@ -2,9 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { CreditGroupRepositoryInterface } from '../../../Interfaces/Repositories/CreditGroupRepositoryInterface';
-import { CreditGroupStoreForm } from '../../Components/CreditGroupStoreForm';
-import { SourceData } from '../../../Interfaces';
+import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
+import GroupStoreForm from '../../Components/Credit/GroupStoreForm';
 import { TYPES } from '../../../Types';
 
 declare const window: any;
@@ -31,8 +30,8 @@ interface GroupStorePageState {
 }
 
 export default class GroupStorePage extends Component<GroupStorePageProps, GroupStorePageState> {
-	@resolve( TYPES.CreditGroupRepositoryInterface )
-	creditGroupRepository: CreditGroupRepositoryInterface;
+	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
+	groupRepository: GroupRepositoryInterface;
 	
 	state: GroupStorePageState = {
 		storingCreditGroup: false,
@@ -51,7 +50,7 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 		this.setState( {
 			storingCreditGroup: true,
 		} );
-		this.creditGroupRepository.store( creditGroup ).then( ( result: any ) => {
+		this.groupRepository.store( creditGroup ).then( ( result: any ) => {
 			this.setState( {
 				storingCreditGroup: false,
 			} );
@@ -61,14 +60,14 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 	
 	render() {
 		return (
-			<Page title={'Register credit group'}>
+			<Page title={'Group creator'}>
 				<div style={ { marginBottom: '8px' } }>
 					<a href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to credit group list</a>
 				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<CreditGroupStoreForm
+							<GroupStoreForm
 								onSubmit={ this.onSubmit }
 								onCancel={ this.return }
 								saving={ this.state.storingCreditGroup }

@@ -3,6 +3,7 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\ModelInterface;
+
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Traits\RelatableTrait;
 

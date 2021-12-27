@@ -4,15 +4,16 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 class Integration extends Model implements IntegrationInterface {
 	public $settings;
 	public $can_connect = false;
 	protected $option_repository;
-	protected $source_repository;
+	protected $client;
 	protected $fillable = array(
 		'can_connect',
 	);
@@ -20,11 +21,11 @@ class Integration extends Model implements IntegrationInterface {
 	public function __construct(
 		IntegrationSettingsInterface $settings,
 		OptionRepositoryInterface $option_repository,
-		SourceRepositoryInterface $source_repository
+		TokenpassAPIInterface $client
 	) {
 		$this->settings = $settings;
 		$this->option_repository = $option_repository;
-		$this->source_repository = $source_repository;
+		$this->client = $client;
 		$integration_data = $this->option_repository->index( array(
 				'integration_can_connect',
 			)
@@ -44,7 +45,7 @@ class Integration extends Model implements IntegrationInterface {
 	 */
 	public function check_connection() {
 		$can_connect = false;
-		$result = $this->source_repository->index();
+		$result = $this->client->getProvisionalSourceList();
 		if ( $result == false ) {
 			$can_connect = false;
 		} else {

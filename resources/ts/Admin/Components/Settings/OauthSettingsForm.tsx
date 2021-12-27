@@ -17,7 +17,7 @@ interface OauthSettingsFormState {
 	//
 }
 
-export class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSettingsFormState> {
+export default class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSettingsFormState> {
 
 	constructor( props: OauthSettingsFormProps ) {
 		super( props );

@@ -1,8 +1,5 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import { PromiseData } from '../../Interfaces';
-import * as dayjs from 'dayjs'
 
 import { 
 	// @ts-ignore
@@ -29,7 +26,7 @@ interface ComboboxOption {
 	label: string,
 }
 
-export class ConfirmModal extends Component<ConfirmModalProps, ConfirmModalState> {
+export default class ConfirmModal extends Component<ConfirmModalProps, ConfirmModalState> {
 	constructor( props: ConfirmModalProps ) {
 		super( props );
 		this.onRequestClose = this.onRequestClose.bind( this );

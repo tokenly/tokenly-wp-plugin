@@ -20,7 +20,7 @@ interface AttributeRepeaterState {
 	attributes: Array<Attribute>;
 }
 
-export class AttributeRepeater extends Component<AttributeRepeaterProps, AttributeRepeaterState> {
+export default class AttributeRepeater extends Component<AttributeRepeaterProps, AttributeRepeaterState> {
 	state: AttributeRepeaterState = {
 		attributes: [],
 	};

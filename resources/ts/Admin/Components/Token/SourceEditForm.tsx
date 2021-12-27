@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { SourceData } from '../../Interfaces';
+import { SourceData } from '../../../Interfaces';
 
 import { 
 	Button,
@@ -22,7 +22,7 @@ interface SourceEditFormState {
 	source: SourceData;
 }
 
-export class SourceEditForm extends Component<SourceEditFormProps, SourceEditFormState> {
+export default class SourceEditForm extends Component<SourceEditFormProps, SourceEditFormState> {
 	state: SourceEditFormState = {
 		source: {
 			address_id: null,

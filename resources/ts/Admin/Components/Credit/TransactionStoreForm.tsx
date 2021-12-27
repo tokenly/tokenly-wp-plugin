@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { UserSearchField } from './../UserSearchField';
+import UserSearchField from './../UserSearchField';
 
 import { 
 	Button,
@@ -31,7 +31,7 @@ interface TransactionStoreFormState {
 	}
 }
 
-export class TransactionStoreForm extends Component<TransactionStoreFormProps, TransactionStoreFormState> {
+export default class TransactionStoreForm extends Component<TransactionStoreFormProps, TransactionStoreFormState> {
 	state: TransactionStoreFormState = {
 		groupOptions: [],
 		transaction: {

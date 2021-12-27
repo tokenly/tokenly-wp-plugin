@@ -2,8 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { SourceRepositoryInterface } from '../../../Interfaces/Repositories/SourceRepositoryInterface';
-import { SourceEditForm } from '../../Components/Token/SourceEditForm';
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
+import SourceEditForm from '../../Components/Token/SourceEditForm';
 import { SourceData } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
 import { TYPES } from '../../../Types';
@@ -31,7 +31,7 @@ interface SourceEditPageState {
 }
 
 export default class SourceEditPage extends Component<SourceEditPageProps, SourceEditPageState> {
-	@resolve( TYPES.SourceRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
 	state: SourceEditPageState = {

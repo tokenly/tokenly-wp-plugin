@@ -2,7 +2,7 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { BalanceList } from '../../Components/Token/BalanceList';
+import BalanceList from '../../Components/Token/BalanceList';
 
 import { 
 	Button,
@@ -35,7 +35,7 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 	
 	render() {
 		return (
-			<Page title={'Token balances'}>
+			<Page title={'Token balance listing'}>
 				<div style={{marginBottom: '8px'}}>
 					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-source-index'>To source list</a>
 				</div>

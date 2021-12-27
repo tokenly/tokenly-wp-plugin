@@ -1,7 +1,7 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import { UserRepositoryInterface } from '../../Interfaces/Repositories/UserRepositoryInterface';
+import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
 import { UserSuggestion } from '../../Interfaces';
 import { TYPES } from '../../Types';
 
@@ -31,8 +31,8 @@ interface ComboboxOption {
 	label: string,
 }
 
-export class UserSearchField extends Component<UserSearchFieldProps, UserSearchFieldState> {
-	@resolve( TYPES.UserRepositoryInterface )
+export default class UserSearchField extends Component<UserSearchFieldProps, UserSearchFieldState> {
+	@resolve( TYPES.Repositories.UserRepositoryInterface )
 	userRepository: UserRepositoryInterface;
 	
 	state: UserSearchFieldState = {

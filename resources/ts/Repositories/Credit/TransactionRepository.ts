@@ -8,14 +8,14 @@ export default class TransactionRepository implements TransactionRepositoryInter
 	adminApiService;
 	
 	constructor(
-		@inject( TYPES.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
 	) {
 		this.adminApiService = adminApiService;
 	}
 
-	index(): Promise<Array<any>> {
+	index( params: any ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditTransactionIndex().then( ( result: Array<any> ) => {
+			this.adminApiService.creditTransactionIndex( params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

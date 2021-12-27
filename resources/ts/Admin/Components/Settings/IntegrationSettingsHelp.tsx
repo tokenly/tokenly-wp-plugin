@@ -15,7 +15,7 @@ interface IntegrationSettingsHelpState {
 	copiedHomepage: boolean;
 }
 
-export class IntegrationSettingsHelp extends Component<IntegrationSettingsHelpProps, IntegrationSettingsHelpState> {
+export default class IntegrationSettingsHelp extends Component<IntegrationSettingsHelpProps, IntegrationSettingsHelpState> {
 	state: IntegrationSettingsHelpState = {
 		copiedHomepage: false,
 	};

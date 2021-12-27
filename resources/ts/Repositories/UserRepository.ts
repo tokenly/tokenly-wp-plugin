@@ -9,7 +9,7 @@ export default class UserRepository implements UserRepositoryInterface {
 	adminApiService;
 
 	constructor(
-		@inject( TYPES.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
 	) {
 		this.adminApiService = adminApiService;
 	}

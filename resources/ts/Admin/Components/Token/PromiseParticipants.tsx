@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from '../../../Interfaces';
-import { UserLink } from './../UserLink';
+import UserLink from './../UserLink';
 
 import { 
 	 Flex,
@@ -16,7 +16,7 @@ interface PromiseParticipantsState {
 	//
 }
 
-export class PromiseParticipants extends Component<PromiseParticipantsProps, PromiseParticipantsState> {
+export default class PromiseParticipants extends Component<PromiseParticipantsProps, PromiseParticipantsState> {
 
 	constructor( props: PromiseParticipantsProps ) {
 		super( props );

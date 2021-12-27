@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { GroupCard } from './GroupCard';
+import GroupCard from './GroupCard';
 
 import { 
 	Flex,
@@ -15,7 +15,7 @@ interface GroupListState {
 	//
 }
 
-export class GroupList extends Component<GroupListProps, GroupListState> {
+export default class GroupList extends Component<GroupListProps, GroupListState> {
 	constructor( props: GroupListProps ) {
 		super( props );
 	}

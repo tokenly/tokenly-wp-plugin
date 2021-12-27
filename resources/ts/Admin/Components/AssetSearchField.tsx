@@ -27,7 +27,7 @@ interface ComboboxOption {
 	label: string,
 }
 
-export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSearchFieldState> {
+export default class AssetSearchField extends Component<AssetSearchFieldProps, AssetSearchFieldState> {
 	state: AssetSearchFieldState = {
 		keywords: null,
 		asset: null,

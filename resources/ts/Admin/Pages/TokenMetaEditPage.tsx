@@ -1,17 +1,14 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import { TokenMetaRepositoryInterface } from '../../Interfaces/Repositories/TokenMetaRepositoryInterface';
+import MetaRepositoryInterface from '../../Interfaces/Repositories/Token/MetaRepositoryInterface';
 import { TokenMetaData } from '../../Interfaces';
 import { TYPES } from '../../Types';
-import { AttributeRepeater } from '../Components/AttributeRepeater';
+import AttributeRepeater from '../Components/AttributeRepeater';
 import eventBus from './../../EventBus';
 
 import { 
 	TextControl,
-	TextareaControl,
-	Panel,
-	PanelBody,
 	PanelRow,
 } from '@wordpress/components';
 
@@ -19,32 +16,32 @@ import {
 	Fragment,
 } from '@wordpress/element';
 
-interface TokenMetaEditPageData {
+interface MetaEditPageData {
 	meta: TokenMetaData;
 	extra: any;
 }
 
-interface TokenMetaEditPageProps {
-	pageData: TokenMetaEditPageData;
+interface MetaEditPageProps {
+	pageData: MetaEditPageData;
 }
 
-interface TokenMetaEditPageState {
+interface MetaEditPageState {
 	storingSource: boolean;
 	meta: TokenMetaData;
 	postId: number;
 }
 
-export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps, TokenMetaEditPageState> {
-	@resolve( TYPES.TokenMetaRepositoryInterface )
-	tokenMetaRepository: TokenMetaRepositoryInterface;
+export default class MetaEditPage extends Component<MetaEditPageProps, MetaEditPageState> {
+	@resolve( TYPES.Repositories.Token.MetaRepositoryInterface )
+	metaRepository: MetaRepositoryInterface;
 
-	state: TokenMetaEditPageState = {
+	state: MetaEditPageState = {
 		storingSource: false,
 		meta: {} as any,
 		postId: null,
 	}
 	
-	constructor( props: TokenMetaEditPageProps ) {
+	constructor( props: MetaEditPageProps ) {
 		super( props );
 		const urlParams = new URLSearchParams(window.location.search);
 		const postId = parseInt( urlParams.get( 'post' ) );
@@ -56,7 +53,7 @@ export default class TokenMetaEditPage extends Component<TokenMetaEditPageProps,
 	}
 	
 	onAssetUpdated( value: any ) {
-
+		//
 	}
 	
 	onExtraUpdated( newExtra: any ) {

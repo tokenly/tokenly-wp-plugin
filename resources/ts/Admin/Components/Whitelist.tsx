@@ -18,7 +18,7 @@ interface WhitelistState {
 	whitelist: Array<WhitelistItem>;
 }
 
-export class Whitelist extends Component<WhitelistProps, WhitelistState> {
+export default class Whitelist extends Component<WhitelistProps, WhitelistState> {
 	state: WhitelistState = {
 		whitelist: [],
 	};

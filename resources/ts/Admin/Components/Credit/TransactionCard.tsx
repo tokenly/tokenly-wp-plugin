@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import * as dayjs from 'dayjs';
-import { UserLink } from './../UserLink';
+import UserLink from './../UserLink';
 
 import { 
 	Button,
@@ -20,8 +20,7 @@ interface TransactionCardState {
 	//
 }
 
-export class TransactionCard extends Component<TransactionCardProps, TransactionCardState> {
-
+export default class TransactionCard extends Component<TransactionCardProps, TransactionCardState> {
 	constructor( props: TransactionCardProps ) {
 		super( props );
 		console.log(this.props);

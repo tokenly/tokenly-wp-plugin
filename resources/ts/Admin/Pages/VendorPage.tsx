@@ -5,7 +5,7 @@ import { Component } from 'react';
 import PromiseRepositoryInterface from '../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import SourceRepositoryInterface from '../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { PromiseData } from '../../Interfaces';
-import { PromiseList } from '../Components/Token/PromiseList';
+import PromiseList from '../Components/Token/PromiseList';
 import { TYPES } from '../../Types';
 
 import { 
@@ -40,9 +40,9 @@ interface VendorPageState {
 }
 
 export default class VendorPage extends Component<VendorPageProps, VendorPageState> {
-	@resolve( TYPES.PromiseRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
-	@resolve( TYPES.SourceRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
 	state: VendorPageState = {

@@ -2,8 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { PromiseRepositoryInterface } from '../../../Interfaces/Repositories/PromiseRepositoryInterface';
-import { PromiseEditForm } from '../../Components/Token/PromiseEditForm';
+import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
+import PromiseEditForm from '../../Components/Token/PromiseEditForm';
 import { PromiseData, PromiseUpdateParams } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
 import { TYPES } from '../../../Types';
@@ -30,7 +30,7 @@ interface PromiseEditPageState {
 }
 
 export default class PromiseEditPage extends Component<PromiseEditPageProps, PromiseEditPageState> {
-	@resolve( TYPES.PromiseRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
 	
 	state: PromiseEditPageState = {
@@ -99,7 +99,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	
 	render() {
 		return (
-			<Page title={'Manage promise'}>
+			<Page title={'Promise editor'}>
 				<div style={{marginBottom: '8px'}}>
 					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
 					<div><span>Promise ID: </span><strong>{this.props.pageData.promise.promise_id}</strong></div>

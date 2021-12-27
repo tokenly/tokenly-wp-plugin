@@ -17,7 +17,7 @@ interface PromiseSourceInfoState {
 	//
 }
 
-export class PromiseSourceInfo extends Component<PromiseSourceInfoProps, PromiseSourceInfoState> {
+export default class PromiseSourceInfo extends Component<PromiseSourceInfoProps, PromiseSourceInfoState> {
 
 	constructor( props: PromiseSourceInfoProps ) {
 		super( props );

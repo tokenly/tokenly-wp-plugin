@@ -30,21 +30,26 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	}
 
 	/**
-	 * Fetches all currently promised transactions
+	 * Gets a collection of promises
+	 * @param array $params Search parameters
 	 * @return PromiseCollectionInterface Promises found
 	 */
 	public function index( array $params = array() ) {
 		$promises = $this->client->getPromisedTransactionList();
-		foreach ( $promises as &$promise ) {
-			$promise = $this->remap_fields( $promise );
+		if ( $promises && is_array( $promises ) ) {
+			foreach ( $promises as &$promise ) {
+				$promise = $this->remap_fields( $promise );
+			}
+		} else {
+			$promises = array();
 		}
 		$promises = $this->promise_collection_factory->create( $promises );
 		return $promises;
 	}
 
 	/**
-	 * Fetches the specific promised transaction
-	 * @param integer $promise_id Tokenpass promise index
+	 * Gets a single promise
+	 * @param array $params Search parameters
 	 * @return PromiseInterface Promise found
 	 */
 	public function show( array $params = array() ) {
@@ -62,9 +67,9 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	}
 	
 	/**
-	 * Creates a new promised transaction
+	 * Makes a new promise
 	 * @param array $params New promise properties
-	 * @return void
+	 * @return PromiseInterface New promise
 	 */
 	public function store( array $params = array() ) {
 		$promise_data = $this->client->promiseTransaction(

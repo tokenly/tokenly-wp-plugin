@@ -2,8 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { PromiseRepositoryInterface } from '../../../Interfaces/Repositories/PromiseRepositoryInterface';
-import { PromiseStoreForm } from '../../Components/Token/PromiseStoreForm';
+import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
+import PromiseStoreForm from '../../Components/Token/PromiseStoreForm';
 import { PromiseData, PromiseStoreParams, SourceItem } from '../../../Interfaces';
 import { TYPES } from '../../../Types';
 
@@ -34,7 +34,7 @@ interface PromiseStorePageState {
 }
 
 export default class PromiseStorePage extends Component<PromiseStorePageProps, PromiseStorePageState> {
-	@resolve( TYPES.PromiseRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
 	
 	state: PromiseStorePageState = {
@@ -56,7 +56,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 		this.setState( {
 			storingPromise: true,
 		} );
-		this.promiseRepository.store( params ).then( result => {
+		this.promiseRepository.store( params ).then( ( result: any ) => {
 			this.setState( {
 				storingPromise: false,
 			} );

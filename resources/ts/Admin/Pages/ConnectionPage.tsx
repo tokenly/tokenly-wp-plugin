@@ -1,10 +1,10 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
-import { AuthServiceInterface } from '../../Interfaces/Services/AuthServiceInterface';
+import AuthServiceInterface from '../../Interfaces/Services/AuthServiceInterface';
 import { Component } from 'react';
 import { StatusData } from '../../Interfaces';
-import { StatusIndicator } from '../Components/StatusIndicator';
+import StatusIndicator from '../Components/StatusIndicator';
 import { TYPES } from '../../Types';
 
 import { 
@@ -30,7 +30,7 @@ interface ConnectionPageState {
 }
 
 export default class ConnectionPage extends Component<ConnectionPageProps, ConnectionPageState> {
-	@resolve( TYPES.AuthServiceInterface )
+	@resolve( TYPES.Services.AuthServiceInterface )
     authService: AuthServiceInterface;
 	
 	constructor( props: ConnectionPageProps ) {

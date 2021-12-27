@@ -23,7 +23,7 @@ interface PromiseEditFormState {
 	promise: PromiseUpdateParams;
 }
 
-export class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEditFormState> {
+export default class PromiseEditForm extends Component<PromiseEditFormProps, PromiseEditFormState> {
 	state: PromiseEditFormState = {
 		promise: {} as any,
 	};

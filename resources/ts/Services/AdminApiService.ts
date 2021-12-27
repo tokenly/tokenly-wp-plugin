@@ -53,6 +53,16 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
+	creditGroupShow( uuid: string, params: any = {} ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/credit/group/${uuid}`, params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
 	creditGroupStore( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'POST', '/credit/group', params ).then( result => {
@@ -73,9 +83,9 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	creditTransactionIndex(): Promise<any> {
+	creditTransactionIndex( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/credit/transaction' ).then( result => {
+			this.makeRequest( 'GET', '/credit/transaction', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );

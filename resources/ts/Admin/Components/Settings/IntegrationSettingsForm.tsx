@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { StatusIndicator } from '../../Components/StatusIndicator';
+import StatusIndicator from '../../Components/StatusIndicator';
 
 import { 
 	Flex,
@@ -17,7 +17,7 @@ interface IntegrationSettingsFormState {
 	//
 }
 
-export class IntegrationSettingsForm extends Component<IntegrationSettingsFormProps, IntegrationSettingsFormState> {
+export default class IntegrationSettingsForm extends Component<IntegrationSettingsFormProps, IntegrationSettingsFormState> {
 
 	constructor( props: IntegrationSettingsFormProps ) {
 		super( props );

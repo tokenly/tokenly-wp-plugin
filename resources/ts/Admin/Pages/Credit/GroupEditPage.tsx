@@ -2,40 +2,45 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { GroupRepositoryInterface } from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
-import { GroupEditForm } from '../../Components/Credit/GroupEditForm';
+import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
+import GroupEditForm from '../../Components/Credit/GroupEditForm';
 import { TYPES } from '../../../Types';
 
 import { 
-	Button,
+	Flex,
 	Panel,
 	PanelBody,
 	PanelRow,
+	Spinner,
 } from '@wordpress/components';
 
 declare const window: any;
 
 interface GroupEditPageData {
-	credit_group: any;
+	//
 }
 
-interface CreditGroupEditPageProps {
+interface GroupEditPageProps {
 	pageData: GroupEditPageData;
 }
 
-interface CreditGroupEditPageState {
+interface GroupEditPageState {
+	group: any;
 	saving: boolean;
+	loadingGroup: boolean;
 }
 
-export default class CreditGroupEditPage extends Component<CreditGroupEditPageProps, CreditGroupEditPageState> {
-	@resolve( TYPES.GroupRepositoryInterface )
+export default class GroupEditPage extends Component<GroupEditPageProps, GroupEditPageState> {
+	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 	
-	state: CreditGroupEditPageState = {
+	state: GroupEditPageState = {
+		group: {},
 		saving: false,
+		loadingGroup: false,
 	}
 
-	constructor( props: CreditGroupEditPageProps ) {
+	constructor( props: GroupEditPageProps ) {
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onCancel = this.onCancel.bind( this );
@@ -47,7 +52,7 @@ export default class CreditGroupEditPage extends Component<CreditGroupEditPagePr
 
 	onSave( creditGroup: any ) {
 		let updateParams = Object.assign( {}, creditGroup );
-		updateParams.uuid = this.props.pageData.credit_group.uuid;
+		updateParams.uuid = this.state.group.uuid;
 		this.setState( { saving: true } );
 		this.groupRepository.update( updateParams ).then( ( result: any ) => {
 			this.setState( { saving: false } );
@@ -58,26 +63,35 @@ export default class CreditGroupEditPage extends Component<CreditGroupEditPagePr
 	onCancel() {
 		this.return();
 	}
+
+	componentWillMount() {
+		this.setState( { loadingGroup: true } );
+		const urlParams = new URLSearchParams( window.location.search );
+		const group = urlParams.get( 'group' );
+		this.groupRepository.show( group ).then( ( group: any ) => {
+			this.setState( {
+				loadingGroup: false,
+				group: group,
+			} );
+		} );
+	}
 	
 	render() {
 		return (
-			<Page title={ 'Manage credit group' }>
+			<Page title={ 'Group editor' }>
 				<div style={ { marginBottom: '8px' } }>
-					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to credit group list</a>
+					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to group list</a>
 				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<div>
-								<div>
-									<CreditGroupEditForm
-										onSave={ this.onSave }
-										onCancel={ this.onCancel }
-										saving={ this.state.saving }
-										creditGroup={ this.props.pageData.credit_group }
-									/>
-								</div>
-							</div>
+							<GroupEditForm
+								loadingGroup={ this.state.loadingGroup }
+								onSave={ this.onSave }
+								onCancel={ this.onCancel }
+								saving={ this.state.saving }
+								group={ this.state.group }
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

@@ -23,7 +23,7 @@ interface GroupStoreFormState {
 	appWhitelist: string;
 }
 
-export class GroupStoreForm extends Component<GroupStoreFormProps, GroupStoreFormState> {
+export default class GroupStoreForm extends Component<GroupStoreFormProps, GroupStoreFormState> {
 	state: GroupStoreFormState = {
 		name: 'New credit group',
 		appWhitelist: null,

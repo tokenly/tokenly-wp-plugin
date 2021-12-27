@@ -1,4 +1,4 @@
 export default interface TransactionRepositoryInterface {
-	index(): Promise<Array<any>>;
+	index( params: any ): Promise<Array<any>>;
 	store( params: any ): Promise<any>;
 }

@@ -39,11 +39,6 @@ class GroupController implements GroupControllerInterface {
 	
 	public function show() {
 		$input_data = array();
-		if ( isset( $_GET['credit_group'] ) ) {
-			$input_data['credit_group_uuid'] = $_GET['credit_group'];
-		} else {
-			return false;
-		}
 		$view_data = $this->show_view_model->prepare( $input_data );
 		return array(
 			'view' => 'credit-group-show',
@@ -61,11 +56,6 @@ class GroupController implements GroupControllerInterface {
 
 	public function edit() {
 		$input_data = array();
-		if ( isset( $_GET['credit_group'] ) ) {
-			$input_data['credit_group_uuid'] = $_GET['credit_group'];
-		} else {
-			return false;
-		}
 		$view_data = $this->edit_view_model->prepare( $input_data );
 		return array(
 			'view' => 'credit-group-edit',

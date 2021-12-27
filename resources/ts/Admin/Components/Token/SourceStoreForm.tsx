@@ -25,7 +25,7 @@ interface SourceStoreFormState {
 	
 }
 
-export class SourceStoreForm extends Component<SourceStoreFormProps, SourceStoreFormState> {
+export default class SourceStoreForm extends Component<SourceStoreFormProps, SourceStoreFormState> {
 	state: SourceStoreFormState = {
 		address: null,
 		assets: null,

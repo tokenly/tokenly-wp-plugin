@@ -4,8 +4,9 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
-use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
+
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 class GuestUser extends User implements GuestUserInterface, CurrentUserInterface {

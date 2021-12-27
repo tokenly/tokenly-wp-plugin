@@ -17,7 +17,7 @@ interface TcaSettingsFormState {
 	//
 }
 
-export class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettingsFormState> {
+export default class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettingsFormState> {
 
 	constructor( props: TcaSettingsFormProps ) {
 		super( props );

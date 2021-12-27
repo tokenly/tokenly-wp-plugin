@@ -2,8 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { CreditTransactionRepositoryInterface } from '../../../Interfaces/Repositories/CreditTransactionRepositoryInterface';
-import { CreditTransactionStoreForm } from '../../Components/CreditTransactionStoreForm';
+import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
+import TransactionStoreForm from '../../Components/Credit/TransactionStoreForm';
 import { TYPES } from '../../../Types';
 
 declare const window: any;
@@ -30,8 +30,8 @@ interface TransactionStorePageState {
 }
 
 export default class TransactionStorePage extends Component<TransactionStorePageProps, TransactionStorePageState> {
-	@resolve( TYPES.CreditTransactionRepositoryInterface )
-	creditGroupRepository: CreditTransactionRepositoryInterface;
+	@resolve( TYPES.Repositories.Credit.TransactionRepositoryInterface )
+	transactionRepository: TransactionRepositoryInterface;
 	
 	state: TransactionStorePageState = {
 		storingCreditTransaction: false,
@@ -48,7 +48,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 	
 	onSubmit( creditGroup: any ) {
 		this.setState( { storingCreditTransaction: true } );
-		this.creditGroupRepository.store( creditGroup ).then( ( result: any ) => {
+		this.transactionRepository.store( creditGroup ).then( ( result: any ) => {
 			this.setState( { storingCreditTransaction: false } );
 			this.return();
 		});
@@ -56,14 +56,14 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 	
 	render() {
 		return (
-			<Page title={'Make App Credits transaction'}>
+			<Page title={'Transaction creator'}>
 				<div style={ { marginBottom: '8px' } }>
 					<a href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to credit group list</a>
 				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<CreditTransactionStoreForm
+							<TransactionStoreForm
 								onSubmit={ this.onSubmit }
 								onCancel={ this.return }
 								saving={ this.state.storingCreditTransaction }

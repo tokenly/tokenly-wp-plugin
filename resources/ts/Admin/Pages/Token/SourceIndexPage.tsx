@@ -3,8 +3,8 @@ import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import { SourceItem } from '../../../Interfaces';
-import { SourceList } from '../../Components/Token/SourceList';
-import { SourceRepositoryInterface } from '../../../Interfaces/Repositories/SourceRepositoryInterface';
+import SourceList from '../../Components/Token/SourceList';
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -32,7 +32,7 @@ interface SourceIndexPageState {
 }
 
 export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
-	@resolve( TYPES.SourceRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 
 	state: SourceIndexPageState = {
@@ -48,7 +48,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		this.setState( { loadingSources: true } );
 		this.sourceRepository.index( {
 			with: [ 'address' ],
-		} ).then( ( sources ) => {
+		} ).then( ( sources: any ) => {
 			this.setState( {
 				loadingSources: false,
 				sources: sources,

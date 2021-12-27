@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseStoreParams, SourceItem } from '../../../Interfaces';
-import { UserSearchField } from './../UserSearchField';
-import { AssetSearchField } from './../AssetSearchField';
+import UserSearchField from './../UserSearchField';
+import AssetSearchField from './../AssetSearchField';
 
 import { 
 	Button,
@@ -30,7 +30,7 @@ interface PromiseStoreFormState {
 	sources: Array<string>;
 }
 
-export class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseStoreFormState> {
+export default class PromiseStoreForm extends Component<PromiseStoreFormProps, PromiseStoreFormState> {
 	state: PromiseStoreFormState = {
 		promise: {
 			source_id: null,

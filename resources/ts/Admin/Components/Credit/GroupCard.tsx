@@ -18,7 +18,7 @@ interface GroupCardState {
 	//
 }
 
-export class GroupCard extends Component<GroupCardProps, GroupCardState> {
+export default class GroupCard extends Component<GroupCardProps, GroupCardState> {
 
 	constructor( props: GroupCardProps ) {
 		super( props );
@@ -42,23 +42,23 @@ export class GroupCard extends Component<GroupCardProps, GroupCardState> {
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-transaction-index&credit_group=${ this.props.group.uuid }` }
+							href={ `/wp-admin/admin.php?page=tokenly-credit-transaction-index&group=${ this.props.group.uuid }` }
 						>
 							View transactions
 						</Button>
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-group-show&credit_group=${ this.props.group.uuid }` }
+							href={ `/wp-admin/admin.php?page=tokenly-credit-group-show&group=${ this.props.group.uuid }` }
 						>
 							View details
 						</Button>
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-group-edit&credit_group=${ this.props.group.uuid }` }
+							href={ `/wp-admin/admin.php?page=tokenly-credit-group-edit&group=${ this.props.group.uuid }` }
 						>
-							Manage group
+							Edit group
 						</Button>
 					</Flex>
 				</CardFooter>

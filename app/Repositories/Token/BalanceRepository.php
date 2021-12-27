@@ -2,8 +2,9 @@
 
 namespace Tokenly\Wp\Repositories\Token;
 
-use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
+
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\Token\BalanceCollectionFactoryInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Token\QuantityFactoryInterface;
@@ -28,35 +29,55 @@ class BalanceRepository implements BalanceRepositoryInterface {
 	}
 
 	/**
-	 * Fetches the current token balance for the specific user
-	 * @param string $oauth_token User oauth token
-	 * @param bool $use_whitelist Filter the collection using the whitelist
-	 * @param bool $use_meta Append additional token meta to the collection
-	 * @return BalanceCollectionFactoryInterface $balances
+	 * Gets a collection of balance
+	 * @param array $params Search parameters 
+	 * @return BalanceCollectionFactoryInterface $balance
 	 */
 	public function index( array $params = array() ) {
-		if ( !isset( $params['oauth_token'] ) ) {
-			return false;
+		$balance = array();
+		if ( isset( $params['oauth_token'] ) ) {
+			$oauth_token = $params['oauth_token'];
+			$balance = $this->client->getCombinedPublicBalances( $oauth_token );
+			if ( $balance && is_array( $balance ) ) {
+				foreach ( $balance as &$balance_item ) {
+					$balance_item = $this->remap_fields( $balance_item );
+				}
+			} else {
+				$balance = array();
+			}
 		}
-		$oauth_token = $params['oauth_token'];
-		$balances = $this->client->getCombinedPublicBalances( $oauth_token ) ?? array();
-		$balances = $this->map_fields( $balances );
-		$balances = $this->balance_collection_factory->create( $balances, array(
+		$balance = $this->balance_collection_factory->create( $balance, array(
 			'use_whitelist' => $params['use_whitelist'] ?? true,
 		) );
-		return $balances;
+		return $balance;
 	}
 
-	protected function map_fields( array $balances ) {
-		foreach ( $balances as &$balance ) {
-			$balance['quantity'] = $this->quantity_factory->create( array(
-				'value'     => $balance['balance'],
-				'value_sat' => $balance['balanceSat'],
-				'precision' => 0,
-			) );
+	/**
+	 * Formats the received item
+	 * @param array $balance Balance received
+	 * @return array $balance Formatted balance
+	 */
+	protected function remap_fields( array $balance = array() ) {
+		$value = 0;
+		if ( isset( $balance['balance'] ) ) {
+			$value = $balance['balance'];
 			unset( $balance['balance'] );
+		}
+		$value_sat = 0;
+		if ( isset( $balance['balanceSat'] ) ) {
+			$value_sat = $balance['balanceSat'];
 			unset( $balance['balanceSat'] );
 		}
-		return $balances;
+		$precision = 0;
+		if ( isset( $balance['precision'] ) ) {
+			$precision = $balance['precision'];
+			unset( $balance['precision'] );
+		}
+		$balance['quantity'] = $this->quantity_factory->create( array(
+			'value'     => $value,
+			'value_sat' => $value_sat,
+			'precision' => $precision,
+		) );
+		return $balance;
 	}
 }

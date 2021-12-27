@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from '../../../Interfaces';
-import { PromiseCard } from './PromiseCard';
+import PromiseCard from './PromiseCard';
 
 import { 
 	Flex,
@@ -18,7 +18,7 @@ interface PromiseListState {
 	//
 }
 
-export class PromiseList extends Component<PromiseListProps, PromiseListState> {
+export default class PromiseList extends Component<PromiseListProps, PromiseListState> {
 
 	constructor( props: PromiseListProps ) {
 		super( props );

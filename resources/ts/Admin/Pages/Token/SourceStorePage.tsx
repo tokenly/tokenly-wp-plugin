@@ -2,8 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { SourceRepositoryInterface } from '../../../Interfaces/Repositories/SourceRepositoryInterface';
-import { SourceStoreForm } from '../../Components/Token/SourceStoreForm';
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
+import SourceStoreForm from '../../Components/Token/SourceStoreForm';
 import { SourceData } from '../../../Interfaces';
 import { TYPES } from '../../../Types';
 
@@ -31,7 +31,7 @@ interface SourceStorePageState {
 }
 
 export default class SourceStorePage extends Component<SourceStorePageProps, SourceStorePageState> {
-	@resolve( TYPES.SourceRepositoryInterface )
+	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
 	state: SourceStorePageState = {

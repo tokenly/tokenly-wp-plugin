@@ -17,7 +17,7 @@ interface SavePanelState {
 	//
 }
 
-export class SavePanel extends Component<SavePanelProps, SavePanelState> {
+export default class SavePanel extends Component<SavePanelProps, SavePanelState> {
 
 	constructor( props: SavePanelProps ) {
 		super( props );

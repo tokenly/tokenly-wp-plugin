@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { BalanceCard } from './BalanceCard';
+import BalanceCard from './BalanceCard';
 
 import { 
 	Button,
@@ -15,7 +15,7 @@ interface BalanceListState {
 	//
 }
 
-export class BalanceList extends Component<BalanceListProps, BalanceListState> {
+export default class BalanceList extends Component<BalanceListProps, BalanceListState> {
 
 	constructor( props: BalanceListProps ) {
 		super( props );

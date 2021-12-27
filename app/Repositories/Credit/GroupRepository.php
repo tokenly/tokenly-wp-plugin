@@ -30,7 +30,7 @@ class GroupRepository implements GroupRepositoryInterface {
 	}
 
 	/**
-	 * Retrieves a collection of groups
+	 * Gets a collection of groups
 	 * @return GroupCollectionInterface Groups found
 	 */
 	public function index() {
@@ -49,22 +49,15 @@ class GroupRepository implements GroupRepositoryInterface {
 			return;
 		}
 		$uuid = $params['group_uuid'];
-		$groups = $this->index();
-		$group = null;
-		foreach( (array) $groups as $group_item ) {
-			if ( $group_item->uuid == $uuid ) {
-				$group = $group_item;
-				break;
-			}
-		}
-		if ( !$group ) {
-			return;
+		$group = $this->client->getAppCreditGroup( $uuid );
+		if ( $group && is_array( $group ) ) {
+			$group = $this->group_factory->create( $group );
 		}
 		return $group;
 	}
 	
 	/**
-	 * Retrieves group history for the specified group
+	 * Gets group history for the specified group
 	 * @param array $params Search parameters
 	 * @return GroupHistoryInterface Group found
 	 */
@@ -82,10 +75,9 @@ class GroupRepository implements GroupRepositoryInterface {
 	}
 	
 	/**
-	 * Creates a new promised transaction
-	 * @param string $name Group name
-	 * @param array $app_whitelist Group whitelist
-	 * @return GroupInterface
+	 * Makes a new promise
+	 * @param array $params New promise data
+	 * @return GroupInterface New promise
 	 */
 	public function store( array $params = array() ) {
 		$name = '';

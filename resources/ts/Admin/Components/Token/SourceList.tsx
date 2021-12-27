@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { SourceItem } from '../../../Interfaces';
-import { SourceCard } from './SourceCard';
+import SourceCard from './SourceCard';
 
 import { 
 	Button,
@@ -22,7 +22,7 @@ interface SourceListState {
 	//
 }
 
-export class SourceList extends Component<SourceListProps, SourceListState> {
+export default class SourceList extends Component<SourceListProps, SourceListState> {
 
 	constructor( props: SourceListProps ) {
 		super( props );

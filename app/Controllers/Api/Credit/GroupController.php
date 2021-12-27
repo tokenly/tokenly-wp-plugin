@@ -33,6 +33,16 @@ class GroupController implements GroupControllerInterface {
 	}
 
 	/**
+	 * Get a single of group
+	 * @param \WP_REST_Request $request Request data
+	 * @return GroupInterface
+	 */
+	public function show( \WP_REST_Request $request ) {
+		$group = $this->get_group( $request );
+		return $group;
+	}
+
+	/**
 	 * Makes a new group
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
@@ -52,12 +62,9 @@ class GroupController implements GroupControllerInterface {
 	 * @return array
 	 */
 	public function update( \WP_REST_Request $request ) {
-		$group_id = $request->get_param( 'uuid' );
-		$group = $this->group_service->show( array(
-			'group_uuid' => $group_id,
-		) );
-		if ( !$group_id ) {
-			return;
+		$group = $this->get_group( $request );
+		if ( !$group ) {
+			return false;
 		}
 		$params = $request->get_params();
 		$group->update( $params );
@@ -83,12 +90,12 @@ class GroupController implements GroupControllerInterface {
 	}
 	
 	/**
-	 * Retrieves queried group
+	 * Retrieves the queried group
 	 * @param \WP_REST_Request $request Request data
 	 * @return GroupInterface
 	 */
 	protected function get_group( \WP_REST_Request $request ) {
-		$group_id = $request->get_param( 'credit_group' );
+		$group_id = $request->get_param( 'group' );
 		if ( !$group_id ) {
 			return;
 		}

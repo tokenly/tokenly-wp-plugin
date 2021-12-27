@@ -13,7 +13,7 @@ interface StatusIndicatorState {
 	//
 }
 
-export class StatusIndicator extends Component<StatusIndicatorlProps, StatusIndicatorState> {
+export default class StatusIndicator extends Component<StatusIndicatorlProps, StatusIndicatorState> {
 
 	constructor( props: StatusIndicatorlProps ) {
 		super( props );

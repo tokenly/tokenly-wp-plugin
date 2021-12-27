@@ -3,8 +3,8 @@ import Page from './../Page';
 import { Component } from 'react';
 import { PromiseData } from '../../../Interfaces';
 import * as dayjs from 'dayjs'
-import { PromiseSourceInfo } from '../../Components/Token/PromiseSourceInfo';
-import { PromiseParticipants } from '../../Components/Token/PromiseParticipants';
+import PromiseSourceInfo from '../../Components/Token/PromiseSourceInfo';
+import PromiseParticipants from '../../Components/Token/PromiseParticipants';
 
 import { 
 	Button,

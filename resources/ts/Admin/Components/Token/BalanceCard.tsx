@@ -15,7 +15,7 @@ interface BalanceCardState {
 	//
 }
 
-export class BalanceCard extends Component<BalanceCardProps, BalanceCardState> {
+export default class BalanceCard extends Component<BalanceCardProps, BalanceCardState> {
 
 	constructor( props: BalanceCardProps ) {
 		super( props );

@@ -29,9 +29,15 @@ class TransactionController implements TransactionControllerInterface {
 	 * @return TransactionCollectionInterface
 	 */
 	public function index( \WP_REST_Request $request ) {
-		$credit_transactions = $this->transaction_service->index();
-		$credit_transactions = $credit_transactions->to_array();
-		return $credit_transactions;
+		$params = array();
+		if ( isset( $_GET['group'] ) ) {
+			$params['group_uuid'] = $_GET['group'];
+		} else {
+			return false;
+		}
+		$transactions = $this->transaction_service->index( $params );
+		$transactions = $transactions->to_array();
+		return $transactions;
 	}
 
 	/**

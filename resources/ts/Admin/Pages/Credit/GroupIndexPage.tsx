@@ -2,8 +2,8 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import { GroupList } from '../../Components/Credit/GroupList';
-import { GroupRepositoryInterface } from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
+import GroupList from '../../Components/Credit/GroupList';
+import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -16,7 +16,7 @@ import {
 } from '@wordpress/components';
 
 interface GroupIndexPageData {
-	credit_groups: Array<any>;
+	//
 }
 
 interface GroupIndexPageProps {
@@ -29,8 +29,8 @@ interface GroupIndexPageState {
 }
 
 export default class GroupIndexPage extends Component<GroupIndexPageProps, GroupIndexPageState> {
-	@resolve( TYPES.GroupRepositoryInterface )
-	creditGroupRepository: GroupRepositoryInterface;
+	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
+	groupRepository: GroupRepositoryInterface;
 
 	state: GroupIndexPageState = {
 		loadingGroups: false,
@@ -42,8 +42,7 @@ export default class GroupIndexPage extends Component<GroupIndexPageProps, Group
 
 	componentWillMount() {
 		this.setState( { loadingGroups: true } );
-		this.creditGroupRepository.index().then( ( groups ) => {
-			console.log(groups);
+		this.groupRepository.index().then( ( groups ) => {
 			this.setState( {
 				loadingGroups: false,
 				groups: groups,
@@ -53,7 +52,7 @@ export default class GroupIndexPage extends Component<GroupIndexPageProps, Group
 	
 	render() {
 		return (
-			<Page title={'Credit Groups'}>
+			<Page title={'Group listing'}>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
@@ -71,13 +70,13 @@ export default class GroupIndexPage extends Component<GroupIndexPageProps, Group
 									isPrimary
 									href='/wp-admin/admin.php?page=tokenly-credit-group-store'
 								>
-									Register credit group
+									Register group
 								</Button>
 							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel header="Registered credit groups">
+				<Panel header="Registered groups">
 					<PanelBody>
 						<PanelRow>
 							<Flex>
@@ -88,7 +87,7 @@ export default class GroupIndexPage extends Component<GroupIndexPageProps, Group
 									</Flex>
 								:	<Flex>
 										{ Object.keys( this.state.groups ).length > 0
-											? <CreditGroupList
+											? <GroupList
 												groups={ this.state.groups }
 												loadingGroups={ this.state.loadingGroups }
 											/>

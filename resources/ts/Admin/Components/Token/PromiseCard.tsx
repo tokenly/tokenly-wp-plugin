@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from './../../../Interfaces';
-import { PromiseSourceInfo } from './PromiseSourceInfo';
-import { PromiseParticipants } from './PromiseParticipants';
+import PromiseSourceInfo from './PromiseSourceInfo';
+import PromiseParticipants from './PromiseParticipants';
 
 import { 
 	Button,
@@ -23,8 +23,7 @@ interface PromiseCardState {
 	//
 }
 
-export class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
-
+export default class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
 	constructor( props: PromiseCardProps ) {
 		super( props );
 	}

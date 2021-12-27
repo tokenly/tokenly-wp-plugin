@@ -19,10 +19,10 @@ import TcaSettingsRepository from './Repositories/Settings/TcaSettingsRepository
 import OauthSettingsRepository from './Repositories/Settings/OauthSettingsRepository';
 import WhitelistSettingsRepository from './Repositories/Settings/WhitelistSettingsRepository';
 // Implementations - Service providers
-import { ComponentServiceProvider } from './Providers/ComponentServiceProvider';
+import ComponentServiceProvider from './Providers/ComponentServiceProvider';
 // Implementations - Components
-import { LoginButtonComponent } from './Components/LoginButtonComponent';
-import { TokenItemCardComponent } from './Components/TokenItemCardComponent';
+import LoginButtonComponent from './Components/LoginButtonComponent';
+import TokenItemCardComponent from './Components/TokenItemCardComponent';
 // Interfaces
 // Interfaces - Services
 import AuthServiceInterface from './Interfaces/Services/AuthServiceInterface';
@@ -40,31 +40,32 @@ import TcaSettingsRepositoryInterface from './Interfaces/Repositories/Settings/T
 import OauthSettingsRepositoryInterface from './Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
 import WhitelistSettingsRepositoryInterface from './Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
 // Interfaces - Components
-import { ComponentServiceProviderInterface } from './Interfaces/Providers/ComponentServiceProviderInterface';
-import { LoginButtonComponentInterface } from './Interfaces/Components/LoginButtonComponentInterface';
-import { TokenItemCardComponentInterface } from './Interfaces/Components/TokenItemCardComponentInterface';
+import ComponentServiceProviderInterface from './Interfaces/Providers/ComponentServiceProviderInterface';
+import LoginButtonComponentInterface from './Interfaces/Components/LoginButtonComponentInterface';
+import TokenItemCardComponentInterface from './Interfaces/Components/TokenItemCardComponentInterface';
 
 const container = new Container();
 
 // Services - Application
-container.bind<AuthServiceInterface>( TYPES.AuthServiceInterface ).to( AuthService );
-container.bind<AdminApiServiceInterface>( TYPES.AdminApiServiceInterface ).to( AdminApiService );
+container.bind<AuthServiceInterface>( TYPES.Services.AuthServiceInterface ).to( AuthService );
+container.bind<AdminApiServiceInterface>( TYPES.Services.AdminApiServiceInterface ).to( AdminApiService );
 // Repositories
-container.bind<CreditGroupRepositoryInterface>( TYPES.CreditGroupRepositoryInterface ).to( CreditGroupRepository );
-container.bind<CreditTransactionRepositoryInterface>( TYPES.CreditTransactionRepositoryInterface ).to( CreditTransactionRepository );
-container.bind<TokenPromiseRepositoryInterface>( TYPES.TokenPromiseRepositoryInterface ).to( TokenPromiseRepository );
-container.bind<TokenSourceRepositoryInterface>( TYPES.TokenSourceRepositoryInterface ).to( TokenSourceRepository );
-container.bind<TokenMetaRepositoryInterface>( TYPES.TokenMetaRepositoryInterface ).to( TokenMetaRepository );
-container.bind<UserRepositoryInterface>( TYPES.UserRepositoryInterface ).to( UserRepository );
+container.bind<CreditGroupRepositoryInterface>( TYPES.Repositories.Credit.GroupRepositoryInterface ).to( CreditGroupRepository );
+container.bind<CreditTransactionRepositoryInterface>( TYPES.Repositories.Credit.TransactionRepositoryInterface ).to( CreditTransactionRepository );
+container.bind<TokenPromiseRepositoryInterface>( TYPES.Repositories.Token.PromiseRepositoryInterface ).to( TokenPromiseRepository );
+container.bind<TokenSourceRepositoryInterface>( TYPES.Repositories.Token.SourceRepositoryInterface ).to( TokenSourceRepository );
+container.bind<TokenMetaRepositoryInterface>( TYPES.Repositories.Token.MetaRepositoryInterface ).to( TokenMetaRepository );
+container.bind<UserRepositoryInterface>( TYPES.Repositories.UserRepositoryInterface ).to( UserRepository );
 // Repositories - Settings
-container.bind<WhitelistSettingsRepositoryInterface>( TYPES.WhitelistSettingsRepositoryInterface ).to( WhitelistSettingsRepository );
-container.bind<IntegrationSettingsRepositoryInterface>( TYPES.IntegrationSettingsRepositoryInterface ).to( IntegrationSettingsRepository );
-container.bind<OauthSettingsRepositoryInterface>( TYPES.OauthSettingsRepositoryInterface ).to( OauthSettingsRepository );
-container.bind<TcaSettingsRepositoryInterface>( TYPES.TcaSettingsRepositoryInterface ).to( TcaSettingsRepository );
+container.bind<WhitelistSettingsRepositoryInterface>( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface ).to( WhitelistSettingsRepository );
+container.bind<IntegrationSettingsRepositoryInterface>( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface ).to( IntegrationSettingsRepository );
+container.bind<OauthSettingsRepositoryInterface>( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface ).to( OauthSettingsRepository );
+container.bind<TcaSettingsRepositoryInterface>( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface ).to( TcaSettingsRepository );
+// Providers
+container.bind<ComponentServiceProviderInterface>( TYPES.Providers.ComponentServiceProviderInterface ).to( ComponentServiceProvider );
 // Components
-container.bind<ComponentServiceProviderInterface>( TYPES.ComponentServiceProviderInterface ).to( ComponentServiceProvider );
-container.bind<LoginButtonComponentInterface>( TYPES.LoginButtonComponentInterface ).to( LoginButtonComponent );
-container.bind<TokenItemCardComponentInterface>( TYPES.TokenItemCardComponentInterface ).to( TokenItemCardComponent );
+container.bind<LoginButtonComponentInterface>( TYPES.Components.LoginButtonComponentInterface ).to( LoginButtonComponent );
+container.bind<TokenItemCardComponentInterface>( TYPES.Components.TokenItemCardComponentInterface ).to( TokenItemCardComponent );
 
 container.bind<Component>( 'Component' ).to( LoginButtonComponent ).whenTargetNamed( 'loginButtonComponent' );
 container.bind<Component>( 'Component' ).to( TokenItemCardComponent ).whenTargetNamed( 'tokenItemCardComponent' );

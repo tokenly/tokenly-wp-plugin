@@ -10,19 +10,20 @@ import {
 } from '@wordpress/components';
 
 interface GroupEditFormProps {
+	loadingGroup: boolean;
 	saving: boolean;
 	onSave: any;
 	onCancel: any;
-	creditGroup: any;
+	group: any;
 }
 
 interface GroupEditFormState {
-	creditGroup: any;
+	group: any;
 }
 
-export class GroupEditForm extends Component<GroupEditFormProps, GroupEditFormState> {
+export default class GroupEditForm extends Component<GroupEditFormProps, GroupEditFormState> {
 	state: GroupEditFormState = {
-		creditGroup: {
+		group: {
 			name: null,
 			app_whitelist: null,
 		},
@@ -30,23 +31,17 @@ export class GroupEditForm extends Component<GroupEditFormProps, GroupEditFormSt
 	constructor( props: GroupEditFormProps ) {
 		super( props );
 		this.onSave = this.onSave.bind( this );
-		this.state.creditGroup = Object.assign( this.state.creditGroup, this.props.creditGroup );
-		if ( Array.isArray( this.props.creditGroup.app_whitelist ) ) {
-			this.state.creditGroup.app_whitelist = this.props.creditGroup.app_whitelist.join( ', ' );
-		} else {
-			this.state.creditGroup.app_whitelist = '';
-		}
 	}
 	
 	onSave() {
-		let whitelist = this.state.creditGroup.app_whitelist.replace( /\s/g, '' );
+		let whitelist = this.state.group.app_whitelist.replace( /\s/g, '' );
 		if ( whitelist == '' ) {
 			whitelist = [];
 		} else {
 			whitelist = whitelist.split(',');
 		}
 		this.props.onSave( {
-			name: this.state.creditGroup.name,
+			name: this.state.group.name,
 			app_whitelist: whitelist,
 		} );
 	}
@@ -55,33 +50,59 @@ export class GroupEditForm extends Component<GroupEditFormProps, GroupEditFormSt
 		this.props.onCancel();
 	}
 
+	componentWillReceiveProps( nextProps: any ) {
+		if ( !nextProps.group ) {
+			return;
+		}
+		let group = Object.assign( this.state.group, nextProps.group );
+		if ( Array.isArray( group.app_whitelist ) ) {
+			group.app_whitelist = group.app_whitelist.join( ', ' );
+		} else {
+			group.app_whitelist = '';
+		}
+		this.setState( { group: group } );
+	}
+
 	render() {
 		return <div>
 			<form>
 				<div style={{maxWidth: "320px"}}>
-					<Flex
-						//@ts-ignore
-						direction="column"
-					>
-						<TextControl
-							label="Name"
-							value={ this.state.creditGroup.name }
-							onChange={ (value: any) => {
-								const state = Object.assign( {}, this.state.creditGroup );
-								state.name = value;
-								this.setState( { creditGroup: state } );
-							} }
-						/>
-						<TextareaControl
-							label="App whitelist"
-							help="Comma-separated values."
-							value={ this.state.creditGroup.app_whitelist }
-							onChange={ (value: any) => {
-								const state = Object.assign( {}, this.state.creditGroup );
-								state.app_whitelist = value;
-								this.setState( { creditGroup: state } );
-							} }
-						/>
+					<Flex>
+						{ this.props.loadingGroup
+							?	<Flex justify="flex-start">
+									<span>Loading group ... </span>
+									<Spinner />
+								</Flex>
+							:	<Flex>
+								{ ( this.state?.group && typeof this.state?.group === 'object' )
+									?	<Flex
+											//@ts-ignore
+											direction="column"
+										>
+											<TextControl
+												label="Name"
+												value={ this.state.group.name }
+												onChange={ ( value: any ) => {
+													const state = Object.assign( {}, this.state.group );
+													state.name = value;
+													this.setState( { group: state } );
+												} }
+											/>
+											<TextareaControl
+												label="App whitelist"
+												help="Comma-separated values."
+												value={ this.state.group.app_whitelist }
+												onChange={ ( value: any ) => {
+													const state = Object.assign( {}, this.state.group );
+													state.app_whitelist = value;
+													this.setState( { group: state } );
+												} }
+											/>
+										</Flex>
+									: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
+								}
+							</Flex>
+						}
 					</Flex>
 					<Flex justify="flex-start" style={ { marginTop: '12px' } }>
 						<Button
@@ -91,7 +112,7 @@ export class GroupEditForm extends Component<GroupEditFormProps, GroupEditFormSt
 								this.onSave();
 							}}
 						>
-							Save credit group
+							Save
 						</Button>
 						{this.props.saving === true &&
 							<Spinner/>
