@@ -67,6 +67,7 @@ use Tokenly\Wp\Controllers\Api\Settings\OauthController as OauthSettingsApiContr
 use Tokenly\Wp\Controllers\Api\Settings\IntegrationController as IntegrationSettingsApiController;
 use Tokenly\Wp\Controllers\Api\Settings\TcaController as TcaSettingsApiController;
 use Tokenly\Wp\Controllers\Api\Settings\WhitelistController as WhitelistSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Token\AddressController as TokenAddressApiController;
 use Tokenly\Wp\Controllers\Api\Token\BalanceController as TokenBalanceApiController;
 use Tokenly\Wp\Controllers\Api\Token\PromiseController as TokenPromiseApiController;
 use Tokenly\Wp\Controllers\Api\Token\SourceController as TokenSourceApiController;
@@ -196,6 +197,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiCont
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\AddressControllerInterface as TokenAddressApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\BalanceControllerInterface as TokenBalanceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceApiControllerInterface;
@@ -375,6 +377,7 @@ return array(
 	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
 	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
 	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
+	TokenAddressApiControllerInterface::class         => \DI\autowire( TokenAddressApiController::class ),
 	TokenBalanceApiControllerInterface::class         => \DI\autowire( TokenBalanceApiController::class ),
 	TokenPromiseApiControllerInterface::class         => \DI\autowire( TokenPromiseApiController::class ),
 	TokenSourceApiControllerInterface::class          => \DI\autowire( TokenSourceApiController::class ),
@@ -671,7 +674,7 @@ return array(
 	UserCollectionFactoryInterface::class                 => \DI\factory( function( ContainerInterface $container, UserFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, UserCollectionInterface::class ) extends ConcreteCollectionFactory implements UserCollectionFactoryInterface {};
 	} ),
-	WhitelistItemCollectionFactoryInterface::class   => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
+	WhitelistItemCollectionFactoryInterface::class        => \DI\factory( function( ContainerInterface $container, WhitelistItemFactoryInterface $item_factory ) {
 		return new class( $container, $item_factory, WhitelistItemCollectionInterface::class ) extends ConcreteCollectionFactory implements WhitelistItemCollectionFactoryInterface {};
 	} ),
 	//Third-party

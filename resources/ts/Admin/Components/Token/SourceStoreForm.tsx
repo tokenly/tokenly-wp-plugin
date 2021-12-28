@@ -10,71 +10,40 @@ import {
 } from '@wordpress/components';
 
 interface SourceStoreFormProps {
-	saving: boolean;
+	storing: boolean;
+	loading: boolean;
 	onSubmit: any;
 	onCancel: any;
 	onChange: any;
 	style: any;
-	addresses: Array<any>,
+	addresses: any;
+	storeData: any;
 }
 
 interface SourceStoreFormState {
-	address: number;
-	assets: string;
 	addressOptions: Array<any>;
-	
 }
 
 export default class SourceStoreForm extends Component<SourceStoreFormProps, SourceStoreFormState> {
 	state: SourceStoreFormState = {
-		address: null,
-		assets: null,
 		addressOptions: [],
 	};
 	
 	constructor( props: SourceStoreFormProps ) {
 		super( props );
-		this.onSubmit = this.onSubmit.bind( this );
 		this.getCurrentAddressType = this.getCurrentAddressType.bind( this );
 		this.getCurrentAddressAssets = this.getCurrentAddressAssets.bind( this );
-		const options = this.props.addresses.map( ( address, index ) => {
-			return {
-				label: address.label,
-				value: index,
-			}
-		} );
-		this.state.addressOptions = options;
-		if ( this.state.addressOptions.length > 0 ) {
-			this.state.address = this.state.addressOptions[0].value;
-		}
-	}
-	
-	onSubmit() {
-		const selectedAddress = this.props.addresses[this.state.address];
-		if ( !selectedAddress ) {
-			return;
-		}
-		const source = {
-			address: selectedAddress.address,
-			type: selectedAddress.type,
-			assets: this.state.assets,
-		}		
-		this.props.onSubmit( source );
-	}
-
-	onCancel() {
-		this.props.onCancel();
 	}
 
 	getCurrentAddressType() {
-		if ( this.state.address != null ) {
-			return this.props.addresses[this.state.address]?.type;
+		if ( this.props.storeData?.address != null ) {
+			return this.props.addresses[ this.props.storeData?.address ]?.type;
 		}
 	}
 
 	getCurrentAddressAssets() {
-		if ( this.state.address != null ) {
-			const balances = this.props.addresses[this.state.address].balances;
+		if ( this.props.storeData?.address != null ) {
+			const balances = this.props.addresses[ this.props.storeData?.address ].balances;
 			const assets = balances.map( ( balance: any ) => {
 				return balance.name;
 			} );
@@ -86,58 +55,87 @@ export default class SourceStoreForm extends Component<SourceStoreFormProps, Sou
 	}
 
 	getCurrentAddress() {
-		if ( this.state.address != null ) {
-			return this.props.addresses[this.state.address]?.address;
+		if ( this.props.storeData?.address != null ) {
+			return this.props.addresses[ this.props.storeData.address ]?.address;
 		}
+	}
+
+	componentWillReceiveProps( nextProps: any ) {
+		if ( !nextProps.addresses ) {
+			return;
+		}
+		const options = [] as any;
+		Object.keys( nextProps.addresses ).forEach( function ( key ) {
+			options.push( {
+				label: nextProps.addresses[ key ].label,
+				value: key,
+			} );
+		 });
+		const state = { addressOptions: options } as any;
+		if ( options.length > 0 ) {
+			state.address = options[0].value;
+		}
+		this.setState( state );
 	}
 
 	render() {
 		return (
 			<form style={ { width: '100%', maxWidth: "400px" } }>
 				<div>
-					{ this.props.addresses.length > 0 
-					?	<Flex
-							//@ts-ignore
-							direction="column"
-						>
-							<SelectControl
-								label="Address"
-								value={ this.state.address }
-								style={{width: '100%'}}
-								options={ this.state.addressOptions }
-								help=" Blockchain wallet address"
-								onChange={ ( value: any ) => {
-									this.setState( { address: value } );
-									this.props.onChange( this.props.addresses[value] );
-								} }
-							/>
-							<Flex
-								//@ts-ignore
-								direction="column"
-								gap={0.5}
-							>
-								<div>Address info:</div>
-								<Flex
+					{ this.props.loading
+						?	<Flex justify="flex-start">
+								<span>Loading addresses ... </span>
+								<Spinner />
+							</Flex>
+						:	<Flex style={ { maxWidth: "320px" } }>
+							{ this.state.addressOptions.length > 0 
+							?	<Flex
 									//@ts-ignore
 									direction="column"
-									gap={0}
 								>
-									<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
-									<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
-									<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.getCurrentAddress() }` } >View balances</a></div>
+									<SelectControl
+										label="Address"
+										value={ this.props.storeData?.address }
+										style={ { width: '100%' } }
+										options={ this.state.addressOptions }
+										help=" Blockchain wallet address"
+										onChange={ ( value: any ) => {
+											const state = Object.assign( {}, this.props.storeData );
+											state.address = value;
+											this.props.onChange( state );
+										} }
+									/>
+									<Flex
+										//@ts-ignore
+										direction="column"
+										gap={0.5}
+									>
+										<div>Address info:</div>
+										<Flex
+											//@ts-ignore
+											direction="column"
+											gap={0}
+										>
+											<div><strong>Type: </strong><span>{ this.getCurrentAddressType() }</span></div>
+											<div><strong>Address: </strong><span>{ this.getCurrentAddress() }</span></div>
+											<div><strong>Assets: </strong><a href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.getCurrentAddress() }` } >View balances</a></div>
+										</Flex>
+									</Flex>
+									<TextareaControl
+										label="Whitelisted assets"
+										help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
+										value={ this.props.storeData?.assets }
+										onChange={ ( value: any ) => {
+											const state = Object.assign( {}, this.props.storeData );
+											state.assets = value;
+											this.props.onChange( state );
+										} }
+									/>
 								</Flex>
-							</Flex>
-							<TextareaControl
-								label="Whitelisted assets"
-								help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
-								value={ this.state.assets }
-								onChange={ ( value: any ) => {
-									this.setState( { assets: value } );
-								} }
-							/>
-						</Flex>
-					:	<Flex>
-							<span style={{opacity: 0.8}}>No addresses are available for registration.</span>
+							:	<Flex>
+									<span style={ { opacity: 0.8 } }>No addresses are available for registration.</span>
+								</Flex>
+							}
 						</Flex>
 					}
 					<Flex
@@ -146,23 +144,21 @@ export default class SourceStoreForm extends Component<SourceStoreFormProps, Sou
 					>
 						<Button
 							isPrimary
-							disabled={ this.state.address === null }
+							disabled={ !this.props.storeData.address || this.props.storing }
 							onClick={ () => {
-								this.onSubmit();
+								this.props.onSubmit();
 							}}
 						>
-							Register source
+							{ this.props.storing ? 'Registering ...' : 'Register source' }
 						</Button>
-						{this.props.saving === true &&
+						{ this.props.storing === true &&
 							<Spinner/>
 						}
 						<Button
 							isTertiary
-							disabled={ this.props.saving }
 							onClick={ () => {
-								this.onCancel();
+								this.props.onCancel();
 							}}
-							
 						>
 							Cancel
 						</Button>

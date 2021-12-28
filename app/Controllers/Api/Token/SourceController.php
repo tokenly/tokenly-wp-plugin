@@ -63,6 +63,7 @@ class SourceController extends Controller implements SourceControllerInterface {
 	 * @return Source 
 	 */
 	public function update( SourceInterface $source, \WP_REST_Request $request ) {
+		$params = $request->get_params();
 		$source->update( $params );
 		return array(
 			'status' => "Source successfully updated!",

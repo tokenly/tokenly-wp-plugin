@@ -83,7 +83,7 @@ export default class GroupStoreForm extends Component<GroupStoreFormProps, Group
 								this.onSubmit();
 							}}
 						>
-							Register credit group
+							Register group
 						</Button>
 						{this.props.saving === true &&
 							<Spinner/>

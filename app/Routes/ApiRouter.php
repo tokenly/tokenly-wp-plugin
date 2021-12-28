@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\AddressControllerInterface as TokenAddressControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\BalanceControllerInterface as TokenBalanceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceControllerInterface;
@@ -28,6 +29,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		AuthControllerInterface $auth_controller,
 		CreditGroupControllerInterface $credit_group_controller,
 		CreditTransactionControllerInterface $credit_transaction_controller,
+		TokenAddressControllerInterface $token_address_controller,
 		TokenBalanceControllerInterface $token_balance_controller,
 		TokenPromiseControllerInterface $token_promise_controller,
 		TokenSourceControllerInterface $token_source_controller,
@@ -44,6 +46,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'auth'                     => $auth_controller,
 			'credit_group'             => $credit_group_controller,
 			'credit_transaction'       => $credit_transaction_controller,
+			'token_address'            => $token_address_controller,
 			'token_balance'            => $token_balance_controller,
 			'token_promise'            => $token_promise_controller,
 			'token_source'             => $token_source_controller,
@@ -155,6 +158,16 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'args' => array(
 					'methods'             => 'POST',
 					'callback'            => array( $this->controllers['credit_transaction'], 'store' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'token_address_index' => array(
+				'path' => '/token/address',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['token_address'], 'index' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

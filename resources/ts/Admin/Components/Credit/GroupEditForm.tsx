@@ -112,7 +112,7 @@ export default class GroupEditForm extends Component<GroupEditFormProps, GroupEd
 								this.onSave();
 							}}
 						>
-							Save
+							Save group
 						</Button>
 						{this.props.saving === true &&
 							<Spinner/>

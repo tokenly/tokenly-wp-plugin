@@ -103,6 +103,16 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
+	tokenAddressIndex( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/token/address', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
 	tokenBalanceIndex( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/token/balance', params ).then( result => {

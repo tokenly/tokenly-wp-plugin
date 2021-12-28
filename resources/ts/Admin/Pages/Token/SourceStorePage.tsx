@@ -2,6 +2,7 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
+import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceStoreForm from '../../Components/Token/SourceStoreForm';
 import { SourceData } from '../../../Interfaces';
@@ -17,47 +18,74 @@ import {
 } from '@wordpress/components';
 
 interface SourceStorePageData {
-	addresses: Array<any>;
+	//
 }
 
 interface SourceStorePageProps {
 	pageData: SourceStorePageData;
-	saving: boolean;
 }
 
 interface SourceStorePageState {
-	storingSource: boolean;
+	storing: boolean;
+	loading: boolean;
 	address: any;
+	addresses: any;
+	storeData: any;
 }
 
 export default class SourceStorePage extends Component<SourceStorePageProps, SourceStorePageState> {
+	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
+	addressRepository: AddressRepositoryInterface;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
 	state: SourceStorePageState = {
-		storingSource: false,
+		storing: false,
+		loading: false,
 		address: null,
+		addresses: null,
+		storeData: {},
 	}
 	constructor( props: SourceStorePageProps ) {
 		super( props );
 		this.onSubmit = this.onSubmit.bind( this );
-		this.onAddressChange = this.onAddressChange.bind( this );
+		this.onStoreDataChange = this.onStoreDataChange.bind( this );
 	}
 
 	return() {
 		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
 	}
 	
-	onSubmit( promise: SourceData ) {
-		this.setState( { storingSource: true } );
-		this.sourceRepository.store( promise ).then( ( result: any ) => {
-			this.setState( { storingSource: false } );
+	onSubmit() {
+		const selectedAddress = this.state.addresses[this.state.storeData?.address];
+		if ( !selectedAddress ) {
+			return;
+		}
+		const storeData = Object.assign( {}, this.state.storeData );
+		storeData.type = this.state.addresses[this.state.storeData.address].type;	
+		this.setState( { storing: true } );
+		this.sourceRepository.store( storeData ).then( ( result: any ) => {
+			this.setState( { storing: false } );
 			this.return();
 		});
 	}
 	
-	onAddressChange( address: any ) {
-		this.setState( { address: address } );
+	onStoreDataChange( newData: any ) {
+		this.setState( { storeData: newData } );
+	}
+
+	componentWillMount() {
+		this.setState( { loading: true } );
+		const params = {
+			id: 'me',
+			registered: true,
+		}
+		this.addressRepository.index( params ).then( ( addresses: any ) => {
+			this.setState( {
+				loading: false,
+				addresses: addresses,
+			} );
+		} );
 	}
 	
 	render() {
@@ -71,11 +99,13 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 						<PanelRow>
 							<SourceStoreForm
 								onSubmit={ this.onSubmit }
-								onChange={ this.onAddressChange }
+								onChange={ this.onStoreDataChange }
 								onCancel={ this.return }
-								saving={ this.state.storingSource }
+								loading={ this.state.loading }
+								storing={ this.state.storing }
 								style={ { marginBottom: '12px' } }
-								addresses={ this.props.pageData.addresses }
+								addresses={ this.state.addresses }
+								storeData={ this.state.storeData }
 							/>
 						</PanelRow>
 					</PanelBody>

@@ -83,7 +83,7 @@ export default class SourceEditForm extends Component<SourceEditFormProps, Sourc
 							this.onSave();
 						}}
 					>
-						Save source
+						{ this.props.saving ? 'Saving ...' : 'Save source' }
 					</Button>
 					{this.props.saving === true &&
 						<Spinner/>
@@ -95,7 +95,7 @@ export default class SourceEditForm extends Component<SourceEditFormProps, Sourc
 							this.onDelete();
 						}}
 					>
-						Delete source
+						{ this.props.deleting ? 'Deleting ...' : 'Delete source' }
 					</Button>
 					{this.props.deleting === true &&
 						<Spinner/>

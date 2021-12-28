@@ -26,7 +26,7 @@ interface SourceEditPageProps {
 }
 
 interface SourceEditPageState {
-	sourceId: string;
+	id: string;
 	source: any;
 	loading: boolean;
 	saving: boolean;
@@ -38,7 +38,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	sourceRepository: SourceRepositoryInterface;
 	
 	state: SourceEditPageState = {
-		sourceId: null,
+		id: null,
 		source: null,
 		loading: false,
 		saving: false,
@@ -53,7 +53,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.deleteSource = this.deleteSource.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 		const urlParams = new URLSearchParams( window.location.search );
-		this.state.sourceId = urlParams.get( 'source' );
+		this.state.id = urlParams.get( 'source' );
 	}
 
 	return() {
@@ -64,7 +64,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.setState( { saving: true } );
 		const sourceData = Object.assign( {}, source );
 		delete sourceData.address;
-		this.sourceRepository.update( this.state.sourceId, sourceData ).then( ( result: any ) => {
+		this.sourceRepository.update( this.state.id, sourceData ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});
@@ -84,7 +84,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 
 	deleteSource() {
 		this.setState( { deleting: true } );
-		this.sourceRepository.destroy( this.props.pageData.source.address_id ).then( ( result: any ) => {
+		this.sourceRepository.destroy( this.state.id ).then( ( result: any ) => {
 			this.setState( { deleting: false } );
 			this.return();
 		});
@@ -113,7 +113,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		const params = {
 			with: ['address'],
 		}
-		this.sourceRepository.show( this.state.sourceId, params ).then( ( source: any ) => {
+		this.sourceRepository.show( this.state.id, params ).then( ( source: any ) => {
 			if ( source.assets && Array.isArray( source.assets ) ) {
 				source.assets = source.assets.join( ', ' );
 			}
@@ -138,7 +138,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 									<div>
 										<span>Source: </span>
 										<strong>
-											<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.state.sourceId }` }>{ this.state.source?.address?.label ?? this.state.sourceId }</a>
+											<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.state.id }` }>{ this.state.source?.address?.label ?? this.state.id }</a>
 										</strong>
 									</div>
 								}

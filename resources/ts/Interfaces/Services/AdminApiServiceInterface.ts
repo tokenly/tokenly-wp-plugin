@@ -17,6 +17,7 @@ export default interface AdminApiServiceInterface {
 	creditTransactionStore( params: any ): Promise<any>;
 	settingsShow( type: string ): Promise<any>;
 	settingsUpdate( type: string, params: any ): Promise<any>;
+	tokenAddressIndex( params: any ): Promise<Array<any>>;
 	tokenBalanceIndex( params: any ): Promise<Array<any>>;
 	tokenSourceIndex( params: any ): Promise<Array<SourceData>>;
 	tokenSourceShow( id: string, params?: any ): Promise<Array<any>>;

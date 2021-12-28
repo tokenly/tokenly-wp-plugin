@@ -23,6 +23,7 @@ const TYPES = {
 			WhitelistSettingsRepositoryInterface    : Symbol.for( 'WhitelistSettingsRepositoryInterface' ),
 		},
 		Token: {
+			AddressRepositoryInterface  : Symbol.for( 'AddressRepositoryInterface' ),
 			BalanceRepositoryInterface  : Symbol.for( 'BalanceRepositoryInterface' ),
 			PromiseRepositoryInterface  : Symbol.for( 'PromiseRepositoryInterface' ),
 			SourceRepositoryInterface   : Symbol.for( 'SourceRepositoryInterface' ),
