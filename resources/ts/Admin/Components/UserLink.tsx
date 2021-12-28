@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Component } from 'react';
 
 import { 
-	 Flex,
 	 Dashicon,
 } from '@wordpress/components';
 
 interface UserLinkProps {
-	id: number;
+	url: string;
 	alt: string;
 	name: string;
 }
@@ -22,20 +21,12 @@ export default class UserLink extends Component<UserLinkProps, UserLinkState> {
 		super( props );
 	}
 
-	getUserUrl( id: number = null ) {
-		if ( id ) {
-			return `/tokenly/user/${ id }`;
-		} else {
-			return false;
-		}
-	}
-
 	render() {
 		return (
 			<div>
 				<Dashicon icon="admin-users" style={ { marginRight: '2px' } } />
 				<strong title={ this.props.alt }>
-					<a href={ this.getUserUrl( this.props.id ) as any } >
+					<a href={ this.props.url } >
 						<span>{this.props.name ? this.props.name : 'unknown' }</span>
 					</a>
 				</strong>

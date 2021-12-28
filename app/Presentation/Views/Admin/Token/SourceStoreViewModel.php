@@ -6,22 +6,28 @@ use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceStoreViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 
 class SourceStoreViewModel extends DynamicViewModel implements SourceStoreViewModelInterface {
 	protected $current_user;
+	protected $user_service;
 	protected $source_service;
 	
 	public function __construct(
-		CurrentUserInterface $current_user,
+		UserServiceInterface $user_service,
 		SourceServiceInterface $source_service
 	) {
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 		$this->source_service = $source_service;
 	}
 	
 	protected function get_view_props( array $data = array() ) {
+		if ( !$this->current_user || $this->current_user instanceof UserInterface === false ) {
+			return;
+		}
 		$this->current_user->load( array( 'oauth_user.address.balance.token_meta' ) );
 		$addresses = array();
 		if (

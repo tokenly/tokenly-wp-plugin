@@ -68,14 +68,14 @@ export default class PromiseCard extends Component<PromiseCardProps, PromiseCard
 							isSmall
 							href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.props.promise.promise_id}` }
 						>
-							Details
+							View details
 						</Button>
 						<Button
 							isSecondary
 							isSmall
 							href={ `/wp-admin/admin.php?page=tokenly-token-promise-edit&promise=${ this.props.promise.promise_id }` }
 						>
-							Manage promise
+							Edit promise
 						</Button>
 					</Flex>
 				</CardFooter>

@@ -82,6 +82,14 @@ class SourceController extends Controller implements SourceControllerInterface {
 		);
 	}
 
+	protected function remap_parameters( array $params = array() ) {
+		if ( isset( $params['source'] ) ) {
+			$params['address'] = $params['source'];
+			unset( $params['source'] );
+		}
+		return $params;
+	}
+
 	/**
 	 * Gets model binding parameters
 	 * @return array
@@ -89,8 +97,6 @@ class SourceController extends Controller implements SourceControllerInterface {
 	protected function get_bind_params() {
 		return array(
 			'service'                   => $this->source_service,
-			'query_parameter'           => 'source',
-			'single_service_parameter'  => 'address',
 			'single_service_method'     => 'show',
 			'single_methods'            => array( 'show', 'update', 'destroy' ),
 			'collection_methods'        => array( 'index' ),

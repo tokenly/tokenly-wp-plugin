@@ -35,7 +35,7 @@ class UserService extends DomainService implements UserServiceInterface {
 	/**
 	 * Gets a collection of users
 	 * @param array $params Search parameters
-	 * @return UserCollectionInterface
+	 * @return UserCollectionInterface Users found
 	 */
 	public function index( array $params = array() ) {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
@@ -44,10 +44,25 @@ class UserService extends DomainService implements UserServiceInterface {
 	/**
 	 * Gets a single user
 	 * @param array $params Search parameters
-	 * @return UserInterface
+	 * @return UserInterface User found
 	 */
 	public function show( array $params = array() ) {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Gets the current user
+	 * @param array $params Additional parameters
+	 * @return UserInterface Current user
+	 */
+	public function show_current( array $params = array() ) {
+		$id = get_current_user_id();
+		if ( $id == 0 ) {
+			return;
+		}
+		$params['id'] = $id;
+		$user = $this->show( $params );
+		return $user;
 	}
 
 	/**

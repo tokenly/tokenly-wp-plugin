@@ -9,6 +9,7 @@ import AdminApiService from './Services/AdminApiService';
 // Implementations - Repositories
 import CreditGroupRepository from './Repositories/Credit/GroupRepository';
 import CreditTransactionRepository from './Repositories/Credit/TransactionRepository';
+import TokenBalanceRepository from './Repositories/Token/BalanceRepository';
 import TokenPromiseRepository from './Repositories/Token/PromiseRepository';
 import TokenSourceRepository from './Repositories/Token/SourceRepository';
 import TokenMetaRepository from './Repositories/Token/MetaRepository';
@@ -30,6 +31,7 @@ import AdminApiServiceInterface from './Interfaces/Services/AdminApiServiceInter
 // Interfaces - Repositories
 import CreditGroupRepositoryInterface from './Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import CreditTransactionRepositoryInterface from './Interfaces/Repositories/Credit/TransactionRepositoryInterface';
+import TokenBalanceRepositoryInterface from './Interfaces/Repositories/Token/BalanceRepositoryInterface';
 import TokenPromiseRepositoryInterface from './Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import TokenSourceRepositoryInterface from './Interfaces/Repositories/Token/SourceRepositoryInterface';
 import TokenMetaRepositoryInterface from './Interfaces/Repositories/Token/MetaRepositoryInterface';
@@ -52,6 +54,7 @@ container.bind<AdminApiServiceInterface>( TYPES.Services.AdminApiServiceInterfac
 // Repositories
 container.bind<CreditGroupRepositoryInterface>( TYPES.Repositories.Credit.GroupRepositoryInterface ).to( CreditGroupRepository );
 container.bind<CreditTransactionRepositoryInterface>( TYPES.Repositories.Credit.TransactionRepositoryInterface ).to( CreditTransactionRepository );
+container.bind<TokenBalanceRepositoryInterface>( TYPES.Repositories.Token.BalanceRepositoryInterface ).to( TokenBalanceRepository );
 container.bind<TokenPromiseRepositoryInterface>( TYPES.Repositories.Token.PromiseRepositoryInterface ).to( TokenPromiseRepository );
 container.bind<TokenSourceRepositoryInterface>( TYPES.Repositories.Token.SourceRepositoryInterface ).to( TokenSourceRepository );
 container.bind<TokenMetaRepositoryInterface>( TYPES.Repositories.Token.MetaRepositoryInterface ).to( TokenMetaRepository );

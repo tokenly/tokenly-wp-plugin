@@ -43,9 +43,9 @@ export default class GroupRepository implements GroupRepositoryInterface {
 		} );
 	}
 
-	update( params: any ): Promise<any> {
+	update( uuid: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditGroupUpdate( params ).then( result => {
+			this.adminApiService.creditGroupUpdate( uuid, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

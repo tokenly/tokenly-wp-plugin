@@ -45,7 +45,7 @@ export default class TransactionCard extends Component<TransactionCardProps, Tra
 							<Flex justify="flex-start">
 								<span>User: </span>
 								<UserLink
-									id={ this.props.transaction?.user?.id }
+									url={ `` }
 									name={ this.props.transaction?.user?.name ? this.props.transaction?.user?.name : this.props.transaction?.account }
 									alt={ this.props.transaction.account }
 								/>

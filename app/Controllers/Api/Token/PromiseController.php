@@ -84,6 +84,14 @@ class PromiseController extends Controller implements PromiseControllerInterface
 		);
 	}
 
+	protected function remap_parameters( array $params = array() ) {
+		if ( isset( $params['promise'] ) ) {
+			$params['promise_id'] = $params['promise'];
+			unset( $params['promise'] );
+		}
+		return $params;
+	}
+
 	/**
 	 * Gets model binding parameters
 	 * @return array
@@ -91,8 +99,6 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	protected function get_bind_params() {
 		return array(
 			'service'                   => $this->promise_service,
-			'query_parameter'           => 'promise',
-			'single_service_parameter'  => 'promise_id',
 			'single_service_method'     => 'show',
 			'single_methods'            => array( 'show', 'update', 'destroy' ),
 			'collection_methods'        => array( 'index' ),

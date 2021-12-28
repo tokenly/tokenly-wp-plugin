@@ -46,13 +46,13 @@ class Integration extends Model implements IntegrationInterface {
 	public function check_connection() {
 		$can_connect = false;
 		$result = $this->client->getProvisionalSourceList();
-		if ( $result == false ) {
+		if ( $result === false ) {
 			$can_connect = false;
 		} else {
 			$can_connect = true;
 		}
-		$this->settings->update( array(
-			'settings_updated' => false,
+		$this->option_repository->update( array(
+			'integration_settings_updated' => false,
 		) );
 		$this->can_connect = $can_connect;
 		$this->save();

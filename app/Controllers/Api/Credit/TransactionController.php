@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Controllers\Api\Credit;
 
+use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface;
 
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
@@ -11,7 +12,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 /**
  * Defines transaction endpoints
  */
-class TransactionController implements TransactionControllerInterface {
+class TransactionController extends Controller implements TransactionControllerInterface {
 	protected $transaction_service;
 	protected $user_service;
 
@@ -29,7 +30,6 @@ class TransactionController implements TransactionControllerInterface {
 	 * @return TransactionCollectionInterface
 	 */
 	public function index( TransactionCollectionInterface $transactions, \WP_REST_Request $request ) {
-		$transactions = $this->transaction_service->index( $params );
 		$transactions = $transactions->to_array();
 		return $transactions;
 	}

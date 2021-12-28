@@ -11,6 +11,7 @@ class Model implements ModelInterface {
 	use RelatableTrait;
 
 	protected $fillable = array();
+	protected $casts = array();
 	protected $domain_repository;
 
 	public function __construct(
@@ -28,7 +29,10 @@ class Model implements ModelInterface {
 		foreach( $data as $key => $value ) {
 			if ( !in_array( $key, $this->fillable ) ) {
 				continue;
-			} 
+			}
+			if ( array_key_exists( $key, $this->casts ) ) {
+				settype( $value, $this->casts[ $key ] );
+			}
 			$this->{$key} = $value;
 		}
 		return $this;

@@ -24,6 +24,16 @@ export default class SourceRepository implements SourceRepositoryInterface {
 		});
 	}
 
+	show( id: string, params?: any ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.tokenSourceShow( id, params ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
 	store( params: SourceData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.adminApiService.tokenSourceStore( params ).then( result => {

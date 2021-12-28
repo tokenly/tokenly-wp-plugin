@@ -7,7 +7,6 @@ use Tokenly\Wp\Interfaces\Presentation\Blocks\TokenItemCardListBlockModelInterfa
 
 use Tokenly\Wp\Interfaces\Presentation\Components\TokenItemCardComponentModelInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class TokenItemCardListBlockModel extends BlockModel implements TokenItemCardListBlockModelInterface {
 	protected $card_token_item_component_model;

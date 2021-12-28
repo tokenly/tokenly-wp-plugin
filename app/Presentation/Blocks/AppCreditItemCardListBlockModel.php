@@ -8,7 +8,6 @@ use Tokenly\Wp\Interfaces\Presentation\Blocks\AppCreditItemCardListBlockModelInt
 use Tokenly\Wp\Interfaces\Presentation\Components\AppCreditItemCardComponentModelInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class AppCreditItemCardListBlockModel extends BlockModel implements AppCreditItemCardListBlockModelInterface {
 	protected $app_credit_item_card_component_model;

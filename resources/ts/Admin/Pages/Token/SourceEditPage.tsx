@@ -26,6 +26,9 @@ interface SourceEditPageProps {
 }
 
 interface SourceEditPageState {
+	sourceId: string;
+	source: any;
+	loading: boolean;
 	saving: boolean;
 	deleting: boolean;
 }
@@ -35,6 +38,9 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	sourceRepository: SourceRepositoryInterface;
 	
 	state: SourceEditPageState = {
+		sourceId: null,
+		source: null,
+		loading: false,
 		saving: false,
 		deleting: false,
 	}
@@ -46,6 +52,8 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.onCancel = this.onCancel.bind( this );
 		this.deleteSource = this.deleteSource.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
+		const urlParams = new URLSearchParams( window.location.search );
+		this.state.sourceId = urlParams.get( 'source' );
 	}
 
 	return() {
@@ -56,7 +64,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.setState( { saving: true } );
 		const sourceData = Object.assign( {}, source );
 		delete sourceData.address;
-		this.sourceRepository.update( this.props.pageData.source.address_id, sourceData ).then( ( result: any ) => {
+		this.sourceRepository.update( this.state.sourceId, sourceData ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});
@@ -99,12 +107,24 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	componentWillUnmount() {
 		eventBus.remove( 'confirmModalChoice', this.onConfirmModalChoice );
 	}
+
+	componentWillMount() {
+		this.setState( { loading: true } );
+		const params = {
+			with: ['address'],
+		}
+		this.sourceRepository.show( this.state.sourceId, params ).then( ( source: any ) => {
+			if ( source.assets && Array.isArray( source.assets ) ) {
+				source.assets = source.assets.join( ', ' );
+			}
+			this.setState( {
+				loading: false,
+				source: source,
+			} );
+		} );
+	}
 	
 	render() {
-		const source = Object.assign( {}, this.props.pageData.source ) as any;
-		if ( source?.assets?.length ) {
-			source.assets = source.assets.join( ', ' );
-		}		
 		return (
 			<Page title={ 'Manage source' }>
 				<div style={ { marginBottom: '8px' } }>
@@ -114,17 +134,23 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 					<PanelBody>
 						<PanelRow>
 							<div>
-								<div><span>Source: </span><strong>
-									<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ source.address_id }` }>{ source?.address?.label }</a>
-								</strong></div>
+								{ this.state.source &&
+									<div>
+										<span>Source: </span>
+										<strong>
+											<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.state.sourceId }` }>{ this.state.source?.address?.label ?? this.state.sourceId }</a>
+										</strong>
+									</div>
+								}
 								<div>
 									<SourceEditForm
 										onSave={ this.onSave }
 										onDelete={ this.onDelete }
 										onCancel={ this.onCancel }
+										loading={ this.state.loading }
 										saving={ this.state.saving }
 										deleting={ this.state.deleting }
-										sourceData={ source }
+										source={ this.state.source }
 									/>
 								</div>
 							</div>

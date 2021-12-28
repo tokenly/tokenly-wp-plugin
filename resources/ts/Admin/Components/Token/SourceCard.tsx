@@ -58,13 +58,6 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 						<Button
 							isSecondary
 							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.props.source.address_id }` }
-						>
-							Manage source
-						</Button>
-						<Button
-							isSecondary
-							isSmall
 							href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.props.source.address_id }` }
 						>
 							View details
@@ -74,7 +67,14 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 							isSmall
 							href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.props.source.address_id }` }
 						>
-							View balances
+							View balance
+						</Button>
+						<Button
+							isSecondary
+							isSmall
+							href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.props.source.address_id }` }
+						>
+							Edit source
 						</Button>
 					</Flex>
 				</CardFooter>

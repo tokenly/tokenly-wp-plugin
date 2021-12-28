@@ -6,7 +6,6 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
 
 use Tokenly\Wp\Interfaces\Models\Token\AddressInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
 
@@ -16,7 +15,6 @@ class Source extends Model implements SourceInterface {
 	public $assets;
 	public $type;
 	protected $address_service;
-	protected $current_user;
 	protected $fillable = array(
 		'address_id',
 		'address',
@@ -27,12 +25,10 @@ class Source extends Model implements SourceInterface {
 	public function __construct(
 		SourceRepositoryInterface $domain_repository,
 		AddressServiceInterface $address_service,
-		CurrentUserInterface $current_user,
 		array $data = array()
 	) {
 		$this->domain_repository = $domain_repository;
 		$this->address_service = $address_service;
-		$this->current_user = $current_user;
 		parent::__construct( $data );
 	}
 

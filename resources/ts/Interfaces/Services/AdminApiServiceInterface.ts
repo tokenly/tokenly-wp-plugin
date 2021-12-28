@@ -12,12 +12,14 @@ export default interface AdminApiServiceInterface {
 	creditGroupIndex( params: any ): Promise<Array<any>>;
 	creditGroupShow( uuid: string, params?: any ): Promise<Array<any>>;
 	creditGroupStore( params: any ): Promise<any>;
-	creditGroupUpdate( params: any ): Promise<any>;
+	creditGroupUpdate( uuid: string, params: any ): Promise<any>;
 	creditTransactionIndex( params: any ): Promise<Array<any>>;
 	creditTransactionStore( params: any ): Promise<any>;
 	settingsShow( type: string ): Promise<any>;
 	settingsUpdate( type: string, params: any ): Promise<any>;
+	tokenBalanceIndex( params: any ): Promise<Array<any>>;
 	tokenSourceIndex( params: any ): Promise<Array<SourceData>>;
+	tokenSourceShow( id: string, params?: any ): Promise<Array<any>>;
 	tokenSourceStore( params: SourceData ): Promise<any>;
 	tokenSourceUpdate( address: string, params: SourceData ): Promise<any>;
 	tokenSourceDestroy( address: string ): Promise<any>;

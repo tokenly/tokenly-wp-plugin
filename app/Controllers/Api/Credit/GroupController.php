@@ -80,6 +80,14 @@ class GroupController extends Controller implements GroupControllerInterface {
 		);
 	}
 
+	protected function remap_parameters( array $params = array() ) {
+		if ( isset( $params['group'] ) ) {
+			$params['group_uuid'] = $params['group'];
+			unset( $params['group'] );
+		}
+		return $params;
+	}
+
 	/**
 	 * Gets model binding parameters
 	 * @return array
@@ -87,8 +95,6 @@ class GroupController extends Controller implements GroupControllerInterface {
 	protected function get_bind_params() {
 		return array(
 			'service'                   => $this->group_service,
-			'query_parameter'           => 'group',
-			'single_service_parameter'  => 'group_uuid',
 			'single_service_method'     => 'show',
 			'single_methods'            => array( 'show', 'update', 'destroy' ),
 			'collection_methods'        => array( 'index' ),

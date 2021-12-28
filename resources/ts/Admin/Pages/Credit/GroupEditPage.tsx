@@ -25,6 +25,7 @@ interface GroupEditPageProps {
 }
 
 interface GroupEditPageState {
+	uuid: string;
 	group: any;
 	saving: boolean;
 	loadingGroup: boolean;
@@ -35,6 +36,7 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 	groupRepository: GroupRepositoryInterface;
 	
 	state: GroupEditPageState = {
+		uuid: null,
 		group: {},
 		saving: false,
 		loadingGroup: false,
@@ -44,6 +46,8 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onCancel = this.onCancel.bind( this );
+		const urlParams = new URLSearchParams( window.location.search );
+		this.state.uuid = urlParams.get( 'group' );
 	}
 
 	return() {
@@ -52,9 +56,8 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 
 	onSave( creditGroup: any ) {
 		let updateParams = Object.assign( {}, creditGroup );
-		updateParams.uuid = this.state.group.uuid;
 		this.setState( { saving: true } );
-		this.groupRepository.update( updateParams ).then( ( result: any ) => {
+		this.groupRepository.update( this.state.uuid, updateParams ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});

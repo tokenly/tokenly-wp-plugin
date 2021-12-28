@@ -67,6 +67,7 @@ use Tokenly\Wp\Controllers\Api\Settings\OauthController as OauthSettingsApiContr
 use Tokenly\Wp\Controllers\Api\Settings\IntegrationController as IntegrationSettingsApiController;
 use Tokenly\Wp\Controllers\Api\Settings\TcaController as TcaSettingsApiController;
 use Tokenly\Wp\Controllers\Api\Settings\WhitelistController as WhitelistSettingsApiController;
+use Tokenly\Wp\Controllers\Api\Token\BalanceController as TokenBalanceApiController;
 use Tokenly\Wp\Controllers\Api\Token\PromiseController as TokenPromiseApiController;
 use Tokenly\Wp\Controllers\Api\Token\SourceController as TokenSourceApiController;
 use Tokenly\Wp\Controllers\Api\Token\WhitelistController as TokenWhitelistApiController;
@@ -91,7 +92,6 @@ use Tokenly\Wp\Models\Post;
 use Tokenly\Wp\Models\Integration;
 use Tokenly\Wp\Models\Term;
 use Tokenly\Wp\Models\User;
-use Tokenly\Wp\Models\GuestUser;
 use Tokenly\Wp\Models\Token\Address as TokenAddress;
 use Tokenly\Wp\Models\Token\Balance as TokenBalance;
 use Tokenly\Wp\Models\Credit\Account as CreditAccount;
@@ -196,6 +196,7 @@ use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiCont
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\Token\BalanceControllerInterface as TokenBalanceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsApiControllerInterface;
@@ -269,7 +270,6 @@ use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface as TokenP
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface as TokenPromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\SourceCollectionInterface as TokenSourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface as TokenMetaCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
@@ -375,6 +375,7 @@ return array(
 	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
 	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
 	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
+	TokenBalanceApiControllerInterface::class         => \DI\autowire( TokenBalanceApiController::class ),
 	TokenPromiseApiControllerInterface::class         => \DI\autowire( TokenPromiseApiController::class ),
 	TokenSourceApiControllerInterface::class          => \DI\autowire( TokenSourceApiController::class ),
 	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
@@ -542,42 +543,25 @@ return array(
 	CreditGroupInterface::class            => \DI\autowire( CreditGroup::class ),
 	CreditGroupHistoryInterface::class     => \DI\autowire( CreditGroupHistory::class ),
 	CreditTransactionInterface::class      => \DI\autowire( CreditTransaction::class ),
-	CurrentUserInterface::class            => \DI\factory( function (
-		ContainerInterface $container,
-		UserServiceInterface $user_service
-	) {
-		$user = null;
-		$user_id = get_current_user_id();
-		if ( $user_id != 0 ) {
-			$user = $user_service->show( array(
-				'id' => $user_id,
-			) );
-		}
-		if ( !$user || $user_id == 0 ) {
-			$user = $container->make( GuestUserInterface::class );
-		}
-		return $user;
-	} ),
-	GuestUserInterface::class           => \DI\autowire( GuestUser::class ),
-	IntegrationInterface::class         => \DI\autowire( Integration::class ),
-	OauthUserInterface::class           => \DI\autowire( OauthUser::class ),
-	PostInterface::class                => \DI\autowire( Post::class ),
-	TcaAccessVerdictInterface::class    => \DI\autowire( TcaAccessVerdict::class ), 
-	TcaRuleCheckResultInterface::class  => \DI\autowire( TcaRuleCheckResult::class ), 
-	TcaRuleInterface::class             => \DI\autowire( TcaRule::class ), 
-	TokenPromiseInterface::class        => \DI\autowire( TokenPromise::class ),
-	TokenPromiseMetaInterface::class    => \DI\autowire( TokenPromiseMeta::class ), 
-	TokenQuantityInterface::class       => \DI\autowire( TokenQuantity::class ),
-	TokenSourceInterface::class         => \DI\autowire( TokenSource::class ),
-	TokenMetaInterface::class           => \DI\autowire( TokenMeta::class ), 
-	TermInterface::class                => \DI\autowire( Term::class ), 
-	UserInterface::class                => \DI\autowire( User::class ),
+	IntegrationInterface::class            => \DI\autowire( Integration::class ),
+	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
+	PostInterface::class                   => \DI\autowire( Post::class ),
+	TcaAccessVerdictInterface::class       => \DI\autowire( TcaAccessVerdict::class ), 
+	TcaRuleCheckResultInterface::class     => \DI\autowire( TcaRuleCheckResult::class ), 
+	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
+	TokenPromiseInterface::class           => \DI\autowire( TokenPromise::class ),
+	TokenPromiseMetaInterface::class       => \DI\autowire( TokenPromiseMeta::class ), 
+	TokenQuantityInterface::class          => \DI\autowire( TokenQuantity::class ),
+	TokenSourceInterface::class            => \DI\autowire( TokenSource::class ),
+	TokenMetaInterface::class              => \DI\autowire( TokenMeta::class ), 
+	TermInterface::class                   => \DI\autowire( Term::class ), 
+	UserInterface::class                   => \DI\autowire( User::class ),
 	//Models - Settings
-	OauthSettingsInterface::class       => \DI\autowire( OauthSettings::class ),
-	IntegrationSettingsInterface::class => \DI\autowire( IntegrationSettings::class ),
-	TcaSettingsInterface::class         => \DI\autowire( TcaSettings::class ),
-	WhitelistSettingsInterface::class   => \DI\autowire( WhitelistSettings::class ),
-	WhitelistItemInterface::class       => \DI\autowire( WhitelistItem::class ),
+	OauthSettingsInterface::class          => \DI\autowire( OauthSettings::class ),
+	IntegrationSettingsInterface::class    => \DI\autowire( IntegrationSettings::class ),
+	TcaSettingsInterface::class            => \DI\autowire( TcaSettings::class ),
+	WhitelistSettingsInterface::class      => \DI\autowire( WhitelistSettings::class ),
+	WhitelistItemInterface::class          => \DI\autowire( WhitelistItem::class ),
 	//Middleware - TCA
 	TcaMenuItemFilterMiddlewareInterface::class    => \DI\autowire( TcaMenuItemFilterMiddleware::class ),
 	TcaPostGuardMiddlewareInterface::class         => \DI\autowire( TcaPostGuardMiddleware::class )

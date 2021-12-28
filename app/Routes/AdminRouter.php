@@ -4,6 +4,7 @@ namespace Tokenly\Wp\Routes;
 
 use Tokenly\Wp\Interfaces\Routes\AdminRouterInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
@@ -16,7 +17,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\PromiseControllerInterface
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\SourceControllerInterface as TokenSourceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\WhitelistControllerInterface as TokenWhitelistControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Routes\Router;
 use Twig\Environment;
 
@@ -33,6 +34,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected $auth_service;
 	protected $integration;
 	protected $current_user;
+	protected $user_service;
 	protected $root_dir;
 	protected $api_host;
 	protected $namespace;
@@ -48,7 +50,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		CreditBalanceControllerInterface $credit_balance_controller,
 		CreditGroupControllerInterface $credit_group_controller,
 		CreditTransactionControllerInterface $credit_transaction_controller,
-		CurrentUserInterface $current_user,
+		UserServiceInterface $user_service,
 		DashboardControllerInterface $dashboard_controller,
 		Environment $twig,
 		IntegrationInterface $integration,
@@ -63,7 +65,8 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		$this->api_host = $api_host;
 		$this->namespace = $namespace;
 		$this->integration = $integration;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 		$this->auth_service = $auth_service;
 		$this->controllers = array(
 			'connection'          => $connection_controller,
@@ -114,7 +117,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	}
 	
 	protected function can_register( string $route ) {
-		if ( $this->current_user->is_guest() === true ) {
+		if ( !$this->current_user || $this->current_user instanceof UserInterface === false ) {
 			return false;
 		}
 		if ( $this->integration->can_connect() ) {

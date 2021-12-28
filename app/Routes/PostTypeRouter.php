@@ -9,10 +9,11 @@ use Tokenly\Wp\PostTypes\PromiseMetaPostType;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface as TokenMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
 use Twig\Environment;
 use Tokenly\Wp\Interfaces\Middleware\Tca\MenuItemFilterMiddlewareInterface;
@@ -28,6 +29,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	protected $integration;
 	protected $post_types;
 	protected $current_user;
+	protected $user_service;
 	protected $tca_settings;
 	protected $post_service;
 	protected $twig;
@@ -41,7 +43,7 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 		PostControllerInterface $post_controller,
 		PostServiceInterface $post_service,
 		IntegrationInterface $integration,
-		CurrentUserInterface $current_user,
+		UserServiceInterface $user_service,
 		TcaSettingsInterface $tca_settings,
 		Environment $twig,
 		string $namespace,
@@ -55,7 +57,8 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 			'tca_post_guard'          => $tca_post_guard_middleware,
 		);
 		$this->integration = $integration;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 		$this->tca_settings = $tca_settings;
 		$this->namespace = $namespace;
 		$this->post_service = $post_service;
@@ -113,6 +116,9 @@ class PostTypeRouter extends Router implements PostTypeRouterInterface {
 	}
 	
 	protected function can_register() {
+		if ( !$this->current_user || $this->current_user instanceof UserInterface === false ) {
+			return false;
+		}
 		if ( $this->integration->can_connect() && $this->current_user->can_connect() ) {
 			return true;
 		} else {
