@@ -8,10 +8,11 @@ use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\PromiseRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseMetaServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface;
 
@@ -23,6 +24,7 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 	protected $promise_meta_service;
 	protected $source_service;
 	protected $oauth_user_service;
+	protected $user_service;
 	protected $current_user;
 
 	public function __construct(
@@ -30,13 +32,14 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		PromiseMetaServiceInterface $promise_meta_service,
 		SourceServiceInterface $source_service,
 		OauthUserServiceInterface $oauth_user_service,
-		CurrentUserInterface $current_user
+		UserServiceInterface $user_service
 	) {
 		$this->promise_repository = $promise_repository;
 		$this->promise_meta_service = $promise_meta_service;
 		$this->source_service = $source_service;
 		$this->oauth_user_service = $oauth_user_service;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 	}
 
 	/**
@@ -128,10 +131,14 @@ class PromiseService extends DomainService implements PromiseServiceInterface {
 		) );
 		$promise_meta_data = array();
 		$promise_meta_data['promise_id'] = $promise->promise_id;
-		$this->current_user->load( array( 'oauth_user' ) );
-		$current_oauth_user = $this->current_user->oauth_user;
-		if ( isset( $current_oauth_user->id ) ) {
-			$promise_meta_data['source_user_id'] = $current_oauth_user->id;
+		if ( isset( $this->current_user ) && $this->current_user instanceof UserInterface ) {
+			$this->current_user->load( array( 'oauth_user' ) );
+			if ( isset( $this->current_user->oauth_user ) && $this->current_user->oauth_user instanceof OauthUserInterface ) {
+				$current_oauth_user = $this->current_user->oauth_user;
+				if ( isset( $current_oauth_user->id ) ) {
+					$promise_meta_data['source_user_id'] = $current_oauth_user->id;
+				}
+			}
 		}
 		if ( isset( $destination_oauth_user->id ) ) {
 			$promise_meta_data['destination_user_id'] = $destination_oauth_user->id;

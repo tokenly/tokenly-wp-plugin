@@ -54,8 +54,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 		this.onCancel = this.onCancel.bind( this );
 		const urlParams = new URLSearchParams( window.location.search );
-		const id = parseInt( urlParams.get( 'promise' ) );
-		this.state.promiseId = id;
+		this.state.promiseId = parseInt( urlParams.get( 'promise' ) );
 	}
 
 	return() {
@@ -116,10 +115,6 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 				promise: promise,
 			} );
 		} );
-	}
-
-	isPromiseValid() {
-		return ( this.state.promise && typeof this.state.promise === 'object' );
 	}
 	
 	render() {
