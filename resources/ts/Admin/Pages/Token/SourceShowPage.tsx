@@ -78,9 +78,6 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	render() {
 		return (
 			<Page title={ 'Source details' }>
-				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
-				</div>
 				<Panel header={ this.state.source?.address.label }>
 					<PanelBody>
 						<PanelRow>

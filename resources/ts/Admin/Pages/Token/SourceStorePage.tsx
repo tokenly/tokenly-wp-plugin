@@ -27,7 +27,7 @@ interface SourceStorePageProps {
 
 interface SourceStorePageState {
 	storing: boolean;
-	loading: boolean;
+	loadingAddresses: boolean;
 	address: any;
 	addresses: any;
 	storeData: any;
@@ -41,7 +41,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	
 	state: SourceStorePageState = {
 		storing: false,
-		loading: false,
+		loadingAddresses: false,
 		address: null,
 		addresses: null,
 		storeData: {},
@@ -75,14 +75,14 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	}
 
 	componentWillMount() {
-		this.setState( { loading: true } );
+		this.setState( { loadingAddresses: true } );
 		const params = {
 			id: 'me',
 			registered: true,
 		}
 		this.addressRepository.index( params ).then( ( addresses: any ) => {
 			this.setState( {
-				loading: false,
+				loadingAddresses: false,
 				addresses: addresses,
 			} );
 		} );
@@ -91,9 +91,6 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	render() {
 		return (
 			<Page title={'Register source address'}>
-				<div style={ { marginBottom: '8px' } }>
-					<a href='/wp-admin/admin.php?page=tokenly-token-source-index'>Back to source address list</a>
-				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
@@ -101,7 +98,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 								onSubmit={ this.onSubmit }
 								onChange={ this.onStoreDataChange }
 								onCancel={ this.return }
-								loading={ this.state.loading }
+								loadingAddresses={ this.state.loadingAddresses }
 								storing={ this.state.storing }
 								style={ { marginBottom: '12px' } }
 								addresses={ this.state.addresses }

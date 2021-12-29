@@ -63,9 +63,6 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 	render() {
 		return (
 			<Page title={'Token balance listing'}>
-				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-source-index'>To source list</a>
-				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>

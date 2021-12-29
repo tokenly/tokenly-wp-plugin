@@ -3,10 +3,12 @@ import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import PromiseEditForm from '../../Components/Token/PromiseEditForm';
+import ResourceEditActions from '../../Components/ResourceEditActions';
 import { PromiseData, PromiseUpdateParams } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import { TYPES } from '../../../Types';
+
 
 import { 
 	Panel,
@@ -14,6 +16,7 @@ import {
 	PanelRow,
 	Flex,
 	Spinner,
+	PanelHeader,
 } from '@wordpress/components';
 
 declare const window: any;
@@ -31,7 +34,8 @@ interface PromiseEditPageState {
 	deleting: boolean;
 	loading: boolean;
 	promise: any;
-	promiseId: number;
+	id: number;
+	editData: any;
 }
 
 export default class PromiseEditPage extends Component<PromiseEditPageProps, PromiseEditPageState> {
@@ -43,7 +47,8 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 		deleting: false,
 		loading: false,
 		promise: null,
-		promiseId: null,
+		id: null,
+		editData: {},
 	}
 
 	constructor( props: PromiseEditPageProps ) {
@@ -52,18 +57,19 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 		this.onDelete = this.onDelete.bind( this );
 		this.deletePromise = this.deletePromise.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
+		this.onEditDataChange = this.onEditDataChange.bind( this );
 		this.onCancel = this.onCancel.bind( this );
 		const urlParams = new URLSearchParams( window.location.search );
-		this.state.promiseId = parseInt( urlParams.get( 'promise' ) );
+		this.state.id = parseInt( urlParams.get( 'promise' ) );
 	}
 
 	return() {
 		window.location = '/wp-admin/admin.php?page=tokenly-token-vendor';
 	}
 
-	onSave( promise: PromiseUpdateParams ) {
+	onSave() {
 		this.setState( { saving: true } );
-		this.promiseRepository.update( this.state.promiseId, promise ).then( ( result: any ) => {
+		this.promiseRepository.update( this.state.id, this.state.editData ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});
@@ -79,7 +85,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 
 	deletePromise() {
 		this.setState( { deleting: true } );
-		this.promiseRepository.destroy( this.state.promiseId ).then( ( result: any ) => {
+		this.promiseRepository.destroy( this.state.id ).then( ( result: any ) => {
 			this.setState( { deleting: false } );
 			this.return();
 		});
@@ -109,33 +115,63 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	
 	componentWillMount() {
 		this.setState( { loading: true } );
-		this.promiseRepository.show( this.state.promiseId ).then( ( promise: any ) => {
+		this.promiseRepository.show( this.state.id ).then( ( promise: any ) => {
+			const editData = {
+				quantity: promise?.quantity?.value_sat,
+				expiration: null,
+				txid: null,
+				fingerprint: null,
+				ref: promise.ref,
+				note: promise.note,
+			} as any;
 			this.setState( {
 				loading: false,
 				promise: promise,
+				editData: editData,
 			} );
 		} );
+	}
+
+	onEditDataChange( newData: any ) {
+		this.setState( { editData: newData } );
 	}
 	
 	render() {
 		return (
 			<Page title={ 'Promise editor' }>
-				<div style={ { marginBottom: '8px' } }>
-					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
-					<div><span>Promise ID: </span><strong>{ this.state.promiseId }</strong></div>
-				</div>
 				<Panel>
+					<PanelHeader>
+						{ this.state.loading
+						?	<Flex justify="flex-start">
+								<span>Loading promise ... </span>
+								<Spinner />
+							</Flex>
+						:	<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${ this.state.id }` }>{ `Promise № ${this.state.id}` }</a>
+						}
+					</PanelHeader>
 					<PanelBody>
 						<PanelRow>
-							<PromiseEditForm
-								onSave={ this.onSave }
-								onDelete={ this.onDelete }
-								onCancel={ this.onCancel }
-								loading={ this.state.loading }
-								saving={this.state.saving}
-								deleting={this.state.deleting}
-								promise={this.state?.promise}
-							/>
+							<Flex
+								//@ts-ignore
+								direction="column"
+							>
+							{ !this.state.loading &&
+								<PromiseEditForm
+									onChange={ this.onEditDataChange }
+									loading={ this.state.loading }
+									editData={this.state?.editData}
+								/>
+							}
+								<ResourceEditActions
+									name="promise"
+									loading={ this.state.loading }
+									saving={ this.state.saving }
+									deleting={ this.state.deleting }
+									onSave={ this.onSave }
+									onDelete={ this.onDelete }
+									onCancel={ this.onCancel }
+								/>
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

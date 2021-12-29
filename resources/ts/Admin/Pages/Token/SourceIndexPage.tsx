@@ -59,9 +59,6 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	render() {
 		return (
 			<Page title={'Sources'}>
-				<div style={{marginBottom: '8px'}}>
-					<a style={{display: 'inline-block'}} href='/wp-admin/admin.php?page=tokenly-token-vendor'>Back to vendor</a>
-				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>

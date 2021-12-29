@@ -7,12 +7,15 @@ import SourceEditForm from '../../Components/Token/SourceEditForm';
 import { SourceData } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
 import { TYPES } from '../../../Types';
+import ResourceEditActions from '../../Components/ResourceEditActions';
 
 import { 
-	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
+	Flex,
+	PanelHeader,
+	Spinner,
 } from '@wordpress/components';
 
 declare const window: any;
@@ -28,6 +31,7 @@ interface SourceEditPageProps {
 interface SourceEditPageState {
 	id: string;
 	source: any;
+	editData: any;
 	loading: boolean;
 	saving: boolean;
 	deleting: boolean;
@@ -40,6 +44,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	state: SourceEditPageState = {
 		id: null,
 		source: null,
+		editData: {},
 		loading: false,
 		saving: false,
 		deleting: false,
@@ -52,6 +57,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		this.onCancel = this.onCancel.bind( this );
 		this.deleteSource = this.deleteSource.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
+		this.onEditDataChange = this.onEditDataChange.bind( this );
 		const urlParams = new URLSearchParams( window.location.search );
 		this.state.id = urlParams.get( 'source' );
 	}
@@ -60,11 +66,10 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
 	}
 
-	onSave( source: SourceData ) {
+	onSave() {
 		this.setState( { saving: true } );
-		const sourceData = Object.assign( {}, source );
-		delete sourceData.address;
-		this.sourceRepository.update( this.state.id, sourceData ).then( ( result: any ) => {
+		const editData = Object.assign( {}, this.state.editData );
+		this.sourceRepository.update( this.state.id, editData ).then( ( result: any ) => {
 			this.setState( { saving: false } );
 			this.return();
 		});
@@ -113,47 +118,61 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		const params = {
 			with: ['address'],
 		}
+
 		this.sourceRepository.show( this.state.id, params ).then( ( source: any ) => {
 			if ( source.assets && Array.isArray( source.assets ) ) {
 				source.assets = source.assets.join( ', ' );
 			}
+			const editData = Object.assign( {}, this.state.editData );
+			editData.assets = source.assets;
 			this.setState( {
 				loading: false,
 				source: source,
+				editData: editData,
 			} );
 		} );
+	}
+
+	onEditDataChange( newData: any ) {
+		this.setState( { editData: newData } );
 	}
 	
 	render() {
 		return (
-			<Page title={ 'Manage source' }>
-				<div style={ { marginBottom: '8px' } }>
-					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-token-source-index'>Back to source list</a>
-				</div>
+			<Page title={ 'Source editor' }>
 				<Panel>
+					<PanelHeader>
+						{ this.state.loading
+						?	<Flex justify="flex-start">
+								<span>Loading source ... </span>
+								<Spinner />
+							</Flex>
+						:	<a href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.state.id }` }>{ this.state.source?.address?.label ?? this.state.id }</a>
+						}
+					</PanelHeader>
 					<PanelBody>
 						<PanelRow>
-							<div>
-								{ this.state.source &&
-									<div>
-										<span>Source: </span>
-										<strong>
-											<a style={ { display: 'inline-block', marginBottom: '12px' } } href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.state.id }` }>{ this.state.source?.address?.label ?? this.state.id }</a>
-										</strong>
-									</div>
-								}
-								<div>
-									<SourceEditForm
-										onSave={ this.onSave }
-										onDelete={ this.onDelete }
-										onCancel={ this.onCancel }
-										loading={ this.state.loading }
-										saving={ this.state.saving }
-										deleting={ this.state.deleting }
-										source={ this.state.source }
-									/>
-								</div>
-							</div>
+							<Flex
+								//@ts-ignore
+								direction="column"
+							>
+							{ !this.state.loading &&
+								<SourceEditForm
+									onChange={ this.onEditDataChange }
+									loading={ this.state.loading }
+									editData={ this.state.editData }
+								/>
+							}
+								<ResourceEditActions
+									name="source"
+									loading={ this.state.loading }
+									saving={ this.state.saving }
+									deleting={ this.state.deleting }
+									onSave={ this.onSave }
+									onDelete={ this.onDelete }
+									onCancel={ this.onCancel }
+								/>
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

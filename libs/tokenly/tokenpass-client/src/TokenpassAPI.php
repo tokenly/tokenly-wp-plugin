@@ -1174,7 +1174,6 @@ class TokenpassAPI implements TokenpassAPIInterface
 
     public function call($method, $endpoint, $params = [], $options = [])
     {
-		error_log( $endpoint );
       //start client
       $client = new HttpClient();
 

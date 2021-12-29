@@ -24,19 +24,23 @@ export default class PromiseParticipants extends Component<PromiseParticipantsPr
 
 	render() {
 		return (
-			<Flex gap={ 0 } align="center" justify="flex-start">
+			<Flex>
 				<span>Participants: </span>
-				<UserLink
-					url={ `admin.php?page=tokenly-token-balance-index&user=${this.props.promise?.promise_meta?.source_user?.id}` }
-					alt={ this.props?.promise?.source_id }
-					name={ this.props?.promise?.promise_meta?.source_user?.name }
-				/>
-				<Dashicon style={ { margin: '0 5px' } } icon="arrow-right-alt" />
-				<UserLink
-					url={ `admin.php?page=tokenly-token-balance-index&user=${this.props.promise?.promise_meta?.destination_user?.id}` }
-					alt={ this.props?.promise?.destination }
-					name={ this.props?.promise?.promise_meta?.destination_user?.name }
-				/>
+				{ this.props.promise &&
+					<Flex gap={ 0 } align="center" justify="flex-start">
+						<UserLink
+							url={ `admin.php?page=tokenly-token-balance-index&user=${this.props.promise?.promise_meta?.source_user?.id}` }
+							alt={ this.props?.promise?.source_id }
+							name={ this.props?.promise?.promise_meta?.source_user?.name }
+						/>
+						<Dashicon style={ { margin: '0 5px' } } icon="arrow-right-alt" />
+						<UserLink
+							url={ `admin.php?page=tokenly-token-balance-index&user=${this.props.promise?.promise_meta?.destination_user?.id}` }
+							alt={ this.props?.promise?.destination }
+							name={ this.props?.promise?.promise_meta?.destination_user?.name }
+						/>
+					</Flex>
+				}
 			</Flex>
 		);
 	}
