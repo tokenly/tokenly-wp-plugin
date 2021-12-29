@@ -43,6 +43,7 @@ export default class GroupIndexPage extends Component<GroupIndexPageProps, Group
 	componentWillMount() {
 		this.setState( { loadingGroups: true } );
 		this.groupRepository.index().then( ( groups ) => {
+			console.log(groups);
 			this.setState( {
 				loadingGroups: false,
 				groups: groups,

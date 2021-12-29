@@ -8,14 +8,12 @@ import {
 } from '@wordpress/components';
 
 interface ResourceEditActionsProps {
-	saving: boolean;
-	loading: boolean;
-	deleting?: boolean;
-	onSave: any;
-	onDelete?: any;
+	storing: boolean;
+	loading?: boolean;
+	onStore: any;
 	onCancel: any;
 	name: string;
-	noDelete?: boolean;
+	disableStore?: boolean;
 }
 
 interface ResourceEditActionsState {
@@ -33,28 +31,14 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 			<Flex justify="flex-start" align="center" style={ { marginTop: '12px' } }>
 				<Button
 					isPrimary
-					disabled={ this.props.saving || this.props.loading }
+					disabled={ this.props.storing || this.props.disableStore }
 					onClick={ () => {
-						this.props.onSave();
+						this.props.onStore();
 					}}
 				>
-					{ this.props.saving ? 'Saving' : `Save ${this.props.name}` }
+					{ this.props.storing ? 'Creating' : `Create ${this.props.name}` }
 				</Button>
-			{ this.props.saving === true &&
-				<Spinner/>
-			}
-			{ !this.props.noDelete &&
-				<Button
-					isSecondary
-					disabled={ this.props.deleting }
-					onClick={ () => {
-						this.props.onDelete();
-					}}
-				>
-					{ this.props.deleting ? 'Deleting' : `Delete ${this.props.name}` }
-				</Button>
-			}
-			{ this.props.deleting === true &&
+			{ this.props.storing === true &&
 				<Spinner/>
 			}
 				<Button

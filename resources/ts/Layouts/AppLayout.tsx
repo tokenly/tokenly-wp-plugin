@@ -35,7 +35,6 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 		this.onPostDataUpdated = this.onPostDataUpdated.bind( this );
 		this.onTcaUpdate = this.onTcaUpdate.bind( this );
-		console.log(this.props.pageData);
 		this.state.tcaRules = Object.assign( {}, this.props?.pageData?.tca_rules );
 		this.state.postData.tca_rules = this.state.tcaRules;
 	}

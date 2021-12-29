@@ -77,7 +77,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	
 	render() {
 		return (
-			<Page title={ 'Source details' }>
+			<Page title={ 'Source display' }>
 				<Panel header={ this.state.source?.address.label }>
 					<PanelBody>
 						<PanelRow>

@@ -90,7 +90,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	
 	render() {
 		return (
-			<Page title={'Register source address'}>
+			<Page title={'Source creator'}>
 				<Panel>
 					<PanelBody>
 						<PanelRow>

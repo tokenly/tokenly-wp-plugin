@@ -67,7 +67,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 	render() {
 
 		return (
-			<Page title={ 'Promise details' }>
+			<Page title={ 'Promise display' }>
 				<Panel>
 					<PanelHeader>
 						{ this.state.loadingPromise
@@ -75,7 +75,10 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 								<span>Loading promise ... </span>
 								<Spinner />
 							</Flex>
-						:	<span>{ `Promise № ${this.state.id}` }</span>
+						:	<div>
+								<span>№ </span>
+								<strong>{ this.state.id }</strong>
+							</div>
 						}
 					</PanelHeader>
 					{ !this.state.loadingPromise &&

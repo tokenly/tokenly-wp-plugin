@@ -24,9 +24,7 @@ export default class IntegrationSettingsHelp extends Component<IntegrationSettin
 	}
 
 	copyToClipboard( text: string ) {
-		console.log(text);
 		if ( navigator && navigator.clipboard ) {
-			console.log(123);
 			navigator.clipboard.writeText( text );
 		}
 	}

@@ -7,27 +7,27 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 
-interface AddressSelectProps {
+interface AddressSelectFieldProps {
 	address: any;
 	addresses: any;
 	loading: boolean;
 	onChange: any;
 }
 
-interface AddressSelectState {
+interface AddressSelectFieldState {
 	//
 }
 
-export default class AddressSelect extends Component<AddressSelectProps, AddressSelectState> {
+export default class AddressSelectField extends Component<AddressSelectFieldProps, AddressSelectFieldState> {
 
-	constructor( props: AddressSelectProps ) {
+	constructor( props: AddressSelectFieldProps ) {
 		super( props );
 	}
 
 	getAddressOptions() {
 		const options = [
 			{
-				label: '-- select an address --',
+				label: 'Not selected',
 				value: '',
 			}
 		];
@@ -39,7 +39,6 @@ export default class AddressSelect extends Component<AddressSelectProps, Address
 				} );
 			});
 		}
-		console.log(options);
 		return options;
 	}
 
@@ -47,15 +46,16 @@ export default class AddressSelect extends Component<AddressSelectProps, Address
 		const addressOptions = this.getAddressOptions();
 		return (
 			<Flex> 
-				<label>Address
+				<label>
+					<div style={{marginBottom: '8px'}} >Address</div>
 					<Flex
 						//@ts-ignore
 						direction="column"
 					>
-						<div style={ { opacity: 0.8 } }>Blockchain wallet address.</div>
 						<Flex
 							style={ { maxWidth: "320px" } }
 							justify="flex-start"
+							align="center"
 							gap={4}
 						>
 							<SelectControl

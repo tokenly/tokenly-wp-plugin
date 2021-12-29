@@ -38,7 +38,7 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 		return (
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
-					<div title={ this.props.source.address }>
+					<div title={ this.props.source.address_id }>
 						<a 
 							href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.props.source.address_id }` }
 						>

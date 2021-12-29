@@ -23,7 +23,6 @@ interface TransactionCardState {
 export default class TransactionCard extends Component<TransactionCardProps, TransactionCardState> {
 	constructor( props: TransactionCardProps ) {
 		super( props );
-		console.log(this.props);
 	}
 
 	dateFormatted( date: Date ) {

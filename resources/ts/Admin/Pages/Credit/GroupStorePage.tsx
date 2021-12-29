@@ -4,6 +4,7 @@ import Page from './../Page';
 import { Component } from 'react';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupStoreForm from '../../Components/Credit/GroupStoreForm';
+import ResourceStoreActions from '../../Components/ResourceStoreActions';
 import { TYPES } from '../../../Types';
 
 declare const window: any;
@@ -13,6 +14,7 @@ import {
 	PanelHeader,
 	PanelBody,
 	PanelRow,
+	Flex,
 } from '@wordpress/components';
 
 interface GroupStorePageData {
@@ -21,12 +23,11 @@ interface GroupStorePageData {
 
 interface GroupStorePageProps {
 	pageData: GroupStorePageData;
-	saving: boolean;
 }
 
 interface GroupStorePageState {
-	storingCreditGroup: boolean;
-	address: any;
+	storing: boolean;
+	storeData: any;
 }
 
 export default class GroupStorePage extends Component<GroupStorePageProps, GroupStorePageState> {
@@ -34,46 +35,68 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 	groupRepository: GroupRepositoryInterface;
 	
 	state: GroupStorePageState = {
-		storingCreditGroup: false,
-		address: null,
+		storing: false,
+		storeData: {},
 	}
 	constructor( props: GroupStorePageProps ) {
 		super( props );
-		this.onSubmit = this.onSubmit.bind( this );
+		this.onStore = this.onStore.bind( this );
+		this.onCancel = this.onCancel.bind( this );
+		this.onStoreDataChange = this.onStoreDataChange.bind( this );
+		this.state.storeData.name = 'New group';
+		this.state.storeData.app_whitelist = this.props.pageData?.client_id;
 	}
 
 	return() {
 		window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
 	}
 	
-	onSubmit( creditGroup: any ) {
+	onStore() {
 		this.setState( {
-			storingCreditGroup: true,
+			storing: true,
 		} );
-		this.groupRepository.store( creditGroup ).then( ( result: any ) => {
+		this.groupRepository.store( this.state.storeData ).then( ( result: any ) => {
 			this.setState( {
-				storingCreditGroup: false,
+				storing: false,
 			} );
 			this.return();
 		});
+	}
+
+	isStoreDisabled() {
+		return ( !this.state.storeData?.name || !this.state.storeData?.app_whitelist );
+	}
+
+	onCancel() {
+		this.return();
+	}
+
+	onStoreDataChange( newData: any ) {
+		this.setState( { storeData: newData } );
 	}
 	
 	render() {
 		return (
 			<Page title={'Group creator'}>
-				<div style={ { marginBottom: '8px' } }>
-					<a href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to credit group list</a>
-				</div>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<GroupStoreForm
-								onSubmit={ this.onSubmit }
-								onCancel={ this.return }
-								saving={ this.state.storingCreditGroup }
-								style={ { marginBottom: '12px' } }
-								client_id={ this.props.pageData.client_id }
-							/>
+							<Flex
+								//@ts-ignore
+								direction="column"
+							>
+								<GroupStoreForm
+									storeData={ this.state.storeData }
+									onChange={ this.onStoreDataChange }
+								/>
+								<ResourceStoreActions
+									name={ 'group' }
+									storing={ this.state.storing }
+									onStore={ this.onStore }
+									onCancel={ this.onCancel }
+									disableStore={ this.isStoreDisabled() }
+								/>
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

@@ -44,7 +44,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 					<div>
 						<strong>Assets: </strong>
 						{ this.props.address
-							?	<a href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.props.address.address }` } >View balances</a>
+							?	<a href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.props.address.address }` } >View balance</a>
 							:	<span>-</span>
 						}
 					</div>

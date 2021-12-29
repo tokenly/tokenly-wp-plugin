@@ -4,61 +4,70 @@ import Page from './../Page';
 import { Component } from 'react';
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import PromiseStoreForm from '../../Components/Token/PromiseStoreForm';
-import { PromiseData, PromiseStoreParams, SourceItem } from '../../../Interfaces';
+import ResourceStoreActions from '../../Components/ResourceStoreActions';
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { TYPES } from '../../../Types';
 
 declare const window: any;
 
 import { 
-	Button,
+	Flex,
 	Panel,
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Modal,
+	Spinner,
 } from '@wordpress/components';
 
 interface PromiseStorePageData {
-	sources: Array<SourceItem>;
+	//
 }
 
 interface PromiseStorePageProps {
 	pageData: PromiseStorePageData;
-	saving: boolean;
 }
 
 interface PromiseStorePageState {
-	promiseData: Array<PromiseData>;
 	isCreatePromiseModalOpen: boolean;
-	storingPromise: boolean;
+	loadingSources: boolean;
+	storing: boolean;
+	storeData: any;
+	sources: any;
 }
 
 export default class PromiseStorePage extends Component<PromiseStorePageProps, PromiseStorePageState> {
 	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
+	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
+	sourceRepository: SourceRepositoryInterface;
 	
 	state: PromiseStorePageState = {
-		promiseData: [],
+		storeData: {},
+		sources: null,
+		loadingSources: false,
 		isCreatePromiseModalOpen: false,
-		storingPromise: false,
+		storing: false,
 	}
 	constructor( props: PromiseStorePageProps ) {
 		super( props );
 		this.onCancel = this.onCancel.bind( this );
-		this.onSubmit = this.onSubmit.bind( this );
+		this.onStore = this.onStore.bind( this );
+		this.onStoreDataChange = this.onStoreDataChange.bind( this );
+		this.isStoreDisabled = this.isStoreDisabled.bind( this );
 	}
 	
 	return() {
 		window.location = '/wp-admin/admin.php?page=tokenly-token-vendor';
 	}
 
-	onSubmit( params: PromiseStoreParams ) {
+	onStore() {
 		this.setState( {
-			storingPromise: true,
+			storing: true,
 		} );
-		this.promiseRepository.store( params ).then( ( result: any ) => {
+		console.log(this.state.storeData);
+		this.promiseRepository.store( this.state.storeData ).then( ( result: any ) => {
 			this.setState( {
-				storingPromise: false,
+				storing: false,
 			} );
 			this.return();
 		});
@@ -67,20 +76,71 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	onCancel() {
 		this.return();
 	}
+
+	onStoreDataChange( newData: any ) {
+		this.setState( { storeData: newData } );
+	}
+
+	componentWillMount() {
+		this.setState( { loadingSources: true } );
+		this.sourceRepository.index( {
+			with: [ 'address.balance' ],
+		} ).then( ( sources: any ) => {
+			this.setState( {
+				loadingSources: false,
+				sources: sources,
+			} );
+		} );
+		const storeData = {
+			quantity: 0,
+			pseudo: false,
+		}
+		this.setState( { storeData: storeData } );
+	}
+
+	isStoreDisabled() {
+		return (
+			!this.state.storeData.source_id ||
+			!this.state.storeData.asset ||
+			!this.state.storeData.destination
+		);
+	}
 	
 	render() {
 		return (
-			<Page title={'Create a token promise'}>
+			<Page title={'Promise creator'}>
 				<Panel>
+				{ this.state.loadingSources &&
+					<PanelHeader>
+						<Flex justify="flex-start">
+							<span>Loading sources ... </span>
+							<Spinner />
+						</Flex>
+					</PanelHeader>
+				}
 					<PanelBody>
 						<PanelRow>
-							<PromiseStoreForm
-								onSubmit={ this.onSubmit }
-								onCancel={ this.onCancel }
-								saving={ this.state.storingPromise }
-								style={ { marginBottom: '12px' } }
-								sources={ this.props.pageData.sources }
-							/>
+							<Flex
+								//@ts-ignore
+								direction="column"
+							>
+							{ !this.state.loadingSources &&
+								<PromiseStoreForm
+									onChange={ this.onStoreDataChange }
+									loadingSources={ this.state.loadingSources }
+									storeData={ this.state.storeData }
+									sources={ this.state.sources }
+								/>
+							}
+								<ResourceStoreActions
+									name={ 'promise' }
+									storing={ this.state.storing }
+									loading={ ( this.state.loadingSources ) }
+									onStore={ this.onStore }
+									onCancel={ this.onCancel }
+									disableStore={ this.isStoreDisabled() }
+								/>
+							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

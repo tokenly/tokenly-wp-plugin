@@ -146,7 +146,14 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 								<span>Loading promise ... </span>
 								<Spinner />
 							</Flex>
-						:	<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${ this.state.id }` }>{ `Promise № ${this.state.id}` }</a>
+						:	<span>
+								<span>№ </span>
+								<strong>
+									<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.state.id}` }>
+										{ this.state.id }
+									</a>
+								</strong>
+							</span>
 						}
 					</PanelHeader>
 					<PanelBody>

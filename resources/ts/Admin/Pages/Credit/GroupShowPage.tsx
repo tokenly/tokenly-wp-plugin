@@ -62,9 +62,6 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 	render() {
 		return (
 			<Page title={ 'Group details' }>
-				<div style={ { marginBottom: '8px' } }>
-					<a style={ { display: 'inline-block' } } href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to the group list</a>
-				</div>
 				<Panel header={ this.state?.group?.name }>
 					<PanelBody>
 						<PanelRow>

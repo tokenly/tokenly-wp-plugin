@@ -48,7 +48,6 @@ export default class TransactionIndexPage extends Component<TransactionIndexPage
 			with: [ 'user' ],
 		}
 		this.transactionRepository.index( params ).then( ( transactions ) => {
-			console.log( transactions );
 			this.setState( {
 				loadingTransactions: false,
 				transactions: transactions,

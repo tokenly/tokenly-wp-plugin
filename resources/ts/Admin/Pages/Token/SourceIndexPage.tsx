@@ -58,7 +58,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	
 	render() {
 		return (
-			<Page title={'Sources'}>
+			<Page title={'Source listing'}>
 				<Panel>
 					<PanelBody>
 						<PanelRow>

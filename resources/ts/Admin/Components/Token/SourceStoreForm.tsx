@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import AddressInfo from './AddressInfo';
-import AddressSelect from './AddressSelect';
+import AddressSelectField from './AddressSelectField';
 
 import { 
 	Button,
@@ -63,13 +63,15 @@ export default class SourceStoreForm extends Component<SourceStoreFormProps, Sou
 					//@ts-ignore
 					direction="column"
 				>
-					<AddressSelect
+					<AddressSelectField
 						onChange={ this.onAddressChange }
 						address={ this.props.storeData?.address }
 						addresses={ this.props.addresses }
 						loading={ this.props.loadingAddresses }
 					/>
+				{ address &&
 					<AddressInfo address={ address } />
+				}
 					<TextareaControl
 						label="Whitelisted assets"
 						help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."

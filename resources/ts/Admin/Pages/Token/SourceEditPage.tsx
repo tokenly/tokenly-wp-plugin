@@ -54,7 +54,6 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onDelete = this.onDelete.bind( this );
-		this.onCancel = this.onCancel.bind( this );
 		this.deleteSource = this.deleteSource.bind( this );
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 		this.onEditDataChange = this.onEditDataChange.bind( this );
@@ -81,10 +80,6 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 			title: 'Deleting source',
 			subtitle: 'Are you sure you want to delete the source?',
 		});
-	}
-
-	onCancel() {
-		this.return();
 	}
 
 	deleteSource() {
@@ -136,7 +131,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	onEditDataChange( newData: any ) {
 		this.setState( { editData: newData } );
 	}
-	
+
 	render() {
 		return (
 			<Page title={ 'Source editor' }>
@@ -170,7 +165,9 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 									deleting={ this.state.deleting }
 									onSave={ this.onSave }
 									onDelete={ this.onDelete }
-									onCancel={ this.onCancel }
+									onCancel={ () => {
+										this.return();
+									} }
 								/>
 							</Flex>
 						</PanelRow>

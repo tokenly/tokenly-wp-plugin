@@ -59,7 +59,6 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		super( props );
 		this.onDetails = this.onDetails.bind( this );
 		this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind( this );
-		console.log(this.props);
 	}
 
 	onDetailsModalRequestClose() {

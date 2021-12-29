@@ -57,7 +57,6 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 	
 	onSubmit() {
 		const transaction = Object.assign( {}, this.state.transaction );
-		console.log(transaction);
 		this.props.onSubmit( transaction );
 	}
 
