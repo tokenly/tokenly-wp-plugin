@@ -86,9 +86,6 @@ class UserService extends DomainService implements UserServiceInterface {
 	 */
 	protected function index_cacheable( array $params = array() ) {
 		$users = $this->user_repository->index( $params );
-		if ( isset( $params['suggestions'] ) ) {
-			return $users->to_suggestions();
-		}
 		return $users;
 	}
 

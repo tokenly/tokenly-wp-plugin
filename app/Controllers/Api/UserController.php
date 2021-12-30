@@ -23,6 +23,9 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @return array
 	 */
 	public function index( UserCollectionInterface $users, \WP_REST_Request $request ) {
+		if ( isset( $params['suggestions'] ) ) {
+			$users->to_suggestions();
+		}
 		$users = $users->to_array();
 		return $users;
 	}

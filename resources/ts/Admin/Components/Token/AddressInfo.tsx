@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 import { 
 	Flex,
@@ -14,7 +16,11 @@ interface AddressInfoState {
 }
 
 export default class AddressInfo extends Component<AddressInfoProps, AddressInfoState> {
-
+	@resolve( TYPES.Variables.adminUrl )
+	adminUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
+	
 	constructor( props: AddressInfoProps ) {
 		super( props );
 	}
@@ -44,7 +50,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 					<div>
 						<strong>Assets: </strong>
 						{ this.props.address
-							?	<a href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.props.address.address }` } >View balance</a>
+							?	<a href={ `${ this.adminUrl }${ this.namespace }-token-balance-index&address=${ this.props.address.address }` } >View balance</a>
 							:	<span>-</span>
 						}
 					</div>

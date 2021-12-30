@@ -1,11 +1,13 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
-import Page from './../Page';
 import { Component } from 'react';
-import { SourceItem } from '../../../Interfaces';
-import SourceList from '../../Components/Token/SourceList';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { TYPES } from '../../../Types';
+import { SourceItem } from '../../../Interfaces';
+import Page from './../Page';
+import SourceList from '../../Components/Token/SourceList';
+import Preloader from '../../Components/Preloader';
+
 
 import { 
 	Button,

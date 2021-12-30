@@ -11,13 +11,10 @@ import VendorActions from '../Components/Token/VendorActions';
 import { TYPES } from '../../Types';
 
 import { 
-	Button,
 	Flex,
 	Panel,
 	PanelBody,
 	PanelRow,
-	Modal,
-	Spinner,
 } from '@wordpress/components';
 
 interface VendorPageData {
@@ -54,13 +51,15 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		currentPromise: 0,
 		promises: [],
 		sources: {},
-		loadingPromises: true,
-		loadingSources: true,
+		loadingPromises: false,
+		loadingSources: false,
 	}
 	constructor( props: VendorPageProps ) {
 		super( props );
 		this.onDetails = this.onDetails.bind( this );
 		this.onDetailsModalRequestClose = this.onDetailsModalRequestClose.bind( this );
+		this.getLoadingLabel = this.getLoadingLabel.bind( this );
+		this.getLoadingState = this.getLoadingState.bind( this );
 	}
 
 	onDetailsModalRequestClose() {
@@ -76,26 +75,49 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		} );
 	}
 
+	getLoadingState() {
+		return ( 
+			this.state.loadingPromises ||
+			this.state.loadingSources
+		);
+	}
+	
+	getLoadingLabel() {
+		if ( this.state.loadingPromises ) {
+			return 'promises';
+		} else if ( this.state.loadingSources ) {
+			return 'sources';
+		}
+	}
+
 	componentWillMount() {
+		this.setState( { loadingPromises: true } );
 		this.promiseRepository.index( {
 			with: [ 'promise_meta.source_user', 'promise_meta.destination_user' ],
 		} ).then( ( promises ) => {
 			this.setState( {
 				loadingPromises: false,
+				loadingSources: true,
 				promises: promises,
 			} );
-		} );
-		this.sourceRepository.index( {
-			with: [ 'address' ],
-		} ).then( ( sources ) => {
-			this.setState( {
-				loadingSources: false,
-				sources: sources,
+			this.sourceRepository.index( {
+				with: [ 'address' ],
+			} ).then( ( sources ) => {
+				const promises = this.state.promises.map( ( promise: any ) => {
+					promise.source = sources[ promise.source_id ];
+					return promise;
+				} );
+				this.setState( {
+					loadingSources: false,
+					promises: promises,
+					sources: sources,
+				} );
 			} );
 		} );
 	}
 	
 	render() {
+		const loading = this.getLoadingState();
 		return (
 			<Page title={'Tokenpass Vendor'}>
 				<Panel header="Vendor actions">
@@ -109,15 +131,12 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								<Preloader loading={ this.state.loadingPromises } label="promises" />
-							{ !this.state.loadingPromises &&
+								<Preloader loading={ loading } label={ this.getLoadingLabel() } />
+							{ !loading &&
 								<Flex>
 									{ this.state.promises?.length > 0
 										? <PromiseList
 											promises={ this.state.promises }
-											onDetails={ this.onDetails }
-											sources={ this.state.sources }
-											loadingSources={ this.state.loadingSources }
 										/>
 										: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
 									}

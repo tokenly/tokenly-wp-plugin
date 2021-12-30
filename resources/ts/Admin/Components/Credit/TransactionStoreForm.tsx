@@ -3,8 +3,6 @@ import { Component } from 'react';
 import UserSearchField from './../UserSearchField';
 
 import { 
-	Button,
-	Spinner,
 	TextControl,
 	SelectControl,
 	Flex,
@@ -121,7 +119,7 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 					/>
 					<div>
 						<label>Account
-							<div style={{opacity:0.8, marginBottom: '12px'}}>WordPress username.</div>
+							<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username.</div>
 							<UserSearchField
 								user={ this.props.storeData?.account }
 								onChange={ this.onAccountFieldChange }
@@ -130,7 +128,7 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 					</div>
 					<div>
 						<label>{ this.getSourceLabel() }
-							<div style={{opacity:0.8, marginBottom: '12px'}}>WordPress username. (optional)</div>
+							<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username. (optional)</div>
 							<UserSearchField
 								user={ this.props.storeData?.source }
 								onChange={ this.onSourceFieldChange }

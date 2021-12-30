@@ -120,7 +120,7 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 						/>
 					</Flex>
 				</fieldset>
-				<hr></hr>
+				<hr />
 				<div>
 					<strong>Post types</strong>
 					<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>

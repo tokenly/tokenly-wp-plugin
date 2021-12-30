@@ -6,14 +6,14 @@ import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/Gr
 import GroupEditForm from '../../Components/Credit/GroupEditForm';
 import ResourceEditActions from '../../Components/ResourceEditActions';
 import { TYPES } from '../../../Types';
+import Preloader from '../../Components/Preloader';
+import GroupLink from '../../Components/Credit/GroupLink';
 
 import { 
-	Flex,
 	Panel,
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Spinner,
 } from '@wordpress/components';
 
 declare const window: any;
@@ -107,17 +107,10 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 			<Page title={ 'Group editor' }>
 				<Panel>
 					<PanelHeader>
-						{ this.state.loadingGroup
-						?	<Flex justify="flex-start">
-								<span>Loading group ... </span>
-								<Spinner />
-							</Flex>
-						:	<span>
-								<a href={ `/wp-admin/admin.php?page=tokenly-credit-group-show&group=${this.state.uuid}` }>
-									{ this.state.group?.name ?? this.state.uuid }
-								</a>
-							</span>
-						}
+						<Preloader loading={ this.state.loadingGroup } label="group" />
+					{ !this.state.loadingGroup &&
+						<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } />
+					}
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>
@@ -136,7 +129,6 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 						<PanelRow>
 							<ResourceEditActions
 								name="group"
-								loading={ this.state.loadingGroup }
 								saving={ this.state.saving }
 								onSave={ this.onSave }
 								onCancel={ this.onCancel }

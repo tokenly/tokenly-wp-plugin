@@ -9,7 +9,6 @@ import {
 
 interface ResourceEditActionsProps {
 	saving: boolean;
-	loading: boolean;
 	deleting?: boolean;
 	onSave: any;
 	onDelete?: any;
@@ -33,7 +32,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 			<Flex justify="flex-start" align="center" >
 				<Button
 					isPrimary
-					disabled={ this.props.saving || this.props.loading }
+					disabled={ this.props.saving }
 					onClick={ () => {
 						this.props.onSave();
 					}}

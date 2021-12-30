@@ -2,11 +2,12 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
+import { TYPES } from '../../../Types';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceStoreForm from '../../Components/Token/SourceStoreForm';
-import { TYPES } from '../../../Types';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
+import Preloader from '../../Components/Preloader';
 
 declare const window: any;
 
@@ -105,10 +106,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 				<Panel>
 				{ this.state.loadingAddresses &&
 					<PanelHeader>
-						<Flex justify="flex-start">
-							<span>Loading addresses ... </span>
-							<Spinner />
-						</Flex>
+						<Preloader loading={ this.state.loadingAddresses } label="addresses" />
 					</PanelHeader>
 				}
 				{ !this.state.loadingAddresses &&

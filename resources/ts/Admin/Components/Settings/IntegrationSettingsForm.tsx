@@ -18,14 +18,22 @@ interface IntegrationSettingsFormState {
 }
 
 export default class IntegrationSettingsForm extends Component<IntegrationSettingsFormProps, IntegrationSettingsFormState> {
-
 	constructor( props: IntegrationSettingsFormProps ) {
 		super( props );
-		this.onChange = this.onChange.bind( this );
+		this.onClientIdFieldChange = this.onClientIdFieldChange.bind( this );
+		this.onClientSecretFieldChange = this.onClientSecretFieldChange.bind( this );
 	}
 
-	onChange( newSettings: any ) {
-		this.props.onChange( newSettings );
+	onClientIdFieldChange( value: any ) {
+		let newState = Object.assign( {}, this.props.settings );
+		newState.client_id = value;
+		this.props.onChange( newState );
+	}
+
+	onClientSecretFieldChange( value: any ) {
+		let newState = Object.assign( {}, this.props.settings );
+		newState.client_secret = value;
+		this.props.onChange( newState );
 	}
 
 	render() {
@@ -39,22 +47,12 @@ export default class IntegrationSettingsForm extends Component<IntegrationSettin
 				<TextControl
 					label="Client ID"
 					value={ this.props.settings.client_id ?? '' }
-					onChange={ ( value: string ) => {
-							let newSettings = Object.assign( {}, this.props.settings );
-							newSettings.client_id = value;
-							this.onChange( newSettings );
-						}
-					}
+					onChange={ this.onClientIdFieldChange }
 				/>
 				<TextControl
 					label="Client Secret"
 					value={ this.props.settings.client_secret ?? '' }
-					onChange={ ( value: string ) => {
-							let newSettings = Object.assign( {}, this.props.settings );
-							newSettings.client_secret = value;
-							this.onChange( newSettings );
-						}
-					}
+					onChange={ this.onClientSecretFieldChange }
 				/>
 			</Flex>
 		);

@@ -9,9 +9,6 @@ import {
 
 interface PromiseListProps {
 	promises: Array<PromiseData>;
-	onDetails: any;
-	sources: any;
-	loadingSources: boolean;
 }
 
 interface PromiseListState {
@@ -30,7 +27,7 @@ export default class PromiseList extends Component<PromiseListProps, PromiseList
 			listItems = this.props?.promises.map( ( promiseItem: PromiseData, i: number ) => {
 				return (
 					<div style={ { width: '100%' } }>
-						<PromiseCard loadingSources={ this.props.loadingSources } promise={ promiseItem } sources={ this.props.sources } />
+						<PromiseCard promise={ promiseItem } />
 					</div>
 				);
 			} );

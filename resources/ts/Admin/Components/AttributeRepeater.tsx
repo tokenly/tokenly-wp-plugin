@@ -6,86 +6,88 @@ import {
 	Button,
 	Flex,
 	TextControl,
-	Dashicon,
 } from '@wordpress/components';
 
 interface AttributeRepeaterProps {
 	label?: string;
 	help?: string;
 	attributes: Array<Attribute>;
-	onUpdate: any;
+	onChange: any;
 }
 
 interface AttributeRepeaterState {
-	attributes: Array<Attribute>;
+	//
 }
 
 export default class AttributeRepeater extends Component<AttributeRepeaterProps, AttributeRepeaterState> {
 	state: AttributeRepeaterState = {
-		attributes: [],
+		//
 	};
 	constructor( props: AttributeRepeaterProps ) {
 		super( props );
-		this.onUpdate = props.onUpdate;
-		this.state.attributes = Object.assign( [], props.attributes );
-	}
-	
-	onUpdate( attributes: Array<Attribute> ) {
-		//
+		this.onAdd = this.onAdd.bind( this );
+		this.onRemove = this.onRemove.bind( this );
+		this.onKeyFieldChange = this.onKeyFieldChange.bind( this );
+		this.onValueFieldChange = this.onValueFieldChange.bind( this );
 	}
 	
 	onAdd() {
-		let newState = Object.assign( {}, this.state );
-		newState.attributes[newState.attributes.length] = { key: '', value: '' };
-		this.setState( newState );
-		this.dispatchUpdate();
+		const newState = Object.assign( [], this.props.attributes );
+		newState.push( { key: '', value: '' } );
+		this.props.onChange( newState );
 	}
 	
 	onRemove( index: number ) {
-		let newState = Object.assign( {}, this.state );
-		delete newState.attributes[index];
-		this.setState( newState );
-		this.dispatchUpdate();
+		let newState = Object.assign( [], this.props.attributes );
+		delete newState[ index ];
+		this.removeEmpty( newState );
+		this.props.onChange( newState );
 	}
 	
-	dispatchUpdate() {
-		this.onUpdate( this.state.attributes );
+	onKeyFieldChange( key: any, value: any ) {
+		const newState = Object.assign( [], this.props.attributes );
+		newState[ key ].key = value;
+		this.props.onChange( newState );
+	}
+
+	onValueFieldChange( key: any, value: any ) {
+		const newState = Object.assign( [], this.props.attributes );
+		newState[ key ].value = value;
+		this.props.onChange( newState );
+	}
+
+	removeEmpty( newState: any ) {
+		newState = newState.filter( function ( attribute: any ) {
+			return attribute != null;
+		} );
 	}
 
 	render() {
-		const listItems = this.state.attributes.map( ( attribute: Attribute, i: number ) => {
+		const listItems = this.props.attributes.map( ( attribute: Attribute, i: number ) => {
+			if ( !attribute ) { return }
 			return (
 				<Flex justify="flex-start" style={ { alignItems: 'flex-end', margin: '8px 0' } }>
 					<TextControl
 						label="Key"
 						value={ attribute.key }
 						onChange={ ( value: string ) => {
-								let newState = Object.assign( {}, this.state );
-								newState.attributes[i].key = value;
-								this.setState( { ...newState } );
-								this.dispatchUpdate();
-							}
-						}
+							this.onKeyFieldChange( i, value );
+						} }
 					/>
 					<TextControl
 						label="Value"
 						value={ attribute.value }
 						onChange={ ( value: string ) => {
-								let newState = Object.assign( {}, this.state );
-								newState.attributes[ i ].value = value;
-								this.setState( { ...newState } );
-								this.dispatchUpdate();
-							}
-						}
+							this.onValueFieldChange( i, value );
+						} }
 					/>
 					<Button
 						isTertiary
+						icon="no"
 						onClick={ () => {
 							this.onRemove( i );
-						}}
-					>
-						<Dashicon icon="no" />
-					</Button>
+						} }
+					/>
 				</Flex>
 			);
 		} );
@@ -98,9 +100,7 @@ export default class AttributeRepeater extends Component<AttributeRepeaterProps,
 				<Button
 					isSecondary
 					isLarge
-					onClick={ () => {
-						this.onAdd();
-					}}
+					onClick={ this.onAdd }
 				>
 					Add attribute
 				</Button>

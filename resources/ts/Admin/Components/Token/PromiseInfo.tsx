@@ -9,6 +9,7 @@ import {
 
 interface AddressInfoProps {
 	promise: any;
+	verbose?: boolean;
 }
 
 interface AddressInfoState {
@@ -37,32 +38,37 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 	}
 
 	getProperties() {
-		return [
+		const properties = [
 			{
 				label: 'Asset',
 				value: this.props.promise?.asset,
 			},
 			{
-				label: 'Quantity (Sat)',
+				label: 'Quantity',
 				value: this.props.promise?.quantity?.value_sat,
 			},
-			{
-				label: 'Ref',
-				value: this.props.promise?.ref,
-			},
-			{
-				label: 'Note',
-				value: this.props.promise?.note,
-			},
-			{
-				label: 'Created at',
-				value: this.dateFormatted( this.props.promise?.created_at ),
-			},
-			{
-				label: 'Updated at',
-				value: this.dateFormatted( this.props.promise?.updated_at ),
-			},
-		]
+		];
+		if ( this.props.verbose ) {
+			properties.push(
+				{
+					label: 'Ref',
+					value: this.props.promise?.ref,
+				},
+				{
+					label: 'Note',
+					value: this.props.promise?.note,
+				},
+				{
+					label: 'Created at',
+					value: this.dateFormatted( this.props.promise?.created_at ),
+				},
+				{
+					label: 'Updated at',
+					value: this.dateFormatted( this.props.promise?.updated_at ),
+				},
+			)
+		}
+		return properties;
 	}
 
 	isPromiseValid() {

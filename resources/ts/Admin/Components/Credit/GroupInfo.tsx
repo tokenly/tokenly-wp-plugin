@@ -8,6 +8,7 @@ import {
 
 interface GroupInfoProps {
 	group: any;
+	verbose?: boolean;
 }
 
 interface GroupInfoState {
@@ -30,11 +31,30 @@ export default class GroupInfo extends Component<GroupInfoProps, GroupInfoState>
 		return (
 			<Flex style={ { width: '100%', alignItems: 'center' } }>
 				<div style={ { flex: 1 } }>
-					<div><span>UUID: </span><strong>{ this.props?.group?.uuid }</strong></div>
-					<div><span>Active: </span><span><strong>{ this.props?.group?.active ? 'Yes' : 'No' }</strong></span></div>
-					<div><span>App whitelist: </span><span><strong>{ this.props?.group?.app_whitelist }</strong></span></div>
-					<div><span>Created at: </span><span><strong>{ this.dateFormatted( this.props?.group?.created_at ) }</strong></span></div>
-					<div><span>Updated at: </span><span><strong>{ this.dateFormatted( this.props?.group?.updated_at ) }</strong></span></div>
+					<div>
+						<span>Active: </span>
+						<strong>{ this.props?.group?.active ? 'Yes' : 'No' }</strong>
+					</div>
+				{ this.props.verbose &&
+					<div>
+						<div>
+							<span>UUID: </span>
+							<strong>{ this.props?.group?.uuid }</strong>
+						</div>
+						<div>
+							<span>App whitelist: </span>
+							<strong>{ this.props?.group?.app_whitelist }</strong>
+						</div>
+						<div>
+							<span>Created at: </span>
+							<strong>{ this.dateFormatted( this.props?.group?.created_at ) }</strong>
+						</div>
+						<div>
+							<span>Updated at: </span>
+							<strong>{ this.dateFormatted( this.props?.group?.updated_at ) }</strong>
+						</div>
+					</div>
+				}
 				</div>
 			</Flex>
 		);

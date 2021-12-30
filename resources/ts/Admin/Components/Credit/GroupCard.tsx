@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
+import CardActions from './../CardActions';
+import GroupInfo from './GroupInfo';
+import GroupLink from './GroupLink';
 
 import { 
-	Button,
 	Card,
 	CardHeader,
 	CardBody,
-	Flex,
 	CardFooter
 } from '@wordpress/components';
 
@@ -19,6 +22,10 @@ interface GroupCardState {
 }
 
 export default class GroupCard extends Component<GroupCardProps, GroupCardState> {
+	@resolve( TYPES.Variables.adminUrl )
+	adminUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: GroupCardProps ) {
 		super( props );
@@ -28,39 +35,30 @@ export default class GroupCard extends Component<GroupCardProps, GroupCardState>
 		return (
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
-					<div>{ this.props.group.name }</div>
+					<GroupLink name={ this.props.group?.name } uuid={ this.props.group?.uuid } />
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
-					<Flex style={ { width: '100%', alignItems: 'center' } }>
-						<div style={ { flex: 1 } }>
-							<div><span>Active: </span><strong>{ this.props.group.active ? 'Yes' : 'No' }</strong></div>
-						</div>
-					</Flex>
+					<GroupInfo group={ this.props.group } />
 				</CardBody>
 				<CardFooter>
-					<Flex justify="flex-start">
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-transaction-index&group=${ this.props.group.uuid }` }
-						>
-							View transactions
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-group-show&group=${ this.props.group.uuid }` }
-						>
-							View details
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-credit-group-edit&group=${ this.props.group.uuid }` }
-						>
-							Edit group
-						</Button>
-					</Flex>
+					<CardActions
+						actions={
+							[
+								{
+									title: 'View transactions',
+									url: `${ this.adminUrl }${ this.namespace }-credit-transaction-index&group=${ this.props.group.uuid }`,
+								},
+								{
+									title: 'View details',
+									url: `${ this.adminUrl }${ this.namespace }-credit-group-show&group=${ this.props.group.uuid }`,
+								},
+								{
+									title: 'Edit group',
+									url: `${ this.adminUrl }${ this.namespace }-credit-group-edit&group=${ this.props.group.uuid }`,
+								},
+							]
+						}
+					/>
 				</CardFooter>
 			</Card>
 		);

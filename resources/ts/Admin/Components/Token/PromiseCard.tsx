@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 import { PromiseData } from './../../../Interfaces';
 import PromiseLink from './PromiseLink';
-import PromiseSourceInfo from './PromiseSourceInfo';
-import PromiseParticipants from './PromiseParticipants';
+import PromiseInfo from './PromiseInfo';
+import CardActions from './../CardActions';
 
 import { 
-	Button,
 	Card,
 	CardHeader,
 	CardBody,
@@ -16,8 +17,6 @@ import {
 
 interface PromiseCardProps {
 	promise: PromiseData;
-	sources: any;
-	loadingSources: boolean;
 }
 
 interface PromiseCardState {
@@ -25,6 +24,11 @@ interface PromiseCardState {
 }
 
 export default class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
+	@resolve( TYPES.Variables.adminUrl )
+	adminUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
+
 	constructor( props: PromiseCardProps ) {
 		super( props );
 	}
@@ -46,32 +50,22 @@ export default class PromiseCard extends Component<PromiseCardProps, PromiseCard
 					</Flex>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
-					<Flex style={ { width: '100%', alignItems: 'center' } }>
-						<div style={ { flex: 1 } }>
-							<PromiseSourceInfo loadingSources={ this.props.loadingSources } promise={ this.props.promise } sources={ this.props.sources } />
-							<PromiseParticipants promise={ this.props.promise } />
-							<div><span>Asset: </span><strong>{ this.props.promise.asset }</strong></div>
-							<div><span>Quantity: </span><strong>{ this.props.promise?.quantity?.value }</strong></div>
-						</div>
-					</Flex>
+					<PromiseInfo promise={ this.props.promise } />
 				</CardBody>
 				<CardFooter>
-					<Flex justify="flex-start">
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.props.promise.promise_id}` }
-						>
-							View details
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-token-promise-edit&promise=${ this.props.promise.promise_id }` }
-						>
-							Edit promise
-						</Button>
-					</Flex>
+					<CardActions actions={
+						[
+							{
+								title: 'View details',
+								url: `${ this.adminUrl }${ this.namespace }-token-promise-show&promise=${this.props.promise.promise_id}`,
+							},
+							{
+								title: 'Edit promise',
+								url: `${ this.adminUrl }${ this.namespace }-token-promise-edit&promise=${ this.props.promise.promise_id }`,
+							}
+						]
+					}
+					/>
 				</CardFooter>
 			</Card>
 		);

@@ -1,10 +1,12 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
-import Page from './../Page';
 import { Component } from 'react';
-import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import SourceInfo from '../../Components/Token/SourceInfo';
 import { TYPES } from '../../../Types';
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
+import Page from './../Page';
+import Preloader from '../../Components/Preloader';
+import SourceLink from '../../Components/Token/SourceLink';
+import SourceInfo from '../../Components/Token/SourceInfo';
 
 import { 
 	Button,
@@ -12,7 +14,7 @@ import {
 	PanelBody,
 	PanelRow,
 	Flex,
-	Spinner,
+	PanelHeader,
 } from '@wordpress/components';
 
 interface SourceShowPageData {
@@ -24,7 +26,7 @@ interface SourceShowPageProps {
 }
 
 interface SourceShowPageState {
-	sourceId: string,
+	id: string,
 	source: any,
 	loading: boolean,
 }
@@ -34,7 +36,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	sourceRepository: SourceRepositoryInterface;
 
 	state: SourceShowPageState = {
-		sourceId: null,
+		id: null,
 		source: null,
 		loading: false,
 	}
@@ -42,7 +44,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 		super( props );
 		this.getAssetNames = this.getAssetNames.bind( this );
 		const urlParams = new URLSearchParams( window.location.search );
-		this.state.sourceId = urlParams.get( 'source' );
+		this.state.id = urlParams.get( 'source' );
 	}
 
 	getAssetNames() {
@@ -67,8 +69,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 		const params = {
 			with: ['address'],
 		}
-		this.sourceRepository.show( this.state.sourceId, params ).then( ( source: any ) => {
-			console.log(source);
+		this.sourceRepository.show( this.state.id, params ).then( ( source: any ) => {
 			this.setState( {
 				loading: false,
 				source: source,
@@ -79,25 +80,25 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	render() {
 		return (
 			<Page title={ 'Source display' }>
-				<Panel header={ this.state.source?.address.label }>
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ this.state.loading } label="source" />
+					{ !this.state.loading &&
+						<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } text />
+					}
+					</PanelHeader>
+				{ !this.state.loading &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loading
-								?	<Flex justify="flex-start">
-										<span>Loading source ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex>
 								{ this.isSourceValid()
 									?	<SourceInfo source={ this.state.source } />
 									: 	<div style={ { opacity: 0.5 } }>Failed to fetch the source data.</div>
 								}
-									</Flex>
-								}
 							</Flex>
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 				<Panel>
 					<PanelBody>
@@ -106,14 +107,14 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.state.sourceId }` }
+									href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.state.id }` }
 								>
 									Edit source
 								</Button>
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.state.sourceId }` }
+									href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.state.id }` }
 								>
 									View balance
 								</Button>

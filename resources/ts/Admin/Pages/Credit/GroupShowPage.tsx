@@ -2,9 +2,11 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
+import { TYPES } from '../../../Types';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupInfo from '../../Components/Credit/GroupInfo';
-import { TYPES } from '../../../Types';
+import Preloader from '../../Components/Preloader';
+import GroupLink from '../../Components/Credit/GroupLink';
 
 import { 
 	Button,
@@ -60,23 +62,18 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 			<Page title={ 'Group details' }>
 				<Panel>
 					<PanelHeader>
-						{ this.state.loadingGroup
-						?	<Flex justify="flex-start">
-								<span>Loading group ... </span>
-								<Spinner />
-							</Flex>
-						:	<span>{ this.state.group?.name ?? this.state.uuid }</span>
-						}
+						<Preloader loading={ this.state.loadingGroup } label="group" />
+					{ !this.state.loadingGroup &&
+						<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } text />
+					}
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>
 						<PanelRow>
-							<Flex>
-						{ Object.keys( this.state.group ).length > 0
-							?	<GroupInfo group={ this.state.group } />
-							: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
-						}
-							</Flex>
+					{ Object.keys( this.state.group ).length > 0
+						?	<GroupInfo group={ this.state.group } verbose />
+						: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
+					}
 						</PanelRow>
 					</PanelBody>
 				}

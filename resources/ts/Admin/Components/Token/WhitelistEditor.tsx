@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { WhitelistItem } from '../../Interfaces';
+import { WhitelistItem } from '../../../Interfaces';
 
 import { 
 	Button,
@@ -9,27 +9,23 @@ import {
 	Dashicon,
 } from '@wordpress/components';
 
-interface WhitelistProps {
+interface WhitelistEditorProps {
 	whitelist: Array<WhitelistItem>;
 	onUpdate: any;
 }
 
-interface WhitelistState {
+interface WhitelistEditorState {
 	whitelist: Array<WhitelistItem>;
 }
 
-export default class Whitelist extends Component<WhitelistProps, WhitelistState> {
-	state: WhitelistState = {
+export default class WhitelistEditor extends Component<WhitelistEditorProps, WhitelistEditorState> {
+	state: WhitelistEditorState = {
 		whitelist: [],
 	};
-	constructor( props: WhitelistProps ) {
+	constructor( props: WhitelistEditorProps ) {
 		super( props );
 		this.onUpdate = props.onUpdate;
 		this.state.whitelist = Object.assign( [], props.whitelist );
-	}
-	
-	onUpdate( whitelist: Array<WhitelistItem> ) {
-		//
 	}
 	
 	onAdd() {

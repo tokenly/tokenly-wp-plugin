@@ -3,6 +3,7 @@ import { Container, interfaces } from 'inversify';
 import { TYPES } from './Types';
 import { Component } from './Interfaces';
 // Implementations
+import AdminRouter from './Routes/AdminRouter';
 // Implementations - Services
 import AuthService from './Services/AuthService';
 import AdminApiService from './Services/AdminApiService';
@@ -26,6 +27,7 @@ import ComponentServiceProvider from './Providers/ComponentServiceProvider';
 import LoginButtonComponent from './Components/LoginButtonComponent';
 import TokenItemCardComponent from './Components/TokenItemCardComponent';
 // Interfaces
+import AdminRouterInterface from './Interfaces/Routes/AdminRouterInterface';
 // Interfaces - Services
 import AuthServiceInterface from './Interfaces/Services/AuthServiceInterface';
 import AdminApiServiceInterface from './Interfaces/Services/AdminApiServiceInterface';
@@ -50,6 +52,7 @@ import TokenItemCardComponentInterface from './Interfaces/Components/TokenItemCa
 
 const container = new Container();
 
+container.bind<AdminRouterInterface>( TYPES.Routes.AdminRouterInterface ).to( AdminRouter );
 // Services - Application
 container.bind<AuthServiceInterface>( TYPES.Services.AuthServiceInterface ).to( AuthService );
 container.bind<AdminApiServiceInterface>( TYPES.Services.AdminApiServiceInterface ).to( AdminApiService );
@@ -77,5 +80,8 @@ container.bind<Component>( 'Component' ).to( LoginButtonComponent ).whenTargetNa
 container.bind<Component>( 'Component' ).to( TokenItemCardComponent ).whenTargetNamed( 'tokenItemCardComponent' );
 container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
 		.toAutoNamedFactory<Component>( 'Component' );
-		
+	
+container.bind<string>( TYPES.Variables.adminUrl ).toConstantValue( '/wp-admin/admin.php?page=' );
+container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
+
 export { container };

@@ -1,4 +1,8 @@
 const TYPES = {
+	Variables: {
+		adminUrl: Symbol.for( 'adminUrl' ),
+		namespace: Symbol.for( 'namespace' ),
+	},
 	Components: {
 		LoginButtonComponentInterface       : Symbol.for( 'LoginButtonComponentInterface' ),
 		TokenItemCardComponentInterface     : Symbol.for( 'TokenItemCardComponentInterface' ),
@@ -29,6 +33,9 @@ const TYPES = {
 			SourceRepositoryInterface   : Symbol.for( 'SourceRepositoryInterface' ),
 			MetaRepositoryInterface     : Symbol.for( 'MetaRepositoryInterface' ),
 		},
+	},
+	Routes: {
+		AdminRouterInterface : Symbol.for( 'AdminRouterInterface' ),
 	},
 };
 

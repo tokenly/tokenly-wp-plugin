@@ -165,7 +165,6 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 						<PanelRow>
 							<ResourceEditActions
 								name="promise"
-								loading={ this.state.loading }
 								saving={ this.state.saving }
 								deleting={ this.state.deleting }
 								onSave={ this.onSave }

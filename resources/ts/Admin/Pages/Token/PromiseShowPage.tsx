@@ -80,7 +80,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 					{ !this.state.loadingPromise &&
 					<PanelBody>
 						<PanelRow>
-							<PromiseInfo promise={this.state.promise} />
+							<PromiseInfo promise={this.state.promise} verbose />
 						</PanelRow>
 					</PanelBody>
 					}
