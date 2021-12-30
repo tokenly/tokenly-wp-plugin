@@ -2,7 +2,9 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
+import PromiseLink from '../../Components/Token/PromiseLink';
 import PromiseEditForm from '../../Components/Token/PromiseEditForm';
+import Preloader from '../../Components/Preloader';
 import ResourceEditActions from '../../Components/ResourceEditActions';
 import { PromiseData, PromiseUpdateParams } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
@@ -141,44 +143,35 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 			<Page title={ 'Promise editor' }>
 				<Panel>
 					<PanelHeader>
-						{ this.state.loading
-						?	<Flex justify="flex-start">
-								<span>Loading promise ... </span>
-								<Spinner />
-							</Flex>
-						:	<span>
-								<span>№ </span>
-								<strong>
-									<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.state.id}` }>
-										{ this.state.id }
-									</a>
-								</strong>
-							</span>
-						}
+						<Preloader loading={ this.state.loading } label="promise" />
+					{ !this.state.loading &&
+						<PromiseLink id={ this.state.id } />
+					}
 					</PanelHeader>
+				{ !this.state.loading &&
 					<PanelBody>
 						<PanelRow>
-							<Flex
-								//@ts-ignore
-								direction="column"
-							>
-							{ !this.state.loading &&
-								<PromiseEditForm
-									onChange={ this.onEditDataChange }
-									loading={ this.state.loading }
-									editData={this.state?.editData}
-								/>
-							}
-								<ResourceEditActions
-									name="promise"
-									loading={ this.state.loading }
-									saving={ this.state.saving }
-									deleting={ this.state.deleting }
-									onSave={ this.onSave }
-									onDelete={ this.onDelete }
-									onCancel={ this.onCancel }
-								/>
-							</Flex>
+							<PromiseEditForm
+								onChange={ this.onEditDataChange }
+								loading={ this.state.loading }
+								editData={this.state?.editData}
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceEditActions
+								name="promise"
+								loading={ this.state.loading }
+								saving={ this.state.saving }
+								deleting={ this.state.deleting }
+								onSave={ this.onSave }
+								onDelete={ this.onDelete }
+								onCancel={ this.onCancel }
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

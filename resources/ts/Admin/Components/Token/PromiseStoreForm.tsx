@@ -153,7 +153,10 @@ export default class PromiseStoreForm extends Component<PromiseStoreFormProps, P
 						<label>
 							<div>Destination</div>
 							<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username. The user who will receive the asset.</div>
-							<UserSearchField onChange={ this.onDestinationFieldChange } />
+							<UserSearchField
+								user={ this.props.storeData.destination }
+								onChange={ this.onDestinationFieldChange }
+							/>
 						</label>
 					</div>
 					<div>

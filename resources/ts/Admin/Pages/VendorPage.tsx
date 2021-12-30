@@ -6,6 +6,8 @@ import PromiseRepositoryInterface from '../../Interfaces/Repositories/Token/Prom
 import SourceRepositoryInterface from '../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { PromiseData } from '../../Interfaces';
 import PromiseList from '../Components/Token/PromiseList';
+import Preloader from '../Components/Preloader';
+import VendorActions from '../Components/Token/VendorActions';
 import { TYPES } from '../../Types';
 
 import { 
@@ -99,47 +101,28 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				<Panel header="Vendor actions">
 					<PanelBody>
 						<PanelRow>
-							<Flex justify="flex-start">
-								<Button
-									isPrimary
-									isLarge
-									href='/wp-admin/admin.php?page=tokenly-token-promise-store'
-									style={ { marginRight: '8px' } }
-								>
-									Create a promise
-								</Button>
-								<Button
-									isSecondary
-									isLarge
-									href='/wp-admin/admin.php?page=tokenly-token-source-index'
-								>
-									Manage source addresses
-								</Button>
-							</Flex>
+							<VendorActions />
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel header="Current promises">
+				<Panel header="Promise listing">
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loadingPromises
-								?	<Flex justify="flex-start">
-										<span>Loading promises ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex>
-										{ this.state.promises?.length > 0
-											? <PromiseList
-												promises={ this.state.promises }
-												onDetails={ this.onDetails }
-												sources={ this.state.sources }
-												loadingSources={ this.state.loadingSources }
-											/>
-											: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
-										}
-									</Flex>
-								}
+								<Preloader loading={ this.state.loadingPromises } label="promises" />
+							{ !this.state.loadingPromises &&
+								<Flex>
+									{ this.state.promises?.length > 0
+										? <PromiseList
+											promises={ this.state.promises }
+											onDetails={ this.onDetails }
+											sources={ this.state.sources }
+											loadingSources={ this.state.loadingSources }
+										/>
+										: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
+									}
+								</Flex>
+							}
 							</Flex>
 						</PanelRow>
 					</PanelBody>

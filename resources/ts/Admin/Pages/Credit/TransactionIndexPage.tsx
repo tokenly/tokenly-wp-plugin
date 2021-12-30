@@ -58,9 +58,6 @@ export default class TransactionIndexPage extends Component<TransactionIndexPage
 	render() {
 		return (
 			<Page title={'Transaction listing'}>
-				<div style={ { marginBottom: '8px' } }>
-					<a href='/wp-admin/admin.php?page=tokenly-credit-group-index'>Back to credit group list</a>
-				</div>
 				<Panel header="Transactions">
 					<PanelBody>
 						<PanelRow>
@@ -71,13 +68,13 @@ export default class TransactionIndexPage extends Component<TransactionIndexPage
 										<Spinner />
 									</Flex>
 								:	<Flex>
-										{ Object.keys( this.state.transactions ).length > 0
-											? 	<TransactionList
-													transactions={ this.state.transactions }
-													loadingTransactions={ this.state.loadingTransactions }
-												/>
-											: 	<div style={ { opacity: 0.5 } }>There are no registered transactions</div>
-										}
+								{ Object.keys( this.state.transactions ).length > 0
+									? 	<TransactionList
+											transactions={ this.state.transactions }
+											loadingTransactions={ this.state.loadingTransactions }
+										/>
+									: 	<div style={ { opacity: 0.5 } }>There are no registered transactions</div>
+								}
 									</Flex>
 								}
 							</Flex>

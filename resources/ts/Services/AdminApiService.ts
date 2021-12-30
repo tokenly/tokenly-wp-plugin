@@ -253,7 +253,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	userShow( userId: number, params: UserShowParams ): Promise<any> {
+	userShow( userId: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/user/${userId}`, params ).then( result => {
 				resolve( result );

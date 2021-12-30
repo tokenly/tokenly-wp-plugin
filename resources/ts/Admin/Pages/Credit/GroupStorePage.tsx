@@ -81,22 +81,23 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex
-								//@ts-ignore
-								direction="column"
-							>
-								<GroupStoreForm
-									storeData={ this.state.storeData }
-									onChange={ this.onStoreDataChange }
-								/>
-								<ResourceStoreActions
-									name={ 'group' }
-									storing={ this.state.storing }
-									onStore={ this.onStore }
-									onCancel={ this.onCancel }
-									disableStore={ this.isStoreDisabled() }
-								/>
-							</Flex>
+							<GroupStoreForm
+								storeData={ this.state.storeData }
+								onChange={ this.onStoreDataChange }
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceStoreActions
+								name={ 'group' }
+								storing={ this.state.storing }
+								onStore={ this.onStore }
+								onCancel={ this.onCancel }
+								disableStore={ this.isStoreDisabled() }
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

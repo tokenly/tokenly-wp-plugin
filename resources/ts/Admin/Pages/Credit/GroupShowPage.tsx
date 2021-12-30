@@ -2,13 +2,14 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
-import * as dayjs from 'dayjs'
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
+import GroupInfo from '../../Components/Credit/GroupInfo';
 import { TYPES } from '../../../Types';
 
 import { 
 	Button,
 	Panel,
+	PanelHeader,
 	PanelBody,
 	PanelRow,
 	Flex,
@@ -24,6 +25,7 @@ interface GroupShowPageProps {
 }
 
 interface GroupShowPageState {
+	uuid: string;
 	group: any;
 	loadingGroup: boolean;
 }
@@ -33,25 +35,19 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 	groupRepository: GroupRepositoryInterface;
 	
 	state: GroupShowPageState = {
+		uuid: null,
 		group: null,
 		loadingGroup: null,
 	}
 	constructor( props: GroupShowPageProps ) {
 		super( props );
-	}
-
-	dateFormatted( date: Date ) {
-		if ( date ) {
-			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
-		}
-		return;
+		const urlParams = new URLSearchParams( window.location.search );
+		this.state.uuid = urlParams.get( 'group' );
 	}
 
 	componentWillMount() {
 		this.setState( { loadingGroup: true } );
-		const urlParams = new URLSearchParams( window.location.search );
-		const group = urlParams.get( 'group' );
-		this.groupRepository.show( group ).then( ( group: any ) => {
+		this.groupRepository.show( this.state.uuid ).then( ( group: any ) => {
 			this.setState( {
 				loadingGroup: false,
 				group: group,
@@ -62,33 +58,28 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 	render() {
 		return (
 			<Page title={ 'Group details' }>
-				<Panel header={ this.state?.group?.name }>
+				<Panel>
+					<PanelHeader>
+						{ this.state.loadingGroup
+						?	<Flex justify="flex-start">
+								<span>Loading group ... </span>
+								<Spinner />
+							</Flex>
+						:	<span>{ this.state.group?.name ?? this.state.uuid }</span>
+						}
+					</PanelHeader>
+				{ !this.state.loadingGroup &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loadingGroup
-								?	<Flex justify="flex-start">
-										<span>Loading group ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex>
-										{ Object.keys( this.state.group ).length > 0
-											?	<Flex style={ { width: '100%', alignItems: 'center' } }>
-													<div style={ { flex: 1 } }>
-														<div><span>UUID: </span><strong>{ this.state?.group?.uuid }</strong></div>
-														<div><span>Active: </span><span><strong>{ this.state?.group?.active ? 'Yes' : 'No' }</strong></span></div>
-														<div><span>App whitelist: </span><span><strong>{ this.state?.group?.app_whitelist }</strong></span></div>
-														<div><span>Created at: </span><span><strong>{ this.dateFormatted( this.state?.group?.created_at ) }</strong></span></div>
-														<div><span>Updated at: </span><span><strong>{ this.dateFormatted( this.state?.group?.updated_at ) }</strong></span></div>
-													</div>
-												</Flex>
-											: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
-										}
-									</Flex>
-								}
+						{ Object.keys( this.state.group ).length > 0
+							?	<GroupInfo group={ this.state.group } />
+							: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
+						}
 							</Flex>
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 				<Panel>
 					<PanelBody>

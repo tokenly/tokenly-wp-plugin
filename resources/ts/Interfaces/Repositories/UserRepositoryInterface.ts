@@ -5,5 +5,5 @@ import {
 
 export default interface UserRepositoryInterface {
 	index( params: UserIndexParams ): Promise<any>;
-	show( userId: number, params: UserShowParams ): Promise<any>;
+	show( userId: string, params: any ): Promise<any>;
 }

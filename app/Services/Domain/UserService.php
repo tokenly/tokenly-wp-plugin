@@ -86,6 +86,9 @@ class UserService extends DomainService implements UserServiceInterface {
 	 */
 	protected function index_cacheable( array $params = array() ) {
 		$users = $this->user_repository->index( $params );
+		if ( isset( $params['suggestions'] ) ) {
+			return $users->to_suggestions();
+		}
 		return $users;
 	}
 
@@ -97,9 +100,11 @@ class UserService extends DomainService implements UserServiceInterface {
 	 */
 	protected function show_cacheable( array $params = array() ) {
 		if ( isset( $params['id'] ) && $params['id'] == 'me' ) {
-			$params['id'] = get_current_user_id();
+			unset( $params['id'] );
+			$user = $this->show_current( $params );
+		} else {
+			$user = $this->user_repository->show( $params );
 		}
-		$user = $this->user_repository->show( $params );
 		return $user;
 	}
 

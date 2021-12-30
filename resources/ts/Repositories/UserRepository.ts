@@ -24,7 +24,7 @@ export default class UserRepository implements UserRepositoryInterface {
 		});
 	}
 
-	show( userId: number, params: UserShowParams ): Promise<any> {
+	show( userId: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.adminApiService.userShow( userId, params ).then( result => {
 				resolve( result );

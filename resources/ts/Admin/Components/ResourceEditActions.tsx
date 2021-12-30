@@ -30,7 +30,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 
 	render() {
 		return (
-			<Flex justify="flex-start" align="center" style={ { marginTop: '12px' } }>
+			<Flex justify="flex-start" align="center" >
 				<Button
 					isPrimary
 					disabled={ this.props.saving || this.props.loading }

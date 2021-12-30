@@ -3,6 +3,7 @@ import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
+import SourceInfo from '../../Components/Token/SourceInfo';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -88,17 +89,10 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 										<Spinner />
 									</Flex>
 								:	<Flex>
-										{ this.isSourceValid()
-											?	<Flex style={ { width: '100%', alignItems: 'center' } }>
-													<div style={ { flex: 1 } }>
-														<div><span>Type: </span><strong>{ this.state.source.type }</strong></div>
-														<div><span>Address: </span><strong>{ this.state.source.address_id }</strong></div>
-														{/* <div><span>Assets: </span><strong>{ this.getAssetNames() ?? 'none' }</strong></div> */}
-														<div><span>Assets (whitelisted): </span><strong>{ this.state.source.assets ?? 'all' }</strong></div>
-													</div>
-												</Flex>
-											: 	<div style={ { opacity: 0.5 } }>Failed to fetch the source data.</div>
-										}
+								{ this.isSourceValid()
+									?	<SourceInfo source={ this.state.source } />
+									: 	<div style={ { opacity: 0.5 } }>Failed to fetch the source data.</div>
+								}
 									</Flex>
 								}
 							</Flex>

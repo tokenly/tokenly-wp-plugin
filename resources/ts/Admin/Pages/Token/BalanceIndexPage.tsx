@@ -2,6 +2,7 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
+import Preloader from '../../Components/Preloader';
 import BalanceList from '../../Components/Token/BalanceList';
 import BalanceRepositoryInterface from '../../../Interfaces/Repositories/Token/BalanceRepositoryInterface';
 import { TYPES } from '../../../Types';
@@ -67,18 +68,15 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loading
-								?	<Flex justify="flex-start">
-										<span>Loading balance ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex style={ { width: '100%' } } >
-										<div style={ { marginBottom: '12px' } }>
-											{/* Owner ({ this.props.pageData.entity.type }): <strong>{ this.props.pageData.entity.name }</strong> */}
-										</div>
-										<BalanceList balance={ this.state?.balance ?? [] } />
-									</Flex>
-								}
+								<Preloader loading={ this.state.loading } label="balance" />
+							{ !this.state.loading &&
+								<Flex style={ { width: '100%' } } >
+									<div style={ { marginBottom: '12px' } }>
+										{/* Owner ({ this.props.pageData.entity.type }): <strong>{ this.props.pageData.entity.name }</strong> */}
+									</div>
+									<BalanceList balance={ this.state?.balance ?? [] } />
+								</Flex>
+							}
 							</Flex>
 						</PanelRow>
 					</PanelBody>

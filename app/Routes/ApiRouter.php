@@ -294,7 +294,7 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'user_show' => array(
-				'path' => '/user/(?P<id>[\d]+)',
+				'path' => '/user/(?P<id>\S+)',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user'], 'show' ),

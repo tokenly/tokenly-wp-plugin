@@ -4,6 +4,7 @@ import Page from './../Page';
 import { Component } from 'react';
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import PromiseStoreForm from '../../Components/Token/PromiseStoreForm';
+import Preloader from '../../Components/Preloader';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { TYPES } from '../../../Types';
@@ -112,35 +113,33 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 				<Panel>
 				{ this.state.loadingSources &&
 					<PanelHeader>
-						<Flex justify="flex-start">
-							<span>Loading sources ... </span>
-							<Spinner />
-						</Flex>
+						<Preloader loading={ this.state.loadingSources } label="sources" />
 					</PanelHeader>
 				}
+				{ !this.state.loadingSources &&
 					<PanelBody>
 						<PanelRow>
-							<Flex
-								//@ts-ignore
-								direction="column"
-							>
-							{ !this.state.loadingSources &&
-								<PromiseStoreForm
-									onChange={ this.onStoreDataChange }
-									loadingSources={ this.state.loadingSources }
-									storeData={ this.state.storeData }
-									sources={ this.state.sources }
-								/>
-							}
-								<ResourceStoreActions
-									name={ 'promise' }
-									storing={ this.state.storing }
-									loading={ ( this.state.loadingSources ) }
-									onStore={ this.onStore }
-									onCancel={ this.onCancel }
-									disableStore={ this.isStoreDisabled() }
-								/>
-							</Flex>
+							<PromiseStoreForm
+								onChange={ this.onStoreDataChange }
+								loadingSources={ this.state.loadingSources }
+								storeData={ this.state.storeData }
+								sources={ this.state.sources }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceStoreActions
+								name={ 'promise' }
+								storing={ this.state.storing }
+								loading={ ( this.state.loadingSources ) }
+								onStore={ this.onStore }
+								onCancel={ this.onCancel }
+								disableStore={ this.isStoreDisabled() }
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>

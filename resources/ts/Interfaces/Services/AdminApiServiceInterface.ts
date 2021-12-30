@@ -32,6 +32,6 @@ export default interface AdminApiServiceInterface {
 	tokenMetaShow( postId: number ): Promise<TokenMetaData>;
 	tokenMetaUpdate( postId: number, params: TokenMetaData ): Promise<any>;
 	userIndex( params: UserIndexParams ): Promise<any>;
-	userShow( userId: number, params: UserShowParams ): Promise<any>;
+	userShow( userId: string, params: any ): Promise<any>;
 	makeRequest( method: string, route: string, args: object ): Promise<any>;
 }

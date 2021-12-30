@@ -5,8 +5,8 @@ import { Component } from 'react';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceStoreForm from '../../Components/Token/SourceStoreForm';
-import { SourceData } from '../../../Interfaces';
 import { TYPES } from '../../../Types';
+import ResourceStoreActions from '../../Components/ResourceStoreActions';
 
 declare const window: any;
 
@@ -15,6 +15,8 @@ import {
 	PanelHeader,
 	PanelBody,
 	PanelRow,
+	Flex,
+	Spinner,
 } from '@wordpress/components';
 
 interface SourceStorePageData {
@@ -48,15 +50,30 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	}
 	constructor( props: SourceStorePageProps ) {
 		super( props );
-		this.onSubmit = this.onSubmit.bind( this );
+		this.onStore = this.onStore.bind( this );
 		this.onStoreDataChange = this.onStoreDataChange.bind( this );
+		this.onCancel = this.onCancel.bind( this );
 	}
 
 	return() {
 		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
 	}
-	
-	onSubmit() {
+
+	componentWillMount() {
+		this.setState( { loadingAddresses: true } );
+		const params = {
+			id: 'me',
+			registered: true,
+		}
+		this.addressRepository.index( params ).then( ( addresses: any ) => {
+			this.setState( {
+				loadingAddresses: false,
+				addresses: addresses,
+			} );
+		} );
+	}
+
+	onStore() {
 		const selectedAddress = this.state.addresses[this.state.storeData?.address];
 		if ( !selectedAddress ) {
 			return;
@@ -74,35 +91,48 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 		this.setState( { storeData: newData } );
 	}
 
-	componentWillMount() {
-		this.setState( { loadingAddresses: true } );
-		const params = {
-			id: 'me',
-			registered: true,
-		}
-		this.addressRepository.index( params ).then( ( addresses: any ) => {
-			this.setState( {
-				loadingAddresses: false,
-				addresses: addresses,
-			} );
-		} );
+	onCancel() {
+		this.return();
+	}
+
+	isStoreDisabled() {
+		return false;
 	}
 	
 	render() {
 		return (
 			<Page title={'Source creator'}>
 				<Panel>
+				{ this.state.loadingAddresses &&
+					<PanelHeader>
+						<Flex justify="flex-start">
+							<span>Loading addresses ... </span>
+							<Spinner />
+						</Flex>
+					</PanelHeader>
+				}
+				{ !this.state.loadingAddresses &&
 					<PanelBody>
 						<PanelRow>
 							<SourceStoreForm
-								onSubmit={ this.onSubmit }
 								onChange={ this.onStoreDataChange }
-								onCancel={ this.return }
 								loadingAddresses={ this.state.loadingAddresses }
-								storing={ this.state.storing }
-								style={ { marginBottom: '12px' } }
 								addresses={ this.state.addresses }
 								storeData={ this.state.storeData }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceStoreActions
+								name={ 'source' }
+								storing={ this.state.storing }
+								onStore={ this.onStore }
+								onCancel={ this.onCancel }
+								disableStore={ this.isStoreDisabled() }
 							/>
 						</PanelRow>
 					</PanelBody>

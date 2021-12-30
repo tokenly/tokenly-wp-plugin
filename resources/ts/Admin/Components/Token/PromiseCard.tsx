@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from './../../../Interfaces';
+import PromiseLink from './PromiseLink';
 import PromiseSourceInfo from './PromiseSourceInfo';
 import PromiseParticipants from './PromiseParticipants';
 
@@ -36,14 +37,7 @@ export default class PromiseCard extends Component<PromiseCardProps, PromiseCard
 						align="center"
 						justify="flex-start"
 					>
-						<span>
-							<span>№ </span>
-							<strong>
-								<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${this.props.promise.promise_id}` }>
-									{ this.props.promise.promise_id }
-								</a>
-							</strong>
-						</span>
+						<PromiseLink id={ this.props.promise.promise_id } />
 						{ this.props?.promise?.pseudo == true &&
 							<span>
 								<span className="tokenly-component-chip">pseudo</span>

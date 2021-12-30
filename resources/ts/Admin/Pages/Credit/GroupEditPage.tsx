@@ -119,28 +119,29 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 							</span>
 						}
 					</PanelHeader>
+				{ !this.state.loadingGroup &&
 					<PanelBody>
 						<PanelRow>
-							<Flex
-								//@ts-ignore
-								direction="column"
-							>
-							{ !this.state.loadingGroup &&
-								<GroupEditForm
-									onChange={ this.onEditDataChange }
-									loadingGroup={ this.state.loadingGroup }
-									editData={ this.state.editData }
-								/>
-							}
-								<ResourceEditActions
-									name="group"
-									loading={ this.state.loadingGroup }
-									saving={ this.state.saving }
-									onSave={ this.onSave }
-									onCancel={ this.onCancel }
-									noDelete
-								/>
-							</Flex>
+							<GroupEditForm
+								onChange={ this.onEditDataChange }
+								loadingGroup={ this.state.loadingGroup }
+								editData={ this.state.editData }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceEditActions
+								name="group"
+								loading={ this.state.loadingGroup }
+								saving={ this.state.saving }
+								onSave={ this.onSave }
+								onCancel={ this.onCancel }
+								noDelete
+							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>
