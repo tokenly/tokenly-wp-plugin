@@ -35,6 +35,9 @@ class GroupRepository implements GroupRepositoryInterface {
 	 */
 	public function index() {
 		$groups = $this->client->listAppCreditGroups();
+		if(!$groups){
+			$groups = [];
+		}
 		$groups = $this->group_collection_factory->create( $groups );
 		return $groups;
 	}
