@@ -35,9 +35,13 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 */
 	public function index() {
 		$promises = $this->client->getPromisedTransactionList();
+		if(!$promises){
+			$promises = [];
+		}
 		foreach ( $promises as &$promise ) {
 			$promise = $this->remap_fields( $promise );
 		}
+
 		$promises = $this->promise_collection_factory->create( $promises );
 		return $promises;
 	}
