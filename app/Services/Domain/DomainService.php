@@ -27,7 +27,7 @@ class DomainService extends Service implements DomainServiceInterface {
 	 * @param mixed $instance New instance data
 	 * @return void
 	 */
-	protected function store_memoize( string $name, array $params object $instance ) {
+	protected function store_memoize( string $name, array $params, object $instance ) {
 		$hash = $this->make_hash_memoize( $name, $params );
 		$this->memoized[ $hash ] = $instance;
 	}
