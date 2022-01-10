@@ -57,6 +57,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		'balance',
 		'address',
 		'credit_group',
+		'credit_account',
 	);
 
 	public function __construct(
@@ -149,6 +150,7 @@ class OauthUser extends Model implements OauthUserInterface {
 	 * @return array
 	 */
 	protected function make_transaction( string $type, array $parameters = array() ) {
+		error_log(d( $parameters ));
 		$parameters['type'] = $type;
 		$parameters['account'] = $this;
 		$group_uuid = $parameters['group_uuid'];

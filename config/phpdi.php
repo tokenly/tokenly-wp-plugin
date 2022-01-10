@@ -54,11 +54,14 @@ use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
 use Tokenly\Wp\Controllers\Web\Admin\Credit\BalanceController as CreditBalanceController;
 use Tokenly\Wp\Controllers\Web\Admin\Credit\GroupController as CreditGroupController;
 use Tokenly\Wp\Controllers\Web\Admin\Credit\TransactionController as CreditTransactionController;
+use Tokenly\Wp\Controllers\Web\Admin\Credit\VendorController as CreditVendorController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\BalanceController as TokenBalanceController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\SourceController as TokenSourceController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\VendorController as TokenVendorController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\PromiseController as TokenPromiseController;
 use Tokenly\Wp\Controllers\Web\Admin\Token\WhitelistController as TokenWhitelistController;
+use Tokenly\Wp\Controllers\Web\Admin\User\Credit\BalanceController as UserCreditBalanceController;
+use Tokenly\Wp\Controllers\Web\Admin\User\Token\BalanceController as UserTokenBalanceController;
 use Tokenly\Wp\Controllers\Api\AuthController as AuthApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\Credit\GroupController as CreditGroupApiController;
@@ -220,11 +223,14 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\BalanceControllerInterface as CreditBalanceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\GroupControllerInterface as CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\VendorControllerInterface as CreditVendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\BalanceControllerInterface as TokenBalanceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\SourceControllerInterface as TokenSourceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\VendorControllerInterface as TokenVendorControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\WhitelistControllerInterface as TokenWhitelistControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\User\Credit\BalanceControllerInterface as UserCreditBalanceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\User\Token\BalanceControllerInterface as UserTokenBalanceControllerInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
@@ -287,6 +293,7 @@ use Tokenly\Wp\Interfaces\Models\Credit\AccountHistoryInterface as CreditAccount
 use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface as CreditGroupInterface;
 use Tokenly\Wp\Interfaces\Models\Credit\GroupHistoryInterface as CreditGroupHistoryInterface;
 use Tokenly\Wp\Interfaces\Models\Credit\TransactionInterface as CreditTransactionInterface;
+use Tokenly\Wp\Interfaces\Models\Credit\WalletInterface as CreditWalletInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
@@ -295,11 +302,13 @@ use Tokenly\Wp\Interfaces\Models\Settings\WhitelistItemInterface;
 use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface as TcaRuleCheckResultInterface;
 use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface as TcaAccessVerdictInterface;
 use Tokenly\Wp\Interfaces\Models\Tca\RuleInterface as TcaRuleInterface;
+use Tokenly\Wp\Interfaces\Models\Tca\GuardInterface as TcaGuardInterface;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface as TokenPromiseInterface;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface as TokenPromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\Token\SourceInterface as TokenSourceInterface;
 use Tokenly\Wp\Interfaces\Models\Token\MetaInterface as TokenMetaInterface;
 use Tokenly\Wp\Interfaces\Models\Token\QuantityInterface as TokenQuantityInterface;
+use Tokenly\Wp\Interfaces\Models\Token\WalletInterface as TokenWalletInterface;
 use Tokenly\Wp\Interfaces\Middleware\Tca\MenuItemFilterMiddlewareInterface as TcaMenuItemFilterMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Middleware\Tca\PostGuardMiddlewareInterface as TcaPostGuardMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Middleware\Tca\PostResultsFilterMiddlewareInterface as TcaPostResultsFilterMiddlewareInterface;
@@ -397,6 +406,7 @@ return array(
 	CreditBalanceControllerInterface::class        => \DI\autowire( CreditBalanceController::class ),
 	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
 	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
+	CreditVendorControllerInterface::class         => \DI\autowire( CreditVendorController::class ),
 	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
 	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
 	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
@@ -405,6 +415,8 @@ return array(
 	TokenSourceControllerInterface::class          => \DI\autowire( TokenSourceController::class ),
 	TokenVendorControllerInterface::class          => \DI\autowire( TokenVendorController::class ),
 	TokenWhitelistControllerInterface::class       => \DI\autowire( TokenWhitelistController::class ),
+	UserCreditBalanceControllerInterface::class    => \DI\autowire( UserCreditBalanceController::class ),
+	UserTokenBalanceControllerInterface::class     => \DI\autowire( UserTokenBalanceController::class ),
 	//Controllers - Web
 	AuthControllerInterface::class                 => \DI\autowire( AuthController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
@@ -555,9 +567,9 @@ return array(
 	IntegrationInterface::class            => \DI\autowire( Integration::class ),
 	OauthUserInterface::class              => \DI\autowire( OauthUser::class ),
 	PostInterface::class                   => \DI\autowire( Post::class ),
-	TcaAccessVerdictInterface::class       => \DI\autowire( TcaAccessVerdict::class ), 
-	TcaRuleCheckResultInterface::class     => \DI\autowire( TcaRuleCheckResult::class ), 
-	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ), 
+	TcaAccessVerdictInterface::class       => \DI\autowire( TcaAccessVerdict::class ),
+	TcaRuleCheckResultInterface::class     => \DI\autowire( TcaRuleCheckResult::class ),
+	TcaRuleInterface::class                => \DI\autowire( TcaRule::class ),
 	TokenPromiseInterface::class           => \DI\autowire( TokenPromise::class ),
 	TokenPromiseMetaInterface::class       => \DI\autowire( TokenPromiseMeta::class ), 
 	TokenQuantityInterface::class          => \DI\autowire( TokenQuantity::class ),

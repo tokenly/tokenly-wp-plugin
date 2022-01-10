@@ -17,8 +17,10 @@ import CreditGroupStorePage from './../Admin/Pages/Credit/GroupStorePage';
 import CreditGroupEditPage from './../Admin/Pages/Credit/GroupEditPage';
 import CreditTransactionIndexPage from './../Admin/Pages/Credit/TransactionIndexPage';
 import CreditTransactionStorePage from './../Admin/Pages/Credit/TransactionStorePage';
+import CreditVendorPage from './../Admin/Pages/Credit/VendorPage';
 import TaxonomyEditPage from './../Admin/Pages/TaxonomyEditPage';
-import TokenBalanceIndexPage from './../Admin/Pages/Token/BalanceIndexPage';
+import UserCreditBalanceIndexPage from './../Admin/Pages/User/Credit/BalanceIndexPage';
+import UserTokenBalanceIndexPage from './../Admin/Pages/User/Token/BalanceIndexPage';
 import TokenPromiseShowPage from './../Admin/Pages/Token/PromiseShowPage';
 import TokenPromiseStorePage from './../Admin/Pages/Token/PromiseStorePage';
 import TokenPromiseEditPage from './../Admin/Pages/Token/PromiseEditPage';
@@ -27,7 +29,7 @@ import TokenSourceShowPage from './../Admin/Pages/Token/SourceShowPage';
 import TokenSourceStorePage from './../Admin/Pages/Token/SourceStorePage';
 import TokenSourceEditPage from './../Admin/Pages/Token/SourceEditPage';
 import TokenMetaEditPage from './../Admin/Pages/Token/MetaEditPage';
-import TokenVendorPage from './../Admin/Pages/VendorPage';
+import TokenVendorPage from './../Admin/Pages/Token/VendorPage';
 import TokenWhitelistEditPage from './../Admin/Pages/Token/WhitelistEditPage';
 import DashboardPage from './../Admin/Pages/DashboardPage';
 import PostEditPage from './../Admin/Pages/PostEditPage';
@@ -78,7 +80,7 @@ export default class AdminRouter implements AdminRouterInterface {
 			'credit-group-edit'         : CreditGroupEditPage,
 			'credit-transaction-index'  : CreditTransactionIndexPage,
 			'credit-transaction-store'  : CreditTransactionStorePage,
-			'token-balance-index'       : TokenBalanceIndexPage,
+			'credit-vendor'             : CreditVendorPage,
 			'token-promise-show'        : TokenPromiseShowPage,
 			'token-promise-store'       : TokenPromiseStorePage,
 			'token-promise-edit'        : TokenPromiseEditPage,
@@ -89,6 +91,8 @@ export default class AdminRouter implements AdminRouterInterface {
 			'token-meta-edit'           : TokenMetaEditPage,
 			'token-vendor'              : TokenVendorPage,
 			'token-whitelist-edit'      : TokenWhitelistEditPage,
+			'user-token-balance-index'  : UserTokenBalanceIndexPage,
+			'user-credit-balance-index' : UserCreditBalanceIndexPage,
 			'post-edit'                 : PostEditPage,
 			'taxonomy-edit'             : TaxonomyEditPage,
 
@@ -113,7 +117,6 @@ export default class AdminRouter implements AdminRouterInterface {
 	getHighlights() {
 		const highlights = {
 			[`${ this.namespace }-token-vendor`]: [
-				'token-balance-index',
 				'token-promise-show',
 				'token-promise-store',
 				'token-promise-edit',
@@ -122,7 +125,7 @@ export default class AdminRouter implements AdminRouterInterface {
 				'token-source-store',
 				'token-source-edit',
 			],
-			[ `${ this.namespace }-credit-group-index` ]: [
+			[ `${ this.namespace }-credit-vendor` ]: [
 				'credit-group-index',
 				'credit-group-show',
 				'credit-group-store',

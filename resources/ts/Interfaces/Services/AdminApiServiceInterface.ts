@@ -33,8 +33,8 @@ export default interface AdminApiServiceInterface {
 	tokenMetaShow( postId: number ): Promise<TokenMetaData>;
 	tokenMetaUpdate( postId: number, params: TokenMetaData ): Promise<any>;
 	userIndex( params: UserIndexParams ): Promise<any>;
-	userShow( id: number, params?: any ): Promise<any>;
-	userCreditBalanceIndex( id: number, params?: any ): Promise<any>;
-	userTokenBalanceIndex( id: number, params?: any ): Promise<any>;
+	userShow( id: string, params?: any ): Promise<any>;
+	userCreditBalanceIndex( id: string, params?: any ): Promise<any>;
+	userTokenBalanceIndex( id: string, params?: any ): Promise<any>;
 	makeRequest( method: string, route: string, args: object ): Promise<any>;
 }

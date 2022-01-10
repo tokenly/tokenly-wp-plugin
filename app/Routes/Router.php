@@ -40,6 +40,16 @@ class Router extends Service implements RouterInterface {
 	}
 
 	/**
+	 * Gets the shared data for each route
+	 * @return array Shared data
+	 */
+	protected function get_shared_data() {
+		return array(
+			'nonce' =>  wp_create_nonce( 'wp_rest' ),
+		);
+	}
+
+	/**
 	 * Hooks the router to WordPress
 	 */
 	public function register_routes() {
@@ -58,6 +68,8 @@ class Router extends Service implements RouterInterface {
 			return;
 		}
 		$view_data = array();
+		$shared_data = $this->get_shared_data();
+		$view_data = array_merge( $view_data, $shared_data );
 		$template = $this->default_template;
 		if ( isset( $controller_response['template'] ) ) {
 			$template = $controller_response['template'];

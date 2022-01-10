@@ -7,5 +7,5 @@ use Tokenly\Wp\Interfaces\Controllers\ControllerInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 
 interface BalanceControllerInterface extends ControllerInterface {
-	public function index( UserInterface $users, \WP_REST_Request $request );
+	public function index( UserInterface $user, \WP_REST_Request $request );
 }

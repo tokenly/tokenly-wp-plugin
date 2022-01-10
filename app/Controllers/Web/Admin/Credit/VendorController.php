@@ -1,8 +1,8 @@
 <?php
 
-namespace Tokenly\Wp\Controllers\Web\Admin\Token;
+namespace Tokenly\Wp\Controllers\Web\Admin\Credit;
 
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\VendorControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\VendorControllerInterface;
 
 /**
  * Serves the admin Vendor view
@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\VendorControllerInterface;
 class VendorController implements VendorControllerInterface {
 	public function show() {
 		return array(
-			'view' => 'token-vendor',
+			'view' => 'credit-vendor',
 		);
 	}
 }

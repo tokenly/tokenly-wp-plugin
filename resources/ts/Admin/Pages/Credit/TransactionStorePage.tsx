@@ -114,6 +114,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 								storeData={ this.state.storeData }
 								groups={ this.state.groups }
 								onChange={ this.onStoreDataChange }
+								loadingGroups={ this.state.loadingGroups }
 							/>
 						</PanelRow>
 					</PanelBody>

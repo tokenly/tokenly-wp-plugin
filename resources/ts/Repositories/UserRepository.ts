@@ -24,7 +24,7 @@ export default class UserRepository implements UserRepositoryInterface {
 		});
 	}
 
-	show( id: number, params: any = [] ): Promise<any> {
+	show( id: string, params: any = [] ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.adminApiService.userShow( id, params ).then( result => {
 				resolve( result );
@@ -34,7 +34,7 @@ export default class UserRepository implements UserRepositoryInterface {
 		});
 	}
 
-	indexCreditBalance( id: number, params: any = [] ): Promise<any> {
+	indexCreditBalance( id: string, params: any = [] ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.adminApiService.userCreditBalanceIndex( id, params ).then( result => {
 				resolve( result );
@@ -44,7 +44,7 @@ export default class UserRepository implements UserRepositoryInterface {
 		});
 	}
 
-	indexTokenBalance( id: number, params: any = [] ): Promise<any> {
+	indexTokenBalance( id: string, params: any = [] ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.adminApiService.userTokenBalanceIndex( id, params ).then( result => {
 				resolve( result );

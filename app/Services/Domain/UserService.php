@@ -114,13 +114,13 @@ class UserService extends DomainService implements UserServiceInterface {
 	 * @return array $actions Modified actions
 	 */
 	public function add_view_inventory_user_action( array $actions, \WP_User $user ) {
-		$user_id = $user->ID;
+		$id = $user->ID;
 		$user = $this->show( array(
-			'id' => $user_id,
+			'id' => $id,
 		) );
 		if ( $user && $user->can_connect() ) {
-			$token_balance_url = admin_url( "admin.php?page={$this->namespace}-token-balance-index&user={$user_id}" );
-			$credit_balance_url = admin_url( "admin.php?page={$this->namespace}-credit-balance-index&user={$user_id}" );
+			$token_balance_url = admin_url( "admin.php?page={$this->namespace}-user-token-balance-index&id={$id}" );
+			$credit_balance_url = admin_url( "admin.php?page={$this->namespace}-user-credit-balance-index&id={$id}" );
 			$actions[ "{$this->namespace }_token_balance" ] = "<a href='{$token_balance_url}'>Token inventory</a>";
 			$actions[ "{$this->namespace }_credit_balance" ] = "<a href='{$credit_balance_url}'>Credit inventory</a>";
 		}

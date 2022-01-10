@@ -263,9 +263,9 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	userShow( userId: string, params: any ): Promise<any> {
+	userShow( id: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', `/user/${userId}`, params ).then( result => {
+			this.makeRequest( 'GET', `/user/${id}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -273,7 +273,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	userCreditBalanceIndex( id: number, params: any ): Promise<any> {
+	userCreditBalanceIndex( id: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/user/${id}/credit/balance`, params ).then( result => {
 				resolve( result );
@@ -283,7 +283,7 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	userTokenBalanceIndex( id: number, params: any ): Promise<any> {
+	userTokenBalanceIndex( id: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/user/${id}/token/balance`, params ).then( result => {
 				resolve( result );

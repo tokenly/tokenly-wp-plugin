@@ -1,14 +1,14 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
-import Page from './Page';
+import Page from './../Page';
 import { Component } from 'react';
-import PromiseRepositoryInterface from '../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
-import SourceRepositoryInterface from '../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import { PromiseData } from '../../Interfaces';
-import PromiseList from '../Components/Token/PromiseList';
-import Preloader from '../Components/Preloader';
-import VendorActions from '../Components/Token/VendorActions';
-import { TYPES } from '../../Types';
+import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
+import { PromiseData } from '../../../Interfaces';
+import PromiseList from '../../Components/Token/PromiseList';
+import Preloader from '../../Components/Preloader';
+import VendorActions from '../../Components/Token/VendorActions';
+import { TYPES } from '../../../Types';
 
 import { 
 	Flex,

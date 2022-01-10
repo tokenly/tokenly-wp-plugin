@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import UserSearchField from './../UserSearchField';
+import GroupSelectField from './GroupSelectField';
 
 import { 
 	TextControl,
@@ -12,6 +13,7 @@ interface TransactionStoreFormProps {
 	storeData: any;
 	onChange: any;
 	groups: any;
+	loadingGroups: boolean;
 }
 
 interface TransactionStoreFormState {
@@ -26,24 +28,12 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 	constructor( props: TransactionStoreFormProps ) {
 		super( props );
 		this.getSourceLabel = this.getSourceLabel.bind( this );
-		this.getGroupOptions = this.getGroupOptions.bind( this );
 		this.onGroupFieldChange = this.onGroupFieldChange.bind( this );
 		this.onTypeFieldChange = this.onTypeFieldChange.bind( this );
 		this.onAccountFieldChange = this.onAccountFieldChange.bind( this );
 		this.onSourceFieldChange = this.onSourceFieldChange.bind( this );
 		this.onAmountFieldChange = this.onAmountFieldChange.bind( this );
 		this.onRefFieldChange = this.onRefFieldChange.bind( this );
-	}
-
-	getGroupOptions() {
-		const options = [] as any;
-		this.props.groups?.forEach( ( creditGroup: any ) => {
-			options.push( {
-				label: creditGroup.name,
-				value: creditGroup.uuid,
-			} );
-		} );
-		return options;
 	}
 
 	getSourceLabel() {
@@ -102,11 +92,11 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 					//@ts-ignore
 					direction="column"
 				>
-					<SelectControl
-						label="Credit group"
-						value={ this.props.storeData?.group_uuid }
-						options={ this.getGroupOptions() }
+					<GroupSelectField
 						onChange={ this.onGroupFieldChange }
+						group={ this.props.storeData?.group_uuid }
+						groups={ this.props.groups }
+						loading={ this.props.loadingGroups }
 					/>
 					<SelectControl
 						label="Transaction type"
