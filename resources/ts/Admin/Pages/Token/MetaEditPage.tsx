@@ -1,14 +1,13 @@
 import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
-import MetaRepositoryInterface from '../../Interfaces/Repositories/Token/MetaRepositoryInterface';
-import { TokenMetaData } from '../../Interfaces';
-import { TYPES } from '../../Types';
-import MetaEditForm from '../Components/Token/MetaEditForm';
-import eventBus from './../../EventBus';
+import MetaRepositoryInterface from '../../../Interfaces/Repositories/Token/MetaRepositoryInterface';
+import { TokenMetaData } from '../../../Interfaces';
+import { TYPES } from '../../../Types';
+import MetaEditForm from '../../Components/Token/MetaEditForm';
+import eventBus from './../../../EventBus';
 
 import { 
-	TextControl,
 	PanelRow,
 } from '@wordpress/components';
 
@@ -47,20 +46,25 @@ export default class MetaEditPage extends Component<MetaEditPageProps, MetaEditP
 		const urlParams = new URLSearchParams(window.location.search);
 		this.state.id = parseInt( urlParams.get( 'post' ) );
 		let extra = Object.assign( [], this.props.pageData.meta?.extra );
-		extra = extra.filter( function ( item: any ) {
-			return item != null;
-		} );
+		if ( extra && Array.isArray( extra ) ) {
+			extra = extra.filter( function ( item: any ) {
+				return item != null;
+			} );
+		} else {
+			extra = [];
+		}
 		const asset = this.props.pageData.meta?.asset ?? '';
 		this.state.editData = {
 			asset: asset,
 			extra: extra,
 		}
-		console.log(this.state.editData);
 		this.onEditDataChange = this.onEditDataChange.bind( this );
 	}
 
 	onEditDataChange( newData: any ) {
-		console.log(newData);
+		newData.extra = newData.extra.filter( function ( item: any ) {
+			return item != null;
+		} );
 		this.setState( {
 			editData: newData,
 		} );

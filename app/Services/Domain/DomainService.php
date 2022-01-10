@@ -27,8 +27,8 @@ class DomainService extends Service implements DomainServiceInterface {
 	 * @param mixed $instance New instance data
 	 * @return void
 	 */
-	protected function store_memoize( string $name, array $params = array(), object $instance ) {
-		$hash = $this->make_hash_memoize( $name, $params );
+	protected function store_memoize( string $name, object $instance, array $arguments = array() ) {
+		$hash = $this->make_hash_memoize( $name, $arguments );
 		$this->memoized[ $hash ] = $instance;
 	}
 
@@ -68,7 +68,7 @@ class DomainService extends Service implements DomainServiceInterface {
 	 * @param array $params Method arguments
 	 * @return object
 	 */
-	protected function handle_method( string $method, array $arguments ) {
+	protected function handle_method( string $method, array $arguments = array() ) {
 		$method_cacheable = "{$method}_cacheable";
 		if ( !method_exists( $this, $method_cacheable ) ) {
 			throw new \Exception( "Cacheable method not found!" );
@@ -84,7 +84,7 @@ class DomainService extends Service implements DomainServiceInterface {
 		if ( is_object( $instance ) && isset( $arguments[0] ) && isset( $arguments[0]['with'] ) ) {
 			$instance->load( $arguments[0]['with'] );
 		}
-		$this->store_memoize( $method, $arguments, $instance );
+		$this->store_memoize( $method, $instance, $arguments );
 		return $instance;
 	}
 }

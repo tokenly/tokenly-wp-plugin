@@ -16,6 +16,9 @@ class WhitelistSettings extends Settings implements WhitelistSettingsInterface {
 		'enabled',
 		'items',
 	);
+	protected $casts = array(
+		'enabled' => 'boolean',
+	);
 
 	public function __construct(
 		OptionRepositoryInterface $domain_repository,
@@ -32,7 +35,7 @@ class WhitelistSettings extends Settings implements WhitelistSettingsInterface {
 	 */
 	protected function get_options() {
 		$options = parent::get_options();
-		if ( isset( $options['items'] ) ) {
+		if ( $options && is_array( $options ) && isset( $options['items'] ) ) {
 			$options['items'] = $this->whitelist_item_collection_factory->create( $options['items'] );
 		}
 		return $options;

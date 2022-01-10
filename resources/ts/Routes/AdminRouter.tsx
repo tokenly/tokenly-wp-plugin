@@ -26,7 +26,7 @@ import TokenSourceIndexPage from './../Admin/Pages/Token/SourceIndexPage';
 import TokenSourceShowPage from './../Admin/Pages/Token/SourceShowPage';
 import TokenSourceStorePage from './../Admin/Pages/Token/SourceStorePage';
 import TokenSourceEditPage from './../Admin/Pages/Token/SourceEditPage';
-import TokenMetaEditPage from './../Admin/Pages/TokenMetaEditPage';
+import TokenMetaEditPage from './../Admin/Pages/Token/MetaEditPage';
 import TokenVendorPage from './../Admin/Pages/VendorPage';
 import TokenWhitelistEditPage from './../Admin/Pages/Token/WhitelistEditPage';
 import DashboardPage from './../Admin/Pages/DashboardPage';

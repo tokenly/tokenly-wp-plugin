@@ -72,6 +72,8 @@ use Tokenly\Wp\Controllers\Api\Token\BalanceController as TokenBalanceApiControl
 use Tokenly\Wp\Controllers\Api\Token\PromiseController as TokenPromiseApiController;
 use Tokenly\Wp\Controllers\Api\Token\SourceController as TokenSourceApiController;
 use Tokenly\Wp\Controllers\Api\Token\WhitelistController as TokenWhitelistApiController;
+use Tokenly\Wp\Controllers\Api\User\Credit\BalanceController as UserCreditBalanceApiController;
+use Tokenly\Wp\Controllers\Api\User\Token\BalanceController as UserTokenBalanceApiController;
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Collections\TermCollection;
@@ -205,6 +207,8 @@ use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as O
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterface as IntegrationSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistControllerInterface as WhitelistSettingsApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\User\Credit\BalanceControllerInterface as UserCreditBalanceApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\User\Token\BalanceControllerInterface as UserTokenBalanceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TermControllerInterface;
@@ -382,6 +386,8 @@ return array(
 	TokenPromiseApiControllerInterface::class         => \DI\autowire( TokenPromiseApiController::class ),
 	TokenSourceApiControllerInterface::class          => \DI\autowire( TokenSourceApiController::class ),
 	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
+	UserCreditBalanceApiControllerInterface::class    => \DI\autowire( UserCreditBalanceApiController::class ),
+	UserTokenBalanceApiControllerInterface::class     => \DI\autowire( UserTokenBalanceApiController::class ),
 	//Controllers - API - Settings
 	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
 	OauthSettingsApiControllerInterface::class        => \DI\autowire( OauthSettingsApiController::class ),
@@ -768,12 +774,27 @@ class ConcreteCollectionFactory {
 		$this->class = $class;
 	}
 
+	protected function is_valid_item( $item ) {
+		return ( $item && is_subclass_of( $item, $this->item_factory->class ) );
+	}
+
 	public function create( array $data = array(), $args = array() ) {
-		foreach ( $data as &$item ) {
+		$items = array();
+		foreach ( $data as $item ) {
+			if ( $this->is_valid_item( $item ) ) {
+				$items[] = $item;
+				continue;
+			}
+			if ( !$item || !is_array( $item ) ) {
+				continue;
+			}
 			$item = $this->item_factory->create( $item );
-		};
+			if ( $this->is_valid_item( $item ) ) {
+				$items[] = $item;
+			}
+		}
 		$collection = $this->container->make( $this->class, array(
-			'items' => $data,
+			'items' => $items,
 		) );
 		return $collection;
 	}

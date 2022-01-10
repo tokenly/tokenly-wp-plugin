@@ -12,4 +12,8 @@ class WhitelistItem extends Model implements WhitelistItemInterface {
 		'address',
 		'index',
 	);
+	protected $casts = array(
+		'address' => 'string',
+		'index'   => 'string',
+	);
 }

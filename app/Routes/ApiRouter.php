@@ -16,6 +16,8 @@ use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterfac
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistControllerInterface as WhitelistSettingsControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\User\Credit\BalanceControllerInterface as UserCreditBalanceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\User\Token\BalanceControllerInterface as UserTokenBalanceControllerInterface;
 
 /**
  * Manages routing for the REST API endpoints
@@ -33,11 +35,13 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		TokenBalanceControllerInterface $token_balance_controller,
 		TokenPromiseControllerInterface $token_promise_controller,
 		TokenSourceControllerInterface $token_source_controller,
-		UserControllerInterface $user_controller,
 		IntegrationSettingsControllerInterface $integration_settings_controller,
 		TcaSettingsControllerInterface $tca_settings_controller,
 		OauthSettingsControllerInterface $oauth_settings_controller,
 		WhitelistSettingsControllerInterface $whitelist_settings_controller,
+		UserControllerInterface $user_controller,
+		UserCreditBalanceControllerInterface $user_credit_balance_controller,
+		UserTokenBalanceControllerInterface $user_token_balance_controller,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -50,11 +54,13 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'token_balance'            => $token_balance_controller,
 			'token_promise'            => $token_promise_controller,
 			'token_source'             => $token_source_controller,
-			'user'                     => $user_controller,
 			'integration_settings'     => $integration_settings_controller,
 			'tca_settings'             => $tca_settings_controller,
 			'oauth_settings'           => $oauth_settings_controller,
 			'whitelist_settings'       => $whitelist_settings_controller,
+			'user'                     => $user_controller,
+			'user_credit_balance'      => $user_credit_balance_controller,
+			'user_token_balance'       => $user_token_balance_controller,
 		);
 	}
 
@@ -298,6 +304,26 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user_token_balance_index' => array(
+				'path' => '/user/(?P<id>\S+)/token/balance/',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user_token_balance'], 'index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user_credit_balance_index' => array(
+				'path' => '/user/(?P<id>\S+)/credit/balance/',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user_credit_balance'], 'index' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

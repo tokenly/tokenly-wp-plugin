@@ -66,7 +66,7 @@ export default class AttributeRepeater extends Component<AttributeRepeaterProps,
 		const listItems = this.props.attributes.map( ( attribute: Attribute, i: number ) => {
 			if ( !attribute ) { return }
 			return (
-				<Flex justify="flex-start" style={ { alignItems: 'flex-end', margin: '8px 0' } }>
+				<Flex justify="flex-start" align="flex-end">
 					<TextControl
 						label="Key"
 						value={ attribute.key }

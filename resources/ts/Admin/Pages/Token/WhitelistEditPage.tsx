@@ -54,7 +54,19 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 		super( props );
 		this.onSave = this.onSave.bind( this );
 		this.onCancel = this.onCancel.bind( this );
-		this.state.editData = Object.assign( this.state.editData, this.props.pageData.whitelist );
+		const enabled = this.props.pageData?.whitelist?.enabled ?? false;
+		let items = Object.assign( [], this.props.pageData?.whitelist?.items ) as any;
+		if ( items && Array.isArray( items ) ) {
+			items = items.filter( function ( item: any ) {
+				return item != null;
+			} );
+		} else {
+			items = [];
+		}
+		this.state.editData = {
+			enabled: enabled,
+			items: items,
+		}
 		this.onWhitelistFieldChange = this.onWhitelistFieldChange.bind( this );
 		this.onEnabledFieldChange = this.onEnabledFieldChange.bind( this );
 	}
@@ -72,13 +84,16 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 		this.return();
 	}
 
-	onEnabledFieldChange( value: any ) {
+	onEnabledFieldChange( value: boolean ) {
 		let newState = Object.assign( {}, this.state );
 		newState.editData.enabled = value;
 		this.setState( newState );
 	}
 
-	onWhitelistFieldChange( value: any ) {
+	onWhitelistFieldChange( value: Array<any> ) {
+		value = value.filter( function ( item: any ) {
+			return item != null;
+		} );
 		let newState = Object.assign( {}, this.state.editData );
 		newState.items = value;
 		this.setState( { editData: newState } );
@@ -90,7 +105,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 
 	render() {
 		return (
-			<Page title={'Whitelist editor'} >
+			<Page title={ 'Whitelist editor' } >
 				<Panel header="Whitelist settings">
 					<PanelBody>
 						<PanelRow>
@@ -99,24 +114,16 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 						<PanelRow>
 							<ToggleControl
 								label="Use whitelist"
-								help={
-									this.state.editData.enabled
-										? 'Whitelist enabled.'
-										: 'Whitelist disabled.'
-								}
 								checked={ this.state.editData.enabled }
 								onChange={ this.onEnabledFieldChange }
 							/>
 						</PanelRow>
 						{ this.state.editData.enabled == true &&
 							<PanelRow>
-								<div style={{marginBottom: '12px'}}>
-									<h4>Token Whitelist Editor</h4>
-									<WhitelistEditor
-										onChange={ this.onWhitelistFieldChange }
-										whitelist={ this.state.editData?.items }
-									/>		
-								</div>
+								<WhitelistEditor
+									onChange={ this.onWhitelistFieldChange }
+									items={ this.state.editData?.items }
+								/>		
 							</PanelRow>
 						}
 					</PanelBody>					

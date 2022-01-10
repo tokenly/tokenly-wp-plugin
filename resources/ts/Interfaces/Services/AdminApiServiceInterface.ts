@@ -18,6 +18,7 @@ export default interface AdminApiServiceInterface {
 	settingsShow( type: string ): Promise<any>;
 	settingsUpdate( type: string, params: any ): Promise<any>;
 	tokenAddressIndex( params: any ): Promise<Array<any>>;
+	tokenAddressShow( id: string, params?: any ): Promise<Array<any>>;
 	tokenBalanceIndex( params: any ): Promise<Array<any>>;
 	tokenSourceIndex( params: any ): Promise<Array<SourceData>>;
 	tokenSourceShow( id: string, params?: any ): Promise<Array<any>>;
@@ -32,6 +33,8 @@ export default interface AdminApiServiceInterface {
 	tokenMetaShow( postId: number ): Promise<TokenMetaData>;
 	tokenMetaUpdate( postId: number, params: TokenMetaData ): Promise<any>;
 	userIndex( params: UserIndexParams ): Promise<any>;
-	userShow( userId: string, params: any ): Promise<any>;
+	userShow( id: number, params?: any ): Promise<any>;
+	userCreditBalanceIndex( id: number, params?: any ): Promise<any>;
+	userTokenBalanceIndex( id: number, params?: any ): Promise<any>;
 	makeRequest( method: string, route: string, args: object ): Promise<any>;
 }

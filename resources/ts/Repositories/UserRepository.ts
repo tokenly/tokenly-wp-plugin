@@ -24,9 +24,29 @@ export default class UserRepository implements UserRepositoryInterface {
 		});
 	}
 
-	show( userId: string, params: any ): Promise<any> {
+	show( id: number, params: any = [] ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.userShow( userId, params ).then( result => {
+			this.adminApiService.userShow( id, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	indexCreditBalance( id: number, params: any = [] ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.userCreditBalanceIndex( id, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	indexTokenBalance( id: number, params: any = [] ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.adminApiService.userTokenBalanceIndex( id, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

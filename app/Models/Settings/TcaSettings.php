@@ -17,6 +17,12 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 		'filter_menu_items',
 		'filter_post_results',
 	);
+	protected $casts = array(
+		'taxonomies'          => 'array',
+		'post_types'          => 'array',
+		'filter_menu_items'   => 'boolean',
+		'filter_post_results' => 'boolean',
+	);
 
 	/**
 	 * Checks whether the specified post type has TCA enabled
