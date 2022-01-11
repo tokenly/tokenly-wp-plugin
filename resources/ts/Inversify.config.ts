@@ -80,8 +80,9 @@ container.bind<Component>( 'Component' ).to( LoginButtonComponent ).whenTargetNa
 container.bind<Component>( 'Component' ).to( TokenItemCardComponent ).whenTargetNamed( 'tokenItemCardComponent' );
 container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
 		.toAutoNamedFactory<Component>( 'Component' );
-	
-container.bind<string>( TYPES.Variables.adminUrl ).toConstantValue( '/wp-admin/admin.php?page=' );
+
+container.bind<string>( TYPES.Variables.adminUrl ).toConstantValue( '/wp-admin/' );
+container.bind<string>( TYPES.Variables.adminPageUrl ).toConstantValue( '/wp-admin/admin.php?page=' );
 container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
 
 export { container };

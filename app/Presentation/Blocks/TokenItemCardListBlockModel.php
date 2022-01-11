@@ -35,7 +35,7 @@ class TokenItemCardListBlockModel extends BlockModel implements TokenItemCardLis
 		if ( !isset( $user->oauth_user ) ) {
 			return false;
 		}
-		$user->oauth_user->load( array( 'balance.token_meta' ) );
+		$user->oauth_user->load( array( 'balance.meta' ) );
 		$balances = $user->oauth_user->balance;
 		$token_items = array();
 		foreach ( ( array ) $balances as $balance ) {

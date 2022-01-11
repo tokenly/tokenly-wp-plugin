@@ -3,7 +3,8 @@ import * as React from 'react';
 import Page from './../../Page';
 import { Component } from 'react';
 import Preloader from '../../../Components/Preloader';
-import AccountList from '../../../Components/Credit/AccountList';
+import BalanceList from '../../../Components/Credit/BalanceList';
+import UserInfo from '../../../Components/UserInfo';
 import UserRepositoryInterface from '../../../../Interfaces/Repositories/UserRepositoryInterface';
 import GroupRepositoryInterface from '../../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import { TYPES } from '../../../../Types';
@@ -12,6 +13,7 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
+	PanelHeader,
 	Flex,
 	Spinner,
 } from '@wordpress/components';
@@ -26,9 +28,11 @@ interface TokenBalanceIndexPageProps {
 
 interface TokenBalanceIndexPageState {
 	loadingGroups: boolean;
+	loadingBalance: boolean;
 	loadingUser: boolean;
 	id: string;
 	user: any;
+	balance: any;
 	groups: any;
 }
 
@@ -40,9 +44,11 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 
 	state: TokenBalanceIndexPageState = {
 		loadingUser: false,
+		loadingBalance: false,
 		loadingGroups: false,
 		id: null,
 		user: null,
+		balance: null,
 		groups: null,
 	}
 	constructor( props: TokenBalanceIndexPageProps ) {
@@ -52,77 +58,68 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 	}
 
 	componentWillMount() {
-		this.setState( { loadingGroups: true } );
-		this.groupRepository.index().then( ( groups: any ) => {
-			console.log(groups);
-			this.setState( {
-				loadingGroups: false,
-			} );
-			const params = {
-				with: [ 'oauth_user.credit_account' ],
-			}
-			this.userRepository.show( this.state.id, params ).then( ( user: any ) => {
-				console.log(user);
-				let accounts = user.oauth_user.credit_account;
-				// if ( accounts ) {
-				// 	accounts = accounts.map( ( account: any ) => {
-				// 		groups.forEach( (group: any) => {
-				// 			if ( group.uuid ==  ) {
-								
-				// 			}
-				// 		} );
-				// 	} )
-				// } else {
-				// 	accounts = [];
-				// }
-				console.log(accounts);
-				// this.setState( {
-				// 	loadingUser: false,
-				// 	user: user,
-				// } );
+		this.setState( {
+			loadingGroups: true,
+			loadingBalance: true,
+			loadingUser: true,
+		} );
+		this.userRepository.indexCreditBalance( this.state.id )
+			.then( ( balance: any ) => {
+				console.log(balance);
+				this.setState( {
+					loadingBalance: false,
+					balance: balance,
+				} );
+				return balance;
+			} )
+			.then( ( balances: any ) => {
+				this.groupRepository.index( this.state.id ).then( ( groups: any ) => {
+					balances.forEach( ( balance: any ) => {
+						
+					} );
+					this.setState( {
+						loadingGroups: false,
+						groups: groups,
+					} );
+					return groups;
+			} )
+			.then( ( balance: any ) => {
+				this.userRepository.show( this.state.id, {
+					with: [ 'oauth_user' ],
+				} ).then( ( user: any ) => {
+					this.setState( {
+						loadingUser: false,
+						user: user,
+					} );
+				} );
 			} );
 		} );
-
-
-	}
-
-	getLoadingLabel() {
-		if ( this.state.loadingGroups ) {
-			return 'groups';
-		} else if ( this.state.loadingUser ) {
-			return 'user';
-		}
-	}
-
-	getLoadingState() {
-		return ( 
-			this.state.loadingUser ||
-			this.state.loadingGroups
-		);
 	}
 
 	render() {
-		const loading = this.getLoadingState();
 		return (
-			<Page title={'Credit user balance listing'}>
-				<Panel header="Credit listing">
+			<Page title={'Token user balance listing'}>
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ ( this.state.loadingBalance || this.state.loadingGroups ) } label="Balance listing" />
+					</PanelHeader>
+				{ ( this.state.loadingBalance === false || this.state.balance ) &&
+					<PanelBody>
+						<BalanceList balances={ this.state.balance } />
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ this.state.loadingUser } label="User profile" />
+					</PanelHeader>
+				{ ( this.state.loadingUser === false || this.state.user ) &&
 					<PanelBody>
 						<PanelRow>
-							<Flex>
-								<Preloader loading={ loading } label={ this.getLoadingLabel() } />
-							{ !loading &&
-								<Flex>
-									{ this.state.user?.oauth_user?.credit_account?.length > 0
-										? <AccountList
-											accounts={ this.state.user?.oauth_user.credit_account }
-										/>
-										: <div style={ { opacity: 0.5 } }>There are no registered accounts</div>
-									}
-								</Flex>
-							}
-							</Flex>
+							<UserInfo user={ this.state.user } />
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 			</Page>
 		);

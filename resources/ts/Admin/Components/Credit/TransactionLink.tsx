@@ -13,8 +13,8 @@ interface GroupLinkState {
 }
 
 export default class GroupLink extends Component<GroupLinkProps, GroupLinkState> {
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 
@@ -29,7 +29,7 @@ export default class GroupLink extends Component<GroupLinkProps, GroupLinkState>
 				<strong>{ this.props.uuid }</strong>
 			</div>
 		);
-		const url = `${ this.adminUrl }${ this.namespace }-credit-transaction-show&group=${ this.props.uuid }`;
+		const url = `${ this.adminPageUrl }${ this.namespace }-credit-transaction-show&group=${ this.props.uuid }`;
 		if ( this.props.text ) {
 			return (
 				<span>{ title }</span>

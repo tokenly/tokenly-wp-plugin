@@ -12,6 +12,7 @@ class Account extends Model implements AccountInterface {
 	public $oauth_user;
 	public $created_at;
 	public $updated_at;
+	public $group;
 	protected $fillable = array(
 		'name',
 		'uuid',
@@ -19,5 +20,6 @@ class Account extends Model implements AccountInterface {
 		'oauth_user',
 		'created_at',
 		'updated_at',
+		'group',
 	);
 }

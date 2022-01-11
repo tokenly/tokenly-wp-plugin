@@ -21,16 +21,14 @@ export default class Preloader extends Component<PreloaderProps, PreloaderState>
 	}
 
 	render() {
-		if ( this.props.loading ) {
-			return (
-				<Flex justify="flex-start" align="center">
-					<span>{ `Loading ${ this.props.label } ...` }</span>
-					<Spinner />
-				</Flex>
-			);
-		} else {
-			return ( null );
-		}
+		return (
+			<Flex justify="flex-start" align="center" style={ { minHeight: '30px' } }>
+				<span>{ this.props.label }</span>
+			{ this.props.loading &&
+				<Spinner />
+			}
+			</Flex>
+		);
 	}
 }
  

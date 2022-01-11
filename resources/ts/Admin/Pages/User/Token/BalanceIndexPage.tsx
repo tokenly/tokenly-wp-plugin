@@ -4,6 +4,7 @@ import Page from './../../Page';
 import { Component } from 'react';
 import Preloader from '../../../Components/Preloader';
 import BalanceList from '../../../Components/Token/BalanceList';
+import UserInfo from '../../../Components/UserInfo';
 import UserRepositoryInterface from '../../../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../../../Types';
 
@@ -26,8 +27,10 @@ interface TokenBalanceIndexPageProps {
 
 interface TokenBalanceIndexPageState {
 	loadingUser: boolean;
+	loadingBalance: boolean;
 	id: string;
 	user: any;
+	balance: any;
 }
 
 export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPageProps, TokenBalanceIndexPageState> {
@@ -36,6 +39,8 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 
 	state: TokenBalanceIndexPageState = {
 		loadingUser: false,
+		loadingBalance: false,
+		balance: null,
 		id: null,
 		user: null,
 	}
@@ -46,14 +51,29 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 	}
 
 	componentWillMount() {
-		const params = {
-			with: [ 'oauth_user.balance' ]
-		}
-		this.setState( { loadingUser: true } );
-		this.userRepository.show( this.state.id, params ).then( ( user: any ) => {
+		this.setState( {
+			loadingBalance: true,
+			loadingUser: true,
+		} );
+		this.userRepository.indexTokenBalance( this.state.id, {
+			with: [ 'meta' ],
+		} )
+		.then( ( balance: any ) => {
+			console.log(balance);
 			this.setState( {
-				loadingUser: false,
-				user: user,
+				loadingBalance: false,
+				balance: balance,
+			} );
+			return balance;
+		} )
+		.then( ( balance: any ) => {
+			this.userRepository.show( this.state.id, {
+				with: [ 'oauth_user' ],
+			} ).then( ( user: any ) => {
+				this.setState( {
+					loadingUser: false,
+					user: user,
+				} );
 			} );
 		} );
 	}
@@ -62,17 +82,30 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 		return (
 			<Page title={'Token user balance listing'}>
 				 <Panel>
-				 	{ this.state.loadingUser 
-				? 	<PanelHeader>
-						<Preloader loading={ this.state.loadingUser } label="user" />
+					<PanelHeader>
+					{ this.state.loadingUser
+						?	<Preloader loading={ this.state.loadingUser } label="user" />
+						:	<span>User info</span>
+					}
 					</PanelHeader>
-				:	<PanelBody>
+				{ ( this.state.loadingUser === false || this.state.user ) &&
+					<PanelBody>
 						<PanelRow>
-							User info
+							<UserInfo user={ this.state.user } />
 						</PanelRow>
-						<PanelRow>
-							<BalanceList balance={ this.state?.user?.oauth_user?.balance ?? [] } />
-						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelHeader>
+					{ this.state.loadingBalance
+						?	<Preloader loading={ this.state.loadingBalance } label="balance" />
+						:	<span>Balance listing</span>
+					}
+					</PanelHeader>
+				{ ( this.state.loadingBalance === false || this.state.balance ) &&
+					<PanelBody>
+						<BalanceList balance={ this.state.balance } />
 					</PanelBody>
 				}
 				</Panel>

@@ -22,8 +22,8 @@ interface GroupCardState {
 }
 
 export default class GroupCard extends Component<GroupCardProps, GroupCardState> {
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 
@@ -46,15 +46,15 @@ export default class GroupCard extends Component<GroupCardProps, GroupCardState>
 							[
 								{
 									title: 'View transactions',
-									url: `${ this.adminUrl }${ this.namespace }-credit-transaction-index&group=${ this.props.group.uuid }`,
+									url: `${ this.adminPageUrl }${ this.namespace }-credit-transaction-index&group=${ this.props.group.uuid }`,
 								},
 								{
 									title: 'View details',
-									url: `${ this.adminUrl }${ this.namespace }-credit-group-show&group=${ this.props.group.uuid }`,
+									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.group.uuid }`,
 								},
 								{
 									title: 'Edit group',
-									url: `${ this.adminUrl }${ this.namespace }-credit-group-edit&group=${ this.props.group.uuid }`,
+									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-edit&group=${ this.props.group.uuid }`,
 								},
 							]
 						}

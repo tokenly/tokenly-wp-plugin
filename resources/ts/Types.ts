@@ -1,6 +1,7 @@
 const TYPES = {
 	Variables: {
 		adminUrl: Symbol.for( 'adminUrl' ),
+		adminPageUrl: Symbol.for( 'adminPageUrl' ),
 		namespace: Symbol.for( 'namespace' ),
 	},
 	Components: {

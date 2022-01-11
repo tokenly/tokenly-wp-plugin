@@ -16,8 +16,8 @@ interface AddressInfoState {
 }
 
 export default class AddressInfo extends Component<AddressInfoProps, AddressInfoState> {
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 	
@@ -50,7 +50,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 					<div>
 						<strong>Assets: </strong>
 						{ this.props.address
-							?	<a href={ `${ this.adminUrl }${ this.namespace }-token-balance-index&address=${ this.props.address.address }` } >View balance</a>
+							?	<a href={ `${ this.adminPageUrl }${ this.namespace }-token-balance-index&address=${ this.props.address.address }` } >View balance</a>
 							:	<span>-</span>
 						}
 					</div>

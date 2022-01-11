@@ -20,7 +20,7 @@ class BalanceController extends Controller implements BalanceControllerInterface
 	 * @return array
 	 */
 	public function index( UserInterface $user, \WP_REST_Request $request ) {
-		$user->load( array( 'oauth_user.balance' ) );
+		$user->load( array( 'oauth_user.balance.meta' ) );
 		if ( !isset( $user->oauth_user ) || $user->oauth_user instanceof OauthUserInterface === false ) {
 			return array();
 		}

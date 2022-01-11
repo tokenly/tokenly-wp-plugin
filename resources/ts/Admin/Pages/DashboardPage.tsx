@@ -58,29 +58,17 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 				icon: 'admin-plugins',
 				url: '/wp-admin/admin.php?page=tokenly-connection',
 			},
-			vendor: {
-				title: 'Vendor',
-				description: 'Manage token promises.',
-				icon: 'share',
+			tokenVendor: {
+				title: 'Token Vendor',
+				description: 'Manage token assets.',
+				icon: 'money-alt',
 				url: '/wp-admin/admin.php?page=tokenly-token-vendor',
 			},
-			credits: {
-				title: 'App Credits',
+			creditVendor: {
+				title: 'Credit Vendor',
 				description: 'Manage credit groups and transactions.',
 				icon: 'money-alt',
 				url: '/wp-admin/admin.php?page=tokenly-credit-group-index',
-			},
-			whitelist: {
-				title: 'Whitelist',
-				description: 'Configure a filter for tokens displayed on the inventory pages.',
-				icon: 'forms',
-				url: '/wp-admin/admin.php?page=tokenly-token-whitelist-edit',
-			},
-			meta: {
-				title: 'Token Meta',
-				description: 'Manage additional information for tokens, displayed on the Inventory page.',
-				icon: 'media-default',
-				url: '/wp-admin/edit.php?post_type=tokenly_token_meta',
 			},
 			settings: {
 				title: 'Settings',
@@ -96,11 +84,9 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 			'settings',
 		],
 		adminRoutes: [
-			'credits',
-			'vendor',
-			'meta',
+			'creditVendor',
+			'tokenVendor',
 			'settings',
-			'whitelist',
 		],
 	}
 	constructor( props: DashboardPageProps ) {

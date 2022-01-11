@@ -52,7 +52,7 @@ class BalanceService extends DomainService implements BalanceServiceInterface {
 			$address = $this->address_service->show(
 				array(
 					'address' => $address,
-					'with'    => array( 'balance.token_meta' ),
+					'with'    => array( 'balance.meta' ),
 				)
 			);
 			if (
@@ -68,7 +68,7 @@ class BalanceService extends DomainService implements BalanceServiceInterface {
 			$user = $this->user_service->show(
 				array(
 					'id'   => $user,
-					'with' => array( 'oauth_user.balance.token_meta' ),
+					'with' => array( 'oauth_user.balance.meta' ),
 				)
 			);
 			if (

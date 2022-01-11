@@ -34,6 +34,7 @@ class TokenMetaPostType {
 		$args = array(
 			'labels'             => $labels,
 			'show_ui'            => true,
+			'show_in_menu'       => false,
 			'query_var'          => true,
 			'capability_type'    => 'post',
 			'menu_position'      => 100,

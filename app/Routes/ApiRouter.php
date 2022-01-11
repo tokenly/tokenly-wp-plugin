@@ -299,18 +299,18 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'user_show' => array(
-				'path' => '/user/(?P<id>\S+)',
+			'user_credit_balance_index' => array(
+				'path' => '/user/(?P<id>\S+)/credit/balance',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['user'], 'show' ),
+					'callback'            => array( $this->controllers['user_credit_balance'], 'index' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
 				),
 			),
 			'user_token_balance_index' => array(
-				'path' => '/user/(?P<id>\S+)/token/balance/',
+				'path' => '/user/(?P<id>\S+)/token/balance',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user_token_balance'], 'index' ),
@@ -319,11 +319,11 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'user_credit_balance_index' => array(
-				'path' => '/user/(?P<id>\S+)/credit/balance/',
+			'user_show' => array(
+				'path' => '/user/(?P<id>\S+)',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['user_credit_balance'], 'index' ),
+					'callback'            => array( $this->controllers['user'], 'show' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

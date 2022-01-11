@@ -1,30 +1,29 @@
 import * as React from 'react';
 import { Component } from 'react';
-import AccountCard from './AccountCard';
+import BalanceCard from './BalanceCard';
 
 import { 
 	Flex,
 } from '@wordpress/components';
 
-interface GroupListProps {
-	accounts: any;
+interface BalanceListProps {
+	balances: any;
 }
 
-interface GroupListState {
+interface BalanceListState {
 	//
 }
 
-export default class GroupList extends Component<GroupListProps, GroupListState> {
-	constructor( props: GroupListProps ) {
+export default class BalanceList extends Component<BalanceListProps, BalanceListState> {
+	constructor( props: BalanceListProps ) {
 		super( props );
 	}
 
 	render() {
-		let listItems = this.props.accounts.map( ( key: any ) => this.props.accounts[ key ] ) as any;
-		listItems = listItems.map( ( account: any, i: number ) => {
+		const listItems = this.props.balances.map( ( balance: any, i: number ) => {
 			return (
 				<Flex>
-					<AccountCard account={ account } />
+					<BalanceCard balance={ balance } />
 				</Flex>
 			);
 		} );

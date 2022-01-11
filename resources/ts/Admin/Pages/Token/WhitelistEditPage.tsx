@@ -32,8 +32,8 @@ declare const window: any;
 export default class WhitelistPage extends Component<WhitelistPageProps, WhitelistPageState> {
 	@resolve( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface )
 	whitelistSettingsRepository: WhitelistSettingsRepositoryInterface;
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 	
@@ -100,7 +100,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 	}
 
 	return() {
-		window.location = `${ this.adminUrl }${ this.namespace }-token-vendor`;
+		window.location = `${ this.adminPageUrl }${ this.namespace }-token-vendor`;
 	}
 
 	render() {

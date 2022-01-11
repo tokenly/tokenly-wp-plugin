@@ -124,6 +124,8 @@ export default class AdminRouter implements AdminRouterInterface {
 				'token-source-show',
 				'token-source-store',
 				'token-source-edit',
+				'token-meta-edit',
+				'token-whitelist-edit',
 			],
 			[ `${ this.namespace }-credit-vendor` ]: [
 				'credit-group-index',

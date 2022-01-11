@@ -24,8 +24,8 @@ interface PromiseCardState {
 }
 
 export default class PromiseCard extends Component<PromiseCardProps, PromiseCardState> {
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 
@@ -57,11 +57,11 @@ export default class PromiseCard extends Component<PromiseCardProps, PromiseCard
 						[
 							{
 								title: 'View details',
-								url: `${ this.adminUrl }${ this.namespace }-token-promise-show&promise=${this.props.promise.promise_id}`,
+								url: `${ this.adminPageUrl }${ this.namespace }-token-promise-show&promise=${this.props.promise.promise_id}`,
 							},
 							{
 								title: 'Edit promise',
-								url: `${ this.adminUrl }${ this.namespace }-token-promise-edit&promise=${ this.props.promise.promise_id }`,
+								url: `${ this.adminPageUrl }${ this.namespace }-token-promise-edit&promise=${ this.props.promise.promise_id }`,
 							}
 						]
 					}

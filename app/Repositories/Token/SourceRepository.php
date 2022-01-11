@@ -57,11 +57,9 @@ class SourceRepository implements SourceRepositoryInterface {
 		}
 		$address = $params['address'];
 		$sources = $this->index( $params );
-		if ( !is_object( $sources ) ) {
-			return;
-		}
-		if ( $sources && is_object( $sources ) ) {
-			return $sources[ $address ] ?? null;
+		$sources = clone $sources->key_by_field( 'address_id' );
+		if ( isset( $sources[ $address ] ) ) {
+			return $sources[ $address ];
 		}
 	}
 

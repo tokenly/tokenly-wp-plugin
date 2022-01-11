@@ -24,8 +24,8 @@ export default class BalanceCard extends Component<BalanceCardProps, BalanceCard
 	
 	getName() {
 		let name = this.props.balance.asset;
-		if ( this.props.balance?.token_meta?.name ) {
-			name = this.props.balance.token_meta.name;
+		if ( this.props.balance?.meta?.name ) {
+			name = this.props.balance.meta.name;
 		}
 		return name;
 	}

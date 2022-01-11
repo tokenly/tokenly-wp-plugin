@@ -14,8 +14,8 @@ interface GroupLinkState {
 }
 
 export default class GroupLink extends Component<GroupLinkProps, GroupLinkState> {
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 
@@ -25,7 +25,7 @@ export default class GroupLink extends Component<GroupLinkProps, GroupLinkState>
 
 	render() {
 		const title = this.props?.name ?? this.props.uuid;
-		const url = `${ this.adminUrl }${ this.namespace }-credit-group-show&group=${ this.props.uuid }`;
+		const url = `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.uuid }`;
 		if ( this.props.text ) {
 			return (
 				<span>{ title }</span>
