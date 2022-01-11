@@ -14,19 +14,17 @@ import {
 	PanelBody,
 	PanelRow,
 	PanelHeader,
-	Flex,
-	Spinner,
 } from '@wordpress/components';
 
-interface TokenBalanceIndexPageData {
+interface CreditBalanceIndexPageData {
 	//
 }
 
-interface TokenBalanceIndexPageProps {
-	pageData: TokenBalanceIndexPageData;
+interface CreditBalanceIndexPageProps {
+	pageData: CreditBalanceIndexPageData;
 }
 
-interface TokenBalanceIndexPageState {
+interface CreditBalanceIndexPageState {
 	loadingGroups: boolean;
 	loadingBalance: boolean;
 	loadingUser: boolean;
@@ -36,13 +34,13 @@ interface TokenBalanceIndexPageState {
 	groups: any;
 }
 
-export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPageProps, TokenBalanceIndexPageState> {
+export default class CreditBalanceIndexPage extends Component<CreditBalanceIndexPageProps, CreditBalanceIndexPageState> {
 	@resolve( TYPES.Repositories.UserRepositoryInterface )
 	userRepository: UserRepositoryInterface;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 
-	state: TokenBalanceIndexPageState = {
+	state: CreditBalanceIndexPageState = {
 		loadingUser: false,
 		loadingBalance: false,
 		loadingGroups: false,
@@ -51,7 +49,7 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 		balance: null,
 		groups: null,
 	}
-	constructor( props: TokenBalanceIndexPageProps ) {
+	constructor( props: CreditBalanceIndexPageProps ) {
 		super( props );
 		const urlParams = new URLSearchParams( window.location.search );
 		this.state.id = urlParams.get( 'id' );
@@ -63,34 +61,39 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 			loadingBalance: true,
 			loadingUser: true,
 		} );
-		this.userRepository.indexCreditBalance( this.state.id )
-			.then( ( balance: any ) => {
-				console.log(balance);
-				this.setState( {
-					loadingBalance: false,
-					balance: balance,
+		this.userRepository.indexCreditBalance( this.state.id ).then( ( balances: any ) => {
+			this.setState( {
+				loadingBalance: false,
+				balance: balances,
+			} );
+			return balances;
+		} )
+		.then( ( balances: any ) => {
+			this.groupRepository.index( this.state.id ).then( ( groups: any ) => {
+				balances = balances.map( ( balance: any ) => {
+					for ( let i = 0; i < groups.length; ++i ) {
+						const group = groups[ i ];
+						if ( balance.group_id === group.uuid ) {
+							balance.group = group;
+							break;
+						}
+					}
+					return balance;
 				} );
-				return balance;
-			} )
-			.then( ( balances: any ) => {
-				this.groupRepository.index( this.state.id ).then( ( groups: any ) => {
-					balances.forEach( ( balance: any ) => {
-						
-					} );
-					this.setState( {
-						loadingGroups: false,
-						groups: groups,
-					} );
-					return groups;
-			} )
-			.then( ( balance: any ) => {
-				this.userRepository.show( this.state.id, {
-					with: [ 'oauth_user' ],
-				} ).then( ( user: any ) => {
-					this.setState( {
-						loadingUser: false,
-						user: user,
-					} );
+				console.log(balances);
+				this.setState( {
+					loadingGroups: false,
+					balance: balances,
+				} );
+			} );
+		} )
+		.then( () => {
+			this.userRepository.show( this.state.id, {
+				with: [ 'oauth_user' ],
+			} ).then( ( user: any ) => {
+				this.setState( {
+					loadingUser: false,
+					user: user,
 				} );
 			} );
 		} );
@@ -98,10 +101,10 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 
 	render() {
 		return (
-			<Page title={'Token user balance listing'}>
+			<Page title="Token Balance Listing">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ ( this.state.loadingBalance || this.state.loadingGroups ) } label="Balance listing" />
+						<Preloader loading={ ( this.state.loadingBalance || this.state.loadingGroups ) }>Balance Listing</Preloader>
 					</PanelHeader>
 				{ ( this.state.loadingBalance === false || this.state.balance ) &&
 					<PanelBody>
@@ -111,7 +114,7 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 				</Panel>
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingUser } label="User profile" />
+						<Preloader loading={ this.state.loadingUser } >User Profile</Preloader>
 					</PanelHeader>
 				{ ( this.state.loadingUser === false || this.state.user ) &&
 					<PanelBody>

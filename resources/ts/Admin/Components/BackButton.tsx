@@ -27,7 +27,7 @@ export default class BackButton extends Component<BackButtonProps, BackButtonSta
 	render() {
 		return (
 			<Flex justify="flex-start">
-				<Button isTertiary icon="arrow-left-alt" onClick={ this.onClick }>Go back</Button>
+				<Button isTertiary icon="arrow-left-alt" onClick={ this.onClick }>Go Back</Button>
 			</Flex>
 		);
 	}

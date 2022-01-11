@@ -16,8 +16,6 @@ import {
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Flex,
-	Spinner,
 } from '@wordpress/components';
 
 interface SourceStorePageData {
@@ -37,6 +35,10 @@ interface SourceStorePageState {
 }
 
 export default class SourceStorePage extends Component<SourceStorePageProps, SourceStorePageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
 	addressRepository: AddressRepositoryInterface;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
@@ -57,7 +59,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
+		window.location = `${this.adminPageUrl}${this.namespace}-token-source-index`;
 	}
 
 	componentWillMount() {
@@ -102,11 +104,11 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	
 	render() {
 		return (
-			<Page title={'Source creator'}>
+			<Page title="Source Creator">
 				<Panel>
 				{ this.state.loadingAddresses &&
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingAddresses } label="addresses" />
+						<Preloader loading={ this.state.loadingAddresses } />
 					</PanelHeader>
 				}
 				{ !this.state.loadingAddresses &&
@@ -126,7 +128,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 					<PanelBody>
 						<PanelRow>
 							<ResourceStoreActions
-								name={ 'source' }
+								name="Source"
 								storing={ this.state.storing }
 								onStore={ this.onStore }
 								onCancel={ this.onCancel }

@@ -27,7 +27,7 @@ export default class AddressSelectField extends Component<AddressSelectFieldProp
 	getAddressOptions() {
 		const options = [
 			{
-				label: 'Not selected',
+				label: 'Not Selected',
 				value: '',
 			}
 		];
@@ -47,7 +47,7 @@ export default class AddressSelectField extends Component<AddressSelectFieldProp
 		return (
 			<Flex> 
 				<label>
-					<div style={{marginBottom: '8px'}} >Address</div>
+					<div style={ { marginBottom: '8px' } } >Address</div>
 					<Flex
 						//@ts-ignore
 						direction="column"
@@ -56,7 +56,7 @@ export default class AddressSelectField extends Component<AddressSelectFieldProp
 							style={ { maxWidth: "320px" } }
 							justify="flex-start"
 							align="center"
-							gap={4}
+							gap={ 4 }
 						>
 							<SelectControl
 								label=""
@@ -65,9 +65,7 @@ export default class AddressSelectField extends Component<AddressSelectFieldProp
 								style={ { width: '100%' } }
 								options={ addressOptions }
 								required
-								onChange={ ( value: any ) => {
-									this.props.onChange( value );
-								} }
+								onChange={ this.props.onChange }
 							/>
 							{ this.props.loading &&
 								<Spinner />

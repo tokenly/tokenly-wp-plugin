@@ -73,7 +73,7 @@ export default class PromiseEditForm extends Component<PromiseEditFormProps, Pro
 							} }
 						/>
 						<TextareaControl
-							label="Ref"
+							label="Reference"
 							// @ts-ignore
 							hint="Extra reference data"
 							value={ this.props.editData?.ref }

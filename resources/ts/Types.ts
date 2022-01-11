@@ -2,6 +2,8 @@ const TYPES = {
 	Variables: {
 		adminUrl: Symbol.for( 'adminUrl' ),
 		adminPageUrl: Symbol.for( 'adminPageUrl' ),
+		apiHost: Symbol.for( 'apiHost' ),
+		brand: Symbol.for( 'brand' ),
 		namespace: Symbol.for( 'namespace' ),
 	},
 	Components: {

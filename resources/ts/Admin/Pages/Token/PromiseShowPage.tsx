@@ -6,8 +6,7 @@ import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/P
 import { TYPES } from '../../../Types';
 import Preloader from '../../Components/Preloader';
 import PromiseInfo from '../../Components/Token/PromiseInfo';
-import PromiseLink from '../../Components/Token/PromiseLink';
-
+import PromiseLink from '../../Components/Token/PromiseLink'
 import { 
 	Button,
 	Panel,
@@ -15,7 +14,6 @@ import {
 	PanelBody,
 	PanelRow,
 	Flex,
-	Spinner,
 } from '@wordpress/components';
 
 interface PromiseShowPageData {
@@ -34,6 +32,10 @@ interface PromiseShowPageState {
 }
 
 export default class PromiseShowPage extends Component<PromiseShowPageProps, PromiseShowPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
 
@@ -69,13 +71,12 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 	render() {
 
 		return (
-			<Page title={ 'Promise display' }>
+			<Page title="Promise Display">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingPromise } label="promise" />
-					{ !this.state.loadingPromise &&
-						<PromiseLink id={ this.state.id } />
-					}
+						<Preloader loading={ this.state.loadingPromise }>
+							<PromiseLink id={ this.state.id } />
+						</Preloader>
 					</PanelHeader>
 					{ !this.state.loadingPromise &&
 					<PanelBody>
@@ -88,13 +89,13 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex style={{width: '100%'}}>
+							<Flex>
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-token-promise-edit&promise=${ this.state.id }` }
+									href={ `${this.adminPageUrl}${this.namespace}-token-promise-edit&promise=${ this.state.id }` }
 								>
-									Manage promise
+									Manage Promise
 								</Button>
 							</Flex>
 						</PanelRow>

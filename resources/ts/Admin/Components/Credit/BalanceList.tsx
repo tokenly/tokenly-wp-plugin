@@ -32,7 +32,7 @@ export default class BalanceList extends Component<BalanceListProps, BalanceList
 				{ listItems.length > 0
 					//@ts-ignore
 					? <Flex direction="column" style={ { width: '100%' } }>{ listItems }</Flex>
-					: <div style={ { opacity: 0.5 } }>There are no registered accounts</div>
+					: <div style={ { opacity: 0.5 } }>There are no balances</div>
 				}
 			</div>
 		);

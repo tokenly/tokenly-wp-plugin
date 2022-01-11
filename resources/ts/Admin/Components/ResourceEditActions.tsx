@@ -33,9 +33,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 				<Button
 					isPrimary
 					disabled={ this.props.saving }
-					onClick={ () => {
-						this.props.onSave();
-					}}
+					onClick={ this.props.onSave }
 				>
 					{ this.props.saving ? 'Saving' : `Save ${this.props.name}` }
 				</Button>
@@ -46,9 +44,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 				<Button
 					isSecondary
 					disabled={ this.props.deleting }
-					onClick={ () => {
-						this.props.onDelete();
-					}}
+					onClick={ this.props.onDelete }
 				>
 					{ this.props.deleting ? 'Deleting' : `Delete ${this.props.name}` }
 				</Button>
@@ -58,9 +54,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 			}
 				<Button
 					isTertiary
-					onClick={ () => {
-						this.props.onCancel();
-					}}
+					onClick={ this.props.onCancel }
 				>
 					Cancel
 				</Button>

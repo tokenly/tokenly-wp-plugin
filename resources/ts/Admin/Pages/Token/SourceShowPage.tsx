@@ -32,6 +32,10 @@ interface SourceShowPageState {
 }
 
 export default class SourceShowPage extends Component<SourceShowPageProps, SourceShowPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 
@@ -79,13 +83,12 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	
 	render() {
 		return (
-			<Page title={ 'Source display' }>
+			<Page title="Source Display">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loading } label="source" />
-					{ !this.state.loading &&
-						<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } text />
-					}
+						<Preloader loading={ this.state.loading }>
+							<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } text />
+						</Preloader>
 					</PanelHeader>
 				{ !this.state.loading &&
 					<PanelBody>
@@ -103,20 +106,20 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex justify="flex-start" style={{width: '100%'}}>
+							<Flex justify="flex-start">
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.state.id }` }
+									href={ `${this.adminPageUrl}${this.namespace}-token-source-edit&source=${this.state.id}` }
 								>
-									Edit source
+									Edit Source
 								</Button>
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.state.id }` }
+									href={ `${this.adminPageUrl}${this.namespace}-token-balance-index&address=${this.state.id}` }
 								>
-									View balance
+									View Balance
 								</Button>
 							</Flex>
 						</PanelRow>

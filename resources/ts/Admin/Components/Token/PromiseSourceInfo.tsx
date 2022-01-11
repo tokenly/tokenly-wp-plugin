@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from '../../../Interfaces';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 import { 
 	Flex,
@@ -18,6 +20,10 @@ interface PromiseSourceInfoState {
 }
 
 export default class PromiseSourceInfo extends Component<PromiseSourceInfoProps, PromiseSourceInfoState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: PromiseSourceInfoProps ) {
 		super( props );
@@ -48,17 +54,14 @@ export default class PromiseSourceInfo extends Component<PromiseSourceInfoProps,
 			<Flex>
 				<div>
 					<span>Source: </span>
-					{ !this.props.loadingSources &&
-						<span>
-							{ this.sourceExists( this.props.promise )
-								?	<a href={`/wp-admin/admin.php?page=tokenly-token-source-show&source=${this.props.promise.source_id}`}>
-										<strong>{ this.getPromiseSource( this.props.promise ) }</strong>
-									</a>
-								: 	<span><strong>{ this.props.promise.source_id }</strong></span>
-							}
-						</span>
-					}
-					<span style={{visibility: this.props.loadingSources ? 'visible' : 'hidden'}}><Spinner /></span>
+					<span>
+						{ this.sourceExists( this.props.promise )
+							?	<a href={`${this.adminPageUrl}${this.namespace}-token-source-show&source=${this.props.promise.source_id}`}>
+									<strong>{ this.getPromiseSource( this.props.promise ) }</strong>
+								</a>
+							: 	<span><strong>{ this.props.promise.source_id }</strong></span>
+						}
+					</span>
 				</div>
 			</Flex>
 		);

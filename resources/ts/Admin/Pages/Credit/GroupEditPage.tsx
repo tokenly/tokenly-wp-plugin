@@ -35,6 +35,10 @@ interface GroupEditPageState {
 }
 
 export default class GroupEditPage extends Component<GroupEditPageProps, GroupEditPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 	
@@ -56,7 +60,7 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+		window.location = `${this.adminPageUrl}${this.namespace}-credit-group-index`;
 	}
 
 	onSave() {
@@ -104,13 +108,12 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 	
 	render() {
 		return (
-			<Page title={ 'Group editor' }>
+			<Page title="Group Editor">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup } label="group" />
-					{ !this.state.loadingGroup &&
-						<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } />
-					}
+						<Preloader loading={ this.state.loadingGroup }>
+							<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } />
+						</Preloader>
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>
@@ -128,7 +131,7 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 					<PanelBody>
 						<PanelRow>
 							<ResourceEditActions
-								name="group"
+								name="Group"
 								saving={ this.state.saving }
 								onSave={ this.onSave }
 								onCancel={ this.onCancel }

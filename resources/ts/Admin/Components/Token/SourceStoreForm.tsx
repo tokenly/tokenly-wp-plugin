@@ -25,7 +25,7 @@ export default class SourceStoreForm extends Component<SourceStoreFormProps, Sou
 	state: SourceStoreFormState = {
 		addressOptions: [
 			{
-				label: '-- select an address --',
+				label: 'Not Selected',
 				value: '',
 			}
 		],
@@ -74,7 +74,7 @@ export default class SourceStoreForm extends Component<SourceStoreFormProps, Sou
 					<AddressInfo address={ address } />
 				}
 					<TextareaControl
-						label="Whitelisted assets"
+						label="Whitelisted Assets"
 						help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
 						value={ this.props.storeData?.assets }
 						onChange={ this.onAssetsFieldChange }

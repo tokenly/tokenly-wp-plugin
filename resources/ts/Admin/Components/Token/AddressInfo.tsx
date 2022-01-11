@@ -32,7 +32,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 				direction="column"
 				gap={0.5}
 			>
-				<div>Address info:</div>
+				<div>Address Info:</div>
 				<Flex
 					//@ts-ignore
 					direction="column"
@@ -50,7 +50,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 					<div>
 						<strong>Assets: </strong>
 						{ this.props.address
-							?	<a href={ `${ this.adminPageUrl }${ this.namespace }-token-balance-index&address=${ this.props.address.address }` } >View balance</a>
+							?	<a href={ `${ this.adminPageUrl }${ this.namespace }-token-balance-index&address=${ this.props.address.address }` } >View Balance</a>
 							:	<span>-</span>
 						}
 					</div>

@@ -102,7 +102,7 @@ export default class AttributeRepeater extends Component<AttributeRepeaterProps,
 					isLarge
 					onClick={ this.onAdd }
 				>
-					Add attribute
+					Add Attribute
 				</Button>
 			</div>
 		);

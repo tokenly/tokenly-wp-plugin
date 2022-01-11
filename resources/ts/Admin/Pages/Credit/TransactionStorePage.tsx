@@ -7,6 +7,7 @@ import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Cre
 import TransactionStoreForm from '../../Components/Credit/TransactionStoreForm';
 import { TYPES } from '../../../Types';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
+import Preloader from '../../Components/Preloader';
 
 declare const window: any;
 
@@ -15,9 +16,8 @@ import {
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Flex,
-	Spinner,
 } from '@wordpress/components';
+
 
 interface TransactionStorePageData {
 	//
@@ -36,6 +36,10 @@ interface TransactionStorePageState {
 }
 
 export default class TransactionStorePage extends Component<TransactionStorePageProps, TransactionStorePageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 	@resolve( TYPES.Repositories.Credit.TransactionRepositoryInterface )
@@ -56,7 +60,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+		window.location = `${this.adminPageUrl}${this.namespace}-credit-group-index`;
 	}
 
 	componentWillMount() {
@@ -97,17 +101,12 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 	
 	render() {
 		return (
-			<Page title={'Transaction creator'}>
+			<Page title="Transaction Creator">
 				<Panel>
-				{ this.state.loadingGroups &&
 					<PanelHeader>
-						<Flex justify="flex-start">
-							<span>Loading groups ... </span>
-							<Spinner />
-						</Flex>
+						<Preloader loading={ this.state.loadingGroups }>Transaction form</Preloader>
 					</PanelHeader>
-				}
-				{ !this.state.loadingGroups &&
+				{ ( !this.state.loadingGroups && this.state.groups ) &&
 					<PanelBody>
 						<PanelRow>
 							<TransactionStoreForm
@@ -124,7 +123,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 					<PanelBody>
 						<PanelRow>
 							<ResourceStoreActions
-								name={ 'transaction' }
+								name="Transaction"
 								storing={ this.state.storing }
 								onStore={ this.onStore }
 								onCancel={ this.onCancel }

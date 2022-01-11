@@ -148,7 +148,7 @@ export default class TcaRuleEditor extends Component<TcaRuleEditorProps, TcaRule
 						this.onAdd();
 					}}
 				>
-					Add rule
+					Add Rule
 				</Button>
 			</div>
 		);

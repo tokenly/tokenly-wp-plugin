@@ -39,7 +39,7 @@ export default class SavePanel extends Component<SavePanelProps, SavePanelState>
 						this.props.onClick();
 					}}
 				>
-					{ this.props.label ?? 'Save settings' }
+					{ this.props.label ?? 'Save Settings' }
 				</Button>
 				{ this.props.saving === true &&
 					<Spinner/>

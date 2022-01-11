@@ -2,10 +2,9 @@ import * as React from 'react';
 import { Component } from 'react';
 import { resolve } from 'inversify-react';
 import { TYPES } from '../../../Types';
-
 import { 
-	Flex,
 	Button,
+	Flex,
 } from '@wordpress/components';
 
 interface VendorActionsProps {
@@ -17,8 +16,6 @@ interface VendorActionsState {
 }
 
 export default class VendorActions extends Component<VendorActionsProps, VendorActionsState> {
-	@resolve( TYPES.Variables.adminUrl )
-	adminUrl: string;
 	@resolve( TYPES.Variables.adminPageUrl )
 	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
@@ -30,36 +27,25 @@ export default class VendorActions extends Component<VendorActionsProps, VendorA
 
 	render() {
 		return (
-			<Flex justify="flex-start">
+			<Flex
+				justify="flex-start"
+				style={ { width: '100%' } }
+			>
 				<Button
 					isPrimary
-					isLarge
-					href={ `${this.adminPageUrl}${this.namespace}-token-promise-store` }
+					href={ `${this.adminPageUrl}${this.namespace}-credit-transaction-store` }
 				>
-					Make a Promise
+					Make transaction
 				</Button>
 				<Button
-					isSecondary
-					isLarge
-					href={ `${this.adminPageUrl}${this.namespace}-token-source-index` }
+					isPrimary
+					href={ `${this.adminPageUrl}${this.namespace}-credit-group-store` }
 				>
-					Manage Sources
-				</Button>
-				<Button
-					isSecondary
-					isLarge
-					href={ `${this.adminPageUrl}${this.namespace}-token-whitelist-edit` }
-				>
-					Manage Whitelist
-				</Button>
-				<Button
-					isSecondary
-					isLarge
-					href={ `${this.adminUrl}edit.php?post_type=${this.namespace}_token_meta` }
-				>
-					Manage Meta
+					Register group
 				</Button>
 			</Flex>
 		);
 	}
 }
+ 
+

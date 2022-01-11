@@ -69,19 +69,19 @@ export default class OauthSettingsForm extends Component<OauthSettingsFormProps,
 					onChange={ this.onRedirectUrlFieldChange }
 				/>
 				<ToggleControl
-					label="Use Single sign-on (SSO)"
+					label="Use Single Sign-On (SSO)"
 					help="Allows the existing users to login using their Tokenpass account."
 					checked={ this.props.settings.use_single_sign_on }
 					onChange={ this.onSsoFieldChange }
 				/>
 				<ToggleControl
-					label="Allow accounts without email"
+					label="Allow Accounts Without Email"
 					help="Allows connecting Tokenpass accounts which have no email accounts associated."
 					checked={ this.props.settings.allow_no_email }
 					onChange={ this.onAllowNoEmailFieldChange }
 				/>
 				<ToggleControl
-					label="Allow accounts without a confirmed email"
+					label="Allow Accounts Without a Confirmed Email"
 					help="Allow connecting Tokenpass accounts which have an unconfirmed email account associated."
 					checked={ this.props.settings.allow_unconfirmed_email }
 					onChange={ this.onAllowUnconfirmedEmailFieldChange }

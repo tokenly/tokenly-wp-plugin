@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Component } from 'react';
 import PromiseParticipants from './PromiseParticipants';
 import * as dayjs from 'dayjs'
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 import { 
 	Flex,
@@ -17,6 +19,10 @@ interface AddressInfoState {
 }
 
 export default class AddressInfo extends Component<AddressInfoProps, AddressInfoState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: AddressInfoProps ) {
 		super( props );
@@ -89,8 +95,8 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 					<div style={ { flex: 1 } }>
 						<div>
 							<span>Source: </span>
-							<a href={`/wp-admin/admin.php?page=tokenly-token-source-show&source=${this.props.promise?.source_id}`}>
-								<strong>{this.props.promise?.source?.address.label}</strong>
+							<a href={`${this.adminPageUrl}${this.namespace}-token-source-show&source=${this.props.promise?.source_id}`}>
+								<strong>{this.props.promise?.source?.address.label ?? this.props.promise.source_id}</strong>
 							</a>
 						</div>
 						<PromiseParticipants promise={ this.props.promise } />

@@ -161,7 +161,7 @@ export default class PromiseStoreForm extends Component<PromiseStoreFormProps, P
 					</div>
 					<div>
 						<CheckboxControl
-							label="Pseudo promise"
+							label="Pseudo Promise"
 							help="Pseudo promises allow arbitrary asset names"
 							checked={ this.props.storeData.pseudo }
 							onChange={ this.onPseudoFieldChange }
@@ -200,7 +200,7 @@ export default class PromiseStoreForm extends Component<PromiseStoreFormProps, P
 							max={ this.getMaxCount() }
 						/>
 						<TextControl
-							label="Ref"
+							label="Reference"
 							help="Extra reference data"
 							value={ this.props.storeData?.ref }
 							onChange={ this.onRefFieldChange }
@@ -214,7 +214,7 @@ export default class PromiseStoreForm extends Component<PromiseStoreFormProps, P
 					</Flex>
 				}
 				</Flex>
-			: 	<div style={{opacity: 0.8}}>No sources registered.</div>
+			: 	<div style={ { opacity: 0.8 } }>No sources registered.</div>
 			}
 			</form>
 		);

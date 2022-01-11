@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { SourceItem } from '../../../Interfaces';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
+import CardActions from './../CardActions';
 
 import { 
 	Button,
@@ -20,6 +23,10 @@ interface SourceCardState {
 }
 
 export default class SourceCard extends Component<SourceCardProps, SourceCardState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: SourceCardProps ) {
 		super( props );
@@ -40,7 +47,7 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 				<CardHeader>
 					<div title={ this.props.source.address_id }>
 						<a 
-							href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.props.source.address_id }` }
+							href={ `${this.adminPageUrl}${this.namespace}-token-source-show&source=${ this.props.source.address_id }` }
 						>
 							{ this.props.source.address?.label }
 						</a>
@@ -49,34 +56,28 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 				<CardBody style={ { width: '100%' } }>
 					<Flex style={ { width: '100%', alignItems: 'center' } }>
 						<div style={ { flex: 1 } }>
-							<div><span>Assets (whitelisted): </span><strong>{ this.getAssets() }</strong></div>
+							<div><span>Whitelisted Assets: </span><strong>{ this.getAssets() }</strong></div>
 						</div>
 					</Flex>
 				</CardBody>
 				<CardFooter>
-					<Flex justify="flex-start">
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.props.source.address_id }` }
-						>
-							View details
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-token-balance-index&address=${ this.props.source.address_id }` }
-						>
-							View balance
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-							href={ `/wp-admin/admin.php?page=tokenly-token-source-edit&source=${ this.props.source.address_id }` }
-						>
-							Edit source
-						</Button>
-					</Flex>
+					<CardActions actions={
+						[
+							{
+								title: 'View Details',
+								url: `${ this.adminPageUrl }${ this.namespace }-token-source-show&source=${ this.props.source.address_id }`,
+							},
+							{
+								title: 'View Balance',
+								url: `${ this.adminPageUrl }${ this.namespace }-token-address-balance-index&address=${ this.props.source.address_id }`,
+							},
+							{
+								title: 'Edit Source',
+								url: `${ this.adminPageUrl }${ this.namespace }-token-source-edit&source=${ this.props.source.address_id }`,
+							}
+						]
+					}
+					/>
 				</CardFooter>
 			</Card>
 		);

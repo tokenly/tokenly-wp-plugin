@@ -43,6 +43,8 @@ interface SettingsPageState {
 }
 
 export default class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
+	@resolve( TYPES.Variables.brand )
+	brand: string;
 	@resolve( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface )
 	integrationSettingsRepository: IntegrationSettingsRepositoryInterface;
 	@resolve( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
@@ -140,7 +142,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 
 	render() {
 		return (
-			<Page title={'Tokenpass Settings'}>
+			<Page title={ `${this.brand} Settings` }>
 				<Panel>
 					<PanelBody title="Integration">
 						<PanelRow>

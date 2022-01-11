@@ -47,7 +47,7 @@ export default class SourceSelectField extends Component<SourceSelectFieldProps,
 		return (
 			<Flex> 
 				<label>
-					<div style={{marginBottom: '8px'}} >Source</div>
+					<div style={ { marginBottom: '8px' } } >Source</div>
 					<Flex
 						//@ts-ignore
 						direction="column"
@@ -56,18 +56,16 @@ export default class SourceSelectField extends Component<SourceSelectFieldProps,
 							style={ { maxWidth: "320px" } }
 							justify="flex-start"
 							align="center"
-							gap={4}
+							gap={ 4 }
 						>
 							<SelectControl
 								label=""
-								disabled={this.props.loading || sourceOptions.length === 1}
+								disabled={ this.props.loading || sourceOptions.length === 1 }
 								value={ this.props.source }
 								style={ { width: '100%' } }
 								options={ sourceOptions }
 								required
-								onChange={ ( value: any ) => {
-									this.props.onChange( value );
-								} }
+								onChange={ this.props.onChange }
 							/>
 							{ this.props.loading &&
 								<Spinner />

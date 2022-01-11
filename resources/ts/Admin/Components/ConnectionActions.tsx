@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../Types';
 
 import { 
 	Flex,
@@ -15,6 +17,12 @@ interface ConnectionActionsState {
 }
 
 export default class ConnectionActions extends Component<ConnectionActionsProps, ConnectionActionsState> {
+	@resolve( TYPES.Variables.brand )
+	brand: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: ConnectionActionsProps ) {
 		super( props );
@@ -26,16 +34,16 @@ export default class ConnectionActions extends Component<ConnectionActionsProps,
 				<Button
 					isPrimary
 					disabled={ this.props.status }
-					href="/tokenly/oauth/connect?tokenly_success_url=/wp-admin/admin.php?page=tokenly-connection"
+					href={ `/${this.namespace}/oauth/connect?${this.namespace}_success_url=${this.adminPageUrl}${this.namespace}-connection` }
 				>
-					Connect to Tokenpass
+					Connect to { this.brand }
 				</Button>
 				<Button
 					isPrimary
 					disabled={ !this.props.status }
-					href="/tokenly/oauth/disconnect?tokenly_success_url=/wp-admin/admin.php?page=tokenly-connection"
+					href={ `/${this.namespace}/oauth/disconnect?${this.namespace}_success_url=${this.adminPageUrl}${this.namespace}-connection` }
 				>
-					Disconnect from Tokenpass
+					Disconnect from { this.brand }
 				</Button>
 			</Flex>
 		);

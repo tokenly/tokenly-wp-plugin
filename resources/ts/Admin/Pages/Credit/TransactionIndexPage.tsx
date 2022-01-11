@@ -3,6 +3,7 @@ import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import TransactionList from '../../Components/Credit/TransactionList';
+import Preloader from '../../Components/Preloader';
 import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
 import { TYPES } from '../../../Types';
 
@@ -11,7 +12,7 @@ import {
 	PanelBody,
 	PanelRow,
 	Flex,
-	Spinner,
+	PanelHeader,
 } from '@wordpress/components';
 
 interface TransactionIndexPageData {
@@ -57,26 +58,27 @@ export default class TransactionIndexPage extends Component<TransactionIndexPage
 	
 	render() {
 		return (
-			<Page title={'Transaction listing'}>
-				<Panel header="Transactions">
+			<Page title="Transaction Listing">
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ this.state.loadingTransactions }>Registered transactions</Preloader>
+					</PanelHeader>
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loadingTransactions
-								?	<Flex justify="flex-start">
-										<span>Loading transactions ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex>
-								{ Object.keys( this.state.transactions ).length > 0
-									? 	<TransactionList
-											transactions={ this.state.transactions }
-											loadingTransactions={ this.state.loadingTransactions }
-										/>
-									: 	<div style={ { opacity: 0.5 } }>There are no registered transactions</div>
-								}
-									</Flex>
-								}
+					{
+						(
+							!this.state.loadingTransactions &&
+							this.state.transactions &&
+							this.state.transactions.typeof === 'object' &&
+							Object.keys( this.state.transactions ).length > 0
+						)
+							? 	<TransactionList
+									transactions={ this.state.transactions }
+									loadingTransactions={ this.state.loadingTransactions }
+								/>
+							: 	<div style={ { opacity: 0.5 } }>There are no registered transactions</div>
+					}
 							</Flex>
 						</PanelRow>
 					</PanelBody>

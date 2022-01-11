@@ -2,6 +2,7 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import Page from './Page';
 import { Component } from 'react';
+import { TYPES } from './../../Types';
 
 import { 
 	Card,
@@ -10,6 +11,7 @@ import {
 	CardFooter,
 	Button,
 	Dashicon,
+	Flex,
 } from '@wordpress/components';
 
 interface DashboardCardItem {
@@ -31,52 +33,23 @@ interface DashboardPageProps {
 }
 
 interface DashboardPageState {
-	cards: any;
+	cards?: any;
 	offlineRoutesUser: Array<string>;
 	offlineRoutesIntegration: Array<string>;
 	adminRoutes: Array<string>;
 }
 
 export default class DashboardPage extends Component<DashboardPageProps, DashboardPageState> {
+	@resolve( TYPES.Variables.apiHost )
+	apiHost: string;
+	@resolve( TYPES.Variables.brand )
+	brand: string;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
+
 	state: DashboardPageState = {
-		cards: {
-			dashboard: {
-				title: 'Main Dashboard',
-				description: 'Tokenpass main dashboard (external).',
-				icon: 'dashboard',
-				url: 'https://tokenpass.tokenly.com/dashboard',
-			},
-			inventory: {
-				title: 'Inventory',
-				description: 'View the list of currently owned token assets.',
-				icon: 'money',
-				url: '/tokenly/user/me',
-			},
-			connection: {
-				title: 'Connection',
-				description: 'Connect or disconnect to Tokenpass network.',
-				icon: 'admin-plugins',
-				url: '/wp-admin/admin.php?page=tokenly-connection',
-			},
-			tokenVendor: {
-				title: 'Token Vendor',
-				description: 'Manage token assets.',
-				icon: 'money-alt',
-				url: '/wp-admin/admin.php?page=tokenly-token-vendor',
-			},
-			creditVendor: {
-				title: 'Credit Vendor',
-				description: 'Manage credit groups and transactions.',
-				icon: 'money-alt',
-				url: '/wp-admin/admin.php?page=tokenly-credit-group-index',
-			},
-			settings: {
-				title: 'Settings',
-				description: 'Manage plugin settings.',
-				icon: 'admin-settings',
-				url: '/wp-admin/admin.php?page=tokenly-settings',
-			},
-		},
 		offlineRoutesUser: [
 			'connection'
 		],
@@ -89,9 +62,53 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 			'settings',
 		],
 	}
+	
 	constructor( props: DashboardPageProps ) {
 		super( props );
 		this.canView = this.canView.bind( this );
+	}
+
+	componentWillMount() {
+		this.setState( {
+			cards: {
+				dashboard: {
+					title: 'Main Dashboard',
+					description: `${this.brand} main dashboard (external).`,
+					icon: 'dashboard',
+					url: `${this.apiHost}/dashboard`,
+				},
+				inventory: {
+					title: 'Inventory',
+					description: 'View the list of currently owned token assets.',
+					icon: 'money',
+					url: `/${this.namespace}/user/me`,
+				},
+				connection: {
+					title: 'Connection',
+					description: `Connect or disconnect to ${this.brand} network.`,
+					icon: 'admin-plugins',
+					url: `${this.adminPageUrl}${this.namespace}-connection`,
+				},
+				tokenVendor: {
+					title: 'Token Vendor',
+					description: 'Manage token assets.',
+					icon: 'money-alt',
+					url: `${this.adminPageUrl}${this.namespace}-token-vendor`,
+				},
+				creditVendor: {
+					title: 'Credit Vendor',
+					description: 'Manage credit groups and transactions.',
+					icon: 'money-alt',
+					url: `${this.adminPageUrl}${this.namespace}-credit-group-index`,
+				},
+				settings: {
+					title: 'Settings',
+					description: 'Manage plugin settings.',
+					icon: 'admin-settings',
+					url: `${this.adminPageUrl}${this.namespace}-settings`,
+				},
+			}
+		} );
 	}
 
 	canView( key: string ) {
@@ -119,19 +136,24 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 			if ( this.canView( key ) ) {
 				cards.push(
 					<Card>
-						<CardHeader style={{display: 'flex', justifyContent: 'flex-start',}}><Dashicon icon={cardItem.icon as any} /><h3>{cardItem.title}</h3></CardHeader>
-						<CardBody size="large">{cardItem.description}</CardBody>
+						<CardHeader>
+							<Flex justify="flex-start">
+								<Dashicon icon={ cardItem.icon as any } />
+								<h3>{ cardItem.title }</h3>
+							</Flex>
+						</CardHeader>
+						<CardBody size="large">{ cardItem.description }</CardBody>
 						<CardFooter>
-							<Button isPrimary href={cardItem.url}>Visit page</Button>
+							<Button isPrimary href={ cardItem.url }>Visit page</Button>
 						</CardFooter>
 					</Card>
 				);
 			}
-		});
+		} );
 		return (
-			<Page title={'Tokenpass Dashboard'}>
+			<Page title={ `${this.brand} Dashboard` }>
 				<div className="dashboard-card-grid">
-					{cards}
+					{ cards }
 				</div>
 			</Page>
 		);

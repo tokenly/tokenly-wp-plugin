@@ -25,7 +25,7 @@ export default class UserInfo extends Component<UserInfoProps, UserInfoState> {
 				//@ts-ignore
 				direction="column"
 			>
-				<div>Name: <strong>{ this.props.user?.name } ({this.props.user?.oauth_user?.username ?? '-'})</strong></div>
+				<div>Name: <strong>{ this.props.user?.name } ({ this.props.user?.oauth_user?.username ?? '-' })</strong></div>
 			</Flex>
 		);
 	}

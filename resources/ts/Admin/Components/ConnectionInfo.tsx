@@ -31,7 +31,7 @@ export default class ConnectionInfo extends Component<ConnectionInfoProps, Conne
 				<StatusIndicator status={ this.props?.status } />
 				{ this.props.status == true &&
 					<div>
-						<span>Connected as: </span>
+						<span>Connected As: </span>
 						<span>
 							<strong>{`${ this.props.user?.name } ( ${ this.props.user?.oauth_user?.username } )` }</strong>
 						</span>

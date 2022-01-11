@@ -37,6 +37,10 @@ interface PromiseStorePageState {
 }
 
 export default class PromiseStorePage extends Component<PromiseStorePageProps, PromiseStorePageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
@@ -58,7 +62,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	}
 	
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-token-vendor';
+		window.location = `${this.adminPageUrl}${this.namespace}-token-vendor`;
 	}
 
 	onStore() {
@@ -109,11 +113,11 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 	
 	render() {
 		return (
-			<Page title={'Promise creator'}>
+			<Page title="Promise Creator">
 				<Panel>
 				{ this.state.loadingSources &&
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingSources } label="sources" />
+						<Preloader loading={ this.state.loadingSources }/>
 					</PanelHeader>
 				}
 				{ !this.state.loadingSources &&
@@ -133,7 +137,7 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 					<PanelBody>
 						<PanelRow>
 							<ResourceStoreActions
-								name={ 'promise' }
+								name="Promise"
 								storing={ this.state.storing }
 								loading={ ( this.state.loadingSources ) }
 								onStore={ this.onStore }

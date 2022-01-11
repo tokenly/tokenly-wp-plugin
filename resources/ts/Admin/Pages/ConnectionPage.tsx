@@ -14,8 +14,6 @@ import {
 	PanelBody,
 	PanelRow,
 	PanelHeader,
-	Spinner,
-	Flex,
 } from '@wordpress/components';
 
 
@@ -64,15 +62,10 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 
 	render() {
 		return (
-			<Page title={ 'Connection' }>
+			<Page title="Connection">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingUser } label="user" />
-						{ !this.state.loadingUser &&
-							<div>
-								<span>Connection status</span>
-							</div>
-						}
+						<Preloader loading={ this.state.loadingUser }>Connection Status</Preloader>
 					</PanelHeader>
 				{ !this.state.loadingUser && 
 					<PanelBody>

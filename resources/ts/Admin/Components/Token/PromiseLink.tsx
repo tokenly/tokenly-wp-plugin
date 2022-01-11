@@ -1,10 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
-
-import { 
-	Flex,
-	Button,
-} from '@wordpress/components';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 interface PromiseLinkProps {
 	id: number,
@@ -15,6 +12,10 @@ interface PromiseLinkState {
 }
 
 export default class PromiseLink extends Component<PromiseLinkProps, PromiseLinkState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: PromiseLinkProps ) {
 		super( props );
@@ -25,7 +26,7 @@ export default class PromiseLink extends Component<PromiseLinkProps, PromiseLink
 			<span>
 				<span>№ </span>
 				<strong>
-					<a href={ `/wp-admin/admin.php?page=tokenly-token-promise-show&promise=${ this.props.id }` }>
+					<a href={ `${this.adminPageUrl}${this.namespace}-token-promise-show&promise=${ this.props.id }` }>
 						{ this.props.id }
 					</a>
 				</strong>

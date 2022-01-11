@@ -65,14 +65,14 @@ export default class WhitelistEditor extends Component<WhitelistEditorProps, Whi
 			return (
 				<Flex align="flex-end">
 					<TextControl
-						label="Contract address"
+						label="Contract Address"
 						value={ item.address }
 						onChange={ ( value: string ) => {
 							this.onAddressFieldChange( i, value );
 						} }
 					/>
 					<TextControl
-						label="Token index"
+						label="Token Index"
 						value={ item.index }
 						onChange={ ( value: string ) => {
 							this.onIndexFieldChange( i, value );
@@ -107,7 +107,7 @@ export default class WhitelistEditor extends Component<WhitelistEditorProps, Whi
 						isLarge
 						onClick={ this.onAdd }
 					>
-						Add item
+						Add Item
 					</Button>
 				</div>
 			</Flex>

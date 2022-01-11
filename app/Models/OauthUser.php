@@ -249,7 +249,7 @@ class OauthUser extends Model implements OauthUserInterface {
 			if ( !$account ) {
 				continue;
 			}
-			$account->group = $group_uuid;
+			$account->group_id = $group_uuid;
 			$credit_account[ $group_uuid ] = $account;
 		}
 		$credit_account = $this->credit_account_collection_factory->create( $credit_account );

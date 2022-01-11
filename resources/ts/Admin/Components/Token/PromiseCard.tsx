@@ -56,11 +56,11 @@ export default class PromiseCard extends Component<PromiseCardProps, PromiseCard
 					<CardActions actions={
 						[
 							{
-								title: 'View details',
+								title: 'View Details',
 								url: `${ this.adminPageUrl }${ this.namespace }-token-promise-show&promise=${this.props.promise.promise_id}`,
 							},
 							{
-								title: 'Edit promise',
+								title: 'Edit Promise',
 								url: `${ this.adminPageUrl }${ this.namespace }-token-promise-edit&promise=${ this.props.promise.promise_id }`,
 							}
 						]

@@ -83,6 +83,8 @@ container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
 
 container.bind<string>( TYPES.Variables.adminUrl ).toConstantValue( '/wp-admin/' );
 container.bind<string>( TYPES.Variables.adminPageUrl ).toConstantValue( '/wp-admin/admin.php?page=' );
+container.bind<string>( TYPES.Variables.brand ).toConstantValue( 'Tokenly' );
 container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
+container.bind<string>( TYPES.Variables.apiHost ).toConstantValue( 'https://tokenpass.tokenly.com' );
 
 export { container };

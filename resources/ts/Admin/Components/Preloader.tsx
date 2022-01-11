@@ -7,8 +7,8 @@ import {
 } from '@wordpress/components';
 
 interface PreloaderProps {
-	label: string;
 	loading: boolean;
+	href?: string;
 }
 
 interface PreloaderState {
@@ -23,7 +23,9 @@ export default class Preloader extends Component<PreloaderProps, PreloaderState>
 	render() {
 		return (
 			<Flex justify="flex-start" align="center" style={ { minHeight: '30px' } }>
-				<span>{ this.props.label }</span>
+				<strong>
+					{ this.props.children }
+				</strong>
 			{ this.props.loading &&
 				<Spinner />
 			}

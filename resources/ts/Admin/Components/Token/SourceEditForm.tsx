@@ -23,6 +23,13 @@ export default class SourceEditForm extends Component<SourceEditFormProps, Sourc
 	};
 	constructor( props: SourceEditFormProps ) {
 		super( props );
+		this.onWhitelistFieldChange = this.onWhitelistFieldChange.bind( this );
+	}
+
+	onWhitelistFieldChange( value: any ) {
+		const state = Object.assign( {}, this.props.editData );
+		state.assets = value;
+		this.props.onChange( state );
 	}
 
 	render() {
@@ -34,14 +41,10 @@ export default class SourceEditForm extends Component<SourceEditFormProps, Sourc
 						isDisabled={ this.props.loading }
 					>
 						<TextareaControl
-							label="Whitelisted assets"
+							label="Whitelisted Assets"
 							help="Comma-separated values. Assets which are allowed for making promises."
 							value={ this.props.editData.assets }
-							onChange={ (value: any) => {
-								const state = Object.assign( {}, this.props.editData );
-								state.assets = value;
-								this.props.onChange( state );
-							} }
+							onChange={ this.onWhitelistFieldChange }
 						/>
 					</Disabled>
 				</Flex>

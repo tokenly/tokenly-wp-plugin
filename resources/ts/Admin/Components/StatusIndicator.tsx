@@ -24,7 +24,7 @@ export default class StatusIndicator extends Component<StatusIndicatorlProps, St
 			<Flex justify="flex-start" align="baseline" gap={ 0 } style={ { marginBottom: '8px' } }>
 				<span>Status: </span>
 				<span style={{marginLeft: '5px'}}>
-					<strong>{ this.props?.status ? 'Connected' : 'Not connected' }</strong>
+					<strong>{ this.props?.status ? 'Connected' : 'Not Connected' }</strong>
 				</span>
 				<span 
 					className="tokenpass status-indicator"

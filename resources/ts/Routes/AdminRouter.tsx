@@ -11,7 +11,6 @@ import AdminRouterInterface from './../Interfaces/Routes/AdminRouterInterface';
 import AppLayout from './../Layouts/AppLayout';
 import SettingsPage from './../Admin/Pages/SettingsPage';
 import ConnectionPage from './../Admin/Pages/ConnectionPage';
-import CreditGroupIndexPage from './../Admin/Pages/Credit/GroupIndexPage';
 import CreditGroupShowPage from './../Admin/Pages/Credit/GroupShowPage';
 import CreditGroupStorePage from './../Admin/Pages/Credit/GroupStorePage';
 import CreditGroupEditPage from './../Admin/Pages/Credit/GroupEditPage';
@@ -74,7 +73,6 @@ export default class AdminRouter implements AdminRouterInterface {
 			'dashboard'                 : DashboardPage,
 			'settings'                  : SettingsPage,
 			'connection'                : ConnectionPage,
-			'credit-group-index'        : CreditGroupIndexPage,
 			'credit-group-show'         : CreditGroupShowPage,
 			'credit-group-store'        : CreditGroupStorePage,
 			'credit-group-edit'         : CreditGroupEditPage,
@@ -116,7 +114,7 @@ export default class AdminRouter implements AdminRouterInterface {
 
 	getHighlights() {
 		const highlights = {
-			[`${ this.namespace }-token-vendor`]: [
+			[`${this.namespace}-token-vendor`]: [
 				'token-promise-show',
 				'token-promise-store',
 				'token-promise-edit',
@@ -127,7 +125,7 @@ export default class AdminRouter implements AdminRouterInterface {
 				'token-meta-edit',
 				'token-whitelist-edit',
 			],
-			[ `${ this.namespace }-credit-vendor` ]: [
+			[ `${this.namespace}-credit-vendor` ]: [
 				'credit-group-index',
 				'credit-group-show',
 				'credit-group-store',

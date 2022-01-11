@@ -1,4 +1,5 @@
 import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
@@ -9,15 +10,11 @@ import ResourceEditActions from '../../Components/ResourceEditActions';
 import { PromiseData, PromiseUpdateParams } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
-import { TYPES } from '../../../Types';
-
 
 import { 
 	Panel,
 	PanelBody,
 	PanelRow,
-	Flex,
-	Spinner,
 	PanelHeader,
 } from '@wordpress/components';
 
@@ -41,6 +38,10 @@ interface PromiseEditPageState {
 }
 
 export default class PromiseEditPage extends Component<PromiseEditPageProps, PromiseEditPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
 	promiseRepository: PromiseRepositoryInterface;
 	
@@ -66,7 +67,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-token-vendor';
+		window.location = `${this.adminPageUrl}${this.namespace}-token-vendor`;
 	}
 
 	onSave() {
@@ -80,7 +81,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	onDelete() {
 		eventBus.dispatch( 'confirmModalShow', {
 			key: 'promiseDelete',
-			title: 'Deleting promise',
+			title: 'Deleting Promise',
 			subtitle: 'Are you sure you want to delete the promise?',
 		});
 	}
@@ -140,13 +141,12 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 	
 	render() {
 		return (
-			<Page title={ 'Promise editor' }>
+			<Page title="Promise Editor">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loading } label="promise" />
-					{ !this.state.loading &&
-						<PromiseLink id={ this.state.id } />
-					}
+						<Preloader loading={ this.state.loading } >
+							<PromiseLink id={ this.state.id } />
+						</Preloader>
 					</PanelHeader>
 				{ !this.state.loading &&
 					<PanelBody>
@@ -164,7 +164,7 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 					<PanelBody>
 						<PanelRow>
 							<ResourceEditActions
-								name="promise"
+								name="Promise"
 								saving={ this.state.saving }
 								deleting={ this.state.deleting }
 								onSave={ this.onSave }

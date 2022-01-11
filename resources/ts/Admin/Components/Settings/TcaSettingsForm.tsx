@@ -24,6 +24,8 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 		this.onChange = this.onChange.bind( this );
 		this.isPostTypeChecked = this.isPostTypeChecked.bind( this );
 		this.isTaxonomyChecked = this.isTaxonomyChecked.bind( this );
+		this.onFilterMenuItemsFieldChange = this.onFilterMenuItemsFieldChange.bind( this );
+		this.onFilterPostResultsFieldChange = this.onFilterPostResultsFieldChange.bind( this );
 	}
 
 	onChange( newSettings: any ) {
@@ -44,6 +46,18 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 			checked = this.props.settings.taxonomies[ key ]
 		}
 		return checked;
+	}
+
+	onFilterMenuItemsFieldChange( value: any ) {
+		let settings = Object.assign( {}, this.props.settings );
+		settings.filter_menu_items = value;
+		this.onChange( settings );
+	}
+ 
+	onFilterPostResultsFieldChange( value: any ) {
+		let settings = Object.assign( {}, this.props.settings );
+		settings.filter_post_results = value;
+		this.onChange( settings );
 	}
 
 	render() {
@@ -94,35 +108,27 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 						direction="column"
 					>	
 						<legend style={ { marginBottom: '8px' } }>
-							<strong>Filtering options</strong>
+							<strong>Filtering Options</strong>
 							<div>Filtering the content can slow down page loading speed. <br />
 								The following options allow fine-grained control over what gets filtered.</div>
 						</legend>
 						<ToggleControl
-							label="Filter menu items"
+							label="Filter Menu Items"
 							help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
 							checked={ this.props.settings.filter_menu_items }
-							onChange={ ( value: boolean ) => {
-								let settings = Object.assign( {}, this.props.settings );
-								settings.filter_menu_items = value;
-								this.onChange( settings );
-							} }
+							onChange={ this.onFilterMenuItemsFieldChange }
 						/>
 						<ToggleControl
-							label="Filter post results"
+							label="Filter Post Results"
 							help="Filters the post listings which are not controlable by the menu editor, like recent post list."
 							checked={ this.props.settings.filter_post_results }
-							onChange={ ( value: boolean ) => {
-								let settings = Object.assign( {}, this.props.settings );
-								settings.filter_post_results = value;
-								this.onChange( settings );
-							} }
+							onChange={ this.onFilterPostResultsFieldChange }
 						/>
 					</Flex>
 				</fieldset>
 				<hr />
 				<div>
-					<strong>Post types</strong>
+					<strong>Post Types</strong>
 					<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
 				</div>
 				<Flex

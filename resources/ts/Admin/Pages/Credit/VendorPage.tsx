@@ -3,17 +3,18 @@ import * as React from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import GroupList from '../../Components/Credit/GroupList';
+import VendorActions from '../../Components/Credit/VendorActions';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import { TYPES } from '../../../Types';
 
 import { 
-	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
 	Flex,
-	Spinner,
+	PanelHeader,
 } from '@wordpress/components';
+import Preloader from '../../Components/Preloader';
 
 interface VendorPageData {
 	//
@@ -43,7 +44,6 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 	componentWillMount() {
 		this.setState( { loadingGroups: true } );
 		this.groupRepository.index().then( ( groups ) => {
-			console.log(groups);
 			this.setState( {
 				loadingGroups: false,
 				groups: groups,
@@ -53,52 +53,37 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 	
 	render() {
 		return (
-			<Page title={'Group listing'}>
+			<Page title="Credit Vendor">
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex
-								justify="flex-start"
-								style={ { width: '100%' } }
-							>
-								<Button
-									isPrimary
-									href='/wp-admin/admin.php?page=tokenly-credit-transaction-store'
-								>
-									Make transaction
-								</Button>
-								<Button
-									isPrimary
-									href='/wp-admin/admin.php?page=tokenly-credit-group-store'
-								>
-									Register group
-								</Button>
-							</Flex>
+							<VendorActions />
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel header="Registered groups">
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ this.state.loadingGroups }>Registered groups</Preloader>
+					</PanelHeader>
+				{
+					(
+						!this.state.loadingGroups &&
+						this.state.groups &&
+						typeof this.state.groups === 'object'
+					) &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loadingGroups
-								?	<Flex justify="flex-start">
-										<span>Loading groups ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex>
-										{ Object.keys( this.state.groups ).length > 0
-											? <GroupList
-												groups={ this.state.groups }
-												loadingGroups={ this.state.loadingGroups }
-											/>
-											: <div style={ { opacity: 0.5 } }>There are no registered groups</div>
-										}
-									</Flex>
+								{ Object.keys( this.state.groups ).length > 0
+									? 	<GroupList
+											groups={ this.state.groups }
+										/>
+									: 	<div style={ { opacity: 0.5 } }>There are no registered groups</div>
 								}
 							</Flex>
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 			</Page>
 		);

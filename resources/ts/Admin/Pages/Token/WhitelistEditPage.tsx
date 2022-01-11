@@ -105,8 +105,8 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 
 	render() {
 		return (
-			<Page title={ 'Whitelist editor' } >
-				<Panel header="Whitelist settings">
+			<Page title="Whitelist Editor" >
+				<Panel header="Whitelist Settings">
 					<PanelBody>
 						<PanelRow>
 							<p style={ { maxWidth: '550px', opacity: 0.8 } }>Whitelist allows to control which assets to filter when working with token assets. Only the specified assets will be displayed and searchable.</p>
@@ -132,7 +132,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 					<PanelBody>
 						<PanelRow>
 							<ResourceEditActions
-								name="whitelist"
+								name="Whitelist"
 								saving={ this.state.saving }
 								onSave={ this.onSave }
 								onCancel={ this.onCancel }

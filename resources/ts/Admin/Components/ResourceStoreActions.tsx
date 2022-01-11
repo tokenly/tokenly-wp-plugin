@@ -32,9 +32,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 				<Button
 					isPrimary
 					disabled={ this.props.storing || this.props.disableStore }
-					onClick={ () => {
-						this.props.onStore();
-					}}
+					onClick={ this.props.onStore }
 				>
 					{ this.props.storing ? 'Creating' : `Create ${this.props.name}` }
 				</Button>
@@ -43,9 +41,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 			}
 				<Button
 					isTertiary
-					onClick={ () => {
-						this.props.onCancel();
-					}}
+					onClick={ this.props.onCancel }
 				>
 					Cancel
 				</Button>

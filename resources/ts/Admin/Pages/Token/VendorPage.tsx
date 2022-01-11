@@ -14,6 +14,7 @@ import {
 	Flex,
 	Panel,
 	PanelBody,
+	PanelHeader,
 	PanelRow,
 } from '@wordpress/components';
 
@@ -49,7 +50,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		isPromiseDetailsModalOpen: false,
 		storingPromise: false,
 		currentPromise: 0,
-		promises: [],
+		promises: null,
 		sources: {},
 		loadingPromises: false,
 		loadingSources: false,
@@ -119,32 +120,32 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 	render() {
 		const loading = this.getLoadingState();
 		return (
-			<Page title={'Tokenpass Vendor'}>
-				<Panel header="Vendor actions">
+			<Page title="Token Vendor">
+				<Panel header="Vendor Actions">
 					<PanelBody>
 						<PanelRow>
 							<VendorActions />
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel header="Promise listing">
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ loading }>Registered promises</Preloader>
+					</PanelHeader>
+				{ ( !loading || this.state.promises ) &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								<Preloader loading={ loading } label={ this.getLoadingLabel() } />
-							{ !loading &&
-								<Flex>
-									{ this.state.promises?.length > 0
-										? <PromiseList
+								{ this.state.promises?.length > 0
+									? 	<PromiseList
 											promises={ this.state.promises }
 										/>
-										: <div style={ { opacity: 0.5 } }>There are no registered promises</div>
-									}
-								</Flex>
-							}
+									: 	<div style={ { opacity: 0.5 } }>There are no registered promises</div>
+								}
 							</Flex>
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 			</Page>
 		);

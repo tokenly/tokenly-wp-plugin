@@ -11,10 +11,8 @@ declare const window: any;
 
 import { 
 	Panel,
-	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Flex,
 } from '@wordpress/components';
 
 interface GroupStorePageData {
@@ -31,6 +29,10 @@ interface GroupStorePageState {
 }
 
 export default class GroupStorePage extends Component<GroupStorePageProps, GroupStorePageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 	
@@ -48,7 +50,7 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-credit-group-index';
+		window.location = `${this.adminPageUrl}${this.namespace}-credit-group-index`;
 	}
 	
 	onStore() {
@@ -77,7 +79,7 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 	
 	render() {
 		return (
-			<Page title={'Group creator'}>
+			<Page title="Group Creator">
 				<Panel>
 					<PanelBody>
 						<PanelRow>
@@ -92,7 +94,7 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 					<PanelBody>
 						<PanelRow>
 							<ResourceStoreActions
-								name={ 'group' }
+								name="Group"
 								storing={ this.state.storing }
 								onStore={ this.onStore }
 								onCancel={ this.onCancel }

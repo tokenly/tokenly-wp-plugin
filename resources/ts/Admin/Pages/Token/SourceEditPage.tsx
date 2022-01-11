@@ -38,6 +38,10 @@ interface SourceEditPageState {
 }
 
 export default class SourceEditPage extends Component<SourceEditPageProps, SourceEditPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 	
@@ -62,7 +66,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	}
 
 	return() {
-		window.location = '/wp-admin/admin.php?page=tokenly-token-source-index';
+		window.location = `${this.adminPageUrl}${this.namespace}-token-source-index`;
 	}
 
 	onSave() {
@@ -77,7 +81,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 	onDelete() {
 		eventBus.dispatch( 'confirmModalShow', {
 			key: 'sourceDelete',
-			title: 'Deleting source',
+			title: 'Deleting Source',
 			subtitle: 'Are you sure you want to delete the source?',
 		});
 	}
@@ -134,13 +138,12 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 
 	render() {
 		return (
-			<Page title={ 'Source editor' }>
+			<Page title="Source Editor">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loading } label="source" />
-					{ !this.state.loading &&
-						<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } />
-					}
+						<Preloader loading={ this.state.loading }>
+							<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } />
+						</Preloader>
 					</PanelHeader>
 				{ !this.state.loading &&
 					<PanelBody>
@@ -158,7 +161,7 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 					<PanelBody>
 						<PanelRow>
 							<ResourceEditActions
-								name="source"
+								name="Source"
 								saving={ this.state.saving }
 								deleting={ this.state.deleting }
 								onSave={ this.onSave }

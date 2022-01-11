@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 interface SourceLinkProps {
 	id: string,
@@ -12,13 +14,18 @@ interface SourceLinkState {
 }
 
 export default class SourceLink extends Component<SourceLinkProps, SourceLinkState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
+
 	constructor( props: SourceLinkProps ) {
 		super( props );
 	}
 
 	render() {
 		const title = this.props?.label ?? this.props.id;
-		const url = `/wp-admin/admin.php?page=tokenly-token-source-show&source=${ this.props.id }`;
+		const url = `${this.adminPageUrl}${this.namespace}-token-source-show&source=${ this.props.id }`;
 		if ( this.props.text ) {
 			return (
 				<span>{ title }</span>

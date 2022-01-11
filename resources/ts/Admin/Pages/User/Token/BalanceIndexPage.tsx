@@ -13,8 +13,6 @@ import {
 	PanelBody,
 	PanelRow,
 	PanelHeader,
-	Flex,
-	Spinner,
 } from '@wordpress/components';
 
 interface TokenBalanceIndexPageData {
@@ -80,13 +78,10 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 	
 	render() {
 		return (
-			<Page title={'Token user balance listing'}>
+			<Page title="Credit Balance Listing">
 				 <Panel>
 					<PanelHeader>
-					{ this.state.loadingUser
-						?	<Preloader loading={ this.state.loadingUser } label="user" />
-						:	<span>User info</span>
-					}
+						<Preloader loading={ this.state.loadingUser }>User Info</Preloader>
 					</PanelHeader>
 				{ ( this.state.loadingUser === false || this.state.user ) &&
 					<PanelBody>
@@ -98,10 +93,7 @@ export default class TokenBalanceIndexPage extends Component<TokenBalanceIndexPa
 				</Panel>
 				<Panel>
 					<PanelHeader>
-					{ this.state.loadingBalance
-						?	<Preloader loading={ this.state.loadingBalance } label="balance" />
-						:	<span>Balance listing</span>
-					}
+						<Preloader loading={ this.state.loadingBalance }>Balance Listing</Preloader>
 					</PanelHeader>
 				{ ( this.state.loadingBalance === false || this.state.balance ) &&
 					<PanelBody>

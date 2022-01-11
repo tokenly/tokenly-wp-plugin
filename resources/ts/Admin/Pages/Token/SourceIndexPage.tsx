@@ -7,15 +7,13 @@ import { SourceItem } from '../../../Interfaces';
 import Page from './../Page';
 import SourceList from '../../Components/Token/SourceList';
 import Preloader from '../../Components/Preloader';
-
-
 import { 
 	Button,
 	Panel,
+	PanelHeader,
 	PanelBody,
 	PanelRow,
 	Flex,
-	Spinner,
 } from '@wordpress/components';
 
 interface SourceIndexPageData {
@@ -34,12 +32,16 @@ interface SourceIndexPageState {
 }
 
 export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 
 	state: SourceIndexPageState = {
 		sourceData: [],
-		sources: {},
+		sources: null,
 		loadingSources: false,
 	}
 	constructor( props: SourceIndexPageProps ) {
@@ -60,43 +62,45 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 	
 	render() {
 		return (
-			<Page title={'Source listing'}>
-				<Panel>
+			<Page title="Source Listing">
+				<Panel header="Source Actions">
 					<PanelBody>
 						<PanelRow>
 							<Flex style={{width: '100%'}}>
 								<Button
 									isPrimary
-									href='/wp-admin/admin.php?page=tokenly-token-source-store'
+									href={ `${this.adminPageUrl}${this.namespace}-token-source-store` }
 								>
-									Register source
+									Register Source
 								</Button>
 							</Flex>
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel header="Registered sources">
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={this.state.loadingSources}>Registered sources</Preloader>
+					</PanelHeader>
+				{
+				(
+					!this.state.loadingSources &&
+					this.state.sources &&
+					typeof this.state.sources === 'object'
+				) &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-								{ this.state.loadingSources
-								?	<Flex justify="flex-start">
-										<span>Loading sources ... </span>
-										<Spinner />
-									</Flex>
-								:	<Flex>
-										{ Object.keys( this.state.sources ).length > 0
-											? <SourceList
-												sources={ this.state.sources }
-												loadingSources={ this.state.loadingSources }
-											/>
-											: <div style={ { opacity: 0.5 } }>There are no registered sources</div>
-										}
-									</Flex>
+								{ Object.keys( this.state.sources ).length > 0
+									? <SourceList
+										sources={ this.state.sources }
+										loadingSources={ this.state.loadingSources }
+									/>
+									: <div style={ { opacity: 0.5 } }>There are no registered sources</div>
 								}
 							</Flex>
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 			</Page>
 		);

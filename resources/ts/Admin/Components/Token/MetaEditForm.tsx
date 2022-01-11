@@ -52,7 +52,7 @@ export default class MetaEditForm extends Component<MetaEditFormProps, MetaEditF
 						onChange={ this.onAssetFieldChange }
 					/>
 					<AttributeRepeater
-						label="Extra attributes"
+						label="Extra Attributes"
 						help="Additional key-value asset meta attributes. They are displayed in the more info sections."
 						attributes={ this.props.editData.extra }
 						onChange={ this.onExtraFieldChange }

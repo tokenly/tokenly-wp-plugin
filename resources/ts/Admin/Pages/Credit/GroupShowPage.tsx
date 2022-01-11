@@ -15,7 +15,6 @@ import {
 	PanelBody,
 	PanelRow,
 	Flex,
-	Spinner,
 } from '@wordpress/components';
 
 interface GroupShowPageData {
@@ -33,6 +32,10 @@ interface GroupShowPageState {
 }
 
 export default class GroupShowPage extends Component<GroupShowPageProps, GroupShowPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 	
@@ -59,13 +62,12 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 
 	render() {
 		return (
-			<Page title={ 'Group details' }>
+			<Page title="Group Details">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup } label="group" />
-					{ !this.state.loadingGroup &&
-						<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } text />
-					}
+						<Preloader loading={ this.state.loadingGroup }>
+							<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } text />
+						</Preloader>
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>
@@ -81,13 +83,13 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<Flex justify="flex-start" style={{width: '100%'}}>
+							<Flex justify="flex-start">
 								<Button
 									isSecondary
 									isLarge
-									href={ `/wp-admin/admin.php?page=tokenly-credit-group-edit&group=${ this.state?.group?.uuid }` }
+									href={ `${this.adminPageUrl}${this.namespace}-credit-group-edit&group=${ this.state?.group?.uuid }` }
 								>
-									Manage group
+									Manage Group
 								</Button>
 							</Flex>
 						</PanelRow>

@@ -4,13 +4,7 @@ import { SourceItem } from '../../../Interfaces';
 import SourceCard from './SourceCard';
 
 import { 
-	Button,
 	Flex,
-	Dashicon,
-	Card,
-	CardBody,
-	CardHeader,
-	CardFooter,
 } from '@wordpress/components';
 
 interface SourceListProps {

@@ -37,7 +37,11 @@ export default class BalanceCard extends Component<BalanceCardProps, BalanceCard
 		return (
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
-					<span>{ this.props.balance?.group }</span>
+					<GroupLink 
+						uuid={ this.props.balance.group_id }
+						name={ this.props.balance?.group?.name }
+						text={ ( !this.props.balance?.group ) }
+					/>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
 					<Flex
@@ -62,6 +66,12 @@ export default class BalanceCard extends Component<BalanceCardProps, BalanceCard
 							isSmall
 						>
 							Credit
+						</Button>
+						<Button
+							isSecondary
+							isSmall
+						>
+							View group
 						</Button>
 					</Flex>
 				</CardFooter>
