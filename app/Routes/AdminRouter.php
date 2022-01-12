@@ -236,6 +236,14 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'callable'   => array( $this->controllers['token_address'], 'balance_index' ),
 						'capability' => 'manage_options',
 					),
+					'token_address_show' => array(
+						'parent_slug' => null,
+						'page_title' => 'Token Address Display',
+						'menu_title' => 'Token Address Display',
+						'menu_slug'  => 'token-address-show',
+						'callable'   => array( $this->controllers['token_address'], 'show' ),
+						'capability' => 'manage_options',
+					),
 					'token_vendor' => array(
 						'page_title' => 'Token Vendor',
 						'menu_title' => 'Token Vendor',

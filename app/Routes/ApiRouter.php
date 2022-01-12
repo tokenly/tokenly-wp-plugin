@@ -171,6 +171,16 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
+			'token_address_show' => array(
+				'path' => '/token/address/(?P<id>\S+)',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['token_address'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 			'token_promise_index' => array(
 				'path' => '/token/promise',
 				'args' => array(
@@ -271,28 +281,8 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'user_index' => array(
-				'path' => '/user',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['user'], 'index' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'user_show' => array(
-				'path' => '/user/(?P<id>\S+)',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['user'], 'show' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
 			'user_credit_balance_index' => array(
-				'path' => '/user/(?P<id>\S+)/credit/balance',
+				'path' => '/user/(?P<id>[\S]+)/credit/balance',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user'], 'credit_balance_index' ),
@@ -302,10 +292,40 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				),
 			),
 			'user_token_balance_index' => array(
-				'path' => '/user/(?P<id>\S+)/token/balance',
+				'path' => '/user/(?P<id>[\S]+)/token/balance',
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user'], 'token_balance_index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user_token_address_index' => array(
+				'path' => '/user/(?P<id>[\S]+)/token/address',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'token_address_index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user_show' => array(
+				'path' => '/user/(?P<id>[\S]+)',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'show' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user_index' => array(
+				'path' => '/user',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'index' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},

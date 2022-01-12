@@ -111,7 +111,7 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 			<Page title="Group Editor">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup }>Edit Form</Preloader>
+						<Preloader loading={ this.state.loadingGroup }>Group Edit Form</Preloader>
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>

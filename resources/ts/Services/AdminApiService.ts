@@ -293,6 +293,16 @@ export default class AdminApiService implements AdminApiServiceInterface {
 		} );
 	}
 
+	userTokenAddressIndex( id: string, params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/user/${id}/token/address`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
 	userTokenBalanceIndex( id: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/user/${id}/token/balance`, params ).then( result => {

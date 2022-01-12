@@ -34,6 +34,17 @@ class AddressController extends Controller implements AddressControllerInterface
 	}
 
 	/**
+	 * Gets a single addresse
+	 * @param AddressInterface $address Bound address
+	 * @param \WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function show( AddressInterface $address, \WP_REST_Request $request ) {
+		$address = $address->to_array();
+		return $address;
+	}
+
+	/**
 	 * Gets a collection of balance
 	 * @param AddressInterface $user Bound address
 	 * @param \WP_REST_Request $request Request data
@@ -63,7 +74,7 @@ class AddressController extends Controller implements AddressControllerInterface
 	protected function get_bind_params() {
 		return array(
 			'service'                   => $this->address_service,
-			'single_methods'            => array( 'balance_index' ),
+			'single_methods'            => array( 'show', 'balance_index' ),
 			'single_service_method'     => 'show',
 			'collection_methods'        => array( 'index' ),
 			'collection_service_method' => 'index',

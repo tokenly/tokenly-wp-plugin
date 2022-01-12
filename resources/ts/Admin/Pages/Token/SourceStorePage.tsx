@@ -5,6 +5,7 @@ import { Component } from 'react';
 import { TYPES } from '../../../Types';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
+import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface';
 import SourceStoreForm from '../../Components/Token/SourceStoreForm';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
 import Preloader from '../../Components/Preloader';
@@ -43,6 +44,8 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	addressRepository: AddressRepositoryInterface;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
+	@resolve( TYPES.Repositories.UserRepositoryInterface )
+	userRepository: UserRepositoryInterface;
 	
 	state: SourceStorePageState = {
 		storing: false,
@@ -65,13 +68,16 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 	componentWillMount() {
 		this.setState( { loadingAddresses: true } );
 		const params = {
-			id: 'me',
 			registered: true,
 		}
-		this.addressRepository.index( params ).then( ( addresses: any ) => {
+		this.userRepository.tokenAddressIndex( 'me', params ).then( ( addresses: any ) => {
+			const addressesKeyed = {} as any;
+			addresses.forEach( ( address: any ) => {
+				addressesKeyed[ address.address ] = address;
+			} );
 			this.setState( {
 				loadingAddresses: false,
-				addresses: addresses,
+				addresses: addressesKeyed,
 			} );
 		} );
 	}
@@ -82,7 +88,7 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 			return;
 		}
 		const storeData = Object.assign( {}, this.state.storeData );
-		storeData.type = this.state.addresses[this.state.storeData.address].type;	
+		storeData.type = this.state.addresses[ this.state.storeData.address ].type;	
 		this.setState( { storing: true } );
 		this.sourceRepository.store( storeData ).then( ( result: any ) => {
 			this.setState( { storing: false } );

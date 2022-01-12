@@ -5,7 +5,7 @@ import { Component } from 'react';
 import Preloader from '../../../Components/Preloader';
 import BalanceList from '../../../Components/Token/BalanceList';
 import UserInfo from '../../../Components/UserInfo';
-import AddressRepositoryInterface from '../../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
+import UserRepositoryInterface from '../../../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../../../Types';
 
 import { 
@@ -32,8 +32,12 @@ interface BalanceIndexPageState {
 }
 
 export default class BalanceIndexPage extends Component<BalanceIndexPageProps, BalanceIndexPageState> {
-	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
-	addressRepository: AddressRepositoryInterface;
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
+	@resolve( TYPES.Repositories.UserRepositoryInterface )
+	userRepository: UserRepositoryInterface;
 
 	state: BalanceIndexPageState = {
 		loadingUser: false,
@@ -53,53 +57,50 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 			loadingBalance: true,
 			loadingUser: true,
 		} );
-		this.addressRepository.balanceIndex( this.state.id, {
+		this.userRepository.tokenBalanceIndex( this.state.id, {
 			with: [ 'meta' ],
 		} )
 		.then( ( balance: any ) => {
-			console.log(balance);
 			this.setState( {
-				loadingBalance: false,
 				balance: balance,
 			} );
 			return balance;
 		} )
-		// .then( ( balance: any ) => {
-		// 	this.userRepository.show( this.state.id, {
-		// 		with: [ 'oauth_user' ],
-		// 	} ).then( ( user: any ) => {
-		// 		this.setState( {
-		// 			loadingUser: false,
-		// 			user: user,
-		// 		} );
-		// 	} );
-		// } );
+		.then( ( balance: any ) => {
+			this.userRepository.show( this.state.id, {
+				with: [ 'oauth_user' ],
+			} ).then( ( user: any ) => {
+				this.setState( {
+					loadingBalance: false,
+					loadingUser: false,
+					user: user,
+				} );
+			} );
+		} );
 	}
 	
 	render() {
 		return (
-			<Page title="Credit Balance Listing">
+			<Page title="User Token Balance Listing">
 				<Panel>
 					<PanelHeader>
 						<Preloader loading={ this.state.loadingBalance }>Balance Listing</Preloader>
 					</PanelHeader>
-				{ ( this.state.loadingBalance === false || this.state.balance ) &&
-					<PanelBody>
-						<BalanceList balance={ this.state.balance } />
-					</PanelBody>
-				}
-				</Panel>
-				 <Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingUser }>User Info</Preloader>
-					</PanelHeader>
-				{ ( this.state.loadingUser === false || this.state.user ) &&
 					<PanelBody>
 						<PanelRow>
-							<UserInfo user={ this.state.user } />
+							<b>
+								<span>User: </span>
+								<a href={ `/${this.namespace}/user/${this.state.id}` }>
+									{ this.state?.user?.name ?? '№ ' + this.state.id }
+								</a>
+							</b>
 						</PanelRow>
+					{ ( this.state.loadingBalance === false || this.state.balance ) &&
+						<PanelRow>
+							<BalanceList balance={ this.state.balance } />
+						</PanelRow>
+					}
 					</PanelBody>
-				}
 				</Panel>
 			</Page>
 		);

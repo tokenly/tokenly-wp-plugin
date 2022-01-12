@@ -18,6 +18,7 @@ import CreditTransactionIndexPage from './../Admin/Pages/Credit/TransactionIndex
 import CreditTransactionStorePage from './../Admin/Pages/Credit/TransactionStorePage';
 import CreditVendorPage from './../Admin/Pages/Credit/VendorPage';
 import TaxonomyEditPage from './../Admin/Pages/TaxonomyEditPage';
+import TokenAddressShowPage from './../Admin/Pages/Token/Address/AddressShowPage';
 import TokenAddressBalanceIndexPage from './../Admin/Pages/Token/Address/BalanceIndexPage';
 import TokenPromiseShowPage from './../Admin/Pages/Token/PromiseShowPage';
 import TokenPromiseStorePage from './../Admin/Pages/Token/PromiseStorePage';
@@ -80,6 +81,7 @@ export default class AdminRouter implements AdminRouterInterface {
 			'credit-transaction-index'          : CreditTransactionIndexPage,
 			'credit-transaction-store'          : CreditTransactionStorePage,
 			'credit-vendor'                     : CreditVendorPage,
+			'token-address-show'                : TokenAddressShowPage,
 			'token-address-balance-index'       : TokenAddressBalanceIndexPage,
 			'token-promise-show'                : TokenPromiseShowPage,
 			'token-promise-store'               : TokenPromiseStorePage,
@@ -117,6 +119,8 @@ export default class AdminRouter implements AdminRouterInterface {
 	getHighlights() {
 		const highlights = {
 			[`${this.namespace}-token-vendor`]: [
+				'token-address-show',
+				'token-address-balance-index',
 				'token-promise-show',
 				'token-promise-store',
 				'token-promise-edit',

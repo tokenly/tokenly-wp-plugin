@@ -1190,7 +1190,9 @@ class TokenpassAPI implements TokenpassAPIInterface
 
       //send the request
       try {
-        $response = $client->request($method, $this->tokenpass_url.'/'.ltrim($endpoint, '/'), $data);
+		$url = $this->tokenpass_url.'/'.ltrim($endpoint, '/');
+		error_log( $url );
+        $response = $client->request($method, $url, $data);
         if ($response->getStatusCode() != 200){
           throw new Exception('Invalid API endpoint status code');
         }

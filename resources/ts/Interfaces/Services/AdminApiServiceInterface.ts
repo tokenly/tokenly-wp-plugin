@@ -36,6 +36,7 @@ export default interface AdminApiServiceInterface {
 	userIndex( params: UserIndexParams ): Promise<any>;
 	userShow( id: string, params?: any ): Promise<any>;
 	userCreditBalanceIndex( id: string, params?: any ): Promise<any>;
+	userTokenAddressIndex( id: string, params?: any ): Promise<any>;
 	userTokenBalanceIndex( id: string, params?: any ): Promise<any>;
 	makeRequest( method: string, route: string, args: object ): Promise<any>;
 }

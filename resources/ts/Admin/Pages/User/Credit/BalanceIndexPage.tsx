@@ -25,9 +25,7 @@ interface BalanceIndexPageProps {
 }
 
 interface BalanceIndexPageState {
-	loadingGroups: boolean;
-	loadingBalance: boolean;
-	loadingUser: boolean;
+	loading: boolean;
 	id: string;
 	user: any;
 	balance: any;
@@ -35,15 +33,17 @@ interface BalanceIndexPageState {
 }
 
 export default class BalanceIndexPage extends Component<BalanceIndexPageProps, BalanceIndexPageState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 	@resolve( TYPES.Repositories.UserRepositoryInterface )
 	userRepository: UserRepositoryInterface;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 
 	state: BalanceIndexPageState = {
-		loadingUser: false,
-		loadingBalance: false,
-		loadingGroups: false,
+		loading: false,
 		id: null,
 		user: null,
 		balance: null,
@@ -57,13 +57,10 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 
 	componentWillMount() {
 		this.setState( {
-			loadingGroups: true,
-			loadingBalance: true,
-			loadingUser: true,
+			loading: true,
 		} );
-		this.userRepository.indexCreditBalance( this.state.id ).then( ( balances: any ) => {
+		this.userRepository.creditBalanceIndex( this.state.id ).then( ( balances: any ) => {
 			this.setState( {
-				loadingBalance: false,
 				balance: balances,
 			} );
 			return balances;
@@ -80,9 +77,7 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 					}
 					return balance;
 				} );
-				console.log(balances);
 				this.setState( {
-					loadingGroups: false,
 					balance: balances,
 				} );
 			} );
@@ -92,7 +87,7 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 				with: [ 'oauth_user' ],
 			} ).then( ( user: any ) => {
 				this.setState( {
-					loadingUser: false,
+					loading: false,
 					user: user,
 				} );
 			} );
@@ -101,28 +96,26 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 
 	render() {
 		return (
-			<Page title="Token Balance Listing">
+			<Page title="User Credit Balance Listing">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ ( this.state.loadingBalance || this.state.loadingGroups ) }>Balance Listing</Preloader>
+						<Preloader loading={ this.state.loading }>Balance Listing</Preloader>
 					</PanelHeader>
-				{ ( this.state.loadingBalance === false || this.state.balance ) &&
-					<PanelBody>
-						<BalanceList balances={ this.state.balance } />
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingUser } >User Profile</Preloader>
-					</PanelHeader>
-				{ ( this.state.loadingUser === false || this.state.user ) &&
 					<PanelBody>
 						<PanelRow>
-							<UserInfo user={ this.state.user } />
+							<b>
+								<span>User: </span>
+								<a href={ `/${this.namespace}/user/${this.state.id}` }>
+									{ this.state?.user?.name ?? '№ ' + this.state.id }
+								</a>
+							</b>
 						</PanelRow>
+					{ ( this.state.loading === false || this.state.balance ) &&
+						<PanelRow>
+							<BalanceList balances={ this.state.balance } />
+						</PanelRow>
+					}
 					</PanelBody>
-				}
 				</Panel>
 			</Page>
 		);

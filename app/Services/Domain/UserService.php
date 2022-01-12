@@ -105,8 +105,6 @@ class UserService extends DomainService implements UserServiceInterface {
 		return $user;
 	}
 
-
-
 	/**
 	 * Adds an inventory link to WordPress admin user list
 	 * @param array $actions Current actions
@@ -121,8 +119,8 @@ class UserService extends DomainService implements UserServiceInterface {
 		if ( $user && $user->can_connect() ) {
 			$token_balance_url = admin_url( "admin.php?page={$this->namespace}-user-token-balance-index&id={$id}" );
 			$credit_balance_url = admin_url( "admin.php?page={$this->namespace}-user-credit-balance-index&id={$id}" );
-			$actions[ "{$this->namespace }_token_balance" ] = "<a href='{$token_balance_url}'>Token inventory</a>";
-			$actions[ "{$this->namespace }_credit_balance" ] = "<a href='{$credit_balance_url}'>Credit inventory</a>";
+			$actions[ "{$this->namespace }_token_balance" ] = "<a href='{$token_balance_url}'>Token Inventory</a>";
+			$actions[ "{$this->namespace }_credit_balance" ] = "<a href='{$credit_balance_url}'>Credit Inventory</a>";
 		}
 		return $actions;
 	}

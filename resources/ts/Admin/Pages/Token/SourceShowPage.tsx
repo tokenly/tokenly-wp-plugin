@@ -2,6 +2,7 @@ import { resolve } from 'inversify-react';
 import * as React from 'react';
 import { Component } from 'react';
 import { TYPES } from '../../../Types';
+import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import Page from './../Page';
 import Preloader from '../../Components/Preloader';
@@ -28,7 +29,8 @@ interface SourceShowPageProps {
 interface SourceShowPageState {
 	id: string,
 	source: any,
-	loading: boolean,
+	loadingSource: boolean,
+	loadingAddress: boolean,
 }
 
 export default class SourceShowPage extends Component<SourceShowPageProps, SourceShowPageState> {
@@ -36,32 +38,21 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	adminPageUrl: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
+	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
+	addressRepository: AddressRepositoryInterface;
 	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
 	sourceRepository: SourceRepositoryInterface;
 
 	state: SourceShowPageState = {
 		id: null,
 		source: null,
-		loading: false,
+		loadingSource: false,
+		loadingAddress: false,
 	}
 	constructor( props: SourceShowPageProps ) {
 		super( props );
-		this.getAssetNames = this.getAssetNames.bind( this );
 		const urlParams = new URLSearchParams( window.location.search );
 		this.state.id = urlParams.get( 'source' );
-	}
-
-	getAssetNames() {
-		let balances = this.state?.source?.address?.balances;
-		if ( !balances ) {
-			return;
-		}
-		let assets = [] as any;
-		Object.keys( balances ).map( ( key, index ) => {
-			assets.push( balances[ key ].asset );
-		} );
-		assets = assets.join( ', ' );
-		return assets;
 	}
 
 	isSourceValid() {
@@ -69,16 +60,26 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 	}
 
 	componentWillMount() {
-		this.setState( { loading: true } );
-		const params = {
-			with: ['address'],
-		}
-		this.sourceRepository.show( this.state.id, params ).then( ( source: any ) => {
+		this.setState( {
+			loadingSource: true,
+			loadingAddress: true,
+		} );
+		this.sourceRepository.show( this.state.id ).then( ( source: any ) => {
 			this.setState( {
-				loading: false,
+				loadingSource: false,
 				source: source,
 			} );
-		} );
+			return source;
+		} )
+		.then( ( source: any ) => {
+			this.addressRepository.show( source.address_id ).then( ( address: any ) => {
+				source.address = address;
+				this.setState( {
+					source: source,
+					loadingAddress: false,
+				} );
+			} )
+		} )
 	}
 	
 	render() {
@@ -86,9 +87,9 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 			<Page title="Source Display">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loading }>Source Info</Preloader>
+						<Preloader loading={ ( this.state.loadingSource || this.state.loadingAddress ) }>Source Info</Preloader>
 					</PanelHeader>
-				{ !this.state.loading &&
+				{ !this.state.loadingSource &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>

@@ -43,7 +43,7 @@ class ResourceService extends Service implements ResourceServiceInterface {
 	public function enqueue_frontend_scripts() {
 		$version = $this->get_version_for_build( 'Frontend' );
 		$label = "{$this->namespace}-frontend";
-		wp_register_script( $label, "{$this->build_url}/Frontend.js", array( 'wp-api' ), $version, true );
+		wp_register_script( $label, "{$this->build_url}/Frontend.js", array( 'wp-api', 'wp-components', 'wp-element' ), $version, true );
 		wp_enqueue_script( $label );
 		wp_register_style( $label, "{$this->build_url}/Frontend.css", $version );
 		wp_enqueue_style( $label );

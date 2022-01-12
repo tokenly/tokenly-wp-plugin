@@ -11,6 +11,7 @@ use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 
 class UserController extends Controller implements UserControllerInterface {
 	public function __construct(
@@ -84,13 +85,34 @@ class UserController extends Controller implements UserControllerInterface {
 	}
 
 	/**
+	 * Gets a collection of addresses
+	 * @param UserInterface $user Bound user
+	 * @param \WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function token_address_index( UserInterface $user, \WP_REST_Request $request ) {
+		$user->load( array( 'oauth_user.address' ) );
+		if (
+			isset( $user->oauth_user ) &&
+			$user->oauth_user instanceof OauthUserInterface === true &&
+			isset( $user->oauth_user->address ) &&
+			$user->oauth_user->address instanceof AddressCollectionInterface === true
+		) {
+			$address = $user->oauth_user->address->to_array();
+			return $address;
+		} else {
+			return array();
+		}
+	}
+
+	/**
 	 * Gets model binding parameters
 	 * @return array
 	 */
 	protected function get_bind_params() {
 		return array(
 			'service'                   => $this->user_service,
-			'single_methods'            => array( 'show', 'credit_balance_index', 'token_balance_index' ),
+			'single_methods'            => array( 'show', 'credit_balance_index', 'token_balance_index', 'token_address_index' ),
 			'single_service_method'     => 'show',
 			'collection_methods'        => array( 'index' ),
 			'collection_service_method' => 'index',
