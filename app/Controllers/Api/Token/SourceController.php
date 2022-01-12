@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Collections\Token\SourceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
 
 /**
- * Handles the source REST API endpoints
+ * Defines source endpoints
  */
 class SourceController extends Controller implements SourceControllerInterface {
 	public function __construct(

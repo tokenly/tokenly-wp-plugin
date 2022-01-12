@@ -45,15 +45,15 @@ export default class GroupCard extends Component<GroupCardProps, GroupCardState>
 						actions={
 							[
 								{
-									title: 'View transactions',
+									title: 'View Transactions',
 									url: `${ this.adminPageUrl }${ this.namespace }-credit-transaction-index&group=${ this.props.group.uuid }`,
 								},
 								{
-									title: 'View details',
+									title: 'View Details',
 									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.group.uuid }`,
 								},
 								{
-									title: 'Edit group',
+									title: 'Edit Group',
 									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-edit&group=${ this.props.group.uuid }`,
 								},
 							]

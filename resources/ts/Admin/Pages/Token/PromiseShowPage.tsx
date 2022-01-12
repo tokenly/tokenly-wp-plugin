@@ -75,7 +75,7 @@ export default class PromiseShowPage extends Component<PromiseShowPageProps, Pro
 				<Panel>
 					<PanelHeader>
 						<Preloader loading={ this.state.loadingPromise }>
-							<PromiseLink id={ this.state.id } />
+							Promise Info
 						</Preloader>
 					</PanelHeader>
 					{ !this.state.loadingPromise &&

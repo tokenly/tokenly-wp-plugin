@@ -94,7 +94,7 @@ export default class WhitelistEditor extends Component<WhitelistEditorProps, Whi
 				direction="column"
 			>
 				<label>
-					<strong>Token Whitelist Editor</strong>
+					<b>Token Whitelist Editor</b>
 					<Flex
 						//@ts-ignore
 						direction="column"

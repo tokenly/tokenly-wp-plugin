@@ -79,7 +79,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 				</Panel>
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={this.state.loadingSources}>Registered sources</Preloader>
+						<Preloader loading={this.state.loadingSources}>Registered Sources</Preloader>
 					</PanelHeader>
 				{
 				(

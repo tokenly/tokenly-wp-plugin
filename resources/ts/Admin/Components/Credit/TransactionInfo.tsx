@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Component } from 'react';
 import * as dayjs from 'dayjs'
 import UserLink from './../UserLink';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 import { 
 	Flex,
@@ -17,8 +19,14 @@ interface TransactionInfoState {
 }
 
 export default class TransactionInfo extends Component<TransactionInfoProps, TransactionInfoState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
+
 	constructor( props: TransactionInfoProps ) {
 		super( props );
+		this.getUserLink = this.getUserLink.bind( this );
 	}
 
 	dateFormatted( date: Date ) {
@@ -28,6 +36,14 @@ export default class TransactionInfo extends Component<TransactionInfoProps, Tra
 		return;
 	}
 
+	getUserLink() {
+		if ( this.props.transaction?.user.id ) {
+			return `${this.adminPageUrl}${this.namespace}-user-credit-balance-index&id=${this.props.transaction?.user.id}`;
+		} else {
+			return null
+		}		
+	}
+
 	render() {
 		return (
 			<Flex style={ { width: '100%', alignItems: 'center' } }>
@@ -35,22 +51,22 @@ export default class TransactionInfo extends Component<TransactionInfoProps, Tra
 					<Flex justify="flex-start">
 						<span>User: </span>
 						<UserLink
-							url={ `` }
+							url={ this.getUserLink() }
 							name={ this.props.transaction?.user?.name ? this.props.transaction?.user?.name : this.props.transaction?.account }
 							alt={ this.props.transaction.account }
 						/>
 					</Flex>
 					<div>
 						<span>Amount: </span>
-						<strong>{ this.props.transaction.amount }</strong>
+						<b>{ this.props.transaction.amount }</b>
 					</div>
 					<div>
-						<span>Created at: </span>
-						<strong>{ this.dateFormatted( this.props.transaction?.created_at ) }</strong>
+						<span>Created At: </span>
+						<b>{ this.dateFormatted( this.props.transaction?.created_at ) }</b>
 					</div>
 					<div>
-						<span>Updated at: </span>
-						<strong>{ this.dateFormatted( this.props.transaction?.updated_at ) }</strong>
+						<span>Updated At: </span>
+						<b>{ this.dateFormatted( this.props.transaction?.updated_at ) }</b>
 					</div>
 				</div>
 			</Flex>

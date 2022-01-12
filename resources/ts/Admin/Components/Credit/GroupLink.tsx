@@ -28,11 +28,11 @@ export default class GroupLink extends Component<GroupLinkProps, GroupLinkState>
 		const url = `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.uuid }`;
 		if ( this.props.text ) {
 			return (
-				<span>{ title }</span>
+				<b><span>{ title }</span></b>
 			)
 		}
 		return (
-			<a href={ url }>{ title }</a>
+			<b><a href={ url }>{ title }</a></b>
 		);
 	}
 }

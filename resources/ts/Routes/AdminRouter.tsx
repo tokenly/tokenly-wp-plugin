@@ -18,8 +18,7 @@ import CreditTransactionIndexPage from './../Admin/Pages/Credit/TransactionIndex
 import CreditTransactionStorePage from './../Admin/Pages/Credit/TransactionStorePage';
 import CreditVendorPage from './../Admin/Pages/Credit/VendorPage';
 import TaxonomyEditPage from './../Admin/Pages/TaxonomyEditPage';
-import UserCreditBalanceIndexPage from './../Admin/Pages/User/Credit/BalanceIndexPage';
-import UserTokenBalanceIndexPage from './../Admin/Pages/User/Token/BalanceIndexPage';
+import TokenAddressBalanceIndexPage from './../Admin/Pages/Token/Address/BalanceIndexPage';
 import TokenPromiseShowPage from './../Admin/Pages/Token/PromiseShowPage';
 import TokenPromiseStorePage from './../Admin/Pages/Token/PromiseStorePage';
 import TokenPromiseEditPage from './../Admin/Pages/Token/PromiseEditPage';
@@ -30,6 +29,8 @@ import TokenSourceEditPage from './../Admin/Pages/Token/SourceEditPage';
 import TokenMetaEditPage from './../Admin/Pages/Token/MetaEditPage';
 import TokenVendorPage from './../Admin/Pages/Token/VendorPage';
 import TokenWhitelistEditPage from './../Admin/Pages/Token/WhitelistEditPage';
+import UserCreditBalanceIndexPage from './../Admin/Pages/User/Credit/BalanceIndexPage';
+import UserTokenBalanceIndexPage from './../Admin/Pages/User/Token/BalanceIndexPage';
 import DashboardPage from './../Admin/Pages/DashboardPage';
 import PostEditPage from './../Admin/Pages/PostEditPage';
 
@@ -70,29 +71,30 @@ export default class AdminRouter implements AdminRouterInterface {
 
 	getViews() {
 		let routes = {
-			'dashboard'                 : DashboardPage,
-			'settings'                  : SettingsPage,
-			'connection'                : ConnectionPage,
-			'credit-group-show'         : CreditGroupShowPage,
-			'credit-group-store'        : CreditGroupStorePage,
-			'credit-group-edit'         : CreditGroupEditPage,
-			'credit-transaction-index'  : CreditTransactionIndexPage,
-			'credit-transaction-store'  : CreditTransactionStorePage,
-			'credit-vendor'             : CreditVendorPage,
-			'token-promise-show'        : TokenPromiseShowPage,
-			'token-promise-store'       : TokenPromiseStorePage,
-			'token-promise-edit'        : TokenPromiseEditPage,
-			'token-source-index'        : TokenSourceIndexPage,
-			'token-source-show'         : TokenSourceShowPage,
-			'token-source-store'        : TokenSourceStorePage,
-			'token-source-edit'         : TokenSourceEditPage,
-			'token-meta-edit'           : TokenMetaEditPage,
-			'token-vendor'              : TokenVendorPage,
-			'token-whitelist-edit'      : TokenWhitelistEditPage,
-			'user-token-balance-index'  : UserTokenBalanceIndexPage,
-			'user-credit-balance-index' : UserCreditBalanceIndexPage,
-			'post-edit'                 : PostEditPage,
-			'taxonomy-edit'             : TaxonomyEditPage,
+			'dashboard'                         : DashboardPage,
+			'settings'                          : SettingsPage,
+			'connection'                        : ConnectionPage,
+			'credit-group-show'                 : CreditGroupShowPage,
+			'credit-group-store'                : CreditGroupStorePage,
+			'credit-group-edit'                 : CreditGroupEditPage,
+			'credit-transaction-index'          : CreditTransactionIndexPage,
+			'credit-transaction-store'          : CreditTransactionStorePage,
+			'credit-vendor'                     : CreditVendorPage,
+			'token-address-balance-index'       : TokenAddressBalanceIndexPage,
+			'token-promise-show'                : TokenPromiseShowPage,
+			'token-promise-store'               : TokenPromiseStorePage,
+			'token-promise-edit'                : TokenPromiseEditPage,
+			'token-source-index'                : TokenSourceIndexPage,
+			'token-source-show'                 : TokenSourceShowPage,
+			'token-source-store'                : TokenSourceStorePage,
+			'token-source-edit'                 : TokenSourceEditPage,
+			'token-meta-edit'                   : TokenMetaEditPage,
+			'token-vendor'                      : TokenVendorPage,
+			'token-whitelist-edit'              : TokenWhitelistEditPage,
+			'user-credit-balance-index'         : UserCreditBalanceIndexPage,
+			'user-token-balance-index'          : UserTokenBalanceIndexPage,
+			'post-edit'                         : PostEditPage,
+			'taxonomy-edit'                     : TaxonomyEditPage,
 
 		} as any;
 		return routes;

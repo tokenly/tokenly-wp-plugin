@@ -60,7 +60,7 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 	}
 
 	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-credit-group-index`;
+		window.location = `${this.adminPageUrl}${this.namespace}-credit-vendor`;
 	}
 
 	onSave() {
@@ -111,12 +111,16 @@ export default class GroupEditPage extends Component<GroupEditPageProps, GroupEd
 			<Page title="Group Editor">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup }>
-							<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } />
-						</Preloader>
+						<Preloader loading={ this.state.loadingGroup }>Edit Form</Preloader>
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>
+						<PanelRow>
+							<div>
+								<span>Group: </span>
+								<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } />
+							</div>
+						</PanelRow>
 						<PanelRow>
 							<GroupEditForm
 								onChange={ this.onEditDataChange }

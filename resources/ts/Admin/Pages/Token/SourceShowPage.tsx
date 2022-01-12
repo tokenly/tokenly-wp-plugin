@@ -86,9 +86,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 			<Page title="Source Display">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loading }>
-							<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } text />
-						</Preloader>
+						<Preloader loading={ this.state.loading }>Source Info</Preloader>
 					</PanelHeader>
 				{ !this.state.loading &&
 					<PanelBody>

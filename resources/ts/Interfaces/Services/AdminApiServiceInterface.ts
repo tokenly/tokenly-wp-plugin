@@ -25,6 +25,7 @@ export default interface AdminApiServiceInterface {
 	tokenSourceStore( params: SourceData ): Promise<any>;
 	tokenSourceUpdate( address: string, params: SourceData ): Promise<any>;
 	tokenSourceDestroy( address: string ): Promise<any>;
+	tokenAddressBalanceIndex( id: string, params: any ): Promise<Array<PromiseData>>;
 	tokenPromiseIndex( params: any ): Promise<Array<PromiseData>>;
 	tokenPromiseShow( id: number, params?: any ): Promise<Array<any>>;
 	tokenPromiseStore( params: PromiseStoreParams ): Promise<any>;

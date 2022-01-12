@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface;
 
 /**
- * Defines promise-related endpoints
+ * Defines promise endpoints
  */
 class PromiseController extends Controller implements PromiseControllerInterface {
 	protected $promise_service;

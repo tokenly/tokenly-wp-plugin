@@ -40,15 +40,15 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 					style={ { opacity: this.props.address ? 1 : 0.5 } }
 				>
 					<div>
-						<strong>Type: </strong>
+						<b>Type: </b>
 						<span>{ this.props.address?.type ?? '-' }</span>
 					</div>
 					<div>
-						<strong>Address: </strong>
+						<b>Address: </b>
 						<span>{ this.props.address?.address ?? '-' }</span>
 					</div>
 					<div>
-						<strong>Assets: </strong>
+						<b>Assets: </b>
 						{ this.props.address
 							?	<a href={ `${ this.adminPageUrl }${ this.namespace }-token-balance-index&address=${ this.props.address.address }` } >View Balance</a>
 							:	<span>-</span>

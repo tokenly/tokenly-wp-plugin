@@ -65,9 +65,7 @@ export default class GroupShowPage extends Component<GroupShowPageProps, GroupSh
 			<Page title="Group Details">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup }>
-							<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } text />
-						</Preloader>
+						<Preloader loading={ this.state.loadingGroup }>Group Info</Preloader>
 					</PanelHeader>
 				{ !this.state.loadingGroup &&
 					<PanelBody>

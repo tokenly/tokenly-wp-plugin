@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { resolve } from 'inversify-react';
+import { TYPES } from '../../../Types';
+import CardActions from './../CardActions';
 
 import { 
 	Card,
 	CardHeader,
 	CardBody,
+	CardFooter,
 } from '@wordpress/components';
 
 interface BalanceCardProps {
@@ -16,6 +20,10 @@ interface BalanceCardState {
 }
 
 export default class BalanceCard extends Component<BalanceCardProps, BalanceCardState> {
+	@resolve( TYPES.Variables.adminPageUrl )
+	adminPageUrl: string;
+	@resolve( TYPES.Variables.namespace )
+	namespace: string;
 
 	constructor( props: BalanceCardProps ) {
 		super( props );
@@ -34,7 +42,7 @@ export default class BalanceCard extends Component<BalanceCardProps, BalanceCard
 		return (
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
-					<strong title={ this.props?.balance?.asset }>{ this.getName() }</strong>
+					<b title={ this.props?.balance?.asset }>{ this.getName() }</b>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
 					{ this.props?.balance?.quantity?.value ?? 0 }

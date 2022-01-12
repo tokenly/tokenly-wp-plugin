@@ -45,12 +45,12 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 		this.onStore = this.onStore.bind( this );
 		this.onCancel = this.onCancel.bind( this );
 		this.onStoreDataChange = this.onStoreDataChange.bind( this );
-		this.state.storeData.name = 'New group';
+		this.state.storeData.name = 'New Group';
 		this.state.storeData.app_whitelist = this.props.pageData?.client_id;
 	}
 
 	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-credit-group-index`;
+		window.location = `${this.adminPageUrl}${this.namespace}-credit-vendor`;
 	}
 	
 	onStore() {

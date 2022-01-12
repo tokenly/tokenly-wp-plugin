@@ -3,7 +3,6 @@ import { Component } from 'react';
 import { resolve } from 'inversify-react';
 import { TYPES } from '../../../Types';
 import CardActions from './../CardActions';
-import GroupInfo from './GroupInfo';
 import GroupLink from './GroupLink';
 
 import { 
@@ -48,32 +47,28 @@ export default class BalanceCard extends Component<BalanceCardProps, BalanceCard
 						//@ts-ignore
 						direction="column"
 					>
-						<div>Balance: <strong>{ this.props.balance?.balance }</strong></div>
+						<div>Balance: <b>{ this.props.balance?.balance }</b></div>
 					</Flex>
 				</CardBody>
 				<CardFooter>
-					<Flex
-						justify="flex-start"
-					>
-						<Button
-							isSecondary
-							isSmall
-						>
-							Debit
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-						>
-							Credit
-						</Button>
-						<Button
-							isSecondary
-							isSmall
-						>
-							View group
-						</Button>
-					</Flex>
+					<CardActions
+						actions={
+							[
+								{
+									title: 'Debit',
+									url: `${ this.adminPageUrl }${ this.namespace }-credit-transaction-store&group=${ this.props.balance.group_id }&type=debit`,
+								},
+								{
+									title: 'Credit',
+									url: `${ this.adminPageUrl }${ this.namespace }-credit-transaction-store&group=${ this.props.balance.group_id }&type=credit`,
+								},
+								{
+									title: 'View Group',
+									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.balance.group_id }`,
+								},
+							]
+						}
+					/>
 				</CardFooter>
 			</Card>
 		);

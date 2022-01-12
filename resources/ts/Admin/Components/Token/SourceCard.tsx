@@ -46,17 +46,19 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 			<Card size="extraSmall" style={ { width: '100%' } }>
 				<CardHeader>
 					<div title={ this.props.source.address_id }>
-						<a 
-							href={ `${this.adminPageUrl}${this.namespace}-token-source-show&source=${ this.props.source.address_id }` }
-						>
-							{ this.props.source.address?.label }
-						</a>
+						<b>
+							<a 
+								href={ `${this.adminPageUrl}${this.namespace}-token-source-show&source=${ this.props.source.address_id }` }
+							>
+								{ this.props.source.address?.label }
+							</a>
+						</b>
 					</div>
 				</CardHeader>
 				<CardBody style={ { width: '100%' } }>
 					<Flex style={ { width: '100%', alignItems: 'center' } }>
 						<div style={ { flex: 1 } }>
-							<div><span>Whitelisted Assets: </span><strong>{ this.getAssets() }</strong></div>
+							<div><span>Whitelisted Assets: </span><b>{ this.getAssets() }</b></div>
 						</div>
 					</Flex>
 				</CardBody>
@@ -69,7 +71,7 @@ export default class SourceCard extends Component<SourceCardProps, SourceCardSta
 							},
 							{
 								title: 'View Balance',
-								url: `${ this.adminPageUrl }${ this.namespace }-token-address-balance-index&address=${ this.props.source.address_id }`,
+								url: `${ this.adminPageUrl }${ this.namespace }-token-address-balance-index&id=${ this.props.source.address_id }`,
 							},
 							{
 								title: 'Edit Source',

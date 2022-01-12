@@ -23,9 +23,9 @@ export default class Preloader extends Component<PreloaderProps, PreloaderState>
 	render() {
 		return (
 			<Flex justify="flex-start" align="center" style={ { minHeight: '30px' } }>
-				<strong>
+				<b>
 					{ this.props.children }
-				</strong>
+				</b>
 			{ this.props.loading &&
 				<Spinner />
 			}

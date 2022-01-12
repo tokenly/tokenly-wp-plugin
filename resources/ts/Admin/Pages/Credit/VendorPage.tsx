@@ -63,7 +63,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				</Panel>
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroups }>Registered groups</Preloader>
+						<Preloader loading={ this.state.loadingGroups }>Registered Groups</Preloader>
 					</PanelHeader>
 				{
 					(

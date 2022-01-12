@@ -25,11 +25,11 @@ export default class PromiseLink extends Component<PromiseLinkProps, PromiseLink
 		return (
 			<span>
 				<span>№ </span>
-				<strong>
+				<b>
 					<a href={ `${this.adminPageUrl}${this.namespace}-token-promise-show&promise=${ this.props.id }` }>
 						{ this.props.id }
 					</a>
-				</strong>
+				</b>
 			</span>
 		);
 	}

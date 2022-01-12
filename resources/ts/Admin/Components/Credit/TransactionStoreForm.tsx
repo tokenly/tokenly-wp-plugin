@@ -99,7 +99,7 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 						loading={ this.props.loadingGroups }
 					/>
 					<SelectControl
-						label="Transaction type"
+						label="Transaction Type"
 						value={ this.props.storeData?.type }
 						options={ [
 							{ label: 'Debit' , value: 'debit' },
@@ -133,7 +133,7 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 						onChange={ this.onAmountFieldChange }
 					/>
 					<TextControl
-						label="Ref"
+						label="Reference"
 						help="Extra reference data"
 						value={ this.props.storeData?.ref }
 						onChange={ this.onRefFieldChange }

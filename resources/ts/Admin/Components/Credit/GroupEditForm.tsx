@@ -52,7 +52,7 @@ export default class GroupEditForm extends Component<GroupEditFormProps, GroupEd
 						onChange={ this.onNameFieldChange }
 					/>
 					<TextareaControl
-						label="App whitelist"
+						label="App Whitelist"
 						help="Comma-separated values."
 						value={ this.props.editData.app_whitelist }
 						onChange={ this.onWhitelistFieldChange }

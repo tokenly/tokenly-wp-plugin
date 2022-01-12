@@ -57,9 +57,9 @@ export default class PromiseSourceInfo extends Component<PromiseSourceInfoProps,
 					<span>
 						{ this.sourceExists( this.props.promise )
 							?	<a href={`${this.adminPageUrl}${this.namespace}-token-source-show&source=${this.props.promise.source_id}`}>
-									<strong>{ this.getPromiseSource( this.props.promise ) }</strong>
+									<b>{ this.getPromiseSource( this.props.promise ) }</b>
 								</a>
-							: 	<span><strong>{ this.props.promise.source_id }</strong></span>
+							: 	<span><b>{ this.props.promise.source_id }</b></span>
 						}
 					</span>
 				</div>

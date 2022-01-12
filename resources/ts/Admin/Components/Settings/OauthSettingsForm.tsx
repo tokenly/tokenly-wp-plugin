@@ -20,6 +20,8 @@ interface OauthSettingsFormState {
 }
 
 export default class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSettingsFormState> {
+	@resolve( TYPES.Variables.brand )
+	brand: string;
 	@resolve( TYPES.Variables.namespace )
 	namespace: string;
 
@@ -70,19 +72,19 @@ export default class OauthSettingsForm extends Component<OauthSettingsFormProps,
 				/>
 				<ToggleControl
 					label="Use Single Sign-On (SSO)"
-					help="Allows the existing users to login using their Tokenpass account."
+					help={ `Allows the existing users to login using their ${this.brand} account.` }
 					checked={ this.props.settings.use_single_sign_on }
 					onChange={ this.onSsoFieldChange }
 				/>
 				<ToggleControl
 					label="Allow Accounts Without Email"
-					help="Allows connecting Tokenpass accounts which have no email accounts associated."
+					help={ `Allows connecting ${this.brand} accounts which have no email accounts associated.` }
 					checked={ this.props.settings.allow_no_email }
 					onChange={ this.onAllowNoEmailFieldChange }
 				/>
 				<ToggleControl
 					label="Allow Accounts Without a Confirmed Email"
-					help="Allow connecting Tokenpass accounts which have an unconfirmed email account associated."
+					help={ `Allow connecting ${this.brand} accounts which have an unconfirmed email account associated.` }
 					checked={ this.props.settings.allow_unconfirmed_email }
 					onChange={ this.onAllowUnconfirmedEmailFieldChange }
 				/>

@@ -142,11 +142,19 @@ export default class SourceEditPage extends Component<SourceEditPageProps, Sourc
 				<Panel>
 					<PanelHeader>
 						<Preloader loading={ this.state.loading }>
-							<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } />
+							Source Edit Form
 						</Preloader>
 					</PanelHeader>
 				{ !this.state.loading &&
 					<PanelBody>
+						<PanelRow>
+							<div>
+								<span>Source: </span>
+								<b>
+									<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } />
+								</b>
+							</div>
+						</PanelRow>
 						<PanelRow>
 							<SourceEditForm
 								onChange={ this.onEditDataChange }

@@ -4,5 +4,5 @@ import WhitelistSettingsRepositoryInterface from '../../Interfaces/Repositories/
 
 @injectable()
 export default class WhitelistSettingsRepository extends SettingsRepository implements WhitelistSettingsRepositoryInterface {
-	settingsType: string = 'whitelist';
+	settingsType: string = 'token_whitelist';
 }

@@ -52,7 +52,7 @@ export default class GroupStoreForm extends Component<GroupStoreFormProps, Group
 						onChange={ this.onNameFieldChange }
 					/>
 					<TextareaControl
-						label="App whitelist"
+						label="App Whitelist"
 						value={ this.props.storeData?.app_whitelist }
 						help="Comma-separated list."
 						onChange={ this.onWhitelistFieldChange }

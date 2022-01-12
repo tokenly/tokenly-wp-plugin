@@ -25,11 +25,11 @@ export default class UserLink extends Component<UserLinkProps, UserLinkState> {
 		return (
 			<div>
 				<Dashicon icon="admin-users" style={ { marginRight: '2px' } } />
-				<strong title={ this.props.alt }>
+				<b title={ this.props.alt }>
 					<a href={ this.props.url } >
 						<span>{ this.props.name ? this.props.name : 'Unknown' }</span>
 					</a>
-				</strong>
+				</b>
 			</div>
 		);
 	}

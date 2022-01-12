@@ -37,7 +37,14 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 			return (
 				<div>
 					<span>{ property.label }: </span>
-					<span style={ { opacity: property.value ? 1 : 0.6 } }><strong>{ property.value ? property.value : '' }</strong></span>
+					<b>
+					{ property.value
+					?	<span>{ property.value }</span>
+					:	<span style={ { opacity: 0.6 } }>
+							Not Specified
+						</span>
+					}
+					</b>
 				</div>
 			);
 		} );
@@ -56,6 +63,10 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 		];
 		if ( this.props.verbose ) {
 			properties.push(
+				{
+					label: 'ID',
+					value: this.props.promise?.promise_id,
+				},
 				{
 					label: 'Ref',
 					value: this.props.promise?.ref,
@@ -96,7 +107,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 						<div>
 							<span>Source: </span>
 							<a href={`${this.adminPageUrl}${this.namespace}-token-source-show&source=${this.props.promise?.source_id}`}>
-								<strong>{this.props.promise?.source?.address.label ?? this.props.promise.source_id}</strong>
+								<b>{this.props.promise?.source?.address.label ?? this.props.promise.source_id}</b>
 							</a>
 						</div>
 						<PromiseParticipants promise={ this.props.promise } />

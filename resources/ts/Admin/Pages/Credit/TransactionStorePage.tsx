@@ -60,7 +60,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 	}
 
 	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-credit-group-index`;
+		window.location = `${this.adminPageUrl}${this.namespace}-credit-vendor`;
 	}
 
 	componentWillMount() {
@@ -76,6 +76,25 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 				groups: groups,
 				storeData: storeData,
 			} );
+		} )
+		.then( () => {
+			const urlParams = new URLSearchParams( window.location.search );
+			const group = urlParams.get( 'group' );
+			if ( group ) {
+				const storeData = Object.assign( {}, this.state.storeData );
+				storeData.group_uuid = group;
+				this.setState( {
+					storeData: storeData,
+				} );
+			}
+			const type = urlParams.get( 'type' );
+			if ( type ) {
+				const storeData = Object.assign( {}, this.state.storeData );
+				storeData.type = type;
+				this.setState( {
+					storeData: storeData,
+				} );
+			}
 		} );
 	}
 
@@ -96,6 +115,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 	}
 
 	onStoreDataChange( newData: any ) {
+		console.log(newData);
 		this.setState( { storeData: newData } );
 	}
 	
@@ -104,7 +124,7 @@ export default class TransactionStorePage extends Component<TransactionStorePage
 			<Page title="Transaction Creator">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroups }>Transaction form</Preloader>
+						<Preloader loading={ this.state.loadingGroups }>Transaction Form</Preloader>
 					</PanelHeader>
 				{ ( !this.state.loadingGroups && this.state.groups ) &&
 					<PanelBody>

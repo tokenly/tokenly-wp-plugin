@@ -35,13 +35,13 @@ export default class VendorActions extends Component<VendorActionsProps, VendorA
 					isPrimary
 					href={ `${this.adminPageUrl}${this.namespace}-credit-transaction-store` }
 				>
-					Make transaction
+					Make Transaction
 				</Button>
 				<Button
 					isPrimary
 					href={ `${this.adminPageUrl}${this.namespace}-credit-group-store` }
 				>
-					Register group
+					Register Group
 				</Button>
 			</Flex>
 		);

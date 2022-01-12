@@ -49,6 +49,7 @@ export default class TransactionIndexPage extends Component<TransactionIndexPage
 			with: [ 'user' ],
 		}
 		this.transactionRepository.index( params ).then( ( transactions ) => {
+			console.log(transactions);
 			this.setState( {
 				loadingTransactions: false,
 				transactions: transactions,
@@ -61,27 +62,25 @@ export default class TransactionIndexPage extends Component<TransactionIndexPage
 			<Page title="Transaction Listing">
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingTransactions }>Registered transactions</Preloader>
+						<Preloader loading={ this.state.loadingTransactions }>Registered Transactions</Preloader>
 					</PanelHeader>
+				{
+					(
+						!this.state.loadingTransactions &&
+						this.state.transactions &&
+						Array.isArray( this.state.transactions )
+					) &&
 					<PanelBody>
 						<PanelRow>
 							<Flex>
-					{
-						(
-							!this.state.loadingTransactions &&
-							this.state.transactions &&
-							this.state.transactions.typeof === 'object' &&
-							Object.keys( this.state.transactions ).length > 0
-						)
-							? 	<TransactionList
+								<TransactionList
 									transactions={ this.state.transactions }
 									loadingTransactions={ this.state.loadingTransactions }
 								/>
-							: 	<div style={ { opacity: 0.5 } }>There are no registered transactions</div>
-					}
 							</Flex>
 						</PanelRow>
 					</PanelBody>
+				}
 				</Panel>
 			</Page>
 		);

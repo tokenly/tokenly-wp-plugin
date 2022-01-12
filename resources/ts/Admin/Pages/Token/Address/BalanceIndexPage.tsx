@@ -24,10 +24,10 @@ interface BalanceIndexPageProps {
 }
 
 interface BalanceIndexPageState {
-	loadingUser: boolean;
+	loadingAddress: boolean;
 	loadingBalance: boolean;
 	id: string;
-	user: any;
+	address: any;
 	balance: any;
 }
 
@@ -36,11 +36,11 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 	addressRepository: AddressRepositoryInterface;
 
 	state: BalanceIndexPageState = {
-		loadingUser: false,
+		loadingAddress: false,
 		loadingBalance: false,
 		balance: null,
 		id: null,
-		user: null,
+		address: null,
 	}
 	constructor( props: BalanceIndexPageProps ) {
 		super( props );
@@ -51,7 +51,7 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 	componentWillMount() {
 		this.setState( {
 			loadingBalance: true,
-			loadingUser: true,
+			loadingAddress: true,
 		} );
 		this.addressRepository.balanceIndex( this.state.id, {
 			with: [ 'meta' ],
@@ -64,6 +64,11 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 			} );
 			return balance;
 		} )
+		.then( ( balance: any ) => {
+			this.addressRepository.show( this.state.id, {
+				with: [ 'meta' ],
+			} )
+		} );
 		// .then( ( balance: any ) => {
 		// 	this.userRepository.show( this.state.id, {
 		// 		with: [ 'oauth_user' ],
@@ -91,12 +96,12 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 				</Panel>
 				 <Panel>
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingUser }>User Info</Preloader>
+						<Preloader loading={ this.state.loadingAddress }>Address Info</Preloader>
 					</PanelHeader>
-				{ ( this.state.loadingUser === false || this.state.user ) &&
+				{ ( this.state.loadingAddress === false || this.state.address ) &&
 					<PanelBody>
 						<PanelRow>
-							<UserInfo user={ this.state.user } />
+							//
 						</PanelRow>
 					</PanelBody>
 				}

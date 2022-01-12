@@ -31,30 +31,34 @@ export default class GroupInfo extends Component<GroupInfoProps, GroupInfoState>
 		return (
 			<Flex style={ { width: '100%', alignItems: 'center' } }>
 				<div style={ { flex: 1 } }>
-					<div>
-						<span>Active: </span>
-						<strong>{ this.props?.group?.active ? 'Yes' : 'No' }</strong>
-					</div>
 				{ this.props.verbose &&
 					<div>
 						<div>
+							<span>Name: </span>
+							<b>{ this.props?.group?.name }</b>
+						</div>
+						<div>
 							<span>UUID: </span>
-							<strong>{ this.props?.group?.uuid }</strong>
+							<b>{ this.props?.group?.uuid }</b>
 						</div>
 						<div>
-							<span>App whitelist: </span>
-							<strong>{ this.props?.group?.app_whitelist }</strong>
+							<span>App Whitelist: </span>
+							<b>{ this.props?.group?.app_whitelist }</b>
 						</div>
 						<div>
-							<span>Created at: </span>
-							<strong>{ this.dateFormatted( this.props?.group?.created_at ) }</strong>
+							<span>Created At: </span>
+							<b>{ this.dateFormatted( this.props?.group?.created_at ) }</b>
 						</div>
 						<div>
-							<span>Updated at: </span>
-							<strong>{ this.dateFormatted( this.props?.group?.updated_at ) }</strong>
+							<span>Updated At: </span>
+							<b>{ this.dateFormatted( this.props?.group?.updated_at ) }</b>
 						</div>
 					</div>
 				}
+					<div>
+						<span>Active: </span>
+						<b>{ this.props?.group?.active ? 'Yes' : 'No' }</b>
+					</div>
 				</div>
 			</Flex>
 		);

@@ -108,7 +108,7 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 						direction="column"
 					>	
 						<legend style={ { marginBottom: '8px' } }>
-							<strong>Filtering Options</strong>
+							<b>Filtering Options</b>
 							<div>Filtering the content can slow down page loading speed. <br />
 								The following options allow fine-grained control over what gets filtered.</div>
 						</legend>
@@ -128,7 +128,7 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 				</fieldset>
 				<hr />
 				<div>
-					<strong>Post Types</strong>
+					<b>Post Types</b>
 					<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
 				</div>
 				<Flex
@@ -139,7 +139,7 @@ export default class TcaSettingsForm extends Component<TcaSettingsFormProps, Tca
 					{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
 				</Flex>
 				<div style={{marginTop: '12px'}}>
-					<strong>Taxonomies</strong>
+					<b>Taxonomies</b>
 					<div>The selected taxonomies will be able to use the TCA functions. <br/> The rule editor will be available at the taxonomy term editing screen.</div>
 				</div>
 				<Flex

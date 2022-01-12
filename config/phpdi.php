@@ -48,28 +48,23 @@ use Tokenly\Wp\Controllers\Web\PostController;
 use Tokenly\Wp\Controllers\Web\TermController;
 use Tokenly\Wp\Controllers\Web\TokenMetaController;
 use Tokenly\Wp\Controllers\Web\UserController;
-use Tokenly\Wp\Controllers\Web\Admin\ConnectionController;
-use Tokenly\Wp\Controllers\Web\Admin\DashboardController;
-use Tokenly\Wp\Controllers\Web\Admin\SettingsController;
-use Tokenly\Wp\Controllers\Web\Admin\Credit\BalanceController as CreditBalanceController;
-use Tokenly\Wp\Controllers\Web\Admin\Credit\GroupController as CreditGroupController;
-use Tokenly\Wp\Controllers\Web\Admin\Credit\TransactionController as CreditTransactionController;
-use Tokenly\Wp\Controllers\Web\Admin\Credit\VendorController as CreditVendorController;
-use Tokenly\Wp\Controllers\Web\Admin\Token\BalanceController as TokenBalanceController;
-use Tokenly\Wp\Controllers\Web\Admin\Token\SourceController as TokenSourceController;
-use Tokenly\Wp\Controllers\Web\Admin\Token\VendorController as TokenVendorController;
-use Tokenly\Wp\Controllers\Web\Admin\Token\PromiseController as TokenPromiseController;
-use Tokenly\Wp\Controllers\Web\Admin\Token\WhitelistController as TokenWhitelistController;
-use Tokenly\Wp\Controllers\Web\Admin\User\Credit\BalanceController as UserCreditBalanceController;
-use Tokenly\Wp\Controllers\Web\Admin\User\Token\BalanceController as UserTokenBalanceController;
+use Tokenly\Wp\Controllers\Web\Admin\ConnectionController as ConnectionAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\DashboardController as DashboardAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\SettingsController as SettingsAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\UserController as UserAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Credit\GroupController as CreditGroupAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Credit\TransactionController as CreditTransactionAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Credit\VendorController as CreditVendorAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Token\AddressController as TokenAddressAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Token\SourceController as TokenSourceAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Token\VendorController as TokenVendorAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Token\PromiseController as TokenPromiseAdminController;
+use Tokenly\Wp\Controllers\Web\Admin\Token\WhitelistController as TokenWhitelistAdminController;
 use Tokenly\Wp\Controllers\Api\AuthController as AuthApiController;
+use Tokenly\Wp\Controllers\Api\SettingsController as SettingsApiController;
 use Tokenly\Wp\Controllers\Api\UserController as UserApiController;
 use Tokenly\Wp\Controllers\Api\Credit\GroupController as CreditGroupApiController;
 use Tokenly\Wp\Controllers\Api\Credit\TransactionController as CreditTransactionApiController;
-use Tokenly\Wp\Controllers\Api\Settings\OauthController as OauthSettingsApiController;
-use Tokenly\Wp\Controllers\Api\Settings\IntegrationController as IntegrationSettingsApiController;
-use Tokenly\Wp\Controllers\Api\Settings\TcaController as TcaSettingsApiController;
-use Tokenly\Wp\Controllers\Api\Settings\WhitelistController as WhitelistSettingsApiController;
 use Tokenly\Wp\Controllers\Api\Token\AddressController as TokenAddressApiController;
 use Tokenly\Wp\Controllers\Api\Token\BalanceController as TokenBalanceApiController;
 use Tokenly\Wp\Controllers\Api\Token\PromiseController as TokenPromiseApiController;
@@ -126,28 +121,12 @@ use Tokenly\Wp\Presentation\Components\AppCreditItemCardComponentModel;
 use Tokenly\Wp\Presentation\Components\LoginButtonComponentModel;
 use Tokenly\Wp\Presentation\Components\LogoutButtonComponentModel;
 use Tokenly\Wp\Presentation\Components\TokenItemCardComponentModel;
-use Tokenly\Wp\Presentation\Views\Admin\ConnectionViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\DashboardViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\PostEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\SettingsViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\TermEditViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\TokenMetaEditViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Credit\BalanceIndexViewModel as CreditBalanceIndexViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupEditViewModel as CreditGroupEditViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupIndexViewModel as CreditGroupIndexViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupShowViewModel as CreditGroupShowViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Credit\GroupStoreViewModel as CreditGroupStoreViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Credit\TransactionIndexViewModel as CreditTransactionIndexViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Credit\TransactionStoreViewModel as CreditTransactionStoreViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\BalanceIndexViewModel as TokenBalanceIndexViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\PromiseEditViewModel as TokenPromiseEditViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\PromiseShowViewModel as TokenPromiseShowViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\PromiseStoreViewModel as TokenPromiseStoreViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\SourceEditViewModel as TokenSourceEditViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\SourceIndexViewModel as TokenSourceIndexViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\SourceShowViewModel as TokenSourceShowViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\SourceStoreViewModel as TokenSourceStoreViewModel;
-use Tokenly\Wp\Presentation\Views\Admin\Token\VendorViewModel as TokenVendorViewModel;
 use Tokenly\Wp\Presentation\Views\Admin\Token\WhitelistEditViewModel as TokenWhitelistEditViewModel;
 use Tokenly\Wp\Presentation\Views\Web\PostAccessDeniedViewModel;
 use Tokenly\Wp\Presentation\Views\Web\UserViewModel;
@@ -199,38 +178,30 @@ use Tokenly\Wp\Interfaces\Routes\PostTypeRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\TaxonomyRouterInterface;
 use Tokenly\Wp\Interfaces\Routes\WebRouterInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\AuthControllerInterface as AuthApiControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface as SettingsApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface as UserApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\AddressControllerInterface as TokenAddressApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Token\BalanceControllerInterface as TokenBalanceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterface as IntegrationSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistControllerInterface as WhitelistSettingsApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\User\Credit\BalanceControllerInterface as UserCreditBalanceApiControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\User\Token\BalanceControllerInterface as UserTokenBalanceApiControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TermControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\BalanceControllerInterface as CreditBalanceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\GroupControllerInterface as CreditGroupControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\VendorControllerInterface as CreditVendorControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\BalanceControllerInterface as TokenBalanceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\SourceControllerInterface as TokenSourceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\VendorControllerInterface as TokenVendorControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\WhitelistControllerInterface as TokenWhitelistControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\User\Credit\BalanceControllerInterface as UserCreditBalanceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Web\Admin\User\Token\BalanceControllerInterface as UserTokenBalanceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\DashboardControllerInterface as DashboardAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\SettingsControllerInterface as SettingsAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\ConnectionControllerInterface as ConnectionAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\UserControllerInterface as UserAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\GroupControllerInterface as CreditGroupAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\TransactionControllerInterface as CreditTransactionAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Credit\VendorControllerInterface as CreditVendorAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\AddressControllerInterface as TokenAddressAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\PromiseControllerInterface as TokenPromiseAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\SourceControllerInterface as TokenSourceAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\VendorControllerInterface as TokenVendorAdminControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Web\Admin\Token\WhitelistControllerInterface as TokenWhitelistAdminControllerInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\TermFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\OauthUserFactoryInterface;
@@ -324,28 +295,12 @@ use Tokenly\Wp\Interfaces\Presentation\Components\AppCreditItemCardComponentMode
 use Tokenly\Wp\Interfaces\Presentation\Components\LoginButtonComponentModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Components\LogoutButtonComponentModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Components\TokenItemCardComponentModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\ConnectionViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\DashboardViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SettingsViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TermEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TokenMetaEditViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\BalanceIndexViewModelInterface as CreditBalanceIndexViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupEditViewModelInterface as CreditGroupEditViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupIndexViewModelInterface as CreditGroupIndexViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupShowViewModelInterface as CreditGroupShowViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupStoreViewModelInterface as CreditGroupStoreViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\TransactionIndexViewModelInterface as CreditTransactionIndexViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\TransactionStoreViewModelInterface as CreditTransactionStoreViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\BalanceIndexViewModelInterface as TokenBalanceIndexViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseEditViewModelInterface as TokenPromiseEditViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseShowViewModelInterface as TokenPromiseShowViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\PromiseStoreViewModelInterface as TokenPromiseStoreViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceEditViewModelInterface as TokenSourceEditViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceIndexViewModelInterface as TokenSourceIndexViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceShowViewModelInterface as TokenSourceShowViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\SourceStoreViewModelInterface as TokenSourceStoreViewModelInterface;
-use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\VendorViewModelInterface as TokenVendorViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\WhitelistEditViewModelInterface as TokenWhitelistEditViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
 use Tokenly\Wp\Interfaces\Presentation\Views\Web\UserViewModelInterface;
@@ -391,32 +346,23 @@ return array(
 	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
 	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
 	TokenAddressApiControllerInterface::class         => \DI\autowire( TokenAddressApiController::class ),
-	TokenBalanceApiControllerInterface::class         => \DI\autowire( TokenBalanceApiController::class ),
 	TokenPromiseApiControllerInterface::class         => \DI\autowire( TokenPromiseApiController::class ),
 	TokenSourceApiControllerInterface::class          => \DI\autowire( TokenSourceApiController::class ),
+	SettingsApiControllerInterface::class             => \DI\autowire( SettingsApiController::class ),
 	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
-	UserCreditBalanceApiControllerInterface::class    => \DI\autowire( UserCreditBalanceApiController::class ),
-	UserTokenBalanceApiControllerInterface::class     => \DI\autowire( UserTokenBalanceApiController::class ),
-	//Controllers - API - Settings
-	IntegrationSettingsApiControllerInterface::class  => \DI\autowire( IntegrationSettingsApiController::class ),
-	OauthSettingsApiControllerInterface::class        => \DI\autowire( OauthSettingsApiController::class ),
-	TcaSettingsApiControllerInterface::class          => \DI\autowire( TcaSettingsApiController::class ),
-	WhitelistSettingsApiControllerInterface::class    => \DI\autowire( WhitelistSettingsApiController::class ),
 	//Controllers - Admin
-	CreditBalanceControllerInterface::class        => \DI\autowire( CreditBalanceController::class ),
-	CreditGroupControllerInterface::class          => \DI\autowire( CreditGroupController::class ),
-	CreditTransactionControllerInterface::class    => \DI\autowire( CreditTransactionController::class ),
-	CreditVendorControllerInterface::class         => \DI\autowire( CreditVendorController::class ),
-	ConnectionControllerInterface::class           => \DI\autowire( ConnectionController::class ),
-	DashboardControllerInterface::class            => \DI\autowire( DashboardController::class ),
-	SettingsControllerInterface::class             => \DI\autowire( SettingsController::class ),
-	TokenBalanceControllerInterface::class         => \DI\autowire( TokenBalanceController::class ),
-	TokenPromiseControllerInterface::class         => \DI\autowire( TokenPromiseController::class ),
-	TokenSourceControllerInterface::class          => \DI\autowire( TokenSourceController::class ),
-	TokenVendorControllerInterface::class          => \DI\autowire( TokenVendorController::class ),
-	TokenWhitelistControllerInterface::class       => \DI\autowire( TokenWhitelistController::class ),
-	UserCreditBalanceControllerInterface::class    => \DI\autowire( UserCreditBalanceController::class ),
-	UserTokenBalanceControllerInterface::class     => \DI\autowire( UserTokenBalanceController::class ),
+	CreditGroupAdminControllerInterface::class        => \DI\autowire( CreditGroupAdminController::class ),
+	CreditTransactionAdminControllerInterface::class  => \DI\autowire( CreditTransactionAdminController::class ),
+	CreditVendorAdminControllerInterface::class       => \DI\autowire( CreditVendorAdminController::class ),
+	ConnectionAdminControllerInterface::class         => \DI\autowire( ConnectionAdminController::class ),
+	DashboardAdminControllerInterface::class          => \DI\autowire( DashboardAdminController::class ),
+	SettingsAdminControllerInterface::class           => \DI\autowire( SettingsAdminController::class ),
+	UserAdminControllerInterface::class               => \DI\autowire( UserAdminController::class ),
+	TokenAddressAdminControllerInterface::class       => \DI\autowire( TokenAddressAdminController::class ),
+	TokenPromiseAdminControllerInterface::class       => \DI\autowire( TokenPromiseAdminController::class ),
+	TokenSourceAdminControllerInterface::class        => \DI\autowire( TokenSourceAdminController::class ),
+	TokenVendorAdminControllerInterface::class        => \DI\autowire( TokenVendorAdminController::class ),
+	TokenWhitelistAdminControllerInterface::class     => \DI\autowire( TokenWhitelistAdminController::class ),
 	//Controllers - Web
 	AuthControllerInterface::class                 => \DI\autowire( AuthController::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
@@ -506,30 +452,14 @@ return array(
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
 	TokenItemCardComponentModelInterface::class      => \DI\autowire( TokenItemCardComponentModel::class ),
 	//Presentation - View models - Admin
-	ConnectionViewModelInterface::class              => \DI\autowire( ConnectionViewModel::class ),
-	CreditBalanceIndexViewModelInterface::class      => \DI\autowire( CreditBalanceIndexViewModel::class ),
-	CreditGroupEditViewModelInterface::class         => \DI\autowire( CreditGroupEditViewModel::class ),
-	CreditGroupIndexViewModelInterface::class        => \DI\autowire( CreditGroupIndexViewModel::class ),
-	CreditGroupShowViewModelInterface::class         => \DI\autowire( CreditGroupShowViewModel::class ),
 	CreditGroupStoreViewModelInterface::class        => \DI\autowire( CreditGroupStoreViewModel::class ),
-	CreditTransactionIndexViewModelInterface::class  => \DI\autowire( CreditTransactionIndexViewModel::class ),
-	CreditTransactionStoreViewModelInterface::class  => \DI\autowire( CreditTransactionStoreViewModel::class ),
 	DashboardViewModelInterface::class               => \DI\autowire( DashboardViewModel::class ),
 	PostEditViewModelInterface::class                => \DI\autowire( PostEditViewModel::class ),
 	SettingsViewModelInterface::class                => \DI\autowire( SettingsViewModel::class )
 		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
 	TermEditViewModelInterface::class                => \DI\autowire( TermEditViewModel::class ),
-	TokenBalanceIndexViewModelInterface::class       => \DI\autowire( TokenBalanceIndexViewModel::class ),
-	TokenSourceEditViewModelInterface::class         => \DI\autowire( TokenSourceEditViewModel::class ),
-	TokenSourceIndexViewModelInterface::class        => \DI\autowire( TokenSourceIndexViewModel::class ),
-	TokenSourceShowViewModelInterface::class         => \DI\autowire( TokenSourceShowViewModel::class ),
-	TokenSourceStoreViewModelInterface::class        => \DI\autowire( TokenSourceStoreViewModel::class ),
 	TokenMetaEditViewModelInterface::class           => \DI\autowire( TokenMetaEditViewModel::class ),
-	TokenVendorViewModelInterface::class             => \DI\autowire( TokenVendorViewModel::class ),
 	TokenWhitelistEditViewModelInterface::class      => \DI\autowire( TokenWhitelistEditViewModel::class ),
-	TokenPromiseEditViewModelInterface::class        => \DI\autowire( TokenPromiseEditViewModel::class ),
-	TokenPromiseShowViewModelInterface::class        => \DI\autowire( TokenPromiseShowViewModel::class ),
-	TokenPromiseStoreViewModelInterface::class       => \DI\autowire( TokenPromiseStoreViewModel::class ),
 	//Presentation - View models - Web
 	PostAccessDeniedViewModelInterface::class        => \DI\autowire( PostAccessDeniedViewModel::class ),
 	UserViewModelInterface::class                    => \DI\autowire( UserViewModel::class ),

@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 
 /**
- * Defines promise-related endpoints
+ * Defines balance endpoints
  */
 class BalanceController extends Controller implements BalanceControllerInterface {
 	protected $balance_service;

@@ -130,7 +130,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				</Panel>
 				<Panel>
 					<PanelHeader>
-						<Preloader loading={ loading }>Registered promises</Preloader>
+						<Preloader loading={ loading }>Registered Promises</Preloader>
 					</PanelHeader>
 				{ ( !loading || this.state.promises ) &&
 					<PanelBody>

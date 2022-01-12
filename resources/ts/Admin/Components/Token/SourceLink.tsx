@@ -28,11 +28,11 @@ export default class SourceLink extends Component<SourceLinkProps, SourceLinkSta
 		const url = `${this.adminPageUrl}${this.namespace}-token-source-show&source=${ this.props.id }`;
 		if ( this.props.text ) {
 			return (
-				<span>{ title }</span>
+				<b><span>{ title }</span></b>
 			)
 		}
 		return (
-			<a href={ url }>{ title }</a>
+			<b><a href={ url }>{ title }</a></b>
 		);
 	}
 }

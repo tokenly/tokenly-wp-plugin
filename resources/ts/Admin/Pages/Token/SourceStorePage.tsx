@@ -106,11 +106,9 @@ export default class SourceStorePage extends Component<SourceStorePageProps, Sou
 		return (
 			<Page title="Source Creator">
 				<Panel>
-				{ this.state.loadingAddresses &&
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingAddresses } />
+						<Preloader loading={ this.state.loadingAddresses }>Source Form</Preloader>
 					</PanelHeader>
-				}
 				{ !this.state.loadingAddresses &&
 					<PanelBody>
 						<PanelRow>

@@ -95,12 +95,14 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 				loadingSources: false,
 				sources: sources,
 			} );
+		} )
+		.then( () => {
+			const storeData = {
+				quantity: 0,
+				pseudo: false,
+			}
+			this.setState( { storeData: storeData } );
 		} );
-		const storeData = {
-			quantity: 0,
-			pseudo: false,
-		}
-		this.setState( { storeData: storeData } );
 	}
 
 	isStoreDisabled() {
@@ -115,11 +117,9 @@ export default class PromiseStorePage extends Component<PromiseStorePageProps, P
 		return (
 			<Page title="Promise Creator">
 				<Panel>
-				{ this.state.loadingSources &&
 					<PanelHeader>
-						<Preloader loading={ this.state.loadingSources }/>
+						<Preloader loading={ this.state.loadingSources }>Promise Form</Preloader>
 					</PanelHeader>
-				}
 				{ !this.state.loadingSources &&
 					<PanelBody>
 						<PanelRow>

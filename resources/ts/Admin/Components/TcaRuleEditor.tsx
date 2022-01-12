@@ -137,7 +137,7 @@ export default class TcaRuleEditor extends Component<TcaRuleEditorProps, TcaRule
 		return ( 
 			<div style={ { display: 'inline-block', marginTop: '12px' } }>
 				<label>
-					<strong>TCA Rule Editor</strong>
+					<b>TCA Rule Editor</b>
 					<div style={ { opacity: 0.8 } }>The visitor's token inventory will be checked against these rules. If not passed - access to the content will be prevented.</div>
 					<ul>{ listItems }</ul>
 				</label>

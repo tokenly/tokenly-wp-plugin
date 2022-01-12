@@ -9,15 +9,9 @@ use Tokenly\Wp\Interfaces\Controllers\Api\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface as CreditGroupControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface as CreditTransactionControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\AddressControllerInterface as TokenAddressControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Token\BalanceControllerInterface as TokenBalanceControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface as TokenPromiseControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\SourceControllerInterface as TokenSourceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\IntegrationControllerInterface as IntegrationSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\TcaControllerInterface as TcaSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\OauthControllerInterface as OauthSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\Settings\WhitelistControllerInterface as WhitelistSettingsControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\User\Credit\BalanceControllerInterface as UserCreditBalanceControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Api\User\Token\BalanceControllerInterface as UserTokenBalanceControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Api\SettingsControllerInterface;
 
 /**
  * Manages routing for the REST API endpoints
@@ -32,16 +26,10 @@ class ApiRouter extends Router implements ApiRouterInterface {
 		CreditGroupControllerInterface $credit_group_controller,
 		CreditTransactionControllerInterface $credit_transaction_controller,
 		TokenAddressControllerInterface $token_address_controller,
-		TokenBalanceControllerInterface $token_balance_controller,
 		TokenPromiseControllerInterface $token_promise_controller,
 		TokenSourceControllerInterface $token_source_controller,
-		IntegrationSettingsControllerInterface $integration_settings_controller,
-		TcaSettingsControllerInterface $tca_settings_controller,
-		OauthSettingsControllerInterface $oauth_settings_controller,
-		WhitelistSettingsControllerInterface $whitelist_settings_controller,
+		SettingsControllerInterface $settings_controller,
 		UserControllerInterface $user_controller,
-		UserCreditBalanceControllerInterface $user_credit_balance_controller,
-		UserTokenBalanceControllerInterface $user_token_balance_controller,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -51,16 +39,10 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			'credit_group'             => $credit_group_controller,
 			'credit_transaction'       => $credit_transaction_controller,
 			'token_address'            => $token_address_controller,
-			'token_balance'            => $token_balance_controller,
 			'token_promise'            => $token_promise_controller,
 			'token_source'             => $token_source_controller,
-			'integration_settings'     => $integration_settings_controller,
-			'tca_settings'             => $tca_settings_controller,
-			'oauth_settings'           => $oauth_settings_controller,
-			'whitelist_settings'       => $whitelist_settings_controller,
+			'settings'                 => $settings_controller,
 			'user'                     => $user_controller,
-			'user_credit_balance'      => $user_credit_balance_controller,
-			'user_token_balance'       => $user_token_balance_controller,
 		);
 	}
 
@@ -179,11 +161,11 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'token_balance_index' => array(
-				'path' => '/token/balance',
+			'token_address_balance_index' => array(
+				'path' => '/token/address/(?P<id>\S+)/balance',
 				'args' => array(
 					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['token_balance'], 'index' ),
+					'callback'            => array( $this->controllers['token_address'], 'balance_index' ),
 					'permission_callback' => function () {
 						return current_user_can( 'manage_options' );
 					},
@@ -299,26 +281,6 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
-			'user_credit_balance_index' => array(
-				'path' => '/user/(?P<id>\S+)/credit/balance',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['user_credit_balance'], 'index' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
-			'user_token_balance_index' => array(
-				'path' => '/user/(?P<id>\S+)/token/balance',
-				'args' => array(
-					'methods'             => 'GET',
-					'callback'            => array( $this->controllers['user_token_balance'], 'index' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
-				),
-			),
 			'user_show' => array(
 				'path' => '/user/(?P<id>\S+)',
 				'args' => array(
@@ -329,8 +291,107 @@ class ApiRouter extends Router implements ApiRouterInterface {
 					},
 				),
 			),
+			'user_credit_balance_index' => array(
+				'path' => '/user/(?P<id>\S+)/credit/balance',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'credit_balance_index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'user_token_balance_index' => array(
+				'path' => '/user/(?P<id>\S+)/token/balance',
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['user'], 'token_balance_index' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'integration_settings_show' => array(
+				'path' => "/settings/integration",
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['settings'], 'show_integration' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_show_oauth' => array(
+				'path' => "/settings/oauth",
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['settings'], 'show_oauth' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_show_tca' => array(
+				'path' => "/settings/tca",
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['settings'], 'show_tca' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_show_token_whitelist' => array(
+				'path' => "/settings/token-whitelist",
+				'args' => array(
+					'methods'             => 'GET',
+					'callback'            => array( $this->controllers['settings'], 'show_token_whitelist' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_update_integration' => array(
+				'path' => '/settings/integration',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['settings'], 'update_integration' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_update_oauth' => array(
+				'path' => '/settings/oauth',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['settings'], 'update_oauth' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_update_tca' => array(
+				'path' => '/settings/tca',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['settings'], 'update_tca' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
+			'settings_update_token_whitelist' => array(
+				'path' => '/settings/token-whitelist',
+				'args' => array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this->controllers['settings'], 'update_token_whitelist' ),
+					'permission_callback' => function () {
+						return current_user_can( 'manage_options' );
+					},
+				),
+			),
 		);
-		$routes = array_merge( $routes, $this->get_settings_routes() );
 		$routes = $this->process_routes( $routes );
 		return $routes;
 	}
@@ -341,69 +402,12 @@ class ApiRouter extends Router implements ApiRouterInterface {
 			$route['args']['callback'] = function( $request ) use ( $callback ) {
 				$controller = $callback[0];
 				$method = $callback[1];
-				switch ( $method ) {
-					case 'index':
-					case 'show':
-					case 'update':
-					case 'destroy':
-						if ( method_exists( $controller, 'bind' ) ) {
-							$model = call_user_func( array( $controller, 'bind' ), $request, $method );
-							return call_user_func( $callback, $model, $request );
-						} else {
-							return call_user_func( $callback, $request );
-						}
-						break;
-					default:
-						return call_user_func( $callback, $request );
+				if ( method_exists( $controller, 'call' ) ) {
+					return call_user_func( array( $controller, 'call' ), $request, $method );
+				} else {
+					return call_user_func( $callback, $request );
 				}
 			};
-		}
-		return $routes;
-	}
-
-	/**
-	 * Retrieves the settings categories
-	 * @return array
-	 */
-	protected function get_settings_sections() {
-		return array(
-			'tca',
-			'integration',
-			'oauth',
-			'whitelist',
-		);
-	}
-
-	/**
-	 * Get settings route definitions
-	 * @return array
-	 */
-	protected function get_settings_routes() {
-		$sections = $this->get_settings_sections();
-		$routes = array();
-		foreach ( $sections as $section ) {
-			$routes = array_merge( $routes, array(
-				"{$section}_settings_show" => array(
-					'path' => "/settings/{$section}",
-					'args' => array(
-						'methods'             => 'GET',
-						'callback'            => array( $this->controllers["{$section}_settings"], 'show' ),
-						'permission_callback' => function () {
-							return current_user_can( 'manage_options' );
-						},
-					),
-				),
-				"{$section}_settings_update" => array(
-					'path' => "/settings/{$section}",
-					'args' => array(
-						'methods'             => 'PUT',
-						'callback'            => array( $this->controllers["{$section}_settings"], 'update' ),
-						'permission_callback' => function () {
-							return current_user_can( 'manage_options' );
-						},
-					),
-				),
-			) );
 		}
 		return $routes;
 	}

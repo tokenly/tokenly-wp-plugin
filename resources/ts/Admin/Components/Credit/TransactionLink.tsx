@@ -5,7 +5,6 @@ import { TYPES } from '../../../Types';
 
 interface GroupLinkProps {
 	uuid: string,
-	text?: boolean,
 }
 
 interface GroupLinkState {
@@ -23,20 +22,13 @@ export default class GroupLink extends Component<GroupLinkProps, GroupLinkState>
 	}
 
 	render() {
-		const title = (
+		return(
 			<div>
 				<span>№ </span>
-				<strong>{ this.props.uuid }</strong>
+				<b>
+					<span>{ this.props.uuid }</span>
+				</b>
 			</div>
-		);
-		const url = `${ this.adminPageUrl }${ this.namespace }-credit-transaction-show&group=${ this.props.uuid }`;
-		if ( this.props.text ) {
-			return (
-				<span>{ title }</span>
-			)
-		}
-		return (
-			<a href={ url }>{ title }</a>
 		);
 	}
 }

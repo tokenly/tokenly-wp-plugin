@@ -33,7 +33,7 @@ export default class ConnectionInfo extends Component<ConnectionInfoProps, Conne
 					<div>
 						<span>Connected As: </span>
 						<span>
-							<strong>{`${ this.props.user?.name } ( ${ this.props.user?.oauth_user?.username } )` }</strong>
+							<b>{`${ this.props.user?.name } ( ${ this.props.user?.oauth_user?.username } )` }</b>
 						</span>
 					</div>
 				}

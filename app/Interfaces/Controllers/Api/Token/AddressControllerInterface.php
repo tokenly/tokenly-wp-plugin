@@ -9,4 +9,5 @@ use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 
 interface AddressControllerInterface extends ControllerInterface {
 	public function index( AddressCollectionInterface $addresses, \WP_REST_Request $request );
+	public function balance_index( AddressInterface $address, \WP_REST_Request $request );
 }

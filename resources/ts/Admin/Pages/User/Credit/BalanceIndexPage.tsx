@@ -16,15 +16,15 @@ import {
 	PanelHeader,
 } from '@wordpress/components';
 
-interface CreditBalanceIndexPageData {
+interface BalanceIndexPageData {
 	//
 }
 
-interface CreditBalanceIndexPageProps {
-	pageData: CreditBalanceIndexPageData;
+interface BalanceIndexPageProps {
+	pageData: BalanceIndexPageData;
 }
 
-interface CreditBalanceIndexPageState {
+interface BalanceIndexPageState {
 	loadingGroups: boolean;
 	loadingBalance: boolean;
 	loadingUser: boolean;
@@ -34,13 +34,13 @@ interface CreditBalanceIndexPageState {
 	groups: any;
 }
 
-export default class CreditBalanceIndexPage extends Component<CreditBalanceIndexPageProps, CreditBalanceIndexPageState> {
+export default class BalanceIndexPage extends Component<BalanceIndexPageProps, BalanceIndexPageState> {
 	@resolve( TYPES.Repositories.UserRepositoryInterface )
 	userRepository: UserRepositoryInterface;
 	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	groupRepository: GroupRepositoryInterface;
 
-	state: CreditBalanceIndexPageState = {
+	state: BalanceIndexPageState = {
 		loadingUser: false,
 		loadingBalance: false,
 		loadingGroups: false,
@@ -49,7 +49,7 @@ export default class CreditBalanceIndexPage extends Component<CreditBalanceIndex
 		balance: null,
 		groups: null,
 	}
-	constructor( props: CreditBalanceIndexPageProps ) {
+	constructor( props: BalanceIndexPageProps ) {
 		super( props );
 		const urlParams = new URLSearchParams( window.location.search );
 		this.state.id = urlParams.get( 'id' );

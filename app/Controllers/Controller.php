@@ -33,11 +33,12 @@ class Controller implements ControllerInterface {
 	}
 	
 	/**
-	 * Gets the bound model / collection
+	 * Calls the controller method
 	 * @param \WP_REST_Request $request Request data
-	 * @return GroupInterface Bound model
+	 * @return array Controller response
 	 */
-	public function bind( \WP_REST_Request $request, string $method ) {
+	public function call( \WP_REST_Request $request, string $method ) {
+		$service;
 		$service_method;
 		$params = $request->get_params();
 		$params = $this->remap_parameters( $params );
@@ -50,7 +51,14 @@ class Controller implements ControllerInterface {
 		if ( isset( $params['with'] ) && is_string( $params['with'] ) ) {
 			$params['with'] = explode( ',', $params['with'] );
 		}
-		$service = $bind_params['service'];
-		return call_user_func( array( $service, $service_method ), $params );
+		if ( isset( $bind_params['service'] ) ) {
+			$service = $bind_params['service'];
+		}
+		if ( isset( $service ) && isset( $service_method ) ) {
+			$model = call_user_func( array( $service, $service_method ), $params );
+			return call_user_func( array( $this, $method ), $model, $request );
+		} else {
+			return call_user_func( array( $this, $method ), $request );
+		}
 	}
 }

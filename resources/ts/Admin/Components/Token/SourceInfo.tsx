@@ -17,15 +17,16 @@ export default class SourceInfo extends Component<SourceInfoProps, SourceInfoSta
 
 	constructor( props: SourceInfoProps ) {
 		super( props );
+		console.log(this.props.source);
 	}
 
 	render() {
 		return (
 			<Flex style={ { width: '100%', alignItems: 'center' } }>
 				<div style={ { flex: 1 } }>
-					<div><span>Type: </span><strong>{ this.props.source.type }</strong></div>
-					<div><span>Address: </span><strong>{ this.props.source.address_id }</strong></div>
-					<div><span>Assets (whitelisted): </span><strong>{ this.props.source.assets ?? 'all' }</strong></div>
+					<div><span>Type: </span><b>{ this.props.source?.type }</b></div>
+					<div><span>Address: </span><b>{ this.props.source?.address_id }</b></div>
+					<div><span>Assets (whitelisted): </span><b>{ this.props.source?.assets ?? 'all' }</b></div>
 				</div>
 			</Flex>
 		);

@@ -41,7 +41,7 @@ export default class QuantityField extends Component<QuantityFieldProps, Quantit
 							<span>
 								<span>of / </span>
 								<span title={ this.props.max as any }>
-									<strong>{ parseFloat( this.props.max.toFixed( 4 ) ) }</strong>
+									<b>{ parseFloat( this.props.max.toFixed( 4 ) ) }</b>
 								</span>
 							</span>
 						}
