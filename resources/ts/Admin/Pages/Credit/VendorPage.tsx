@@ -68,19 +68,11 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				{
 					(
 						!this.state.loadingGroups &&
-						this.state.groups &&
-						typeof this.state.groups === 'object'
+						this.state.groups
 					) &&
 					<PanelBody>
 						<PanelRow>
-							<Flex>
-								{ Object.keys( this.state.groups ).length > 0
-									? 	<GroupList
-											groups={ this.state.groups }
-										/>
-									: 	<div style={ { opacity: 0.5 } }>There are no registered groups</div>
-								}
-							</Flex>
+							<GroupList groups={ this.state.groups } />
 						</PanelRow>
 					</PanelBody>
 				}

@@ -34,7 +34,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 					disabled={ this.props.storing || this.props.disableStore }
 					onClick={ this.props.onStore }
 				>
-					{ this.props.storing ? 'Creating' : `Create ${this.props.name}` }
+					{ this.props.storing ? 'Creating ..' : `Create ${this.props.name}` }
 				</Button>
 			{ this.props.storing === true &&
 				<Spinner/>

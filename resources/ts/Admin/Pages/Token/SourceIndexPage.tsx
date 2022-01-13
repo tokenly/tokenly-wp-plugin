@@ -53,6 +53,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 		this.sourceRepository.index( {
 			with: [ 'address' ],
 		} ).then( ( sources: any ) => {
+			sources = Object.values( sources );
 			this.setState( {
 				loadingSources: false,
 				sources: sources,
@@ -89,15 +90,7 @@ export default class SourceIndexPage extends Component<SourceIndexPageProps, Sou
 				) &&
 					<PanelBody>
 						<PanelRow>
-							<Flex>
-								{ Object.keys( this.state.sources ).length > 0
-									? <SourceList
-										sources={ this.state.sources }
-										loadingSources={ this.state.loadingSources }
-									/>
-									: <div style={ { opacity: 0.5 } }>There are no registered sources</div>
-								}
-							</Flex>
+							<SourceList sources={ this.state.sources } />
 						</PanelRow>
 					</PanelBody>
 				}

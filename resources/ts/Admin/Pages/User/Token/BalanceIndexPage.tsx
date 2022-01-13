@@ -91,7 +91,7 @@ export default class BalanceIndexPage extends Component<BalanceIndexPageProps, B
 							<b>
 								<span>User: </span>
 								<a href={ `/${this.namespace}/user/${this.state.id}` }>
-									{ this.state?.user?.name ?? '№ ' + this.state.id }
+									{ this.state?.user?.name ?? this.state.id }
 								</a>
 							</b>
 						</PanelRow>

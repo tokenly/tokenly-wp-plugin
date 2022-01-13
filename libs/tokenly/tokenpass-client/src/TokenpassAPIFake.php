@@ -107,13 +107,7 @@ class TokenpassAPIFake implements TokenpassAPIInterface
 
     public function getProvisionalSourceList()
     {
-        return array (
-			'LcvjKTC0nZ0MP5VQBH8irIfTUvCv2sYoTv' => array(
-				'address' => 'LcvjKTC0nZ0MP5VQBH8irIfTUvCv2sYoTv',
-				'type'    => 'bitcoin',
-				'assets'  => array('TOKEN1', 'TOKEN2'),
-			),
-		);
+		//
     }
 
     public function getProvisionalSourceProofSuffix()

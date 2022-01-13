@@ -78,7 +78,7 @@ export default class ConnectionPage extends Component<ConnectionPageProps, Conne
 				<Panel>
 					<PanelBody>
 						<PanelRow>
-							<ConnectionActions status={ this.state.user?.can_connect } />
+							<ConnectionActions disabled={ this.state.loadingUser } status={ this.state.user?.can_connect } />
 						</PanelRow>
 					</PanelBody>
 				</Panel>

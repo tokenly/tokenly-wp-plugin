@@ -35,7 +35,7 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 					disabled={ this.props.saving }
 					onClick={ this.props.onSave }
 				>
-					{ this.props.saving ? 'Saving' : `Save ${this.props.name}` }
+					{ this.props.saving ? 'Saving ...' : `Save ${this.props.name}` }
 				</Button>
 			{ this.props.saving === true &&
 				<Spinner/>
@@ -45,8 +45,9 @@ export default class ResourceEditActions extends Component<ResourceEditActionsPr
 					isSecondary
 					disabled={ this.props.deleting }
 					onClick={ this.props.onDelete }
+					isDestructive
 				>
-					{ this.props.deleting ? 'Deleting' : `Delete ${this.props.name}` }
+					{ this.props.deleting ? 'Deleting ...' : `Delete ${this.props.name}` }
 				</Button>
 			}
 			{ this.props.deleting === true &&

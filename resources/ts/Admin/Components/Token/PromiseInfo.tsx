@@ -58,7 +58,7 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 			},
 			{
 				label: 'Quantity',
-				value: this.props.promise?.quantity?.value_sat,
+				value: this.props.promise?.quantity?.value ?? this.props.promise?.quantity?.value_sat,
 			},
 		];
 		if ( this.props.verbose ) {

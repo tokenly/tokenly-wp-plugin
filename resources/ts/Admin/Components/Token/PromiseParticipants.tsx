@@ -28,20 +28,20 @@ export default class PromiseParticipants extends Component<PromiseParticipantsPr
 	}
 
 	render() {
-		const balanceLink = `${this.adminPageUrl}${this.namespace}-token-balance-index`;
+		const balanceLink = `${this.adminPageUrl}${this.namespace}-user-token-balance-index`;
 		return (
 			<Flex>
 				<span>Participants: </span>
 				{ this.props.promise &&
 					<Flex gap={ 0 } align="center" justify="flex-start">
 						<UserLink
-							url={ `${balanceLink}&user=${this.props.promise?.promise_meta?.source_user?.id}` }
+							url={ `${balanceLink}&id=${this.props.promise?.promise_meta?.source_user?.id}` }
 							alt={ this.props?.promise?.source_id }
 							name={ this.props?.promise?.promise_meta?.source_user?.name }
 						/>
 						<Dashicon style={ { margin: '0 5px' } } icon="arrow-right-alt" />
 						<UserLink
-							url={ `${balanceLink}&user=${this.props.promise?.promise_meta?.destination_user?.id}` }
+							url={ `${balanceLink}&id=${this.props.promise?.promise_meta?.destination_user?.id}` }
 							alt={ this.props?.promise?.destination }
 							name={ this.props?.promise?.promise_meta?.destination_user?.name }
 						/>

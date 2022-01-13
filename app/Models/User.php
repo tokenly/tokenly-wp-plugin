@@ -66,7 +66,7 @@ class User extends Model implements UserInterface {
 		$array = parent::to_array();
 		$array = array_merge( $array, array(
 			'id'   => $this->ID,
-			'name' => $this->user_nicename,
+			'name' => $this->user_login,
 		) );
 		return $array;
 	}

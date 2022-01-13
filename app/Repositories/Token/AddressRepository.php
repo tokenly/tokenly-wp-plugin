@@ -44,7 +44,7 @@ class AddressRepository implements AddressRepositoryInterface {
 		if ( isset( $params['username'] ) ) {
 			$username = $params['username'];
 			$addresses = $this->client->getPublicAddresses( $username );
-			if ( $addresses & is_array( $addresses ) ) {
+			if ( $addresses && is_array( $addresses ) ) {
 				foreach ( $addresses as &$address ) {
 					$address = $this->remap_fields( $address );
 				}

@@ -113,7 +113,7 @@ export default class WhitelistPage extends Component<WhitelistPageProps, Whiteli
 						</PanelRow>
 						<PanelRow>
 							<ToggleControl
-								label="Use whitelist"
+								label="Use Whitelist"
 								checked={ this.state.editData.enabled }
 								onChange={ this.onEnabledFieldChange }
 							/>

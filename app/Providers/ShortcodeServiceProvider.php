@@ -64,7 +64,7 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	protected function render_shortcode( array $parameters ) {
 		$template = $parameters['template'];
 		$data = array();
-		if ( isset( $parameters['data'] ) ) {
+		if ( isset( $parameters['data'] ) && is_array( $parameters['data'] ) ) {
 			$data = $parameters['data'];
 		}
 		$html = $this->twig->render( $template, $data );

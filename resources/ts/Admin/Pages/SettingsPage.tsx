@@ -160,7 +160,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 						</PanelRow>
 						<PanelRow>
 							<SavePanel
-								label="Save Integration settings"
+								label="Save Integration Settings"
 								saving={ this.state.savingIntegrationSettings }
 								onClick={ this.onIntegrationSettingsSave }
 							/>
@@ -178,7 +178,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 						</PanelRow>
 						<PanelRow>
 							<SavePanel
-								label="Save TCA settings"
+								label="Save TCA Settings"
 								saving={ this.state.savingTcaSettings }
 								onClick={ this.onTcaSettingsSave }
 							/>
@@ -195,7 +195,7 @@ export default class SettingsPage extends Component<SettingsPageProps, SettingsP
 						</PanelRow>
 						<PanelRow>
 							<SavePanel
-								label="Save OAuth settings"
+								label="Save OAuth Settings"
 								saving={ this.state.savingOauthSettings }
 								onClick={ this.onOauthSettingsSave }
 							/>

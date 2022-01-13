@@ -644,7 +644,8 @@ return array(
 		$oauth_client_secret = $client_secret;
 		$tokenpass_url = $api_host;
 		$redirect_uri = $oauth_callback_route;
-		return new TokenpassAPI( 
+		$ssl = is_ssl();
+		return new TokenpassAPI(
 			$client_id,
 			$client_secret,
 			$privileged_client_id,
@@ -652,7 +653,8 @@ return array(
 			$tokenpass_url,
 			$redirect_uri,
 			$oauth_client_id,
-			$oauth_client_secret
+			$oauth_client_secret,
+			$ssl,
 		);
 	} )
 		->parameter( 'api_host', \DI\get( 'api.host' ) )

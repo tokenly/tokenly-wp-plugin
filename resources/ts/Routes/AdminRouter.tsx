@@ -130,6 +130,7 @@ export default class AdminRouter implements AdminRouterInterface {
 				'token-source-edit',
 				'token-meta-edit',
 				'token-whitelist-edit',
+				'user-token-balance-index',
 			],
 			[ `${this.namespace}-credit-vendor` ]: [
 				'credit-group-index',
@@ -138,6 +139,7 @@ export default class AdminRouter implements AdminRouterInterface {
 				'credit-group-edit',
 				'credit-transaction-index',
 				'credit-transaction-store',
+				'user-credit-balance-index',
 			],
 		} as any;
 		return highlights;

@@ -35,7 +35,7 @@ export default class PromiseCard extends Component<PromiseCardProps, PromiseCard
 
 	render() {
 		return (
-			<Card size="extraSmall" style={ { width: '100%' } }>
+			<Card size="extraSmall">
 				<CardHeader>
 					<Flex
 						align="center"

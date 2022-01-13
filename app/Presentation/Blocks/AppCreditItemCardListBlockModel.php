@@ -40,15 +40,18 @@ class AppCreditItemCardListBlockModel extends BlockModel implements AppCreditIte
 			return false;
 		}
 		$user->oauth_user->load( array( 'credit_account' ) );
-		$credit_accounts = $user->oauth_user->credit_account;
-		$credit_groups = $this->group_service->index();
-		$credit_groups->key_by_field( 'uuid' );
+		$accounts = $user->oauth_user->credit_account;
+		$groups = $this->group_service->index();
+		$groups->key_by_field( 'uuid' );
 		$credit_items = array();
-		foreach ( ( array ) $credit_accounts as $key => $account ) {
+		foreach ( ( array ) $accounts as $key => $account ) {
+			$group = null;
+			if ( isset( $groups[ $account->group_id ] ) ) {
+				$group = $groups[ $account->group_id ];
+			}
 			$credit_items[] = $this->app_credit_item_card_component_model->prepare( array(
-					'credit_groups' => $credit_groups,
-					'account'       => $account,
-					'key'           => $key,
+					'group'    => $group,
+					'account'  => $account,
 				)
 			);
 		}

@@ -45,7 +45,7 @@ class UserCollection extends Collection implements UserCollectionInterface {
 		foreach (  (array ) $this as $user ) {
 			$suggestions[] = array(
 				'id'   => $user->ID, 
-				'name' => $user->nickname,
+				'name' => $user->user_login,
 			);
 		}
 		return $suggestions;

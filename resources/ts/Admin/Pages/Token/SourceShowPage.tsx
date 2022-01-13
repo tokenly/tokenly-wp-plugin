@@ -116,7 +116,7 @@ export default class SourceShowPage extends Component<SourceShowPageProps, Sourc
 								<Button
 									isSecondary
 									isLarge
-									href={ `${this.adminPageUrl}${this.namespace}-token-balance-index&address=${this.state.id}` }
+									href={ `${this.adminPageUrl}${this.namespace}-token-address-balance-index&id=${this.state.id}` }
 								>
 									View Balance
 								</Button>

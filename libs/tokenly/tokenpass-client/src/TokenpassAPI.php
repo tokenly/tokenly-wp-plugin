@@ -15,8 +15,19 @@ class TokenpassAPI implements TokenpassAPIInterface
     protected $privileged_client_secret = null;
     protected $oauth_client_id = null;
     protected $oauth_client_secret = null;
+	protected $ssl;
 
-    function __construct($client_id, $client_secret, $privileged_client_id, $privileged_client_secret, $tokenpass_url, $redirect_uri, $oauth_client_id=null, $oauth_client_secret=null) {
+    function __construct(
+		$client_id,
+		$client_secret,
+		$privileged_client_id,
+		$privileged_client_secret,
+		$tokenpass_url,
+		$redirect_uri,
+		$oauth_client_id = null,
+		$oauth_client_secret = null,
+		$ssl = true
+	) {
         $this->client_id = $client_id;
         $this->client_secret = $client_secret;
         $this->privileged_client_id = $privileged_client_id;
@@ -25,6 +36,7 @@ class TokenpassAPI implements TokenpassAPIInterface
         $this->redirect_uri = $redirect_uri;
         $this->oauth_client_id = $oauth_client_id;
         $this->oauth_client_secret = $oauth_client_secret;
+		$this->ssl = $ssl;
     }
 
     public function clearErrors() {
@@ -1175,7 +1187,10 @@ class TokenpassAPI implements TokenpassAPIInterface
     public function call($method, $endpoint, $params = [], $options = [])
     {
       //start client
-      $client = new HttpClient();
+	  $config = [
+		  'verify' => $this->ssl,
+	  ];
+      $client = new HttpClient($config);
 
       $data = $options;
       $data['json'] = $params;
@@ -1191,7 +1206,6 @@ class TokenpassAPI implements TokenpassAPIInterface
       //send the request
       try {
 		$url = $this->tokenpass_url.'/'.ltrim($endpoint, '/');
-		error_log( $url );
         $response = $client->request($method, $url, $data);
         if ($response->getStatusCode() != 200){
           throw new Exception('Invalid API endpoint status code');

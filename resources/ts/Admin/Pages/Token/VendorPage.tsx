@@ -96,6 +96,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 		this.promiseRepository.index( {
 			with: [ 'promise_meta.source_user', 'promise_meta.destination_user' ],
 		} ).then( ( promises ) => {
+			console.log(promises);
 			this.setState( {
 				loadingPromises: false,
 				loadingSources: true,
@@ -135,14 +136,7 @@ export default class VendorPage extends Component<VendorPageProps, VendorPageSta
 				{ ( !loading || this.state.promises ) &&
 					<PanelBody>
 						<PanelRow>
-							<Flex>
-								{ this.state.promises?.length > 0
-									? 	<PromiseList
-											promises={ this.state.promises }
-										/>
-									: 	<div style={ { opacity: 0.5 } }>There are no registered promises</div>
-								}
-							</Flex>
+							<PromiseList promises={ this.state.promises } />
 						</PanelRow>
 					</PanelBody>
 				}

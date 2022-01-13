@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Component } from 'react';
 import BalanceCard from './BalanceCard';
+import ResourceList from '../../Components/ResourceList';
 
 import { 
 	Flex,
 } from '@wordpress/components';
 
 interface BalanceListProps {
-	balances: any;
+	balance: Array<any>;
 }
 
 interface BalanceListState {
@@ -20,21 +21,13 @@ export default class BalanceList extends Component<BalanceListProps, BalanceList
 	}
 
 	render() {
-		const listItems = this.props.balances.map( ( balance: any, i: number ) => {
-			return (
-				<Flex>
-					<BalanceCard balance={ balance } />
-				</Flex>
-			);
-		} );
 		return (
-			<div style={ { width: '100%' } }>
-				{ listItems.length > 0
-					//@ts-ignore
-					? <Flex direction="column" style={ { width: '100%' } }>{ listItems }</Flex>
-					: <div style={ { opacity: 0.5 } }>There are no balances</div>
-				}
-			</div>
+			<ResourceList
+				items={ this.props.balance }
+				component={ BalanceCard }
+				itemProp="balance"
+				notFoundLabel="balances"
+			/>
 		);
 	}
 }
