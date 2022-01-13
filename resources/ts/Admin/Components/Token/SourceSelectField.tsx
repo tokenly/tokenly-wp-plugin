@@ -14,68 +14,57 @@ interface SourceSelectFieldProps {
 	onChange: any;
 }
 
-interface SourceSelectFieldState {
-	//
-}
-
-export default class SourceSelectField extends Component<SourceSelectFieldProps, SourceSelectFieldState> {
-
-	constructor( props: SourceSelectFieldProps ) {
-		super( props );
-	}
-
-	getSourceOptions() {
+export default function SourceSelectField( props: SourceSelectFieldProps ) {
+	function getSourceOptions() {
 		const options = [
 			{
 				label: 'Not selected',
 				value: '',
 			}
 		];
-		if ( this.props.sources && typeof this.props.sources === 'object' ) {
-			Object.keys( this.props.sources ).forEach( ( key ) => {
+		if ( props.sources && typeof props.sources === 'object' ) {
+			Object.keys( props.sources ).forEach( ( key ) => {
 				options.push( {
-					label: this.props.sources[ key ]?.address.label ?? key,
+					label: props.sources[ key ]?.address.label ?? key,
 					value: key,
 				} );
-			});
+			} );
 		}
 		return options;
 	}
 
-	render() {
-		const sourceOptions = this.getSourceOptions();
-		return (
-			<Flex> 
-				<label>
-					<div style={ { marginBottom: '8px' } } >Source</div>
+	const sourceOptions = getSourceOptions();
+	return (
+		<Flex> 
+			<label>
+				<div style={ { marginBottom: '8px' } } >Source</div>
+				<Flex
+					//@ts-ignore
+					direction="column"
+				>
 					<Flex
-						//@ts-ignore
-						direction="column"
+						style={ { maxWidth: "320px" } }
+						justify="flex-start"
+						align="center"
+						gap={ 4 }
 					>
-						<Flex
-							style={ { maxWidth: "320px" } }
-							justify="flex-start"
-							align="center"
-							gap={ 4 }
-						>
-							<SelectControl
-								label=""
-								disabled={ this.props.loading || sourceOptions.length === 1 }
-								value={ this.props.source }
-								style={ { width: '100%' } }
-								options={ sourceOptions }
-								required
-								onChange={ this.props.onChange }
-							/>
-							{ this.props.loading &&
-								<Spinner />
-							}
-						</Flex>
+						<SelectControl
+							label=""
+							disabled={ props.loading || sourceOptions.length === 1 }
+							value={ props.source }
+							style={ { width: '100%' } }
+							options={ sourceOptions }
+							required
+							onChange={ props.onChange }
+						/>
+						{ props.loading &&
+							<Spinner />
+						}
 					</Flex>
-				</label>
-			</Flex>
-		);
-	}
+				</Flex>
+			</label>
+		</Flex>
+	);
 }
  
 

@@ -9,29 +9,18 @@ import {
 interface PreloaderProps {
 	loading: boolean;
 	href?: string;
+	children: any;
 }
 
-interface PreloaderState {
-	//
+export default function Preloader( props: PreloaderProps ) {
+	return (
+		<Flex justify="flex-start" align="center" style={ { minHeight: '30px' } }>
+			<b>
+				{ props.children }
+			</b>
+		{ props.loading &&
+			<Spinner />
+		}
+		</Flex>
+	);
 }
-
-export default class Preloader extends Component<PreloaderProps, PreloaderState> {
-	constructor( props: PreloaderProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex justify="flex-start" align="center" style={ { minHeight: '30px' } }>
-				<b>
-					{ this.props.children }
-				</b>
-			{ this.props.loading &&
-				<Spinner />
-			}
-			</Flex>
-		);
-	}
-}
- 
-

@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import { Component } from 'react';
 import { TYPES } from '../../../../Types';
 import AddressRepositoryInterface from '../../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
@@ -25,57 +26,38 @@ interface AddressShowPageProps {
 	pageData: AddressShowPageData;
 }
 
-interface AddressShowPageState {
-	id: string,
-	address: any,
-	loading: boolean,
-}
+export default function AddressShowPage( props: AddressShowPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
 
-export default class AddressShowPage extends Component<AddressShowPageProps, AddressShowPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
-	addressRepository: AddressRepositoryInterface;
+	const urlParams = new URLSearchParams( window.location.search );
+	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
+	const [ address, setAddress ] = useState<any>( null );
+	const [ loading, setLoading ] = useState<boolean>( false );
 
-	state: AddressShowPageState = {
-		id: null,
-		address: null,
-		loading: false,
-	}
-	constructor( props: AddressShowPageProps ) {
-		super( props );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.id = urlParams.get( 'id' );
-	}
-
-	componentWillMount() {
-		this.setState( { loading: true } );
-		this.addressRepository.show( this.state.id ).then( ( address: any ) => {
-			this.setState( {
-				loading: false,
-				address: address,
-			} );
+	useEffect( () => {
+		setLoading( true );
+		addressRepository.show( id ).then( ( addressFound: any ) => {
+			setLoading( false );
+			setAddress( addressFound );
 		} );
-	}
+	 }, [] );
 	
-	render() {
-		return (
-			<Page title="Address Display">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loading }>Address Info</Preloader>
-					</PanelHeader>
-				{ !this.state.loading &&
-					<PanelBody>
-						<PanelRow>
-							<AddressInfo address={ this.state.address } />
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Address Display">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loading }>Address Info</Preloader>
+				</PanelHeader>
+			{ !loading &&
+				<PanelBody>
+					<PanelRow>
+						<AddressInfo address={ address } />
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+		</Page>
+	);
 }

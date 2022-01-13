@@ -11,23 +11,13 @@ interface PromiseListProps {
 	promises: Array<any>;
 }
 
-interface PromiseListState {
-	//
-}
-
-export default class PromiseList extends Component<PromiseListProps, PromiseListState> {
-	constructor( props: PromiseListProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<ResourceList
-				items={ this.props.promises }
-				component={ PromiseCard }
-				itemProp="promise"
-				notFoundLabel="promises"
-			/>
-		);
-	}
+export default function PromiseList( props: PromiseListProps ) {
+	return (
+		<ResourceList
+			items={ props.promises }
+			component={ PromiseCard }
+			itemProp="promise"
+			notFoundLabel="promises"
+		/>
+	);
 }

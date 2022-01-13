@@ -15,57 +15,44 @@ interface ConfirmModalProps {
 	onChoice: any;
 }
 
-interface ConfirmModalState {
-	keywords: string;
-	user: number;
-	users: Array<ComboboxOption>;
-}
-
 interface ComboboxOption {
 	value: string,
 	label: string,
 }
 
-export default class ConfirmModal extends Component<ConfirmModalProps, ConfirmModalState> {
-	constructor( props: ConfirmModalProps ) {
-		super( props );
-		this.onRequestClose = this.onRequestClose.bind( this );
+export default function ConfirmModal( props: ConfirmModalProps ) {
+	function onRequestClose() {
+		props.onRequestClose();
 	}
 
-	onRequestClose() {
-		this.props.onRequestClose();
-	}
-
-	onChoice( choice: string ) {
-		this.props.onChoice( choice );
+	function onChoice( choice: string ) {
+		props.onChoice( choice );
 	}
 	
-	render() {
-		return (
-			<Modal title={ this.props.title } onRequestClose={ this.onRequestClose }>
-				<div>{ this.props.subtitle } </div>
-				<Flex
-					justify="flex-start"
-					style={ { marginTop: '12px' } }	
+	return (
+		<Modal title={ props.title } onRequestClose={ onRequestClose }>
+			<div>{ props.subtitle } </div>
+			<Flex
+				justify="flex-start"
+				style={ { marginTop: '12px' } }	
+			>
+				<Button
+					isSecondary
+					onClick={ () => {
+						onChoice( 'accept' );
+					} }
 				>
-					<Button
-						isSecondary
-						onClick={ () => {
-							this.onChoice( 'accept' );
-						}}
-					>
-						Accept
-					</Button>
-					<Button
-						isSecondary
-						onClick={ () => {
-							this.onChoice( 'deny' );
-						}}
-					>
-						Deny
-					</Button>
-				</Flex>
-			</Modal>
-		);
-	}
+					Accept
+				</Button>
+				<Button
+					isSecondary
+					onClick={ () => {
+						onChoice( 'deny' );
+					} }
+				>
+					Deny
+				</Button>
+			</Flex>
+		</Modal>
+	);
 }

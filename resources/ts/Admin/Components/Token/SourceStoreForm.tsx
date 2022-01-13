@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Component } from 'react';
 import AddressInfo from './AddressInfo';
 import AddressSelectField from './AddressSelectField';
@@ -17,70 +18,55 @@ interface SourceStoreFormProps {
 	storeData: any;
 }
 
-interface SourceStoreFormState {
-	addressOptions: Array<any>;
-}
+export default function SourceStoreForm( props: SourceStoreFormProps ) {
+	const [ addressOptions, setAddressOptions ] = useState( [
+		{
+			label: 'Not Selected',
+			value: '',
+		}
+	] );
 
-export default class SourceStoreForm extends Component<SourceStoreFormProps, SourceStoreFormState> {
-	state: SourceStoreFormState = {
-		addressOptions: [
-			{
-				label: 'Not Selected',
-				value: '',
-			}
-		],
-	};
-	
-	constructor( props: SourceStoreFormProps ) {
-		super( props );
-		this.getCurrentAddress = this.getCurrentAddress.bind( this );
-		this.onAddressFieldChange = this.onAddressFieldChange.bind( this );
-		this.onAssetsFieldChange = this.onAssetsFieldChange.bind( this );
-	}
-
-	getCurrentAddress() {
-		if ( this.props.addresses && typeof this.props.addresses === 'object' && this.props.storeData?.address ) {
-			return this.props.addresses[ this.props.storeData.address ];
+	function getCurrentAddress() {
+		if ( props.addresses && typeof props.addresses === 'object' && props.storeData?.address ) {
+			return props.addresses[ props.storeData.address ];
 		}
 	}
 
-	onAddressFieldChange( address: string ) {
-		const state = Object.assign( {}, this.props.storeData );
+	function onAddressFieldChange( address: string ) {
+		const state = Object.assign( {}, props.storeData );
 		state.address = address;
-		this.props.onChange( state );
+		props.onChange( state );
 	}
 
-	onAssetsFieldChange( value: any ) {
-		const state = Object.assign( {}, this.props.storeData );
+	function onAssetsFieldChange( value: any ) {
+		const state = Object.assign( {}, props.storeData );
 		state.assets = value;
-		this.props.onChange( state );
+		props.onChange( state );
 	}  
 
-	render() {
-		const address = this.getCurrentAddress();
-		return (
-			<form style={ { width: '100%', maxWidth: "400px" } }>
-				<Flex
-					//@ts-ignore
-					direction="column"
-				>
-					<AddressSelectField
-						onChange={ this.onAddressFieldChange }
-						address={ this.props.storeData?.address }
-						addresses={ this.props.addresses }
-						loading={ this.props.loadingAddresses }
-					/>
-				{ address &&
-					<AddressInfo address={ address } />
-				}
-					<TextareaControl
-						label="Whitelisted Assets"
-						help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
-						value={ this.props.storeData?.assets }
-						onChange={ this.onAssetsFieldChange }
-					/>
-				</Flex>
-			</form>
-		);
-	}
+	const address = getCurrentAddress();
+	return (
+		<form style={ { width: '100%', maxWidth: "400px" } }>
+			<Flex
+				//@ts-ignore
+				direction="column"
+			>
+				<AddressSelectField
+					onChange={ onAddressFieldChange }
+					address={ props.storeData?.address }
+					addresses={ props.addresses }
+					loading={ props.loadingAddresses }
+				/>
+			{ address &&
+				<AddressInfo address={ address } />
+			}
+				<TextareaControl
+					label="Whitelisted Assets"
+					help="Comma-separated values. Leaving empty will make all assets whitelisted. Only whitelisted assets can be promised."
+					value={ props.storeData?.assets }
+					onChange={ onAssetsFieldChange }
+				/>
+			</Flex>
+		</form>
+	);
 }

@@ -10,32 +10,19 @@ interface CardActionsProps {
 	actions: Array<any>;
 }
 
-interface CardActionsState {
-	//
-}
-
-export default class CardActions extends Component<CardActionsProps, CardActionsState> {
-
-	constructor( props: CardActionsProps ) {
-		super( props );
-	}
-
-	render() {
-		const listItems = this.props.actions.map( ( action: any ) => {
-			return (
-				<Button
-					isSecondary
-					isSmall
-					href={ action.url }
-				>
-					{ action.title }
-				</Button>
-			)
-		} )
+export default function CardActions( props: CardActionsProps ) {
+	const listItems = props.actions.map( ( action: any ) => {
 		return (
-			<Flex justify="flex-start">{ listItems }</Flex>
-		);
-	}
+			<Button
+				isSecondary
+				isSmall
+				href={ action.url }
+			>
+				{ action.title }
+			</Button>
+		)
+	} )
+	return (
+		<Flex justify="flex-start">{ listItems }</Flex>
+	);
 }
- 
-

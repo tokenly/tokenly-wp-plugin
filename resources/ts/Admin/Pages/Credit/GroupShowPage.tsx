@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useInjection } from 'inversify-react';
+import { useState, useEffect } from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import { TYPES } from '../../../Types';
@@ -25,75 +26,56 @@ interface GroupShowPageProps {
 	pageData: GroupShowPageData;
 }
 
-interface GroupShowPageState {
-	uuid: string;
-	group: any;
-	loadingGroup: boolean;
-}
-
-export default class GroupShowPage extends Component<GroupShowPageProps, GroupShowPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
-	groupRepository: GroupRepositoryInterface;
+export default function GroupShowPage( props: GroupShowPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 	
-	state: GroupShowPageState = {
-		uuid: null,
-		group: null,
-		loadingGroup: null,
-	}
-	constructor( props: GroupShowPageProps ) {
-		super( props );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.uuid = urlParams.get( 'group' );
-	}
+	const urlParams = new URLSearchParams( window.location.search );
+	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'group' ) );
+	const [ group, setGroup ] = useState<any>( null );
+	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( null );
 
-	componentWillMount() {
-		this.setState( { loadingGroup: true } );
-		this.groupRepository.show( this.state.uuid ).then( ( group: any ) => {
-			this.setState( {
-				loadingGroup: false,
-				group: group,
-			} );
+	useEffect( () => {
+		setLoadingGroup( true );
+		groupRepository.show( uuid ).then( ( groupFound: any ) => {
+			setLoadingGroup( false );
+			setGroup( groupFound );
 		} );
-	}
+	 }, [] );
 
-	render() {
-		return (
-			<Page title="Group Details">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup }>Group Info</Preloader>
-					</PanelHeader>
-				{ !this.state.loadingGroup &&
-					<PanelBody>
-						<PanelRow>
-					{ Object.keys( this.state.group ).length > 0
-						?	<GroupInfo group={ this.state.group } verbose />
-						: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
-					}
-						</PanelRow>
-					</PanelBody>
+	return (
+		<Page title="Group Details">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingGroup }>Group Info</Preloader>
+				</PanelHeader>
+			{ ( !loadingGroup && group ) &&
+				<PanelBody>
+					<PanelRow>
+				{ Object.keys( group ).length > 0
+					?	<GroupInfo group={ group } verbose />
+					: 	<div style={ { opacity: 0.5 } }>Failed to fetch the group data.</div>
 				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<Flex justify="flex-start">
-								<Button
-									isSecondary
-									isLarge
-									href={ `${this.adminPageUrl}${this.namespace}-credit-group-edit&group=${ this.state?.group?.uuid }` }
-								>
-									Manage Group
-								</Button>
-							</Flex>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<Flex justify="flex-start">
+							<Button
+								isSecondary
+								isLarge
+								href={ `${adminPageUrl}${namespace}-credit-group-edit&group=${ group?.uuid }` }
+							>
+								Manage Group
+							</Button>
+						</Flex>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

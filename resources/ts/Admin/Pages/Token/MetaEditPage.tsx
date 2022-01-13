@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import { Component } from 'react';
 import MetaRepositoryInterface from '../../../Interfaces/Repositories/Token/MetaRepositoryInterface';
 import { TokenMetaData } from '../../../Interfaces';
@@ -29,58 +30,43 @@ interface MetaEditPageState {
 	editData: any;
 }
 
-export default class MetaEditPage extends Component<MetaEditPageProps, MetaEditPageState> {
-	@resolve( TYPES.Repositories.Token.MetaRepositoryInterface )
-	metaRepository: MetaRepositoryInterface;
+export default function MetaEditPage( props: MetaEditPageProps ) {
+	const metaRepository: MetaRepositoryInterface = useInjection( TYPES.Repositories.Token.MetaRepositoryInterface );
 
-	state: MetaEditPageState = {
-		id: null,
-		editData: {
-			asset: '',
-			extra: [],
-		},
-	}
-	
-	constructor( props: MetaEditPageProps ) {
-		super( props );
-		const urlParams = new URLSearchParams(window.location.search);
-		this.state.id = parseInt( urlParams.get( 'post' ) );
-		let extra = Object.assign( [], this.props.pageData.meta?.extra );
-		if ( extra && Array.isArray( extra ) ) {
-			extra = extra.filter( function ( item: any ) {
-				return item != null;
-			} );
-		} else {
-			extra = [];
-		}
-		const asset = this.props.pageData.meta?.asset ?? '';
-		this.state.editData = {
-			asset: asset,
-			extra: extra,
-		}
-		this.onEditDataChange = this.onEditDataChange.bind( this );
+	const urlParams = new URLSearchParams(window.location.search);
+	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
+
+	const asset = props.pageData.meta?.asset ?? '';
+	let extra = Object.assign( [], props.pageData.meta?.extra );
+	if ( extra && Array.isArray( extra ) ) {
+		extra = extra.filter( function ( item: any ) {
+			return item != null;
+		} );
+	} else {
+		extra = [];
 	}
 
-	onEditDataChange( newData: any ) {
+	const [ editData, setEditData ] = useState<any>( {
+		asset: asset,
+		extra: extra,
+	} );
+
+	function onEditDataChange( newData: any ) {
 		newData.extra = newData.extra.filter( function ( item: any ) {
 			return item != null;
 		} );
-		this.setState( {
-			editData: newData,
-		} );
+		setEditData( newData );
 		eventBus.dispatch( 'postDataUpdated', newData );
 	}
-
-	render() {
-		return (
-			<Fragment>
-				<PanelRow>
-					<MetaEditForm
-						editData={ this.state.editData }
-						onChange={ this.onEditDataChange }
-					/>
-				</PanelRow>
-			</Fragment>
-		);
-	}
+	
+	return (
+		<Fragment>
+			<PanelRow>
+				<MetaEditForm
+					editData={ editData }
+					onChange={ onEditDataChange }
+				/>
+			</PanelRow>
+		</Fragment>
+	);
 }

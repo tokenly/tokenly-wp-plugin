@@ -153,7 +153,6 @@ export default class PromiseEditPage extends Component<PromiseEditPageProps, Pro
 						<PanelRow>
 							<PromiseEditForm
 								onChange={ this.onEditDataChange }
-								loading={ this.state.loading }
 								editData={this.state?.editData}
 							/>
 						</PanelRow>

@@ -12,41 +12,30 @@ interface ResourceListProps {
 	notFoundLabel?: string;
 }
 
-interface ResourceListState {
-	//
-}
-
-export default class ResourceList extends Component<ResourceListProps, ResourceListState> {
-
-	constructor( props: ResourceListProps ) {
-		super( props );
+export default function ResourceList( props: ResourceListProps ) {
+	let listItems = [] as any;
+	if ( props.items && Array.isArray( props.items ) ) {
+		listItems = props?.items.map( ( item: any, i: number ) => {
+			const cardProps = {
+				[props.itemProp]: item,
+			}
+			return (
+				<props.component {...cardProps} />
+			);
+		} );
 	}
-
-	render() {
-		let listItems = [] as any;
-		if ( this.props.items && Array.isArray( this.props.items ) ) {
-			listItems = this.props?.items.map( ( item: any, i: number ) => {
-				const props = {
-					[this.props.itemProp]: item,
-				}
-				return (
-					<this.props.component {...props} />
-				);
-			} );
-		}
-		return (
-			<div style={ { width: '100%' } }>
-				{ ( Array.isArray( this.props.items ) && this.props.items.length > 0 )
-				?	<Flex
-						style={ { width: '100%' } }
-						// @ts-ignore
-						direction="column"
-					>
-						{ listItems }
-					</Flex>
-				: 	<div style={ { opacity: 0.5 } }>{ `No ${this.props.notFoundLabel ?? 'items'} were found.` }</div>
-				}
-			</div>
-		);
-	}
+	return (
+		<div style={ { width: '100%' } }>
+			{ ( Array.isArray( props.items ) && props.items.length > 0 )
+			?	<Flex
+					style={ { width: '100%' } }
+					// @ts-ignore
+					direction="column"
+				>
+					{ listItems }
+				</Flex>
+			: 	<div style={ { opacity: 0.5 } }>{ `No ${props.notFoundLabel ?? 'items'} were found.` }</div>
+			}
+		</div>
+	);
 }

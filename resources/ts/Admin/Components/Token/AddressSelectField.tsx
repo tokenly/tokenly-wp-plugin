@@ -14,68 +14,57 @@ interface AddressSelectFieldProps {
 	onChange: any;
 }
 
-interface AddressSelectFieldState {
-	//
-}
-
-export default class AddressSelectField extends Component<AddressSelectFieldProps, AddressSelectFieldState> {
-
-	constructor( props: AddressSelectFieldProps ) {
-		super( props );
-	}
-
-	getAddressOptions() {
+export default function AddressSelectField( props: AddressSelectFieldProps ) {
+	function getAddressOptions() {
 		const options = [
 			{
 				label: 'Not Selected',
 				value: '',
 			}
 		];
-		if ( this.props.addresses && typeof this.props.addresses === 'object' ) {
-			Object.keys( this.props.addresses ).forEach( ( key ) => {
+		if ( props.addresses && typeof props.addresses === 'object' ) {
+			Object.keys( props.addresses ).forEach( ( key ) => {
 				options.push( {
-					label: this.props.addresses[ key ].label,
+					label: props.addresses[ key ].label,
 					value: key,
 				} );
-			});
+			} );
 		}
 		return options;
 	}
 
-	render() {
-		const addressOptions = this.getAddressOptions();
-		return (
-			<Flex> 
-				<label>
-					<div style={ { marginBottom: '8px' } } >Address</div>
+	const addressOptions = getAddressOptions();
+	return (
+		<Flex> 
+			<label>
+				<div style={ { marginBottom: '8px' } } >Address</div>
+				<Flex
+					//@ts-ignore
+					direction="column"
+				>
 					<Flex
-						//@ts-ignore
-						direction="column"
+						style={ { maxWidth: "320px" } }
+						justify="flex-start"
+						align="center"
+						gap={ 4 }
 					>
-						<Flex
-							style={ { maxWidth: "320px" } }
-							justify="flex-start"
-							align="center"
-							gap={ 4 }
-						>
-							<SelectControl
-								label=""
-								disabled={this.props.loading || addressOptions.length === 1}
-								value={ this.props.address }
-								style={ { width: '100%' } }
-								options={ addressOptions }
-								required
-								onChange={ this.props.onChange }
-							/>
-							{ this.props.loading &&
-								<Spinner />
-							}
-						</Flex>
+						<SelectControl
+							label=""
+							disabled={ props.loading || addressOptions.length === 1 }
+							value={ props.address }
+							style={ { width: '100%' } }
+							options={ addressOptions }
+							required
+							onChange={ props.onChange }
+						/>
+						{ props.loading &&
+							<Spinner />
+						}
 					</Flex>
-				</label>
-			</Flex>
-		);
-	}
+				</Flex>
+			</label>
+		</Flex>
+	);
 }
  
 

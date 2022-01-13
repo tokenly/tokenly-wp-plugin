@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import { Component } from 'react';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
@@ -23,69 +24,50 @@ interface GroupStorePageProps {
 	pageData: GroupStorePageData;
 }
 
-interface GroupStorePageState {
-	storing: boolean;
-	storeData: any;
-}
-
-export default class GroupStorePage extends Component<GroupStorePageProps, GroupStorePageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
-	groupRepository: GroupRepositoryInterface;
+export default function GroupStorePage( props: GroupStorePageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 	
-	state: GroupStorePageState = {
-		storing: false,
-		storeData: {},
-	}
-	constructor( props: GroupStorePageProps ) {
-		super( props );
-		this.onStore = this.onStore.bind( this );
-		this.onCancel = this.onCancel.bind( this );
-		this.onStoreDataChange = this.onStoreDataChange.bind( this );
-		this.state.storeData.name = 'New Group';
-		this.state.storeData.app_whitelist = this.props.pageData?.client_id;
-	}
+	const [ storing, setStoring ] = useState<boolean>( false );
+	const [ storeData, setStoreData ] = useState<any>( {
+		name: 'New Group',
+		app_whitelist: props.pageData?.client_id,
+	} );
 
-	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-credit-vendor`;
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
 	}
 	
-	onStore() {
-		this.setState( {
-			storing: true,
+	function onStore() {
+		setStoring( true );
+		groupRepository.store( storeData ).then( ( result: any ) => {
+			setStoring( false );
+			goBack();
 		} );
-		this.groupRepository.store( this.state.storeData ).then( ( result: any ) => {
-			this.setState( {
-				storing: false,
-			} );
-			this.return();
-		});
 	}
 
-	isStoreDisabled() {
-		return ( !this.state.storeData?.name || !this.state.storeData?.app_whitelist );
+	function isStoreDisabled() {
+		return ( !storeData?.name || !storeData?.app_whitelist );
 	}
 
-	onCancel() {
-		this.return();
+	function onCancel() {
+		goBack();
 	}
 
-	onStoreDataChange( newData: any ) {
-		this.setState( { storeData: newData } );
+	function onStoreDataChange( newData: any ) {
+		setStoreData( newData );
 	}
-	
-	render() {
-		return (
-			<Page title="Group Creator">
+
+	return (
+		<Page title="Group Creator">
+			<form>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
 							<GroupStoreForm
-								storeData={ this.state.storeData }
-								onChange={ this.onStoreDataChange }
+								storeData={ storeData }
+								onChange={ onStoreDataChange }
 							/>
 						</PanelRow>
 					</PanelBody>
@@ -95,15 +77,15 @@ export default class GroupStorePage extends Component<GroupStorePageProps, Group
 						<PanelRow>
 							<ResourceStoreActions
 								name="Group"
-								storing={ this.state.storing }
-								onStore={ this.onStore }
-								onCancel={ this.onCancel }
-								disableStore={ this.isStoreDisabled() }
+								storing={ storing }
+								onStore={ onStore }
+								onCancel={ onCancel }
+								disableStore={ isStoreDisabled() }
 							/>
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-			</Page>
-		);
-	}
+			</form>
+		</Page>
+	);
 }

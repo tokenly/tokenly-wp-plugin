@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import UserLink from './../UserLink';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -13,43 +13,31 @@ interface PromiseParticipantsProps {
 	promise: any;
 }
 
-interface PromiseParticipantsState {
-	//
-}
+export default function PromiseParticipants( props: PromiseParticipantsProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class PromiseParticipants extends Component<PromiseParticipantsProps, PromiseParticipantsState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: PromiseParticipantsProps ) {
-		super( props );
-	}
-
-	render() {
-		const balanceLink = `${this.adminPageUrl}${this.namespace}-user-token-balance-index`;
-		return (
-			<Flex>
-				<span>Participants: </span>
-				{ this.props.promise &&
-					<Flex gap={ 0 } align="center" justify="flex-start">
-						<UserLink
-							url={ `${balanceLink}&id=${this.props.promise?.promise_meta?.source_user?.id}` }
-							alt={ this.props?.promise?.source_id }
-							name={ this.props?.promise?.promise_meta?.source_user?.name }
-						/>
-						<Dashicon style={ { margin: '0 5px' } } icon="arrow-right-alt" />
-						<UserLink
-							url={ `${balanceLink}&id=${this.props.promise?.promise_meta?.destination_user?.id}` }
-							alt={ this.props?.promise?.destination }
-							name={ this.props?.promise?.promise_meta?.destination_user?.name }
-						/>
-					</Flex>
-				}
-			</Flex>
-		);
-	}
+	const balanceLink = `${adminPageUrl}${namespace}-user-token-balance-index`;
+	return (
+		<Flex>
+			<span>Participants: </span>
+			{ props.promise &&
+				<Flex gap={ 0 } align="center" justify="flex-start">
+					<UserLink
+						url={ `${balanceLink}&id=${props.promise?.promise_meta?.source_user?.id}` }
+						alt={ props?.promise?.source_id }
+						name={ props?.promise?.promise_meta?.source_user?.name }
+					/>
+					<Dashicon style={ { margin: '0 5px' } } icon="arrow-right-alt" />
+					<UserLink
+						url={ `${balanceLink}&id=${props.promise?.promise_meta?.destination_user?.id}` }
+						alt={ props?.promise?.destination }
+						name={ props?.promise?.promise_meta?.destination_user?.name }
+					/>
+				</Flex>
+			}
+		</Flex>
+	);
 }
  
 

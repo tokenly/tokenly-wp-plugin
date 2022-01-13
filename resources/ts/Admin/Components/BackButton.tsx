@@ -6,31 +6,16 @@ import {
 	Button,
 } from '@wordpress/components';
 
-interface BackButtonProps {
-	//
-}
-
-interface BackButtonState {
-	//
-}
-
-export default class BackButton extends Component<BackButtonProps, BackButtonState> {
-
-	constructor( props: BackButtonProps ) {
-		super( props );
-	}
-
-	onClick() {
+export default function BackButton() {
+	function onClick() {
 		history.back();
 	}
 
-	render() {
-		return (
-			<Flex justify="flex-start">
-				<Button isTertiary icon="arrow-left-alt" onClick={ this.onClick }>Go Back</Button>
-			</Flex>
-		);
-	}
+	return (
+		<Flex justify="flex-start">
+			<Button isTertiary icon="arrow-left-alt" onClick={ onClick }>Go Back</Button>
+		</Flex>
+	);
 }
  
 

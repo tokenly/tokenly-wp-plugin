@@ -13,52 +13,38 @@ interface GroupEditFormProps {
 	onChange: any;
 }
 
-interface GroupEditFormState {
-	//
-}
+export default function GroupEditForm( props: GroupEditFormProps ) {
 
-export default class GroupEditForm extends Component<GroupEditFormProps, GroupEditFormState> {
-	state: GroupEditFormState = {
-		//
-	};
-	constructor( props: GroupEditFormProps ) {
-		super( props );
-		this.onNameFieldChange = this.onNameFieldChange.bind( this );
-		this.onWhitelistFieldChange = this.onWhitelistFieldChange.bind( this );
-	}
-	
-	onNameFieldChange( value: any ) {
-		const state = Object.assign( {}, this.props.editData );
+	function onNameFieldChange( value: any ) {
+		const state = Object.assign( {}, props.editData );
 		state.name = value;
-		this.props.onChange( state );
+		props.onChange( state );
 	}
 
-	onWhitelistFieldChange( value: any ) {
-		const state = Object.assign( {}, this.props.editData );
+	function onWhitelistFieldChange( value: any ) {
+		const state = Object.assign( {}, props.editData );
 		state.app_whitelist = value;
-		this.props.onChange( state );
+		props.onChange( state );
 	}
 
-	render() {
-		return (
-			<form style={ { maxWidth: "320px" } }>
-				<Flex
-					//@ts-ignore
-					direction="column"
-				>
-					<TextControl
-						label="Name"
-						value={ this.props.editData.name }
-						onChange={ this.onNameFieldChange }
-					/>
-					<TextareaControl
-						label="App Whitelist"
-						help="Comma-separated values."
-						value={ this.props.editData.app_whitelist }
-						onChange={ this.onWhitelistFieldChange }
-					/>
-				</Flex>
-			</form>
-		);
-	}
+	return (
+		<form style={ { maxWidth: "320px" } }>
+			<Flex
+				//@ts-ignore
+				direction="column"
+			>
+				<TextControl
+					label="Name"
+					value={ props.editData.name }
+					onChange={ onNameFieldChange }
+				/>
+				<TextareaControl
+					label="App Whitelist"
+					help="Comma-separated values."
+					value={ props.editData.app_whitelist }
+					onChange={ onWhitelistFieldChange }
+				/>
+			</Flex>
+		</form>
+	);
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 interface GroupLinkProps {
@@ -9,32 +9,20 @@ interface GroupLinkProps {
 	text?: boolean,
 }
 
-interface GroupLinkState {
-	//
-}
+export default function GroupLink( props: GroupLinkProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class GroupLink extends Component<GroupLinkProps, GroupLinkState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: GroupLinkProps ) {
-		super( props );
-	}
-
-	render() {
-		const title = this.props?.name ?? this.props.uuid;
-		const url = `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.uuid }`;
-		if ( this.props.text ) {
-			return (
-				<b><span>{ title }</span></b>
-			)
-		}
+	const title = props?.name ?? props.uuid;
+	const url = `${ adminPageUrl }${ namespace }-credit-group-show&group=${ props.uuid }`;
+	if ( props.text ) {
 		return (
-			<b><a href={ url }>{ title }</a></b>
-		);
+			<b><span>{ title }</span></b>
+		)
 	}
+	return (
+		<b><a href={ url }>{ title }</a></b>
+	);
 }
  
 

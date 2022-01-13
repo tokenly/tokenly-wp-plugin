@@ -1,51 +1,35 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 import { 
 	Button,
 	Flex,
 } from '@wordpress/components';
 
-interface VendorActionsProps {
-	//
-}
+export default function VendorActions() {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-interface VendorActionsState {
-	//
-}
-
-export default class VendorActions extends Component<VendorActionsProps, VendorActionsState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: VendorActionsProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex
-				justify="flex-start"
-				style={ { width: '100%' } }
+	return (
+		<Flex
+			justify="flex-start"
+			style={ { width: '100%' } }
+		>
+			<Button
+				isPrimary
+				href={ `${adminPageUrl}${namespace}-credit-transaction-store` }
 			>
-				<Button
-					isPrimary
-					href={ `${this.adminPageUrl}${this.namespace}-credit-transaction-store` }
-				>
-					Make Transaction
-				</Button>
-				<Button
-					isPrimary
-					href={ `${this.adminPageUrl}${this.namespace}-credit-group-store` }
-				>
-					Register Group
-				</Button>
-			</Flex>
-		);
-	}
+				Make Transaction
+			</Button>
+			<Button
+				isPrimary
+				href={ `${adminPageUrl}${namespace}-credit-group-store` }
+			>
+				Register Group
+			</Button>
+		</Flex>
+	);
 }
  
 

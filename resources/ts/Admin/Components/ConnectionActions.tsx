@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
 
 import { 
@@ -14,70 +15,44 @@ interface ConnectionActionsProps {
 	disabled: boolean;
 }
 
-interface ConnectionActionsState {
-	connecting: boolean;
-	disconnecting: boolean;
-}
+export default function ConnectionActions( props: ConnectionActionsProps ) {
+	const brand = useInjection( TYPES.Variables.brand );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class ConnectionActions extends Component<ConnectionActionsProps, ConnectionActionsState> {
-	@resolve( TYPES.Variables.brand )
-	brand: string;
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
+	const [ connecting, setConnecting ] = useState( false );
+	const [ disconnecting, setDisconnecting ] = useState( false );
 
-	state: ConnectionActionsState = {
-		connecting: false,
-		disconnecting: false,
+	function onConnectButtonClick() {
+		setConnecting( true );
 	}
 
-	constructor( props: ConnectionActionsProps ) {
-		super( props );
-		this.onConnectButtonClick = this.onConnectButtonClick.bind( this );
-		this.onDisconnectButtonClick = this.onDisconnectButtonClick.bind( this );
+	function onDisconnectButtonClick() {
+		setDisconnecting( true );
 	}
 
-	onConnectButtonClick() {
-		this.setState( {
-			connecting: true,
-		} );
-	}
-
-	onDisconnectButtonClick() {
-		this.setState( {
-			disconnecting: true,
-		} );
-	}
-
-	render() {
-		return (
-			<Flex justify='flex-start'>
-				<Button
-					isPrimary
-					disabled={ ( this.props.status || this.props.disabled ) }
-					href={ `/${this.namespace}/oauth/connect?${this.namespace}_success_url=${this.adminPageUrl}${this.namespace}-connection` }
-					onClick={ this.onConnectButtonClick }
-				>
-					{ this.state.connecting ? `Connecting ...` : `Connect to ${this.brand}` }
-				</Button>
-			{ this.state.connecting &&
-				<Spinner />
-			}
-				<Button
-					isPrimary
-					disabled={ ( !this.props.status || this.props.disabled ) }
-					href={ `/${this.namespace}/oauth/disconnect?${this.namespace}_success_url=${this.adminPageUrl}${this.namespace}-connection` }
-					onClick={ this.onDisconnectButtonClick }
-				>
-					{ this.state.disconnecting ? `Disconnecting ...` : `Disconnect from ${this.brand}` }
-				</Button>
-			{ this.state.disconnecting &&
-				<Spinner />
-			}
-			</Flex>
-		);
-	}
+	return (
+		<Flex justify='flex-start'>
+			<Button
+				isPrimary
+				isBusy={ connecting }
+				disabled={ ( props.status || props.disabled ) }
+				href={ `/${namespace}/oauth/connect?${namespace}_success_url=${adminPageUrl}${namespace}-connection` }
+				onClick={ onConnectButtonClick }
+			>
+				{ `Connect to ${brand}` }
+			</Button>
+			<Button
+				isPrimary
+				isBusy={ disconnecting }
+				disabled={ ( !props.status || props.disabled ) }
+				href={ `/${namespace}/oauth/disconnect?${namespace}_success_url=${adminPageUrl}${namespace}-connection` }
+				onClick={ onDisconnectButtonClick }
+			>
+				{ `Disconnect from ${brand}` }
+			</Button>
+		</Flex>
+	);
 }
  
 

@@ -16,38 +16,24 @@ interface ResourceEditActionsProps {
 	disableStore?: boolean;
 }
 
-interface ResourceEditActionsState {
-	//
-}
-
-export default class ResourceEditActions extends Component<ResourceEditActionsProps, ResourceEditActionsState> {
-
-	constructor( props: ResourceEditActionsProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex justify="flex-start" align="center" >
-				<Button
-					isPrimary
-					disabled={ this.props.storing || this.props.disableStore }
-					onClick={ this.props.onStore }
-				>
-					{ this.props.storing ? 'Creating ..' : `Create ${this.props.name}` }
-				</Button>
-			{ this.props.storing === true &&
-				<Spinner/>
-			}
-				<Button
-					isTertiary
-					onClick={ this.props.onCancel }
-				>
-					Cancel
-				</Button>
-			</Flex>
-		);
-	}
+export default function ResourceEditActions( props: ResourceEditActionsProps ) {
+	return (
+		<Flex justify="flex-start" align="center" >
+			<Button
+				isPrimary
+				isBusy={ props.storing }
+				onClick={ props.onStore }
+			>
+				{ `Create ${props.name}` }
+			</Button>
+			<Button
+				isTertiary
+				onClick={ props.onCancel }
+			>
+				Cancel
+			</Button>
+		</Flex>
+	);
 }
  
 

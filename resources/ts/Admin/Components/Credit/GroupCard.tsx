@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 import CardActions from './../CardActions';
 import GroupInfo from './GroupInfo';
@@ -17,52 +17,40 @@ interface GroupCardProps {
 	group: any;
 }
 
-interface GroupCardState {
-	//
-}
+export default function GroupCard( props: GroupCardProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class GroupCard extends Component<GroupCardProps, GroupCardState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: GroupCardProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Card size="extraSmall" style={ { width: '100%' } }>
-				<CardHeader>
-					<GroupLink name={ this.props.group?.name } uuid={ this.props.group?.uuid } />
-				</CardHeader>
-				<CardBody style={ { width: '100%' } }>
-					<GroupInfo group={ this.props.group } />
-				</CardBody>
-				<CardFooter>
-					<CardActions
-						actions={
-							[
-								{
-									title: 'View Transactions',
-									url: `${ this.adminPageUrl }${ this.namespace }-credit-transaction-index&group=${ this.props.group.uuid }`,
-								},
-								{
-									title: 'View Details',
-									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-show&group=${ this.props.group.uuid }`,
-								},
-								{
-									title: 'Edit Group',
-									url: `${ this.adminPageUrl }${ this.namespace }-credit-group-edit&group=${ this.props.group.uuid }`,
-								},
-							]
-						}
-					/>
-				</CardFooter>
-			</Card>
-		);
-	}
+	return (
+		<Card size="extraSmall" style={ { width: '100%' } }>
+			<CardHeader>
+				<GroupLink name={ props.group?.name } uuid={ props.group?.uuid } />
+			</CardHeader>
+			<CardBody style={ { width: '100%' } }>
+				<GroupInfo group={ props.group } />
+			</CardBody>
+			<CardFooter>
+				<CardActions
+					actions={
+						[
+							{
+								title: 'View Transactions',
+								url: `${ adminPageUrl }${ namespace }-credit-transaction-index&group=${ props.group.uuid }`,
+							},
+							{
+								title: 'View Details',
+								url: `${ adminPageUrl }${ namespace }-credit-group-show&group=${ props.group.uuid }`,
+							},
+							{
+								title: 'Edit Group',
+								url: `${ adminPageUrl }${ namespace }-credit-group-edit&group=${ props.group.uuid }`,
+							},
+						]
+					}
+				/>
+			</CardFooter>
+		</Card>
+	);
 }
  
 

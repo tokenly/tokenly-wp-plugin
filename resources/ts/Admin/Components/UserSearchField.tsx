@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState } from 'react';
+import { useInjection } from 'inversify-react';
 import { Component } from 'react';
 import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../Types';
@@ -16,65 +17,49 @@ interface UserSearchFieldProps {
 	help?: string;
 }
 
-interface UserSearchFieldState {
-	keywords: string;
-	options: any;
-	searchTimeout: number;
-}
-
 interface ComboboxOption {
 	value: string,
 	label: string,
 }
 
-export default class UserSearchField extends Component<UserSearchFieldProps, UserSearchFieldState> {
-	@resolve( TYPES.Repositories.UserRepositoryInterface )
-	userRepository: UserRepositoryInterface;
+export default function UserSearchField( props: UserSearchFieldProps ) {
+	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
+
+	const [ keywords, setKeywords ] = useState( '' );
+	const [ options, setOptions ] = useState( [] );
+	const [ searchTimeout, setSearchTimeout ] = useState( 0 );
 	
-	state: UserSearchFieldState = {
-		keywords: '',
-		options: [],
-		searchTimeout: 0,
-	};
-	constructor( props: UserSearchFieldProps ) {
-		super( props );
-		this.onKeywordsChange = this.onKeywordsChange.bind( this );
-		this.getUserOptions = this.getUserOptions.bind( this );
-		this.search = this.search.bind( this );
-		this.getKeywordsFromOptions = this.getKeywordsFromOptions.bind( this );
-	}
-	
-	getUserOptions( keywords: string ) {
+	function getUserOptions( keywords: string ) {
 		return new Promise( ( resolve, reject ) => {
-			let options = [] as any;
+			let newOptions = [] as any;
 			if ( keywords == '' ) {
-				resolve( options );
+				resolve( newOptions );
 			}
-			this.searchDebounce( keywords ).then( ( optionsFound ) => {
+			searchDebounce( keywords ).then( ( optionsFound ) => {
 				if ( optionsFound && Array.isArray( optionsFound ) ) {
-					options = optionsFound;
+					newOptions = optionsFound;
 				}
-				this.setState( { options: options } );
-				resolve( options );
+				setOptions( newOptions );
+				resolve( newOptions );
 			} ).catch( ( error ) => {
 				reject( error );
 			} );
 		});
 	}
 
-	searchDebounce( keywords: string ) {
-		clearTimeout( this.state.searchTimeout );
+	function searchDebounce( keywords: string ) {
+		clearTimeout( searchTimeout );
 		return new Promise( ( resolve, reject ) => {
-			this.state.searchTimeout = setTimeout(() => {
-				const results = this.search( keywords );
+			setSearchTimeout( setTimeout(() => {
+				const results = search( keywords );
 				resolve( results );
-			}, 500);
+			}, 500) );
 		} );
 	}
 
-	search( keywords: string ) {
+	function search( keywords: string ) {
 		return new Promise( ( resolve, reject ) => {
-			this.userRepository.index({
+			userRepository.index({
 				suggestions: true,
 				name: keywords,
 			} ).then( ( results: Array<any> ) => {
@@ -91,47 +76,43 @@ export default class UserSearchField extends Component<UserSearchFieldProps, Use
 					options.length = 1;
 				}
 				resolve( options );
-			}).catch( ( error: string ) => {
+			} ).catch( ( error: string ) => {
 				reject( error );
 			} );
 		} );
 	}
 
-	getKeywordsFromOptions() {
+	function getKeywordsFromOptions() {
 		let keywords = '';
-		const options = this.state.options.filter( ( option: any ) => {
-			return option.value == this.props.user;
+		const optionsFiltered = options.filter( ( option: any ) => {
+			return option.value == props.user;
 		} );
-		if ( options.length > 0 ) {
-			keywords = options[0].label;
+		if ( optionsFiltered.length > 0 ) {
+			keywords = optionsFiltered[0].label;
 		}
 		return keywords;
 	}
 
-	onKeywordsChange( keywords: string ) {
-		if ( keywords == '' && this.props.user ) {
-			keywords = this.getKeywordsFromOptions();
+	function onKeywordsChange( keywords: string ) {
+		if ( keywords == '' && props.user ) {
+			keywords = getKeywordsFromOptions();
 		}
-		this.getUserOptions( keywords ).then( ( options ) => {
-			this.setState( {
-				options: options,
-				keywords: keywords,
-			} );
+		getUserOptions( keywords ).then( ( options: any ) => {
+			setOptions( options );
+			setKeywords( keywords );
 		} );
 	}
 
-	render() {
-		return (
-			<div style={ { height: '40px' } }>
-				<ComboboxControl
-					label={ this.props.label }
-					help={ this.props.help }
-					value={ this.props.user }
-					onChange={ this.props.onChange }
-					options={ this.state.options }
-					onFilterValueChange={ this.onKeywordsChange }
-				/>
-			</div>
-		);
-	}
+	return (
+		<div style={ { height: '40px' } }>
+			<ComboboxControl
+				label={ props.label }
+				help={ props.help }
+				value={ props.user }
+				onChange={ props.onChange }
+				options={ options }
+				onFilterValueChange={ onKeywordsChange }
+			/>
+		</div>
+	);
 }

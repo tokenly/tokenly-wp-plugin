@@ -9,26 +9,15 @@ interface UserInfoProps {
 	user: any;
 }
 
-interface UserInfoState {
-	//
-}
-
-export default class UserInfo extends Component<UserInfoProps, UserInfoState> {
-
-	constructor( props: UserInfoProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex
-				//@ts-ignore
-				direction="column"
-			>
-				<div>Name: <b>{ this.props.user?.name } ({ this.props.user?.oauth_user?.username ?? '-' })</b></div>
-			</Flex>
-		);
-	}
+export default function UserInfo( props: UserInfoProps ) {
+	return (
+		<Flex
+			//@ts-ignore
+			direction="column"
+		>
+			<div>Name: <b>{ this.props.user?.name } ({ this.props.user?.oauth_user?.username ?? '-' })</b></div>
+		</Flex>
+	);
 }
  
 

@@ -13,145 +13,129 @@ interface TcaSettingsFormProps {
 	onChange: any;
 }
 
-interface TcaSettingsFormState {
-	//
-}
-
-export default class TcaSettingsForm extends Component<TcaSettingsFormProps, TcaSettingsFormState> {
-
-	constructor( props: TcaSettingsFormProps ) {
-		super( props );
-		this.onChange = this.onChange.bind( this );
-		this.isPostTypeChecked = this.isPostTypeChecked.bind( this );
-		this.isTaxonomyChecked = this.isTaxonomyChecked.bind( this );
-		this.onFilterMenuItemsFieldChange = this.onFilterMenuItemsFieldChange.bind( this );
-		this.onFilterPostResultsFieldChange = this.onFilterPostResultsFieldChange.bind( this );
+export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
+	function onChange( newSettings: any ) {
+		props.onChange( newSettings );
 	}
 
-	onChange( newSettings: any ) {
-		this.props.onChange( newSettings );
-	}
-
-	isPostTypeChecked( key: string ) {
+	function isPostTypeChecked( key: string ) {
 		let checked = false;
-		if ( this.props.settings?.post_types && this.props.settings?.post_types[ key ] ) {
-			checked = this.props.settings.post_types[ key ]
+		if ( props.settings?.post_types && props.settings?.post_types[ key ] ) {
+			checked = props.settings.post_types[ key ]
 		}
 		return checked;
 	}
 
-	isTaxonomyChecked( key: string ) {
+	function isTaxonomyChecked( key: string ) {
 		let checked = false;
-		if ( this.props.settings?.taxonomies && this.props.settings?.taxonomies[ key ] ) {
-			checked = this.props.settings.taxonomies[ key ]
+		if ( props.settings?.taxonomies && props.settings?.taxonomies[ key ] ) {
+			checked = props.settings.taxonomies[ key ]
 		}
 		return checked;
 	}
 
-	onFilterMenuItemsFieldChange( value: any ) {
-		let settings = Object.assign( {}, this.props.settings );
+	function onFilterMenuItemsFieldChange( value: any ) {
+		let settings = Object.assign( {}, props.settings );
 		settings.filter_menu_items = value;
-		this.onChange( settings );
+		onChange( settings );
 	}
  
-	onFilterPostResultsFieldChange( value: any ) {
-		let settings = Object.assign( {}, this.props.settings );
+	function onFilterPostResultsFieldChange( value: any ) {
+		let settings = Object.assign( {}, props.settings );
 		settings.filter_post_results = value;
-		this.onChange( settings );
+		onChange( settings );
 	}
 
-	render() {
-		const postTypes: any = [];
-		if ( this.props.data.post_types ) {
-			Object.keys( this.props.data.post_types ).map( ( key: string, index: number ) => {
-				const label = this.props.data.post_types[ key ];
-				const item = (
-					<CheckboxControl
-						label={ label }
-						checked={ this.isPostTypeChecked( key ) }
-						onChange={ ( value: any ) => {
-							let settings = Object.assign( {}, this.props.settings );
-							settings.post_types[ key ] = value;
-							this.onChange( settings );
-						} }
+	const postTypes: any = [];
+	if ( props.data.post_types ) {
+		Object.keys( props.data.post_types ).map( ( key: string, index: number ) => {
+			const label = props.data.post_types[ key ];
+			const item = (
+				<CheckboxControl
+					label={ label }
+					checked={ isPostTypeChecked( key ) }
+					onChange={ ( value: any ) => {
+						let settings = Object.assign( {}, props.settings );
+						settings.post_types[ key ] = value;
+						onChange( settings );
+					} }
+				/>
+			);
+			postTypes.push( item );
+		});
+	}
+	const taxonomies: any = [];
+	if ( props.data.taxonomies ) {
+		Object.keys( props.data.taxonomies ).map( ( key: string, index: number ) => {
+			const label = props.data.taxonomies[ key ];
+			const item = (
+				<CheckboxControl
+					label={ label }
+					checked={ isTaxonomyChecked( key ) }
+					onChange={ ( value: any ) => {
+						let settings = Object.assign( {}, props.settings );
+						settings.taxonomies[ key ] = value;
+						onChange( settings );
+					} }
+				/>
+			);
+			taxonomies.push( item );
+		});
+	}
+	return (
+		<Flex
+			//@ts-ignore
+			direction="column"
+		>
+			<fieldset>
+				<Flex
+					//@ts-ignore
+					direction="column"
+				>	
+					<legend style={ { marginBottom: '8px' } }>
+						<b>Filtering Options</b>
+						<div>Filtering the content can slow down page loading speed. <br />
+							The following options allow fine-grained control over what gets filtered.</div>
+					</legend>
+					<ToggleControl
+						label="Filter Menu Items"
+						help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
+						checked={ props.settings.filter_menu_items }
+						onChange={ onFilterMenuItemsFieldChange }
 					/>
-				);
-				postTypes.push( item );
-			});
-		}
-		const taxonomies: any = [];
-		if ( this.props.data.taxonomies ) {
-			Object.keys( this.props.data.taxonomies ).map( ( key: string, index: number ) => {
-				const label = this.props.data.taxonomies[ key ];
-				const item = (
-					<CheckboxControl
-						label={ label }
-						checked={ this.isTaxonomyChecked( key ) }
-						onChange={ ( value: any ) => {
-							let settings = Object.assign( {}, this.props.settings );
-							settings.taxonomies[ key ] = value;
-							this.onChange( settings );
-						} }
+					<ToggleControl
+						label="Filter Post Results"
+						help="Filters the post listings which are not controlable by the menu editor, like recent post list."
+						checked={ props.settings.filter_post_results }
+						onChange={ onFilterPostResultsFieldChange }
 					/>
-				);
-				taxonomies.push( item );
-			});
-		}
-		return (
+				</Flex>
+			</fieldset>
+			<hr />
+			<div>
+				<b>Post Types</b>
+				<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
+			</div>
 			<Flex
 				//@ts-ignore
 				direction="column"
+				style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
 			>
-				<fieldset>
-					<Flex
-						//@ts-ignore
-						direction="column"
-					>	
-						<legend style={ { marginBottom: '8px' } }>
-							<b>Filtering Options</b>
-							<div>Filtering the content can slow down page loading speed. <br />
-								The following options allow fine-grained control over what gets filtered.</div>
-						</legend>
-						<ToggleControl
-							label="Filter Menu Items"
-							help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
-							checked={ this.props.settings.filter_menu_items }
-							onChange={ this.onFilterMenuItemsFieldChange }
-						/>
-						<ToggleControl
-							label="Filter Post Results"
-							help="Filters the post listings which are not controlable by the menu editor, like recent post list."
-							checked={ this.props.settings.filter_post_results }
-							onChange={ this.onFilterPostResultsFieldChange }
-						/>
-					</Flex>
-				</fieldset>
-				<hr />
-				<div>
-					<b>Post Types</b>
-					<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
-				</div>
-				<Flex
-					//@ts-ignore
-					direction="column"
-					style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
-				>
-					{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
-				</Flex>
-				<div style={{marginTop: '12px'}}>
-					<b>Taxonomies</b>
-					<div>The selected taxonomies will be able to use the TCA functions. <br/> The rule editor will be available at the taxonomy term editing screen.</div>
-				</div>
-				<Flex
-					//@ts-ignore
-					direction="column"
-					style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
-				>
-					{ taxonomies.length > 0 ? taxonomies : <div style={{opacity: 0.6}}>No taxonomies found</div>}
-				</Flex>
+				{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
 			</Flex>
-		);
-	}
+			<div style={{marginTop: '12px'}}>
+				<b>Taxonomies</b>
+				<div>The selected taxonomies will be able to use the TCA functions. <br/> The rule editor will be available at the taxonomy term editing screen.</div>
+			</div>
+			<Flex
+				//@ts-ignore
+				direction="column"
+				style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+			>
+				{ taxonomies.length > 0 ? taxonomies : <div style={{opacity: 0.6}}>No taxonomies found</div>}
+			</Flex>
+		</Flex>
+	);
 }
  
 

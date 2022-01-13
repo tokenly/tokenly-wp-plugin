@@ -11,23 +11,13 @@ interface TransactionList {
 	transactions: Array<any>;
 }
 
-interface PromiseListState {
-	//
-}
-
-export default class PromiseList extends Component<TransactionList, PromiseListState> {
-	constructor( props: TransactionList ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<ResourceList
-				items={ this.props.transactions }
-				component={ TransactionCard }
-				itemProp="transaction"
-				notFoundLabel="transactions"
-			/>
-		);
-	}
+export default function PromiseList( props: TransactionList ) {
+	return (
+		<ResourceList
+			items={ props.transactions }
+			component={ TransactionCard }
+			itemProp="transaction"
+			notFoundLabel="transactions"
+		/>
+	);
 }

@@ -12,44 +12,33 @@ interface QuantityFieldProps {
 	max?: number;
 }
 
-interface QuantityFieldState {
-	//
-}
-
-export default class QuantityField extends Component<QuantityFieldProps, QuantityFieldState> {
-
-	constructor( props: QuantityFieldProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex> 
-				<label>
-					Quantity
-					<Flex justify="flex-start" align="center" style={ { paddingTop: '12px' } }>
-						<TextControl
-							type="number"
-							value={ this.props.quantity }
-							min={ 0 }
-							style={ { maxWidth: '100px' } }
-							onChange={ (value: any) => {
-								this.props.onChange( value );
-							} }
-						/>
-						{ this.props.max &&
-							<span>
-								<span>of / </span>
-								<span title={ this.props.max as any }>
-									<b>{ parseFloat( this.props.max.toFixed( 4 ) ) }</b>
-								</span>
+export default function QuantityField( props: QuantityFieldProps ) {
+	return (
+		<Flex> 
+			<label>
+				Quantity
+				<Flex justify="flex-start" align="center" style={ { paddingTop: '12px' } }>
+					<TextControl
+						type="number"
+						value={ props.quantity }
+						min={ 0 }
+						style={ { maxWidth: '100px' } }
+						onChange={ (value: any) => {
+							props.onChange( value );
+						} }
+					/>
+					{ props.max &&
+						<span>
+							<span>of / </span>
+							<span title={ props.max as any }>
+								<b>{ parseFloat( props.max.toFixed( 4 ) ) }</b>
 							</span>
-						}
-					</Flex>
-				</label>
-			</Flex>
-		);
-	}
+						</span>
+					}
+				</Flex>
+			</label>
+		</Flex>
+	);
 }
  
 

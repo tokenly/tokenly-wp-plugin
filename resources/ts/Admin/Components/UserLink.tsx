@@ -11,28 +11,17 @@ interface UserLinkProps {
 	name: string;
 }
 
-interface UserLinkState {
-	//
-}
-
-export default class UserLink extends Component<UserLinkProps, UserLinkState> {
-
-	constructor( props: UserLinkProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<div>
-				<Dashicon icon="admin-users" style={ { marginRight: '2px' } } />
-				<b title={ this.props.alt }>
-					<a href={ this.props.url } >
-						<span>{ this.props.name ? this.props.name : 'Unknown' }</span>
-					</a>
-				</b>
-			</div>
-		);
-	}
+export default function UserLink( props: UserLinkProps ) {
+	return (
+		<div>
+			<Dashicon icon="admin-users" style={ { marginRight: '2px' } } />
+			<b title={ props.alt }>
+				<a href={ props.url } >
+					<span>{ props.name ? props.name : 'Unknown' }</span>
+				</a>
+			</b>
+		</div>
+	);
 }
  
 

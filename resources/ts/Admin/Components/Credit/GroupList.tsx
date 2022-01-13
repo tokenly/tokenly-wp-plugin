@@ -11,23 +11,13 @@ interface GroupListProps {
 	groups: Array<any>;
 }
 
-interface GroupListState {
-	//
-}
-
-export default class GroupList extends Component<GroupListProps, GroupListState> {
-	constructor( props: GroupListProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<ResourceList
-				items={ this.props.groups }
-				component={ GroupCard }
-				itemProp="group"
-				notFoundLabel="groups"
-			/>
-		);
-	}
+export default function GroupList( props: GroupListProps ) {
+	return (
+		<ResourceList
+			items={ props.groups }
+			component={ GroupCard }
+			itemProp="group"
+			notFoundLabel="groups"
+		/>
+	);
 }

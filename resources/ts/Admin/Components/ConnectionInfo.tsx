@@ -7,39 +7,18 @@ interface ConnectionInfoProps {
 	user: any;
 }
 
-interface ConnectionInfoState {
-	//
+export default function ConnectionInfo( props: ConnectionInfoProps ) {
+	return (
+		<div>
+			<StatusIndicator status={ props?.status } />
+			{ props.status == true &&
+				<div>
+					<span>Connected As: </span>
+					<span>
+						<b>{`${ props.user?.name } ( ${ props.user?.oauth_user?.username } )` }</b>
+					</span>
+				</div>
+			}
+		</div>
+	);
 }
-
-export default class ConnectionInfo extends Component<ConnectionInfoProps, ConnectionInfoState> {
-
-	constructor( props: ConnectionInfoProps ) {
-		super( props );
-	}
-
-	getStatusText() {
-		let status = 'Not connected';
-		if ( this.props.status === true ) {
-			status = 'Connected';
-		}
-		return status;
-	}
-
-	render() {
-		return (
-			<div>
-				<StatusIndicator status={ this.props?.status } />
-				{ this.props.status == true &&
-					<div>
-						<span>Connected As: </span>
-						<span>
-							<b>{`${ this.props.user?.name } ( ${ this.props.user?.oauth_user?.username } )` }</b>
-						</span>
-					</div>
-				}
-			</div>
-		);
-	}
-}
- 
-

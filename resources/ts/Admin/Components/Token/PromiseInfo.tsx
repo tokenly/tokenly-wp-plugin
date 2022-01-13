@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react';
 import PromiseParticipants from './PromiseParticipants';
 import * as dayjs from 'dayjs'
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -14,25 +14,12 @@ interface AddressInfoProps {
 	verbose?: boolean;
 }
 
-interface AddressInfoState {
-	//
-}
+export default function AddressInfo( props: AddressInfoProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class AddressInfo extends Component<AddressInfoProps, AddressInfoState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: AddressInfoProps ) {
-		super( props );
-		this.getProperties = this.getProperties.bind( this );
-		this.isPromiseValid = this.isPromiseValid.bind( this );
-		this.getListItems = this.getListItems.bind( this );
-	}
-
-	getListItems() {
-		const properties = this.getProperties();
+	function getListItems() {
+		const properties = getProperties();
 		return properties.map( ( property ) => {
 			return (
 				<div>
@@ -50,71 +37,69 @@ export default class AddressInfo extends Component<AddressInfoProps, AddressInfo
 		} );
 	}
 
-	getProperties() {
+	function getProperties() {
 		const properties = [
 			{
 				label: 'Asset',
-				value: this.props.promise?.asset,
+				value: props.promise?.asset,
 			},
 			{
 				label: 'Quantity',
-				value: this.props.promise?.quantity?.value ?? this.props.promise?.quantity?.value_sat,
+				value: props.promise?.quantity?.value ?? props.promise?.quantity?.value_sat,
 			},
 		];
-		if ( this.props.verbose ) {
+		if ( props.verbose ) {
 			properties.push(
 				{
 					label: 'ID',
-					value: this.props.promise?.promise_id,
+					value: props.promise?.promise_id,
 				},
 				{
 					label: 'Ref',
-					value: this.props.promise?.ref,
+					value: props.promise?.ref,
 				},
 				{
 					label: 'Note',
-					value: this.props.promise?.note,
+					value: props.promise?.note,
 				},
 				{
 					label: 'Created at',
-					value: this.dateFormatted( this.props.promise?.created_at ),
+					value: dateFormatted( props.promise?.created_at ),
 				},
 				{
 					label: 'Updated at',
-					value: this.dateFormatted( this.props.promise?.updated_at ),
+					value: dateFormatted( props.promise?.updated_at ),
 				},
 			)
 		}
 		return properties;
 	}
 
-	isPromiseValid() {
-		return ( this.props.promise && typeof this.props.promise === 'object' );
+	function isPromiseValid() {
+		return ( props.promise && typeof props.promise === 'object' );
 	}
 
-	dateFormatted( date: Date ) {
+	function dateFormatted( date: Date ) {
 		if ( date ) {
 			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
 		}
 		return;
 	}
 
-	render() {
-		return (
-			<Flex>
-				<Flex style={ { width: '100%', alignItems: 'center' } }>
-					<div style={ { flex: 1 } }>
-						<div>
-							<span>Source: </span>
-							<a href={`${this.adminPageUrl}${this.namespace}-token-source-show&source=${this.props.promise?.source_id}`}>
-								<b>{this.props.promise?.source?.address.label ?? this.props.promise.source_id}</b>
-							</a>
-						</div>
-						<PromiseParticipants promise={ this.props.promise } />
-						{ this.getListItems() }
+	return (
+		<Flex>
+			<Flex style={ { width: '100%', alignItems: 'center' } }>
+				<div style={ { flex: 1 } }>
+					<div>
+						<span>Source: </span>
+						<a href={`${adminPageUrl}${namespace}-token-source-show&source=${props.promise?.source_id}`}>
+							<b>{props.promise?.source?.address.label ?? props.promise.source_id}</b>
+						</a>
 					</div>
-				</Flex>
+					<PromiseParticipants promise={ props.promise } />
+					{ getListItems() }
+				</div>
 			</Flex>
-		);
-	}
+		</Flex>
+	);
 }

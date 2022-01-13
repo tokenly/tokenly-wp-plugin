@@ -35,7 +35,7 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
 		this.onPostDataUpdated = this.onPostDataUpdated.bind( this );
 		this.onTcaUpdate = this.onTcaUpdate.bind( this );
-		this.state.tcaRules = Object.assign( {}, this.props?.pageData?.tca_rules );
+		this.state.tcaRules = Object.assign( [], this.props?.pageData?.tca_rules );
 		this.state.postData.tca_rules = this.state.tcaRules;
 	}
 
@@ -77,9 +77,11 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 	}
 
 	onTcaUpdate( rules: any ) {
+		this.setState( { tcaRules: rules } );
 		this.onPostDataUpdated( {
 			tca_rules: rules,
 		} );
+		
 	}
 
 	render() {
@@ -98,7 +100,7 @@ export default class AppLayout extends Component<AppLayoutProps, AppLayoutState>
 				{ this.props.pageData?.tca_enabled == true &&
 					<TcaRuleEditor
 						rules={ this.state.tcaRules }
-						onUpdate={ this.onTcaUpdate }
+						onChange={ this.onTcaUpdate }
 					/>
 				}
 				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.postData as any ) } />

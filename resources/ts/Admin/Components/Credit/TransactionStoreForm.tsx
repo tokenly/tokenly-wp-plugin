@@ -16,29 +16,10 @@ interface TransactionStoreFormProps {
 	loadingGroups: boolean;
 }
 
-interface TransactionStoreFormState {
-	groupOptions: any;
-}
-
-export default class TransactionStoreForm extends Component<TransactionStoreFormProps, TransactionStoreFormState> {
-	state: TransactionStoreFormState = {
-		groupOptions: [],
-	};
-	
-	constructor( props: TransactionStoreFormProps ) {
-		super( props );
-		this.getSourceLabel = this.getSourceLabel.bind( this );
-		this.onGroupFieldChange = this.onGroupFieldChange.bind( this );
-		this.onTypeFieldChange = this.onTypeFieldChange.bind( this );
-		this.onAccountFieldChange = this.onAccountFieldChange.bind( this );
-		this.onSourceFieldChange = this.onSourceFieldChange.bind( this );
-		this.onAmountFieldChange = this.onAmountFieldChange.bind( this );
-		this.onRefFieldChange = this.onRefFieldChange.bind( this );
-	}
-
-	getSourceLabel() {
+export default function TransactionStoreForm( props: TransactionStoreFormProps ) {
+	function getSourceLabel() {
 		let label = '';
-		switch ( this.props.storeData?.type ) {
+		switch ( props.storeData?.type ) {
 			case 'debit':
 				label = 'Destination';
 				break;
@@ -49,97 +30,95 @@ export default class TransactionStoreForm extends Component<TransactionStoreForm
 		return label;
 	}
 
-	onGroupFieldChange( value: any ) {
-		const newState = Object.assign( {}, this.props.storeData );
+	function onGroupFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.storeData );
 		newState.group_uuid = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onTypeFieldChange( value: any ) {
-		const newState = Object.assign( {}, this.props.storeData );
+	function onTypeFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.storeData );
 		newState.type = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onAccountFieldChange( value: any ) {
-		const newState = Object.assign( {}, this.props.storeData );
+	function onAccountFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.storeData );
 		newState.account = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onSourceFieldChange( value: any ) {
-		const newState = Object.assign( {}, this.props.storeData );
+	function onSourceFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.storeData );
 		newState.source = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onAmountFieldChange( value: any ) {
-		const newState = Object.assign( {}, this.props.storeData );
+	function onAmountFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.storeData );
 		newState.amount = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onRefFieldChange( value: any ) {
-		const newState = Object.assign( {}, this.props.storeData );
+	function onRefFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.storeData );
 		newState.ref = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	render() {
-		return (
-			<form style={ { width: '100%', maxWidth: "400px" } }>
-				<Flex
-					//@ts-ignore
-					direction="column"
-				>
-					<GroupSelectField
-						onChange={ this.onGroupFieldChange }
-						group={ this.props.storeData?.group_uuid }
-						groups={ this.props.groups }
-						loading={ this.props.loadingGroups }
-					/>
-					<SelectControl
-						label="Transaction Type"
-						value={ this.props.storeData?.type }
-						options={ [
-							{ label: 'Debit' , value: 'debit' },
-							{ label: 'Credit'  , value: 'credit'  },
-						] }
-						onChange={ this.onTypeFieldChange }
-					/>
-					<div>
-						<label>Account
-							<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username.</div>
-							<UserSearchField
-								user={ this.props.storeData?.account }
-								onChange={ this.onAccountFieldChange }
-							/>
-						</label>
-					</div>
-					<div>
-						<label>{ this.getSourceLabel() }
-							<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username. (optional)</div>
-							<UserSearchField
-								user={ this.props.storeData?.source }
-								onChange={ this.onSourceFieldChange }
-							/>
-						</label>
-					</div>
-					<TextControl
-						label="Amount"
-						// @ts-ignore
-						type="number"
-						value={ this.props.storeData?.amount }
-						onChange={ this.onAmountFieldChange }
-					/>
-					<TextControl
-						label="Reference"
-						help="Extra reference data"
-						value={ this.props.storeData?.ref }
-						onChange={ this.onRefFieldChange }
-					/>
-				</Flex>
-			</form>
-		);
-	}
+	return (
+		<form style={ { width: '100%', maxWidth: "400px" } }>
+			<Flex
+				//@ts-ignore
+				direction="column"
+			>
+				<GroupSelectField
+					onChange={ onGroupFieldChange }
+					group={ props.storeData?.group_uuid }
+					groups={ props.groups }
+					loading={ props.loadingGroups }
+				/>
+				<SelectControl
+					label="Transaction Type"
+					value={ props.storeData?.type }
+					options={ [
+						{ label: 'Debit' , value: 'debit' },
+						{ label: 'Credit'  , value: 'credit'  },
+					] }
+					onChange={ onTypeFieldChange }
+				/>
+				<div>
+					<label>Account
+						<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username.</div>
+						<UserSearchField
+							user={ props.storeData?.account }
+							onChange={ onAccountFieldChange }
+						/>
+					</label>
+				</div>
+				<div>
+					<label>{ getSourceLabel() }
+						<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username. (optional)</div>
+						<UserSearchField
+							user={ props.storeData?.source }
+							onChange={ onSourceFieldChange }
+						/>
+					</label>
+				</div>
+				<TextControl
+					label="Amount"
+					// @ts-ignore
+					type="number"
+					value={ props.storeData?.amount }
+					onChange={ onAmountFieldChange }
+				/>
+				<TextControl
+					label="Reference"
+					help="Extra reference data"
+					value={ props.storeData?.ref }
+					onChange={ onRefFieldChange }
+				/>
+			</Flex>
+		</form>
+	);
 }

@@ -1,38 +1,26 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 interface PromiseLinkProps {
 	id: number,
 }
 
-interface PromiseLinkState {
-	//
-}
+export default function PromiseLink( props: PromiseLinkProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class PromiseLink extends Component<PromiseLinkProps, PromiseLinkState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: PromiseLinkProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<span>
-				<span>№ </span>
-				<b>
-					<a href={ `${this.adminPageUrl}${this.namespace}-token-promise-show&promise=${ this.props.id }` }>
-						{ this.props.id }
-					</a>
-				</b>
-			</span>
-		);
-	}
+	return (
+		<span>
+			<span>№ </span>
+			<b>
+				<a href={ `${adminPageUrl}${namespace}-token-promise-show&promise=${ props.id }` }>
+					{ props.id }
+				</a>
+			</b>
+		</span>
+	);
 }
  
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 interface SourceLinkProps {
@@ -9,32 +9,20 @@ interface SourceLinkProps {
 	text?: boolean,
 }
 
-interface SourceLinkState {
-	//
-}
+export default function SourceLink( props: SourceLinkProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class SourceLink extends Component<SourceLinkProps, SourceLinkState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: SourceLinkProps ) {
-		super( props );
-	}
-
-	render() {
-		const title = this.props?.label ?? this.props.id;
-		const url = `${this.adminPageUrl}${this.namespace}-token-source-show&source=${ this.props.id }`;
-		if ( this.props.text ) {
-			return (
-				<b><span>{ title }</span></b>
-			)
-		}
+	const title = props?.label ?? props.id;
+	const url = `${adminPageUrl}${namespace}-token-source-show&source=${ props.id }`;
+	if ( props.text ) {
 		return (
-			<b><a href={ url }>{ title }</a></b>
-		);
+			<b><span>{ title }</span></b>
+		)
 	}
+	return (
+		<b><a href={ url }>{ title }</a></b>
+	);
 }
  
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -11,44 +11,31 @@ interface SourceInfoProps {
 	source: any;
 }
 
-interface SourceInfoState {
-	//
-}
+export default function SourceInfo( props: SourceInfoProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export default class SourceInfo extends Component<SourceInfoProps, SourceInfoState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: SourceInfoProps ) {
-		super( props );
-		console.log(this.props.source);
-	}
-
-	render() {
-		return (
-			<Flex style={ { width: '100%', alignItems: 'center' } }>
-				<div style={ { flex: 1 } }>
-					<div>
-						<span>Type: </span>
-						<b>{ this.props.source?.type }</b>
-					</div>
-					<div>
-						<span>Address: </span>
-						<b>
-							<a 
-								href={ `${this.adminPageUrl}${this.namespace}-token-address-show&id=${this.props.source?.address_id}` }>
-									{ this.props.source?.address?.label ?? this.props.source?.address_id }
-							</a>
-						</b>
-					</div>
-					<div>
-						<span>Assets (whitelisted): </span>
-						<b>{ this.props.source?.assets ?? 'all' }</b>
-					</div>
+	return (
+		<Flex style={ { width: '100%', alignItems: 'center' } }>
+			<div style={ { flex: 1 } }>
+				<div>
+					<span>Type: </span>
+					<b>{ props.source?.type }</b>
 				</div>
-			</Flex>
-		);
-	}
+				<div>
+					<span>Address: </span>
+					<b>
+						<a 
+							href={ `${adminPageUrl}${namespace}-token-address-show&id=${props.source?.address_id}` }>
+								{ props.source?.address?.label ?? props.source?.address_id }
+						</a>
+					</b>
+				</div>
+				<div>
+					<span>Assets (whitelisted): </span>
+					<b>{ props.source?.assets ?? 'all' }</b>
+				</div>
+			</div>
+		</Flex>
+	);
 }

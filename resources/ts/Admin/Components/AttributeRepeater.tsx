@@ -15,96 +15,79 @@ interface AttributeRepeaterProps {
 	onChange: any;
 }
 
-interface AttributeRepeaterState {
-	//
-}
-
-export default class AttributeRepeater extends Component<AttributeRepeaterProps, AttributeRepeaterState> {
-	state: AttributeRepeaterState = {
-		//
-	};
-	constructor( props: AttributeRepeaterProps ) {
-		super( props );
-		this.onAdd = this.onAdd.bind( this );
-		this.onRemove = this.onRemove.bind( this );
-		this.onKeyFieldChange = this.onKeyFieldChange.bind( this );
-		this.onValueFieldChange = this.onValueFieldChange.bind( this );
-	}
-	
-	onAdd() {
-		const newState = Object.assign( [], this.props.attributes );
+export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
+	function onAdd() {
+		const newState = Object.assign( [], props.attributes );
 		newState.push( { key: '', value: '' } );
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 	
-	onRemove( index: number ) {
-		let newState = Object.assign( [], this.props.attributes );
+	function onRemove( index: number ) {
+		let newState = Object.assign( [], props.attributes );
 		delete newState[ index ];
-		this.removeEmpty( newState );
-		this.props.onChange( newState );
+		removeEmpty( newState );
+		props.onChange( newState );
 	}
 	
-	onKeyFieldChange( key: any, value: any ) {
-		const newState = Object.assign( [], this.props.attributes );
+	function onKeyFieldChange( key: any, value: any ) {
+		const newState = Object.assign( [], props.attributes );
 		newState[ key ].key = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onValueFieldChange( key: any, value: any ) {
-		const newState = Object.assign( [], this.props.attributes );
+	function onValueFieldChange( key: any, value: any ) {
+		const newState = Object.assign( [], props.attributes );
 		newState[ key ].value = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	removeEmpty( newState: any ) {
+	function removeEmpty( newState: any ) {
 		newState = newState.filter( function ( attribute: any ) {
 			return attribute != null;
 		} );
 	}
 
-	render() {
-		const listItems = this.props.attributes.map( ( attribute: Attribute, i: number ) => {
-			if ( !attribute ) { return }
-			return (
-				<Flex justify="flex-start" align="flex-end">
-					<TextControl
-						label="Key"
-						value={ attribute.key }
-						onChange={ ( value: string ) => {
-							this.onKeyFieldChange( i, value );
-						} }
-					/>
-					<TextControl
-						label="Value"
-						value={ attribute.value }
-						onChange={ ( value: string ) => {
-							this.onValueFieldChange( i, value );
-						} }
-					/>
-					<Button
-						isTertiary
-						icon="no"
-						onClick={ () => {
-							this.onRemove( i );
-						} }
-					/>
-				</Flex>
-			);
-		} );
-		return ( 
-			<div style={ { display: 'inline-block' } }>
-				<label>{ this.props.label }
-					<div style={ { opacity: 0.8 } }>{ this.props.help }</div>
-					<ul>{ listItems }</ul>
-				</label>
+	const listItems = props.attributes.map( ( attribute: Attribute, i: number ) => {
+		if ( !attribute ) { return }
+		return (
+			<Flex justify="flex-start" align="flex-end">
+				<TextControl
+					label="Key"
+					value={ attribute.key }
+					onChange={ ( value: string ) => {
+						onKeyFieldChange( i, value );
+					} }
+				/>
+				<TextControl
+					label="Value"
+					value={ attribute.value }
+					onChange={ ( value: string ) => {
+						onValueFieldChange( i, value );
+					} }
+				/>
 				<Button
-					isSecondary
-					isLarge
-					onClick={ this.onAdd }
-				>
-					Add Attribute
-				</Button>
-			</div>
+					isTertiary
+					icon="no"
+					onClick={ () => {
+						onRemove( i );
+					} }
+				/>
+			</Flex>
 		);
-	}
+	} );
+	return ( 
+		<div style={ { display: 'inline-block' } }>
+			<label>{ props.label }
+				<div style={ { opacity: 0.8 } }>{ props.help }</div>
+				<ul>{ listItems }</ul>
+			</label>
+			<Button
+				isSecondary
+				isLarge
+				onClick={ onAdd }
+			>
+				Add Attribute
+			</Button>
+		</div>
+	);
 }

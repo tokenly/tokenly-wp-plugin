@@ -14,25 +14,16 @@ interface GroupSelectFieldProps {
 	onChange: any;
 }
 
-interface GroupSelectFieldState {
-	//
-}
-
-export default class GroupSelectField extends Component<GroupSelectFieldProps, GroupSelectFieldState> {
-
-	constructor( props: GroupSelectFieldProps ) {
-		super( props );
-	}
-
-	getGroupOptions() {
+export default function GroupSelectField( props: GroupSelectFieldProps ) {
+	function getGroupOptions() {
 		const options = [
 			{
 				label: 'Not selected',
 				value: '',
 			}
 		];
-		if ( this.props.groups && Array.isArray( this.props.groups ) ) {
-			this.props.groups.forEach( ( group: any ) => {
+		if ( props.groups && Array.isArray( props.groups ) ) {
+			props.groups.forEach( ( group: any ) => {
 				options.push( {
 					label: group.name,
 					value: group.uuid,
@@ -42,42 +33,40 @@ export default class GroupSelectField extends Component<GroupSelectFieldProps, G
 		return options;
 	}
 
-	render() {
-		const groupOptions = this.getGroupOptions();
-		return (
-			<Flex> 
-				<label>
-					<div style={ { marginBottom: '8px' } } >Group</div>
+	const groupOptions = getGroupOptions();
+	return (
+		<Flex> 
+			<label>
+				<div style={ { marginBottom: '8px' } } >Group</div>
+				<Flex
+					//@ts-ignore
+					direction="column"
+				>
 					<Flex
-						//@ts-ignore
-						direction="column"
+						style={ { maxWidth: "320px" } }
+						justify="flex-start"
+						align="center"
+						gap={4}
 					>
-						<Flex
-							style={ { maxWidth: "320px" } }
-							justify="flex-start"
-							align="center"
-							gap={4}
-						>
-							<SelectControl
-								label=""
-								disabled={this.props.loading || groupOptions.length === 1}
-								value={ this.props.group }
-								style={ { width: '100%' } }
-								options={ groupOptions }
-								required
-								onChange={ ( value: any ) => {
-									this.props.onChange( value );
-								} }
-							/>
-							{ this.props.loading &&
-								<Spinner />
-							}
-						</Flex>
+						<SelectControl
+							label=""
+							disabled={props.loading || groupOptions.length === 1}
+							value={ props.group }
+							style={ { width: '100%' } }
+							options={ groupOptions }
+							required
+							onChange={ ( value: any ) => {
+								props.onChange( value );
+							} }
+						/>
+						{ props.loading &&
+							<Spinner />
+						}
 					</Flex>
-				</label>
-			</Flex>
-		);
-	}
+				</Flex>
+			</label>
+		</Flex>
+	);
 }
  
 

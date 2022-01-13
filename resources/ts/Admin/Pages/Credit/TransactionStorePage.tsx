@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useInjection } from 'inversify-react';
+import { useState, useEffect } from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
@@ -28,131 +29,102 @@ interface TransactionStorePageProps {
 	saving: boolean;
 }
 
-interface TransactionStorePageState {
-	storing: boolean;
-	loadingGroups: boolean;
-	groups: any;
-	storeData: any;
-}
-
-export default class TransactionStorePage extends Component<TransactionStorePageProps, TransactionStorePageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
-	groupRepository: GroupRepositoryInterface;
-	@resolve( TYPES.Repositories.Credit.TransactionRepositoryInterface )
-	transactionRepository: TransactionRepositoryInterface;
+export default function TransactionStorePage( props: TransactionStorePageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
+	const transactionRepository: TransactionRepositoryInterface = useInjection( TYPES.Repositories.Credit.TransactionRepositoryInterface );
 	
-	state: TransactionStorePageState = {
-		storing: false,
-		loadingGroups: false,
-		groups: null,
-		storeData: {},
-	}
-	constructor( props: TransactionStorePageProps ) {
-		super( props );
-		this.onCancel = this.onCancel.bind( this );
-		this.onStore = this.onStore.bind( this );
-		this.onStoreDataChange = this.onStoreDataChange.bind( this );
-		this.isStoreDisabled = this.isStoreDisabled.bind( this );
+	const [ storing, setStoring ] = useState<boolean>( false );
+	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
+	const [ groups, setGroups ] = useState<any>( null );
+	const [ storeData, setStoreData ] = useState<any>( {} );
+
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
 	}
 
-	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-credit-vendor`;
+	function isStoreDisabled() {
+		return false;
 	}
 
-	componentWillMount() {
-		this.setState( { loadingGroups: true } );
-		this.groupRepository.index().then( ( groups: any ) => {
+	function onStore() {
+		setStoring( true );
+		transactionRepository.store( storeData ).then( ( result: any ) => {
+			setStoring( false );
+			goBack();
+		});
+	}
+
+	function onCancel() {
+		goBack();
+	}
+
+	function onStoreDataChange( newData: any ) {
+		setStoreData( newData );
+	}
+
+	useEffect( () => {
+		setLoadingGroups( true );
+		groupRepository.index().then( ( groupsFound: any ) => {
 			const storeData = {
 				quantity: 0,
 				pseudo: false,
 				type: 'credit',
 			}
-			this.setState( {
-				loadingGroups: false,
-				groups: groups,
-				storeData: storeData,
-			} );
+			setLoadingGroups( false );
+			setGroups( groupsFound );
+			setStoreData( storeData );
 		} )
 		.then( () => {
 			const urlParams = new URLSearchParams( window.location.search );
 			const group = urlParams.get( 'group' );
 			if ( group ) {
-				const storeData = Object.assign( {}, this.state.storeData );
-				storeData.group_uuid = group;
-				this.setState( {
-					storeData: storeData,
-				} );
+				const newStoreData = Object.assign( {}, storeData );
+				newStoreData.group_uuid = group;
+				setStoreData( newStoreData );
 			}
 			const type = urlParams.get( 'type' );
 			if ( type ) {
-				const storeData = Object.assign( {}, this.state.storeData );
-				storeData.type = type;
-				this.setState( {
-					storeData: storeData,
-				} );
+				const newStoreData = Object.assign( {}, storeData );
+				newStoreData.type = type;
+				setStoreData( newStoreData );
 			}
 		} );
-	}
-
-	isStoreDisabled() {
-		return false;
-	}
-
-	onStore() {
-		this.setState( { storing: true } );
-		this.transactionRepository.store( this.state.storeData ).then( ( result: any ) => {
-			this.setState( { storing: false } );
-			this.return();
-		});
-	}
-
-	onCancel() {
-		this.return();
-	}
-
-	onStoreDataChange( newData: any ) {
-		console.log(newData);
-		this.setState( { storeData: newData } );
-	}
+	 }, [] );
 	
-	render() {
-		return (
-			<Page title="Transaction Creator">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroups }>Transaction Form</Preloader>
-					</PanelHeader>
-				{ ( !this.state.loadingGroups && this.state.groups ) &&
-					<PanelBody>
-						<PanelRow>
-							<TransactionStoreForm
-								storeData={ this.state.storeData }
-								groups={ this.state.groups }
-								onChange={ this.onStoreDataChange }
-								loadingGroups={ this.state.loadingGroups }
-							/>
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ResourceStoreActions
-								name="Transaction"
-								storing={ this.state.storing }
-								onStore={ this.onStore }
-								onCancel={ this.onCancel }
-								disableStore={ this.isStoreDisabled() }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Transaction Creator">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingGroups }>Transaction Form</Preloader>
+				</PanelHeader>
+			{ ( !loadingGroups && groups ) &&
+				<PanelBody>
+					<PanelRow>
+						<TransactionStoreForm
+							storeData={ storeData }
+							groups={ groups }
+							onChange={ onStoreDataChange }
+							loadingGroups={ loadingGroups }
+						/>
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ResourceStoreActions
+							name="Transaction"
+							storing={ storing }
+							onStore={ onStore }
+							onCancel={ onCancel }
+							disableStore={ isStoreDisabled() }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

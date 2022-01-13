@@ -14,34 +14,24 @@ interface TransactionCardProps {
 	transaction: any;
 }
 
-interface TransactionCardState {
-	//
-}
-
-export default class TransactionCard extends Component<TransactionCardProps, TransactionCardState> {
-	constructor( props: TransactionCardProps ) {
-		super( props );
-	}
-
-	dateFormatted( date: Date ) {
+export default function TransactionCard( props: TransactionCardProps ) {
+	function dateFormatted( date: Date ) {
 		if ( date ) {
 			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
 		}
 		return;
 	}
 
-	render() {
-		return (
-			<Card size="extraSmall" style={ { width: '100%' } }>
-				<CardHeader>
-					<TransactionLink uuid={ this.props.transaction?.tx_uuid } />
-				</CardHeader>
-				<CardBody style={ { width: '100%' } }>
-					<TransactionInfo transaction={ this.props.transaction } />
-				</CardBody>
-			</Card>
-		);
-	}
+	return (
+		<Card size="extraSmall" style={ { width: '100%' } }>
+			<CardHeader>
+				<TransactionLink uuid={ props.transaction?.tx_uuid } />
+			</CardHeader>
+			<CardBody style={ { width: '100%' } }>
+				<TransactionInfo transaction={ props.transaction } />
+			</CardBody>
+		</Card>
+	);
 }
  
 

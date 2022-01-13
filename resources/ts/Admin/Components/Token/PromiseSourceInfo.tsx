@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import { PromiseData } from '../../../Interfaces';
-import { resolve } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 import { 
@@ -15,33 +15,21 @@ interface PromiseSourceInfoProps {
 	loadingSources: boolean;
 }
 
-interface PromiseSourceInfoState {
-	//
-}
-
-export default class PromiseSourceInfo extends Component<PromiseSourceInfoProps, PromiseSourceInfoState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-
-	constructor( props: PromiseSourceInfoProps ) {
-		super( props );
-		this.getPromiseSource = this.getPromiseSource.bind( this );
-		this.sourceExists = this.sourceExists.bind( this );
-	}
+export default function PromiseSourceInfo( props: PromiseSourceInfoProps ) {
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace = useInjection( TYPES.Variables.namespace );
 	
-	getPromiseSource( promiseItem: any ) {
+	function getPromiseSource( promiseItem: any ) {
 		let address = promiseItem.source_id;
-		const source = this.props.sources[ promiseItem.source_id ] ?? null;
+		const source = props.sources[ promiseItem.source_id ] ?? null;
 		if ( source ) {
 			address = source?.address?.label;
 		}
 		return address;
 	}
 	
-	sourceExists( promiseItem: any ) {
-		const source = this.props.sources[ promiseItem.source_id ] ?? null;
+	function sourceExists( promiseItem: any ) {
+		const source = props.sources[ promiseItem.source_id ] ?? null;
 		if ( source ) {
 			return true;
 		} else {
@@ -49,23 +37,21 @@ export default class PromiseSourceInfo extends Component<PromiseSourceInfoProps,
 		}
 	}
 
-	render() {
-		return (
-			<Flex>
-				<div>
-					<span>Source: </span>
-					<span>
-						{ this.sourceExists( this.props.promise )
-							?	<a href={`${this.adminPageUrl}${this.namespace}-token-source-show&source=${this.props.promise.source_id}`}>
-									<b>{ this.getPromiseSource( this.props.promise ) }</b>
-								</a>
-							: 	<span><b>{ this.props.promise.source_id }</b></span>
-						}
-					</span>
-				</div>
-			</Flex>
-		);
-	}
+	return (
+		<Flex>
+			<div>
+				<span>Source: </span>
+				<span>
+					{ sourceExists( props.promise )
+						?	<a href={`${adminPageUrl}${namespace}-token-source-show&source=${props.promise.source_id}`}>
+								<b>{ getPromiseSource( props.promise ) }</b>
+							</a>
+						: 	<span><b>{ props.promise.source_id }</b></span>
+					}
+				</span>
+			</div>
+		</Flex>
+	);
 }
  
 

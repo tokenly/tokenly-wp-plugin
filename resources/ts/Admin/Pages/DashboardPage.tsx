@@ -99,7 +99,7 @@ export default class DashboardPage extends Component<DashboardPageProps, Dashboa
 					title: 'Credit Vendor',
 					description: 'Manage credit groups and transactions.',
 					icon: 'money-alt',
-					url: `${this.adminPageUrl}${this.namespace}-credit-group-index`,
+					url: `${this.adminPageUrl}${this.namespace}-credit-vendor`,
 				},
 				settings: {
 					title: 'Settings',

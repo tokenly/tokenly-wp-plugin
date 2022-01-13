@@ -17,51 +17,34 @@ interface ResourceEditActionsProps {
 	noDelete?: boolean;
 }
 
-interface ResourceEditActionsState {
-	//
-}
-
-export default class ResourceEditActions extends Component<ResourceEditActionsProps, ResourceEditActionsState> {
-
-	constructor( props: ResourceEditActionsProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex justify="flex-start" align="center" >
-				<Button
-					isPrimary
-					disabled={ this.props.saving }
-					onClick={ this.props.onSave }
-				>
-					{ this.props.saving ? 'Saving ...' : `Save ${this.props.name}` }
-				</Button>
-			{ this.props.saving === true &&
-				<Spinner/>
-			}
-			{ !this.props.noDelete &&
-				<Button
-					isSecondary
-					disabled={ this.props.deleting }
-					onClick={ this.props.onDelete }
-					isDestructive
-				>
-					{ this.props.deleting ? 'Deleting ...' : `Delete ${this.props.name}` }
-				</Button>
-			}
-			{ this.props.deleting === true &&
-				<Spinner/>
-			}
-				<Button
-					isTertiary
-					onClick={ this.props.onCancel }
-				>
-					Cancel
-				</Button>
-			</Flex>
-		);
-	}
+export default function ResourceEditActions( props: ResourceEditActionsProps ) {
+	return (
+		<Flex justify="flex-start" align="center" >
+			<Button
+				isPrimary
+				isBusy={ props.saving }
+				onClick={ props.onSave }
+			>
+				{ `Save ${props.name}` }
+			</Button>
+		{ !props.noDelete &&
+			<Button
+				isDestructive
+				isSecondary
+				isBusy={ props.deleting }
+				onClick={ props.onDelete }
+			>
+				{ `Delete ${props.name}` }
+			</Button>
+		}
+			<Button
+				isTertiary
+				onClick={ props.onCancel }
+			>
+				Cancel
+			</Button>
+		</Flex>
+	);
 }
  
 

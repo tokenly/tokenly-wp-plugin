@@ -11,23 +11,13 @@ interface SourceListProps {
 	sources: Array<any>;
 }
 
-interface SourceListState {
-	//
-}
-
-export default class SourceList extends Component<SourceListProps, SourceListState> {
-	constructor( props: SourceListProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<ResourceList
-				items={ this.props.sources }
-				component={ SourceCard }
-				itemProp="source"
-				notFoundLabel="sources"
-			/>
-		);
-	}
+export default function SourceList( props: SourceListProps ) {
+	return (
+		<ResourceList
+			items={ props.sources }
+			component={ SourceCard }
+			itemProp="source"
+			notFoundLabel="sources"
+		/>
+	);
 }

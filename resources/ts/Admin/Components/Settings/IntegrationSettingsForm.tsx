@@ -13,50 +13,38 @@ interface IntegrationSettingsFormProps {
 	onChange: any;
 }
 
-interface IntegrationSettingsFormState {
-	//
-}
-
-export default class IntegrationSettingsForm extends Component<IntegrationSettingsFormProps, IntegrationSettingsFormState> {
-	constructor( props: IntegrationSettingsFormProps ) {
-		super( props );
-		this.onClientIdFieldChange = this.onClientIdFieldChange.bind( this );
-		this.onClientSecretFieldChange = this.onClientSecretFieldChange.bind( this );
-	}
-
-	onClientIdFieldChange( value: any ) {
-		let newState = Object.assign( {}, this.props.settings );
+export default function IntegrationSettingsForm( props: IntegrationSettingsFormProps ) {
+	function onClientIdFieldChange( value: any ) {
+		let newState = Object.assign( {}, props.settings );
 		newState.client_id = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	onClientSecretFieldChange( value: any ) {
-		let newState = Object.assign( {}, this.props.settings );
+	function onClientSecretFieldChange( value: any ) {
+		let newState = Object.assign( {}, props.settings );
 		newState.client_secret = value;
-		this.props.onChange( newState );
+		props.onChange( newState );
 	}
 
-	render() {
-		return (
-			<Flex
-				//@ts-ignore
-				direction="column"
-				style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
-			> 
-				<StatusIndicator status={ this.props.status ?? false }/>
-				<TextControl
-					label="Client ID"
-					value={ this.props.settings.client_id ?? '' }
-					onChange={ this.onClientIdFieldChange }
-				/>
-				<TextControl
-					label="Client Secret"
-					value={ this.props.settings.client_secret ?? '' }
-					onChange={ this.onClientSecretFieldChange }
-				/>
-			</Flex>
-		);
-	}
+	return (
+		<Flex
+			//@ts-ignore
+			direction="column"
+			style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+		> 
+			<StatusIndicator status={ props.status ?? false }/>
+			<TextControl
+				label="Client ID"
+				value={ props.settings.client_id ?? '' }
+				onChange={ onClientIdFieldChange }
+			/>
+			<TextControl
+				label="Client Secret"
+				value={ props.settings.client_secret ?? '' }
+				onChange={ onClientSecretFieldChange }
+			/>
+		</Flex>
+	);
 }
  
 

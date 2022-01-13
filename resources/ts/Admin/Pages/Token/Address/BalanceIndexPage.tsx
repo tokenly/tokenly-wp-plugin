@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../../Page';
 import { Component } from 'react';
 import Preloader from '../../../Components/Preloader';
@@ -22,85 +23,59 @@ interface BalanceIndexPageProps {
 	pageData: BalanceIndexPageData;
 }
 
-interface BalanceIndexPageState {
-	loadingAddress: boolean;
-	loadingBalance: boolean;
-	id: string;
-	address: any;
-	balance: any;
-}
+export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
 
-export default class BalanceIndexPage extends Component<BalanceIndexPageProps, BalanceIndexPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
-	addressRepository: AddressRepositoryInterface;
+	const urlParams = new URLSearchParams( window.location.search );
+	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
+	const [ loadingBalance, setLoadingBalance ] = useState<boolean>( false );
+	const [ balance, setBalance ] = useState<any>( null );
+	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
+	const [ address, setAddress ] = useState<any>( null );
 
-	state: BalanceIndexPageState = {
-		loadingAddress: false,
-		loadingBalance: false,
-		balance: null,
-		id: null,
-		address: null,
-	}
-	constructor( props: BalanceIndexPageProps ) {
-		super( props );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.id = urlParams.get( 'id' );
-	}
-
-	componentWillMount() {
-		this.setState( {
-			loadingBalance: true,
-			loadingAddress: true,
-		} );
-		this.addressRepository.balanceIndex( this.state.id, {
+	useEffect( () => {
+		setLoadingBalance( true );
+		setLoadingAddress( true );
+		addressRepository.balanceIndex( id, {
 			with: [ 'meta' ],
 		} )
-		.then( ( balance: any ) => {
-			console.log(balance);
-			this.setState( {
-				balance: balance,
-			} );
-			return balance;
+		.then( ( balanceFound: any ) => {
+			setBalance( balanceFound );
+			return balanceFound;
 		} )
-		.then( ( balance: any ) => {
-			this.addressRepository.show( this.state.id ).then( ( address: any ) => {
-				this.setState( {
-					loadingAddress: false,
-					loadingBalance: false,
-					address: address,
-				} );
+		.then( ( balanceFound: any ) => {
+			addressRepository.show( id ).then( ( addressFound: any ) => {
+				setLoadingBalance( false );
+				setLoadingAddress( false );
+				setAddress( addressFound );
 			} );
 		} )
-	}
+	 }, [] );
 	
-	render() {
-		return (
-			<Page title="Token Address Balance Listing">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingBalance }>Balance Listing</Preloader>
-					</PanelHeader>
-					<PanelBody>
-						<PanelRow>
-							<b>
-								<span>Address: </span>
-								<a href={ `${this.adminPageUrl}${this.namespace}-token-address-show&id=${this.state.id}` }>
-									{ this.state?.address?.label ?? this.state.id }
-								</a>
-							</b>
-						</PanelRow>
-					{ ( this.state.loadingBalance === false || this.state.balance ) &&
-						<PanelRow>
-							<BalanceList balance={ this.state.balance } />
-						</PanelRow>
-					}
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Token Address Balance Listing">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingBalance }>Balance Listing</Preloader>
+				</PanelHeader>
+				<PanelBody>
+					<PanelRow>
+						<b>
+							<span>Address: </span>
+							<a href={ `${adminPageUrl}${namespace}-token-address-show&id=${id}` }>
+								{ address?.label ?? id }
+							</a>
+						</b>
+					</PanelRow>
+				{ ( loadingBalance === false || balance ) &&
+					<PanelRow>
+						<BalanceList balance={ balance } />
+					</PanelRow>
+				}
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

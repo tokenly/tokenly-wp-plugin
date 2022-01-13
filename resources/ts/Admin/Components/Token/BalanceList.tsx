@@ -11,23 +11,13 @@ interface BalanceListProps {
 	balance: Array<any>;
 }
 
-interface BalanceListState {
-	//
-}
-
-export default class BalanceList extends Component<BalanceListProps, BalanceListState> {
-	constructor( props: BalanceListProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<ResourceList
-				items={ this.props.balance }
-				component={ BalanceCard }
-				itemProp="balance"
-				notFoundLabel="balances"
-			/>
-		);
-	}
+export default function BalanceList( props: BalanceListProps ) {
+	return (
+		<ResourceList
+			items={ props.balance }
+			component={ BalanceCard }
+			itemProp="balance"
+			notFoundLabel="balances"
+		/>
+	);
 }

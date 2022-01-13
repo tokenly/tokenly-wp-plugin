@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useInjection } from 'inversify-react';
+import { useState, useEffect } from 'react';
 import Page from './../Page';
 import { Component } from 'react';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
@@ -26,125 +27,99 @@ interface GroupEditPageProps {
 	pageData: GroupEditPageData;
 }
 
-interface GroupEditPageState {
-	uuid: string;
-	group: any;
-	saving: boolean;
-	loadingGroup: boolean;
-	editData: any,
-}
-
-export default class GroupEditPage extends Component<GroupEditPageProps, GroupEditPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
-	groupRepository: GroupRepositoryInterface;
+export default function GroupEditPage( props: GroupEditPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 	
-	state: GroupEditPageState = {
-		uuid: null,
-		group: {},
-		saving: false,
-		loadingGroup: false,
-		editData: {},
+	const urlParams = new URLSearchParams( window.location.search );
+	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'group' ) );
+	const [ group, setGroup ] = useState<any>( null );
+	const [ saving, setSaving ] = useState<boolean>( false );
+	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( false );
+	const [ editData, setEditData ] = useState<any>( {} );
+
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
 	}
 
-	constructor( props: GroupEditPageProps ) {
-		super( props );
-		this.onSave = this.onSave.bind( this );
-		this.onCancel = this.onCancel.bind( this );
-		this.onEditDataChange = this.onEditDataChange.bind( this );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.uuid = urlParams.get( 'group' );
-	}
-
-	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-credit-vendor`;
-	}
-
-	onSave() {
-		let updateParams = Object.assign( {}, this.state.editData );
+	function onSave() {
+		let updateParams = Object.assign( {}, editData );
 		let whitelist = updateParams?.app_whitelist.replace( /\s/g, '' );
 		if ( whitelist == '' ) {
 			updateParams.app_whitelist = [];
 		} else {
 			updateParams.app_whitelist = whitelist.split(',');
 		}
-		this.setState( { saving: true } );
-		this.groupRepository.update( this.state.uuid, updateParams ).then( ( result: any ) => {
-			this.setState( { saving: false } );
-			this.return();
+		setSaving( true );
+		groupRepository.update( uuid, updateParams ).then( ( result: any ) => {
+			setSaving( false );
+			goBack();
 		});
 	}
 
-	onCancel() {
-		this.return();
+	function onCancel() {
+		goBack();
 	}
 
-	componentWillMount() {
-		this.setState( { loadingGroup: true } );
-		this.groupRepository.show( this.state.uuid ).then( ( group: any ) => {
-			const editData = {
-				name: group.name,
+	function onEditDataChange( newData: any ) {
+		setEditData( newData );
+	}
+
+	useEffect( () => {
+		setLoadingGroup( true );
+		groupRepository.show( uuid ).then( ( groupFound: any ) => {
+			const editDataNew = {
+				name: groupFound.name,
 			} as any;
-			if ( Array.isArray( group.app_whitelist ) ) {
-				editData.app_whitelist = group.app_whitelist.join( ', ' );
+			if ( Array.isArray( groupFound.app_whitelist ) ) {
+				editDataNew.app_whitelist = groupFound.app_whitelist.join( ', ' );
 			} else {
-				editData.app_whitelist = '';
+				editDataNew.app_whitelist = '';
 			}
-			
-			this.setState( {
-				loadingGroup: false,
-				group: group,
-				editData: editData,
-			} );
+			setLoadingGroup( false );
+			setGroup( groupFound );
+			setEditData( editDataNew );
 		} );
-	}
+	 }, [] );
 
-	onEditDataChange( newData: any ) {
-		this.setState( { editData: newData } );
-	}
-	
-	render() {
-		return (
-			<Page title="Group Editor">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroup }>Group Edit Form</Preloader>
-					</PanelHeader>
-				{ !this.state.loadingGroup &&
-					<PanelBody>
-						<PanelRow>
-							<div>
-								<span>Group: </span>
-								<GroupLink uuid={ this.state.uuid } name={ this.state.group.name } />
-							</div>
-						</PanelRow>
-						<PanelRow>
-							<GroupEditForm
-								onChange={ this.onEditDataChange }
-								loadingGroup={ this.state.loadingGroup }
-								editData={ this.state.editData }
-							/>
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ResourceEditActions
-								name="Group"
-								saving={ this.state.saving }
-								onSave={ this.onSave }
-								onCancel={ this.onCancel }
-								noDelete
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Group Editor">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingGroup }>Group Edit Form</Preloader>
+				</PanelHeader>
+			{ ( !loadingGroup && group ) &&
+				<PanelBody>
+					<PanelRow>
+						<div>
+							<span>Group: </span>
+							<GroupLink uuid={ uuid } name={ group.name } />
+						</div>
+					</PanelRow>
+					<PanelRow>
+						<GroupEditForm
+							onChange={ onEditDataChange }
+							loadingGroup={ loadingGroup }
+							editData={ editData }
+						/>
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ResourceEditActions
+							name="Group"
+							saving={ saving }
+							onSave={ onSave }
+							onCancel={ onCancel }
+							noDelete
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

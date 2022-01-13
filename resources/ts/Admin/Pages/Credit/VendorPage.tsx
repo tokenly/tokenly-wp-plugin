@@ -1,5 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import { Component } from 'react';
 import GroupList from '../../Components/Credit/GroupList';
@@ -24,60 +25,45 @@ interface VendorPageProps {
 	pageData: VendorPageData;
 }
 
-interface VendorPageState {
-	loadingGroups: boolean;
-	groups: any;
-}
+export default function VendorPage( props: VendorPageProps ) {
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 
-export default class VendorPage extends Component<VendorPageProps, VendorPageState> {
-	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
-	groupRepository: GroupRepositoryInterface;
+	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
+	const [ groups, setGroups ] = useState<any>( {} );
 
-	state: VendorPageState = {
-		loadingGroups: false,
-		groups: {},
-	}
-	constructor( props: VendorPageProps ) {
-		super( props );
-	}
-
-	componentWillMount() {
-		this.setState( { loadingGroups: true } );
-		this.groupRepository.index().then( ( groups ) => {
-			this.setState( {
-				loadingGroups: false,
-				groups: groups,
-			} );
+	useEffect( () => {
+		setLoadingGroups( true );
+		groupRepository.index().then( ( groupsFound: any ) => {
+			setLoadingGroups( false );
+			setGroups( groupsFound );
 		} );
-	}
-	
-	render() {
-		return (
-			<Page title="Credit Vendor">
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<VendorActions />
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingGroups }>Registered Groups</Preloader>
-					</PanelHeader>
-				{
-					(
-						!this.state.loadingGroups &&
-						this.state.groups
-					) &&
-					<PanelBody>
-						<PanelRow>
-							<GroupList groups={ this.state.groups } />
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-			</Page>
-		);
-	}
+	 }, [] );
+
+	return (
+		<Page title="Credit Vendor">
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<VendorActions />
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingGroups }>Registered Groups</Preloader>
+				</PanelHeader>
+			{
+				(
+					!loadingGroups &&
+					groups
+				) &&
+				<PanelBody>
+					<PanelRow>
+						<GroupList groups={ groups } />
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+		</Page>
+	);
 }
