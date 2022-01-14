@@ -38,7 +38,7 @@ class DomainService extends Service implements DomainServiceInterface {
 	 * @param array $params Method parameters. They are used to identify the instance.
 	 * @return object
 	 */
-	protected function show_memoize( string $name, array $arguments = array() ) {
+	protected function show_memoize( string $name, array $arguments ) {
 		$hash = $this->make_hash_memoize( $name, $arguments );
 		if ( isset( $this->memoized[ $hash ] ) ) {
 			return $this->memoized[ $hash ];
@@ -54,7 +54,7 @@ class DomainService extends Service implements DomainServiceInterface {
 	 * @param array $arguments Method arguments
 	 * @return string
 	 */
-	protected function make_hash_memoize( string $name, array $arguments = array() ) {
+	protected function make_hash_memoize( string $name, array $arguments ) {
 		$arguments = serialize( $arguments );
 		$arguments = "{$name}_{$arguments}";
 		$hash = md5( $arguments );
