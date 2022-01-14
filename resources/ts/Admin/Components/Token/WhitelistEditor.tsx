@@ -47,20 +47,22 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 		if ( !item ) { return }
 		return (
 			<Flex align="flex-end">
-				<TextControl
-					label="Contract Address"
-					value={ item.address }
-					onChange={ ( value: string ) => {
-						onAddressFieldChange( i, value );
-					} }
-				/>
-				<TextControl
-					label="Token Index"
-					value={ item.index }
-					onChange={ ( value: string ) => {
-						onIndexFieldChange( i, value );
-					} }
-				/>
+				<Flex>
+					<TextControl
+						label="Contract Address"
+						value={ item.address }
+						onChange={ ( value: string ) => {
+							onAddressFieldChange( i, value );
+						} }
+					/>
+					<TextControl
+						label="Token Index"
+						value={ item.index }
+						onChange={ ( value: string ) => {
+							onIndexFieldChange( i, value );
+						} }
+					/>
+				</Flex>
 				<Button
 					isTertiary
 					icon="no"
@@ -75,6 +77,7 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 		<Flex
 			//@ts-ignore
 			direction="column"
+			style={ { width: '100%', maxWidth: '768px' } }
 		>
 			<label>
 				<b>Token Whitelist Editor</b>
@@ -89,6 +92,7 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 					isSecondary
 					isLarge
 					onClick={ onAdd }
+					style={ { marginTop: '12px' } }
 				>
 					Add Item
 				</Button>
