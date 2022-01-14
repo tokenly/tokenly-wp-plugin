@@ -42,7 +42,8 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
 	}
 
-	function onSave() {
+	function onSaveSubmit( event: any ) {
+		event.preventDefault();
 		let updateParams = Object.assign( {}, editData );
 		let whitelist = updateParams?.app_whitelist.replace( /\s/g, '' );
 		if ( whitelist == '' ) {
@@ -62,6 +63,7 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 	}
 
 	function onEditDataChange( newData: any ) {
+		console.log(newData);
 		setEditData( newData );
 	}
 
@@ -84,41 +86,42 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 
 	return (
 		<Page title="Group Editor">
-			<Panel>
-				<PanelHeader>
-					<Preloader loading={ loadingGroup }>Group Edit Form</Preloader>
-				</PanelHeader>
-			{ ( !loadingGroup && group ) &&
-				<PanelBody>
-					<PanelRow>
-						<div>
-							<span>Group: </span>
-							<GroupLink uuid={ uuid } name={ group.name } />
-						</div>
-					</PanelRow>
-					<PanelRow>
-						<GroupEditForm
-							onChange={ onEditDataChange }
-							loadingGroup={ loadingGroup }
-							editData={ editData }
-						/>
-					</PanelRow>
-				</PanelBody>
-			}
-			</Panel>
-			<Panel>
-				<PanelBody>
-					<PanelRow>
-						<ResourceEditActions
-							name="Group"
-							saving={ saving }
-							onSave={ onSave }
-							onCancel={ onCancel }
-							noDelete
-						/>
-					</PanelRow>
-				</PanelBody>
-			</Panel>
+			<form onSubmit={ onSaveSubmit }>
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ loadingGroup }>Group Edit Form</Preloader>
+					</PanelHeader>
+				{ ( !loadingGroup && group ) &&
+					<PanelBody>
+						<PanelRow>
+							<div>
+								<span>Group: </span>
+								<GroupLink uuid={ uuid } name={ group.name } />
+							</div>
+						</PanelRow>
+						<PanelRow>
+							<GroupEditForm
+								onChange={ onEditDataChange }
+								loadingGroup={ loadingGroup }
+								editData={ editData }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceEditActions
+								name="Group"
+								saving={ saving }
+								onCancel={ onCancel }
+								noDelete
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+			</form>
 		</Page>
 	);
 }

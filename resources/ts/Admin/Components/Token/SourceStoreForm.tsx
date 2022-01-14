@@ -35,16 +35,20 @@ export default function SourceStoreForm( props: SourceStoreFormProps ) {
 
 	const address = getCurrentAddress();
 	return (
-		<form style={ { width: '100%', maxWidth: "400px" } }>
+		<div style={ { width: '100%', maxWidth: "400px" } }>
 			<Flex
 				//@ts-ignore
 				direction="column"
 			>
 				<AddressSelectField
+					label="Address *"
 					onChange={ onAddressFieldChange }
 					address={ props.storeData?.address }
 					addresses={ props.addresses }
 					loading={ props.loadingAddresses }
+					inputProps={ {
+						required: true,
+					} }
 				/>
 			{ address &&
 				<AddressInfo address={ address } />
@@ -56,6 +60,6 @@ export default function SourceStoreForm( props: SourceStoreFormProps ) {
 					onChange={ onAssetsFieldChange }
 				/>
 			</Flex>
-		</form>
+		</div>
 	);
 }

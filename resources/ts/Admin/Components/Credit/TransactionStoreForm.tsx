@@ -66,53 +66,64 @@ export default function TransactionStoreForm( props: TransactionStoreFormProps )
 	}
 
 	return (
-		<form style={ { width: '100%', maxWidth: "400px" } }>
-			<Flex
-				//@ts-ignore
-				direction="column"
-			>
-				<GroupSelectField
-					onChange={ onGroupFieldChange }
-					group={ props.storeData?.group_uuid }
-					groups={ props.groups }
-					loading={ props.loadingGroups }
-				/>
-				<TransactionTypeField
-					type={ props.storeData?.type }
-					onChange={ onTypeFieldChange }
-				/>
-				<div>
-					<label>Account
-						<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username.</div>
-						<UserSearchField
-							user={ props.storeData?.account }
-							onChange={ onAccountFieldChange }
-						/>
-					</label>
-				</div>
-				<div>
-					<label>{ getSourceLabel() }
-						<div style={ { opacity: 0.8, marginBottom: '12px' } }>WordPress username. (optional)</div>
-						<UserSearchField
-							user={ props.storeData?.source }
-							onChange={ onSourceFieldChange }
-						/>
-					</label>
-				</div>
-				<TextControl
-					label="Amount"
-					// @ts-ignore
-					type="number"
-					value={ props.storeData?.amount }
-					onChange={ onAmountFieldChange }
-				/>
-				<TextControl
-					label="Reference"
-					help="Extra reference data"
-					value={ props.storeData?.ref }
-					onChange={ onRefFieldChange }
-				/>
-			</Flex>
-		</form>
+		<Flex
+			//@ts-ignore
+			direction="column"
+			style={ { width: '100%', maxWidth: "400px" } }
+		>
+			<GroupSelectField
+				label="Group *"
+				onChange={ onGroupFieldChange }
+				group={ props.storeData?.group_uuid }
+				groups={ props.groups }
+				loading={ props.loadingGroups }
+				inputProps={ {
+					required: true,
+				} }
+			/>
+			<TransactionTypeField
+				label="Transaction Type	*"
+				type={ props.storeData?.type }
+				onChange={ onTypeFieldChange }
+				inputProps={ {
+					required: true,
+				} }
+			/>
+			<div>
+				<label>Account *
+					<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username.</div>
+					<UserSearchField
+						user={ props.storeData?.account }
+						onChange={ onAccountFieldChange }
+						inputProps={ {
+							required: true,
+						} }
+					/>
+				</label>
+			</div>
+			<div>
+				<label>{ getSourceLabel() }
+					<div style={ { opacity: 0.8, marginBottom: '12px' } }>WordPress username.</div>
+					<UserSearchField
+						user={ props.storeData?.source }
+						onChange={ onSourceFieldChange }
+					/>
+				</label>
+			</div>
+			<TextControl
+				label="Amount *"
+				// @ts-ignore
+				type="number"
+				value={ props.storeData?.amount }
+				onChange={ onAmountFieldChange }
+				required
+			/>
+			<TextControl
+				label="Reference"
+				help="Extra reference data"
+				value={ props.storeData?.ref }
+				onChange={ onRefFieldChange }
+			/>
+		</Flex>
 	);
 }

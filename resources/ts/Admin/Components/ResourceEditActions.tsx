@@ -8,7 +8,7 @@ import {
 interface ResourceEditActionsProps {
 	saving: boolean;
 	deleting?: boolean;
-	onSave: any;
+	onSave?: any;
 	onDelete?: any;
 	onCancel: any;
 	name: string;
@@ -22,6 +22,7 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 				isPrimary
 				isBusy={ props.saving }
 				onClick={ props.onSave }
+				type="submit"
 			>
 				{ `Save ${props.name}` }
 			</Button>

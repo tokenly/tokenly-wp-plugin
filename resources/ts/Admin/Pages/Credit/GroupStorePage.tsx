@@ -38,7 +38,8 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
 	}
 	
-	function onStore() {
+	function onStoreSubmit( event: any ) {
+		event.preventDefault();
 		setStoring( true );
 		groupRepository.store( storeData ).then( ( result: any ) => {
 			setStoring( false );
@@ -60,7 +61,7 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 
 	return (
 		<Page title="Group Creator">
-			<form>
+			<form onSubmit={ onStoreSubmit }>
 				<Panel>
 					<PanelBody>
 						<PanelRow>
@@ -77,7 +78,6 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 							<ResourceStoreActions
 								name="Group"
 								storing={ storing }
-								onStore={ onStore }
 								onCancel={ onCancel }
 								disableStore={ isStoreDisabled() }
 							/>

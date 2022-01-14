@@ -27,7 +27,7 @@ export default function GroupEditForm( props: GroupEditFormProps ) {
 	}
 
 	return (
-		<form style={ { maxWidth: "320px" } }>
+		<div style={ { maxWidth: "320px" } }>
 			<Flex
 				//@ts-ignore
 				direction="column"
@@ -36,14 +36,16 @@ export default function GroupEditForm( props: GroupEditFormProps ) {
 					label="Name"
 					value={ props.editData.name }
 					onChange={ onNameFieldChange }
+					required
 				/>
 				<TextareaControl
 					label="App Whitelist"
 					help="Comma-separated values."
 					value={ props.editData.app_whitelist }
 					onChange={ onWhitelistFieldChange }
+					required
 				/>
 			</Flex>
-		</form>
+		</div>
 	);
 }

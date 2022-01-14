@@ -41,8 +41,9 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 		window.location = `${adminPageUrl}${namespace}-token-source-index`;
 	}
 
-	function onStore() {
-		const selectedAddress = addresses[storeData?.address];
+	function onStoreSubmit( event: any ) {
+		event.preventDefault();
+		const selectedAddress = addresses[ storeData?.address ];
 		if ( !selectedAddress ) {
 			return;
 		}
@@ -51,8 +52,7 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 		setStoring( true );
 		sourceRepository.store( storeData ).then( ( result: any ) => {
 			setStoring( false );
-			goBack();
-		});
+		} );
 	}
 	
 	function onStoreDataChange( newData: any ) {
@@ -84,36 +84,37 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 	
 	return (
 		<Page title="Source Creator">
-			<Panel>
-				<PanelHeader>
-					<Preloader loading={ loadingAddresses }>Source Form</Preloader>
-				</PanelHeader>
-			{ !loadingAddresses &&
-				<PanelBody>
-					<PanelRow>
-						<SourceStoreForm
-							onChange={ onStoreDataChange }
-							loadingAddresses={ loadingAddresses }
-							addresses={ addresses }
-							storeData={ storeData }
-						/>
-					</PanelRow>
-				</PanelBody>
-			}
-			</Panel>
-			<Panel>
-				<PanelBody>
-					<PanelRow>
-						<ResourceStoreActions
-							name="Source"
-							storing={ storing }
-							onStore={ onStore }
-							onCancel={ onCancel }
-							disableStore={ isStoreDisabled() }
-						/>
-					</PanelRow>
-				</PanelBody>
-			</Panel>
+			<form onSubmit={ onStoreSubmit }>
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ loadingAddresses }>Source Form</Preloader>
+					</PanelHeader>
+				{ ( !loadingAddresses && addresses ) &&
+					<PanelBody>
+						<PanelRow>
+							<SourceStoreForm
+								onChange={ onStoreDataChange }
+								loadingAddresses={ loadingAddresses }
+								addresses={ addresses }
+								storeData={ storeData }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceStoreActions
+								name="Source"
+								storing={ storing }
+								onCancel={ onCancel }
+								disableStore={ isStoreDisabled() }
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+			</form>
 		</Page>
 	);
 }

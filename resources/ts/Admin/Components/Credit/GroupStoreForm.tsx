@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useForm } from "react-hook-form";
 
 import { 
 	TextControl,
@@ -12,6 +13,8 @@ interface GroupStoreFormProps {
 }
 
 export default function GroupStoreForm( props: GroupStoreFormProps ) {
+	const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
 	function onNameFieldChange( value: string ) {
 		const state = Object.assign( {}, props.storeData );
 		state.name = value;
@@ -31,16 +34,17 @@ export default function GroupStoreForm( props: GroupStoreFormProps ) {
 				direction="column"
 			>
 				<TextControl
-					label="Name"
+					label="Name *"
 					value={ props.storeData?.name }
 					onChange={ onNameFieldChange }
 					required
 				/>
 				<TextareaControl
-					label="App Whitelist"
+					label="App Whitelist *"
 					value={ props.storeData?.app_whitelist }
 					help="Comma-separated list."
 					onChange={ onWhitelistFieldChange }
+					required
 				/>
 			</Flex>
 		</div>

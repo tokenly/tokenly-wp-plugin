@@ -49,7 +49,8 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 		return false;
 	}
 
-	function onStore() {
+	function onStoreSubmit( event: any ) {
+		event.preventDefault();
 		setStoring( true );
 		transactionRepository.store( storeData ).then( ( result: any ) => {
 			setStoring( false );
@@ -90,36 +91,37 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 	
 	return (
 		<Page title="Transaction Creator">
-			<Panel>
-				<PanelHeader>
-					<Preloader loading={ loadingGroups }>Transaction Form</Preloader>
-				</PanelHeader>
-			{ ( !loadingGroups && groups ) &&
-				<PanelBody>
-					<PanelRow>
-						<TransactionStoreForm
-							storeData={ storeData }
-							groups={ groups }
-							onChange={ onStoreDataChange }
-							loadingGroups={ loadingGroups }
-						/>
-					</PanelRow>
-				</PanelBody>
-			}
-			</Panel>
-			<Panel>
-				<PanelBody>
-					<PanelRow>
-						<ResourceStoreActions
-							name="Transaction"
-							storing={ storing }
-							onStore={ onStore }
-							onCancel={ onCancel }
-							disableStore={ isStoreDisabled() }
-						/>
-					</PanelRow>
-				</PanelBody>
-			</Panel>
+			<form onSubmit={ onStoreSubmit } >
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ loadingGroups }>Transaction Form</Preloader>
+					</PanelHeader>
+				{ ( !loadingGroups && groups ) &&
+					<PanelBody>
+						<PanelRow>
+							<TransactionStoreForm
+								storeData={ storeData }
+								groups={ groups }
+								onChange={ onStoreDataChange }
+								loadingGroups={ loadingGroups }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceStoreActions
+								name="Transaction"
+								storing={ storing }
+								onCancel={ onCancel }
+								disableStore={ isStoreDisabled() }
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+			</form>
 		</Page>
 	);
 }

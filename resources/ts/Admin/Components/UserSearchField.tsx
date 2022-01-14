@@ -6,7 +6,7 @@ import { TYPES } from '../../Types';
 
 import { 
 	// @ts-ignore
-	ComboboxControl,
+	ComboboxControl
 } from '@wordpress/components';
 
 interface UserSearchFieldProps {
@@ -14,6 +14,7 @@ interface UserSearchFieldProps {
 	user: any;
 	label?: string;
 	help?: string;
+	inputProps?: any;
 }
 
 interface ComboboxOption {
@@ -104,6 +105,7 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 
 	return (
 		<div style={ { height: '40px' } }>
+			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.user } />
 			<ComboboxControl
 				label={ props.label }
 				help={ props.help }

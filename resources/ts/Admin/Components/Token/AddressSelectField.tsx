@@ -11,6 +11,8 @@ interface AddressSelectFieldProps {
 	addresses: any;
 	loading: boolean;
 	onChange: any;
+	label?: string;
+	inputProps?: any;
 }
 
 export default function AddressSelectField( props: AddressSelectFieldProps ) {
@@ -34,34 +36,29 @@ export default function AddressSelectField( props: AddressSelectFieldProps ) {
 
 	const addressOptions = getAddressOptions();
 	return (
-		<Flex> 
-			<label>
-				<div style={ { marginBottom: '8px' } } >Address</div>
-				<Flex
-					//@ts-ignore
-					direction="column"
-				>
-					<Flex
-						style={ { maxWidth: "320px" } }
-						justify="flex-start"
-						align="center"
-						gap={ 4 }
-					>
-						<SelectControl
-							label=""
-							disabled={ props.loading || addressOptions.length === 1 }
-							value={ props.address }
-							style={ { width: '100%' } }
-							options={ addressOptions }
-							required
-							onChange={ props.onChange }
-						/>
-						{ props.loading &&
-							<Spinner />
-						}
-					</Flex>
-				</Flex>
-			</label>
+		<Flex
+			//@ts-ignore
+			direction="column"
+		>
+			<Flex
+				style={ { maxWidth: "320px" } }
+				justify="flex-start"
+				align="center"
+				gap={ 4 }
+			>
+				<SelectControl
+					label={ props?.label ?? 'Address' }
+					disabled={ props.loading || addressOptions.length === 1 }
+					value={ props.address }
+					style={ { width: '100%' } }
+					options={ addressOptions }
+					onChange={ props.onChange }
+					{ ...props?.inputProps }
+				/>
+				{ props.loading &&
+					<Spinner />
+				}
+			</Flex>
 		</Flex>
 	);
 }

@@ -11,6 +11,8 @@ interface GroupSelectFieldProps {
 	groups: any;
 	loading: boolean;
 	onChange: any;
+	inputProps?: any;
+	label?: string;
 }
 
 export default function GroupSelectField( props: GroupSelectFieldProps ) {
@@ -42,15 +44,15 @@ export default function GroupSelectField( props: GroupSelectFieldProps ) {
 		>
 			<div style={ { width: '100%', flex: '1', flexGrow: 1 } }>
 				<SelectControl
-					label="Group"
+					label={ props?.label ?? 'Group' }
 					disabled={ props.loading || groupOptions.length === 1 }
 					value={ props.group }
 					style={ { width: '100%' } }
 					options={ groupOptions }
-					required
 					onChange={ ( value: any ) => {
 						props.onChange( value );
 					} }
+					{ ...props?.inputProps }
 				/>
 				{ props.loading &&
 					<Spinner />

@@ -8,7 +8,7 @@ import {
 interface ResourceEditActionsProps {
 	storing: boolean;
 	loading?: boolean;
-	onStore: any;
+	onStore?: any;
 	onCancel: any;
 	name: string;
 	disableStore?: boolean;
@@ -21,6 +21,7 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 				isPrimary
 				isBusy={ props.storing }
 				onClick={ props.onStore }
+				type="submit"
 			>
 				{ `Create ${props.name}` }
 			</Button>
