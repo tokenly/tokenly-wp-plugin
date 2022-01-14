@@ -9,6 +9,7 @@ interface QuantityFieldProps {
 	quantity: number;
 	onChange: any;
 	max?: number;
+	inputProps?: any;
 }
 
 export default function QuantityField( props: QuantityFieldProps ) {
@@ -25,6 +26,7 @@ export default function QuantityField( props: QuantityFieldProps ) {
 						onChange={ (value: any) => {
 							props.onChange( value );
 						} }
+						{ ...props?.inputProps }
 					/>
 					{ props.max &&
 						<span>

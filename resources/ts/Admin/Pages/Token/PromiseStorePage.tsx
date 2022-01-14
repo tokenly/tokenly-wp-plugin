@@ -41,12 +41,13 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 		window.location = `${adminPageUrl}${namespace}-token-vendor`;
 	}
 
-	function onStore() {
+	function onStoreSubmit( event: any ) {
+		event.preventDefault();
 		setStoring( true );
 		promiseRepository.store( storeData ).then( ( result: any ) => {
 			setStoring( false );
 			goBack();
-		});
+		} );
 	}
 
 	function onCancel() {
@@ -76,36 +77,37 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 	
 	return (
 		<Page title="Promise Creator">
-			<Panel>
-				<PanelHeader>
-					<Preloader loading={ loadingSources }>Promise Form</Preloader>
-				</PanelHeader>
-			{ !loadingSources &&
-				<PanelBody>
-					<PanelRow>
-						<PromiseStoreForm
-							onChange={ onStoreDataChange }
-							loadingSources={ loadingSources }
-							storeData={ storeData }
-							sources={ sources }
-						/>
-					</PanelRow>
-				</PanelBody>
-			}
-			</Panel>
-			<Panel>
-				<PanelBody>
-					<PanelRow>
-						<ResourceStoreActions
-							name="Promise"
-							storing={ storing }
-							loading={ ( loadingSources ) }
-							onStore={ onStore }
-							onCancel={ onCancel }
-						/>
-					</PanelRow>
-				</PanelBody>
-			</Panel>
+			<form onSubmit={ onStoreSubmit } >
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ loadingSources }>Promise Form</Preloader>
+					</PanelHeader>
+				{ ( !loadingSources && sources ) &&
+					<PanelBody>
+						<PanelRow>
+							<PromiseStoreForm
+								onChange={ onStoreDataChange }
+								loadingSources={ loadingSources }
+								storeData={ storeData }
+								sources={ sources }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceStoreActions
+								name="Promise"
+								storing={ storing }
+								loading={ ( loadingSources ) }
+								onCancel={ onCancel }
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+			</form>
 		</Page>
 	);
 }
