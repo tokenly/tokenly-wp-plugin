@@ -42,14 +42,14 @@ export default function BalanceCard( props: BalanceCardProps ) {
 				<CardActions
 					actions={
 						[
-							{
-								title: 'Debit',
-								url: `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.group_id }&type=debit`,
-							},
-							{
-								title: 'Credit',
-								url: `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.group_id }&type=credit`,
-							},
+							// {
+							// 	title: 'Debit',
+							// 	url: `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.group_id }&type=debit`,
+							// },
+							// {
+							// 	title: 'Credit',
+							// 	url: `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.group_id }&type=credit`,
+							// },
 							{
 								title: 'View Group',
 								url: `${ adminPageUrl }${ namespace }-credit-group-show&group=${ props.balance.group_id }`,
