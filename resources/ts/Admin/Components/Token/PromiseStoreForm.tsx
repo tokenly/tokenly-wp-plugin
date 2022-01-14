@@ -111,7 +111,7 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 	}
 
 	return (
-		<form style={ { width: '100%' } }>
+		<div style={ { width: '100%' } }>
 			{ props.storeData
 		?	<Flex
 				//@ts-ignore
@@ -144,7 +144,7 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 				<div>
 					<CheckboxControl
 						label="Pseudo Promise *"
-						help="Pseudo promises allow arbitrary asset names"
+						help="Pseudo promises allow arbitrary asset names."
 						checked={ props.storeData.pseudo }
 						onChange={ onPseudoFieldChange }
 					/>
@@ -162,10 +162,14 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 									assets={ getBalance() }
 									asset={ props.storeData?.asset }
 									onChange={ onAssetFieldChange }
+									inputProps={ {
+										required: true,
+									} }
 								/>
 							:	<TextControl
 									value={ props.storeData.asset }
 									onChange={ onAssetFieldChange }
+									required
 								/>
 						}
 					</label>
@@ -180,16 +184,19 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 						quantity={ props.storeData?.quantity }
 						onChange={ onQuantityFieldChange }
 						max={ getMaxCount() }
+						inputProps={ {
+							required: true,
+						} }
 					/>
 					<TextControl
 						label="Reference"
-						help="Extra reference data"
+						help="Extra reference data."
 						value={ props.storeData?.ref }
 						onChange={ onRefFieldChange }
 					/>
 					<TextareaControl
 						label="Note"
-						help="Note to display to user"
+						help="Note to display to user."
 						value={ props.storeData?.note }
 						onChange={ onNoteFieldChange }
 					/>
@@ -198,6 +205,6 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 			</Flex>
 		: 	<div style={ { opacity: 0.8 } }>No sources registered.</div>
 		}
-		</form>
+		</div>
 	);
 }
