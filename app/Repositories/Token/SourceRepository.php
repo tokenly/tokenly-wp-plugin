@@ -86,6 +86,9 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return SourceInterface
 	 */
 	public function update( SourceInterface $source, array $params ) {
+		if ( isset( $params['assets'] ) && empty( $params['assets'] ) ) {
+			$params['assets'] = null;
+		}
 		$params['address'] = $source->address_id;
 		return $this->store( $params );
 	}
