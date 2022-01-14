@@ -7,7 +7,6 @@ use Tokenly\Wp\Interfaces\Controllers\Web\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Controllers\Web\PostControllerInterface;
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Routes\Router;
 use Twig\Environment;
 
@@ -22,7 +21,6 @@ class WebRouter extends Router implements WebRouterInterface {
 	protected $controllers = array();
 	protected $auth_controller;
 	protected $integration;
-	protected $current_user;
 	protected $namespace;
 	protected $twig;
 	protected $default_template = 'Index.twig';
@@ -32,7 +30,6 @@ class WebRouter extends Router implements WebRouterInterface {
 		AuthControllerInterface $auth_controller,
 		PostControllerInterface $post_controller,
 		IntegrationInterface $integration,
-		CurrentUserInterface $current_user,
 		Environment $twig,
 		string $namespace
 	) {
@@ -44,7 +41,6 @@ class WebRouter extends Router implements WebRouterInterface {
 			'post' => $post_controller,
 		);
 		$this->integration = $integration;
-		$this->current_user = $current_user;
 		$this->twig = $twig;
 	}
 
@@ -54,14 +50,6 @@ class WebRouter extends Router implements WebRouterInterface {
 	 */
 	public function register() {
 		$this->register_routes();
-	}
-	
-	protected function can_register( string $key ) {
-		if ( $this->integration->can_connect() && $this->current_user->can_connect() ) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**

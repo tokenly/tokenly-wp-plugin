@@ -32,25 +32,31 @@ trait ProtectableTrait {
 	/**
 	 * Begins the TCA check procedure
 	 * @param UserInterface $user User to test
-	 * @return AccessVerdictInterface
+	 * @return AccessVerdictInterface Access verdict
 	 */
-	public function can_access( UserInterface $user ) {
+	public function can_access( UserInterface $user = null ) {
 		$verdict = null;
 		$status = false;
 		$note = '';
 		$is_protected = $this->is_protected();
 		if ( $is_protected === true ) {
-			$precheck = $user->get_tca_precheck_data();
-			if ( isset( $precheck['need_test'] ) && $precheck['need_test'] === true ) {
-				$verdict = $this->test_access( $user );
-				return $verdict;
+			if ( $user && $user instanceof UserInterface ) {
+				$precheck = $user->get_tca_precheck_data();
+				if ( isset( $precheck['need_test'] ) && $precheck['need_test'] === true ) {
+					$verdict = $this->test_access( $user );
+					return $verdict;
+				} else {
+					if ( isset( $precheck['status'] ) ) {
+						$status = $precheck['status'];
+					}
+					if ( isset( $precheck['note'] ) ) {
+						$note = $precheck['note'];
+					}
+				}
 			} else {
-				if ( isset( $precheck['status'] ) ) {
-					$status = $precheck['status'];
-				}
-				if ( isset( $precheck['note'] ) ) {
-					$note = $precheck['note'];
-				}
+				$status = false;
+				$need_test = false;
+				$note = 'The user is not logged in.';
 			}
 		} else {
 			$status = true;

@@ -34,6 +34,18 @@ class Meta extends Post implements MetaInterface {
 			$data
 		);
 	}
+
+	/**
+	 * Updates the model
+	 * @param array $data New data
+	 * @return object
+	 */
+	public function update( array $data = array() ) {
+		if ( isset( $data['extra'] ) && is_array( $data['extra'] ) ) {
+			$data['extra'] = array_filter( $data['extra'] );
+		}
+		return parent::update( $data );
+	}
 	
 	public function to_array() {
 		$array = parent::to_array();

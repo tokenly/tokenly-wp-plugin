@@ -1,9 +1,12 @@
 import {
 	UserIndexParams,
 	UserShowParams,
-} from './../../Interfaces';
+} from '../../Interfaces';
 
-export interface UserRepositoryInterface {
+export default interface UserRepositoryInterface {
 	index( params: UserIndexParams ): Promise<any>;
-	show( userId: number, params: UserShowParams ): Promise<any>;
+	show( id: string, params?: any ): Promise<any>;
+	creditBalanceIndex( id: string, params?: any ): Promise<any>;
+	tokenAddressIndex( id: string, params?: any ): Promise<any>;
+	tokenBalanceIndex( id: string, params?: any ): Promise<any>;
 }

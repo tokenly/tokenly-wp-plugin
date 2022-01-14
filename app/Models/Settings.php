@@ -50,7 +50,7 @@ class Settings extends Model implements SettingsInterface {
 	 * @return string[]
 	 */
 	protected function get_fillable_prefixed() {
-		if ( !isset( $this->fillable_prefixed ) ) {
+		if ( !isset( $this->fillable_prefixed ) || !is_array( $this->fillable_prefixed ) ) {
 			$this->fillable_prefixed = array();
 			foreach ( $this->fillable as $fillable ) {
 				$this->fillable_prefixed[] = $this->prefix_key( $fillable );

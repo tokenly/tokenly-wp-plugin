@@ -1,24 +1,45 @@
 const TYPES = {
-	// Services
-	AuthServiceInterface                    : Symbol.for( 'AuthServiceInterface' ),
-	AdminApiServiceInterface                : Symbol.for( 'AdminApiServiceInterface' ),
-	// Repositories
-	PromiseRepositoryInterface              : Symbol.for( 'PromiseRepositoryInterface' ),
-	CreditGroupRepositoryInterface          : Symbol.for( 'CreditGroupRepositoryInterface' ),
-	CreditTransactionRepositoryInterface    : Symbol.for( 'CreditTransactionRepositoryInterface' ),
-	SourceRepositoryInterface               : Symbol.for( 'SourceRepositoryInterface' ),
-	TokenMetaRepositoryInterface            : Symbol.for( 'TokenMetaRepositoryInterface' ),
-	UserRepositoryInterface                 : Symbol.for( 'UserRepositoryInterface' ),
-	// Repositories - Settings
-	OauthSettingsRepositoryInterface        : Symbol.for( 'OauthSettingsRepositoryInterface' ),
-	IntegrationSettingsRepositoryInterface  : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
-	TcaSettingsRepositoryInterface          : Symbol.for( 'TcaSettingsRepositoryInterface' ),
-	WhitelistSettingsRepositoryInterface    : Symbol.for( 'WhitelistSettingsRepositoryInterface' ),
-	// Service providers
-	ComponentServiceProviderInterface       : Symbol.for( 'ComponentServiceProviderInterface' ),
-	// Components
-	LoginButtonComponentInterface           : Symbol.for( 'LoginButtonComponentInterface' ),
-	TokenItemCardComponentInterface         : Symbol.for( 'TokenItemCardComponentInterface' ),
+	Variables: {
+		adminUrl: Symbol.for( 'adminUrl' ),
+		adminPageUrl: Symbol.for( 'adminPageUrl' ),
+		apiHost: Symbol.for( 'apiHost' ),
+		brand: Symbol.for( 'brand' ),
+		namespace: Symbol.for( 'namespace' ),
+	},
+	Components: {
+		LoginButtonComponentInterface       : Symbol.for( 'LoginButtonComponentInterface' ),
+		TokenItemCardComponentInterface     : Symbol.for( 'TokenItemCardComponentInterface' ),
+	},
+	Services: {
+		AuthServiceInterface                : Symbol.for( 'AuthServiceInterface' ),
+		AdminApiServiceInterface            : Symbol.for( 'AdminApiServiceInterface' ),
+	},
+	Providers: {
+		ComponentServiceProviderInterface   : Symbol.for( 'ComponentServiceProviderInterface' ),
+	},
+	Repositories: {
+		UserRepositoryInterface             : Symbol.for( 'UserRepositoryInterface' ),
+		Credit: {
+			GroupRepositoryInterface        : Symbol.for( 'GroupRepositoryInterface' ),
+			TransactionRepositoryInterface  : Symbol.for( 'TransactionRepositoryInterface' ),
+		},
+		Settings: {
+			OauthSettingsRepositoryInterface        : Symbol.for( 'OauthSettingsRepositoryInterface' ),
+			IntegrationSettingsRepositoryInterface  : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
+			TcaSettingsRepositoryInterface          : Symbol.for( 'TcaSettingsRepositoryInterface' ),
+			WhitelistSettingsRepositoryInterface    : Symbol.for( 'WhitelistSettingsRepositoryInterface' ),
+		},
+		Token: {
+			AddressRepositoryInterface  : Symbol.for( 'AddressRepositoryInterface' ),
+			BalanceRepositoryInterface  : Symbol.for( 'BalanceRepositoryInterface' ),
+			PromiseRepositoryInterface  : Symbol.for( 'PromiseRepositoryInterface' ),
+			SourceRepositoryInterface   : Symbol.for( 'SourceRepositoryInterface' ),
+			MetaRepositoryInterface     : Symbol.for( 'MetaRepositoryInterface' ),
+		},
+	},
+	Routes: {
+		AdminRouterInterface : Symbol.for( 'AdminRouterInterface' ),
+	},
 };
 
 export { TYPES };

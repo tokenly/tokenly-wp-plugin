@@ -35,27 +35,29 @@ class AddressRepository implements AddressRepositoryInterface {
 	}
 
 	/**
-	 * Gets the list of public addresses for the username
-	 * @param array $params Index params
-	 * @return AddressCollectionInterface
+	 * Gets a collection of addresses
+	 * @param array $params Search parameters
+	 * @return AddressCollectionInterface Addresses found
 	 */
 	public function index( $params = array() ) {
-		if ( !isset( $params['username'] ) ) {
-			return false;
+		$addresses = array();
+		if ( isset( $params['username'] ) ) {
+			$username = $params['username'];
+			$addresses = $this->client->getPublicAddresses( $username );
+			if ( $addresses && is_array( $addresses ) ) {
+				foreach ( $addresses as &$address ) {
+					$address = $this->remap_fields( $address );
+				}
+			}
 		}
-		$username = $params['username'];
-		$addresses = $this->client->getPublicAddresses( $username );
-		foreach ( $addresses as &$address ) {
-			$address = $this->remap_fields( $address );
-		}
-		$address_collection = $this->address_collection_factory->create( $addresses );
-		return $address_collection;
+		$addresses = $this->address_collection_factory->create( $addresses );
+		return $addresses;
 	}
 
 	/**
-	 * Gets the list of public addresses for the username
-	 * @param array $params Index params
-	 * @return AddressCollectionInterface
+	 * Gets a single address
+	 * @param array $params Search parameters
+	 * @return AddressCollectionInterface Address found
 	 */
 	public function show( array $params = array() ) {
 		if (
@@ -73,6 +75,11 @@ class AddressRepository implements AddressRepositoryInterface {
 		return $address;
 	}
 
+	/**
+	 * Formats the received item
+	 * @param array $address Address received
+	 * @return array $address Formatted address
+	 */
 	protected function remap_fields( array $address ) {
 		if ( isset( $address['balances'] ) ) {
 			foreach ( $address['balances'] as $key => &$balance ) {

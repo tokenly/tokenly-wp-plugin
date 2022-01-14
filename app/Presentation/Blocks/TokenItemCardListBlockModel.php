@@ -7,7 +7,6 @@ use Tokenly\Wp\Interfaces\Presentation\Blocks\TokenItemCardListBlockModelInterfa
 
 use Tokenly\Wp\Interfaces\Presentation\Components\TokenItemCardComponentModelInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class TokenItemCardListBlockModel extends BlockModel implements TokenItemCardListBlockModelInterface {
 	protected $card_token_item_component_model;
@@ -36,7 +35,7 @@ class TokenItemCardListBlockModel extends BlockModel implements TokenItemCardLis
 		if ( !isset( $user->oauth_user ) ) {
 			return false;
 		}
-		$user->oauth_user->load( array( 'balance.token_meta' ) );
+		$user->oauth_user->load( array( 'balance.meta' ) );
 		$balances = $user->oauth_user->balance;
 		$token_items = array();
 		foreach ( ( array ) $balances as $balance ) {

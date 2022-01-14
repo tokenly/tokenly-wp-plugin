@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Component } from 'react';
 import { OauthSettings } from '../../../Interfaces';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '../../../Types';
 
 import { 
 	Flex,
@@ -13,71 +14,66 @@ interface OauthSettingsFormProps {
 	onChange: any;
 }
 
-interface OauthSettingsFormState {
-	//
-}
+export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
+	const brand = useInjection( TYPES.Variables.brand );
+	const namespace = useInjection( TYPES.Variables.namespace );
 
-export class OauthSettingsForm extends Component<OauthSettingsFormProps, OauthSettingsFormState> {
-
-	constructor( props: OauthSettingsFormProps ) {
-		super( props );
-		this.onChange = this.onChange.bind( this );
+	function onRedirectUrlFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.settings );
+		newState.success_url = value;
+		props.onChange( newState );
 	}
 
-	onChange( newSettings: any ) {
-		this.props.onChange( newSettings );
+	function onSsoFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.settings );
+		newState.use_single_sign_on = value;
+		props.onChange( newState );
 	}
 
-	render() {
-		return (
-			<Flex
-				//@ts-ignore
-				direction="column"
-			>
-				<TextControl
-					label="Redirect URL"
-					value={ this.props.settings.success_url }
-					help="Default redirect URL on success for the login shortcode and the main login form."
-					placeholder="/tokenly/user/me/"
-					onChange={ ( value ) => {
-						const state = Object.assign( {}, this.props.settings );
-						state.success_url = value;
-						this.onChange( state );
-					} }
-				/>
-				<ToggleControl
-					label="Use Single sign-on (SSO)"
-					help="Allows the existing users to login using their Tokenpass account."
-					checked={ this.props.settings.use_single_sign_on }
-					onChange={ ( value ) => {
-						const state = Object.assign( {}, this.props.settings );
-						state.use_single_sign_on = value;
-						this.onChange( state );
-					} }
-				/>
-				<ToggleControl
-					label="Allow accounts without email"
-					help="Allows connecting Tokenpass accounts which have no email accounts associated."
-					checked={ this.props.settings.allow_no_email }
-					onChange={ ( value ) => {
-						const state = Object.assign( {}, this.props.settings );
-						state.allow_no_email = value;
-						this.onChange( state );
-					} }
-				/>
-				<ToggleControl
-					label="Allow accounts without a confirmed email"
-					help="Allow connecting Tokenpass accounts which have an unconfirmed email account associated."
-					checked={ this.props.settings.allow_unconfirmed_email }
-					onChange={ ( value ) => {
-						const state = Object.assign( {}, this.props.settings );
-						state.allow_unconfirmed_email = value;
-						this.onChange( state );
-					} }
-				/>
-			</Flex>
-		);
+	function onAllowNoEmailFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.settings );
+		newState.allow_no_email = value;
+		props.onChange( newState );
 	}
+
+	function onAllowUnconfirmedEmailFieldChange( value: any ) {
+		const newState = Object.assign( {}, props.settings );
+		newState.allow_unconfirmed_email = value;
+		props.onChange( newState );
+	}
+
+	return (
+		<Flex
+			//@ts-ignore
+			direction="column"
+		>
+			<TextControl
+				label="Redirect URL"
+				value={ props.settings.success_url }
+				help="Default redirect URL on success for the login shortcode and the main login form."
+				placeholder={ `/${ namespace }/user/me/` }
+				onChange={ onRedirectUrlFieldChange }
+			/>
+			<ToggleControl
+				label="Use Single Sign-On (SSO)"
+				help={ `Allows the existing users to login using their ${brand} account.` }
+				checked={ props.settings.use_single_sign_on }
+				onChange={ onSsoFieldChange }
+			/>
+			<ToggleControl
+				label="Allow Accounts Without Email"
+				help={ `Allows connecting ${brand} accounts which have no email accounts associated.` }
+				checked={ props.settings.allow_no_email }
+				onChange={ onAllowNoEmailFieldChange }
+			/>
+			<ToggleControl
+				label="Allow Accounts Without a Confirmed Email"
+				help={ `Allow connecting ${brand} accounts which have an unconfirmed email account associated.` }
+				checked={ props.settings.allow_unconfirmed_email }
+				onChange={ onAllowUnconfirmedEmailFieldChange }
+			/>
+		</Flex>
+	);
 }
  
 

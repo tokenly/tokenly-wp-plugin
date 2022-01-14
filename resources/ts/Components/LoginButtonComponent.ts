@@ -1,15 +1,15 @@
 import { injectable, inject } from 'inversify';
-import { AuthServiceInterface } from '../Interfaces/Services/AuthServiceInterface';
+import AuthServiceInterface from '../Interfaces/Services/AuthServiceInterface';
 import { TYPES } from './../Types';
-import { Component } from './Component';
+import Component from './Component';
 
 @injectable()
-export class LoginButtonComponent extends Component {
+export default class LoginButtonComponent extends Component {
 	authService: AuthServiceInterface;
 	element: HTMLElement;
 	
 	constructor(
-		@inject( TYPES.AuthServiceInterface ) authService: AuthServiceInterface,
+		@inject( TYPES.Services.AuthServiceInterface ) authService: AuthServiceInterface,
 	) {
 		super();
 		this.authService = authService;

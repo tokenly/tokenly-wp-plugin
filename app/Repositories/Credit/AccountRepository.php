@@ -40,8 +40,8 @@ class AccountRepository implements AccountRepositoryInterface {
 		}
 		$group_uuid = $params['group_uuid'];
 		$accounts = $this->client->listAppCreditAccounts( $group_uuid );
-		if( !$accounts ){
-			return;
+		if( !$accounts ) {
+			$accounts = array();
 		}
 		$accounts = $this->account_collection_factory->create( $accounts );
 		return $accounts;

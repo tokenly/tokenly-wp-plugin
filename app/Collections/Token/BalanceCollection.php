@@ -16,16 +16,18 @@ use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface;
 
 class BalanceCollection extends Collection implements BalanceCollectionInterface {
 	protected $item_type = BalanceInterface::class;
+	protected $balance_factory;
+	protected $meta_service;
 
 	public function __construct(
 		WhitelistSettingsInterface $whitelist,
 		BalanceFactoryInterface $balance_factory,
-		MetaServiceInterface $token_meta_service,
+		MetaServiceInterface $meta_service,
 		array $items
 	) {
 		$this->whitelist = $whitelist;
 		$this->balance_factory = $balance_factory;
-		$this->token_meta_service = $token_meta_service;
+		$this->meta_service = $meta_service;
 		parent::__construct( $items );
 		$this->apply_whitelist();
 	}
@@ -54,15 +56,15 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	}
 
 	/**
-	 * Loads the token meta relation
+	 * Loads the meta relation
 	 * @param string[] $relations Further relations
 	 * @return self
 	 */
-	protected function load_token_meta( array $relations ) {
+	protected function load_meta( array $relations ) {
 		$assets = array_map( function( BalanceInterface $balance ) {
 			return $balance->name;
 		}, ( array ) $this );
-		$meta = $this->token_meta_service->index( array(
+		$meta = $this->meta_service->index( array(
 			'assets' => $assets,
 			'with'   => $relations,
 		) );
@@ -80,7 +82,7 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 			if ( !$meta ) {
 				continue;
 			}
-			$balance->token_meta = $meta;
+			$balance->meta = $meta;
 		}
 		return $this;
 	}

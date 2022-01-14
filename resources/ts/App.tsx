@@ -2,7 +2,7 @@ import { container } from './Inversify.config';
 import '/resources/scss/Main.scss';
 import { TYPES } from './Types'; 
 
-import { ServiceProviderInterface } from './Interfaces/Providers/ServiceProviderInterface';
+import ServiceProviderInterface from './Interfaces/Providers/ServiceProviderInterface';
 
 export default class App {
 	container = container;
@@ -12,7 +12,7 @@ export default class App {
 	
 	get providers() {
 		return [
-			TYPES.ComponentServiceProviderInterface,
+			TYPES.Providers.ComponentServiceProviderInterface,
 		] as Array<any>;
 	}
 	

@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Component } from 'react';
 
 import { 
 	Button,
-	Spinner,
 	Flex,
 } from '@wordpress/components';
 
@@ -13,40 +11,26 @@ interface SavePanelProps {
 	onClick: any;
 }
 
-interface SavePanelState {
-	//
-}
-
-export class SavePanel extends Component<SavePanelProps, SavePanelState> {
-
-	constructor( props: SavePanelProps ) {
-		super( props );
-	}
-
-	render() {
-		return (
-			<Flex
-				//@ts-ignore
-				direction="row"
-				justify="flex-start"
-				style={ { marginTop: '8px' } }
+export default function SavePanel( props: SavePanelProps ) {
+	return (
+		<Flex
+			//@ts-ignore
+			direction="row"
+			justify="flex-start"
+			style={ { marginTop: '8px' } }
+		>
+			<Button
+				isPrimary
+				isLarge
+				isBusy={ props.saving }
+				onClick={ () => {
+					props.onClick();
+				} }
 			>
-				<Button
-					isPrimary
-					isLarge
-					disabled={ this.props.saving }
-					onClick={ () => {
-						this.props.onClick();
-					}}
-				>
-					{ this.props.label ?? 'Save settings' }
-				</Button>
-				{ this.props.saving === true &&
-					<Spinner/>
-				}
-			</Flex>
-		);
-	}
+				{ props.label ?? 'Save Settings' }
+			</Button>
+		</Flex>
+	);
 }
  
 

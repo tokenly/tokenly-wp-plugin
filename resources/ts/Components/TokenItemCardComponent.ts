@@ -1,8 +1,8 @@
 import { injectable } from 'inversify';
-import { Component } from './Component';
+import Component from './Component';
 
 @injectable()
-export class TokenItemCardComponent extends Component {
+export default class TokenItemCardComponent extends Component {
 	element: HTMLElement;
 	
 	constructor() {

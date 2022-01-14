@@ -31,6 +31,7 @@ class TransactionRepository implements TransactionRepositoryInterface {
 	 * @return TransactionCollectionInterface
 	 */
 	public function index( array $params = array() ) {
+		$transactions = array();
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
 			$history = $this->client->getAppCreditGroupHistory( $group_uuid );
@@ -39,10 +40,10 @@ class TransactionRepository implements TransactionRepositoryInterface {
 					$transaction = $this->remap_fields( $transaction );
 				}
 				$transactions = $history['transactions'];
-				$transactions = $this->transaction_collection_factory->create( $transactions );
-				return $transactions;	
 			}
 		}
+		$transactions = $this->transaction_collection_factory->create( $transactions );
+		return $transactions;	
 	}
 
 	/**

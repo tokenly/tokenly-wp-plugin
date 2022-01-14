@@ -8,18 +8,18 @@ import {
 	PromiseUpdateParams,
 	PromiseData,
 } from '../Interfaces';
-import { AdminApiServiceInterface } from './../Interfaces/Services/AdminApiServiceInterface';
+import AdminApiServiceInterface from './../Interfaces/Services/AdminApiServiceInterface';
 
-declare const wpApiSettings: any;
+declare const window: any;
 
 @injectable()
-export class AdminApiService implements AdminApiServiceInterface {
+export default class AdminApiService implements AdminApiServiceInterface {
 	namespace = '/wp-json/tokenly/v1';
 
 	get headers() {
 		return {
 			'Content-type': 'application/json; charset=UTF-8',
-			'X-WP-Nonce': wpApiSettings.nonce,
+			'X-WP-Nonce': window?.tokenpassData?.props?.nonce,
 		}
 	}
 	
@@ -43,9 +43,19 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	creditGroupIndex(): Promise<any> {
+	creditGroupIndex( params: any = {} ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/credit/group' ).then( result => {
+			this.makeRequest( 'GET', '/credit/group', params ).then( result => {
+				resolve( result );
+			}).catch( error => {
+				reject( error );
+			} );
+		});
+	}
+
+	creditGroupShow( uuid: string, params: any = {} ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/credit/group/${uuid}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -63,9 +73,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	creditGroupUpdate( params: any ): Promise<any> {
+	creditGroupUpdate( uuid: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/credit/group/', params ).then( result => {
+			this.makeRequest( 'PUT', `/credit/group/${uuid}`, params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -73,9 +83,9 @@ export class AdminApiService implements AdminApiServiceInterface {
 		});
 	}
 
-	creditTransactionIndex(): Promise<any> {
+	creditTransactionIndex( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/credit/transaction' ).then( result => {
+			this.makeRequest( 'GET', '/credit/transaction', params ).then( result => {
 				resolve( result );
 			}).catch( error => {
 				reject( error );
@@ -87,133 +97,223 @@ export class AdminApiService implements AdminApiServiceInterface {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'POST', '/credit/transaction', params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	sourceIndex(): Promise<any> {
+	tokenAddressIndex( params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/token/source' ).then( result => {
+			this.makeRequest( 'GET', '/token/address', params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	sourceStore( params: SourceData ): Promise<any> {
+	tokenAddressShow( id: string, params: any = {} ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'POST', '/token/source', params ).then( result => {
+			this.makeRequest( 'GET', `/token/address/${id}`, params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	sourceUpdate( address: string, params: SourceData ): Promise<any> {
+	tokenAddressBalanceIndex( id: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', '/token/source/' + address, params ).then( result => {
+			this.makeRequest( 'GET', `/token/address/${id}/balance`, params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	sourceDestroy( address: string ): Promise<any> {
+	tokenBalanceIndex( params: any = {} ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'DELETE', '/token/source/' + address ).then( result => {
+			this.makeRequest( 'GET', '/token/balance', params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
-	}
-
-	promiseIndex(): Promise<Array<PromiseData>> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', '/token/promise' ).then( ( result: Array<PromiseData> ) => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	promiseStore( params: PromiseStoreParams ): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'POST', '/token/promise', params ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	promiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'PUT', `/token/promise/${promiseId}`, params ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
-	}
-
-	promiseDestroy( promiseId: number ): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'DELETE', `/token/promise/${promiseId}` ).then( result => {
-				resolve( result );
-			}).catch( error => {
-				reject( error );
-			} );
-		});
+		} );
 	}
 
 	tokenMetaShow( postId: number ): Promise<TokenMetaData> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', `/token/meta/${postId}` ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
 	tokenMetaUpdate( postId: number, params: TokenMetaData ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'PUT', `/token/meta/${postId}`, params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
+	}
+
+	tokenPromiseIndex( params: any = {} ): Promise<Array<PromiseData>> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/token/promise', params ).then( ( result: Array<PromiseData> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenPromiseShow( id: number, params: any = {} ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/token/promise/${id}`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenPromiseStore( params: PromiseStoreParams ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'POST', '/token/promise', params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenPromiseUpdate( promiseId: number, params: PromiseUpdateParams ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', `/token/promise/${promiseId}`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenPromiseDestroy( promiseId: number ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'DELETE', `/token/promise/${promiseId}` ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenSourceIndex( params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', '/token/source', params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenSourceShow( id: string, params: any = {} ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/token/source/${id}`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenSourceStore( params: SourceData ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'POST', '/token/source', params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenSourceUpdate( address: string, params: SourceData ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'PUT', `/token/source/${address}`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	tokenSourceDestroy( address: string ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'DELETE', `/token/source/${address}` ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
 	}
 
 	userIndex( params: UserIndexParams ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			this.makeRequest( 'GET', '/user', params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	userShow( userId: number, params: UserShowParams ): Promise<any> {
+	userShow( id: string, params: any ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.makeRequest( 'GET', `/user/${userId}`, params ).then( result => {
+			this.makeRequest( 'GET', `/user/${id}`, params ).then( result => {
 				resolve( result );
-			}).catch( error => {
+			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	makeRequest( method: string = '', route: string = '', args: object = {} ): Promise<any> {
+	userCreditBalanceIndex( id: string, params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/user/${id}/credit/balance`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	userTokenAddressIndex( id: string, params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/user/${id}/token/address`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	userTokenBalanceIndex( id: string, params: any ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.makeRequest( 'GET', `/user/${id}/token/balance`, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	makeRequest( method: string = '', route: string = '', args: any = {} ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
 			const params: RequestInit = {
 				method: method,
@@ -233,6 +333,6 @@ export class AdminApiService implements AdminApiServiceInterface {
 					resolve( data );
 				} )
 				.catch( err => reject( err ) );
-		});
+		} );
 	}
 }

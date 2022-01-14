@@ -2,6 +2,7 @@
 
 namespace Tokenly\Wp\Controllers\Api\Credit;
 
+use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface;
 
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
@@ -11,7 +12,7 @@ use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 /**
  * Defines transaction endpoints
  */
-class TransactionController implements TransactionControllerInterface {
+class TransactionController extends Controller implements TransactionControllerInterface {
 	protected $transaction_service;
 	protected $user_service;
 
@@ -28,10 +29,9 @@ class TransactionController implements TransactionControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return TransactionCollectionInterface
 	 */
-	public function index( \WP_REST_Request $request ) {
-		$credit_transactions = $this->transaction_service->index();
-		$credit_transactions = $credit_transactions->to_array();
-		return $credit_transactions;
+	public function index( TransactionCollectionInterface $transactions, \WP_REST_Request $request ) {
+		$transactions = $transactions->to_array();
+		return $transactions;
 	}
 
 	/**
@@ -68,6 +68,26 @@ class TransactionController implements TransactionControllerInterface {
 		}
 		return array(
 			'transactions' => $transactions,
+		);
+	}
+
+	protected function remap_parameters( array $params = array() ) {
+		if ( isset( $params['group'] ) ) {
+			$params['group_uuid'] = $params['group'];
+			unset( $params['group'] );
+		}
+		return $params;
+	}
+
+	/**
+	 * Gets model binding parameters
+	 * @return array
+	 */
+	protected function get_bind_params() {
+		return array(
+			'service'                   => $this->transaction_service,
+			'collection_methods'        => array( 'index' ),
+			'collection_service_method' => 'index',
 		);
 	}
 }

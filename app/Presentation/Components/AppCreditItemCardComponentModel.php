@@ -8,14 +8,15 @@ use Tokenly\Wp\Interfaces\Presentation\Components\AppCreditItemCardComponentMode
 class AppCreditItemCardComponentModel extends ComponentModel implements AppCreditItemCardComponentModelInterface {	
 	public function prepare( array $data = array() ) {
 		$account = $data['account'];
-		$key = $data['key'];
-		$credit_groups = $data['credit_groups'];
+		$balance = null;
 		$name = null;
-		if ( isset( $credit_groups[ $key ] ) ) {
-			$group = $credit_groups[ $key ];
+		if ( isset( $data['group'] ) ) {
+			$group = $data['group'];
 			$name = $group->name;
 		}
-		$balance = $account->balance;
+		if ( isset( $data['account'] ) ) {
+			$balance = $account->balance;
+		}
 		return array(
 			'name'   => $name,
 			'balance' => $balance,

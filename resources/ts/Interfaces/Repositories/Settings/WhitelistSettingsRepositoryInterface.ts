@@ -1,5 +1,5 @@
-import { SettingsRepositoryInterface } from "../SettingsRepositoryInterface";
+import SettingsRepositoryInterface from "../SettingsRepositoryInterface";
 
-export interface WhitelistSettingsRepositoryInterface extends SettingsRepositoryInterface {
+export default interface WhitelistSettingsRepositoryInterface extends SettingsRepositoryInterface {
 	//
 }

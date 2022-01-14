@@ -29,25 +29,27 @@ class SourceRepository implements SourceRepositoryInterface {
 	}
 
 	/**
-	 * Gets the list of registered source addresses
-	 * @return array
+	 * Gets a collection of sources
+	 * @param array $params Search parameters
+	 * @return SourceCollectionInterface Sources found
 	 */
 	public function index( array $params = array() ) {
 		$sources = $this->client->getProvisionalSourceList();
-		if ( $sources === false ) {
-			return false;
-		}
-		foreach ( $sources as &$source ) {
-			$source = $this->remap_fields( $source );
+		if ( $sources && is_array( $sources ) ) {
+			foreach ( $sources as &$source ) {
+				$source = $this->remap_fields( $source );
+			}
+		} else {
+			$sources = array();
 		}
 		$sources = $this->source_collection_factory->create( $sources );
 		return $sources;
 	}
 
 	/**
-	 * Gets the source data by address
-	 * @param string $address Source address
-	 * @return array
+	 * Gets a single source
+	 * @param array $params Search parameters
+	 * @return SourceInterface
 	 */
 	public function show( array $params = array() ) {
 		if ( isset( $params['address'] ) === false ) {
@@ -55,11 +57,9 @@ class SourceRepository implements SourceRepositoryInterface {
 		}
 		$address = $params['address'];
 		$sources = $this->index( $params );
-		if ( !is_object( $sources ) ) {
-			return;
-		}
-		if ( $sources && is_object( $sources ) ) {
-			return $sources[ $address ] ?? null;
+		$sources = clone $sources->key_by_field( 'address_id' );
+		if ( isset( $sources[ $address ] ) ) {
+			return $sources[ $address ];
 		}
 	}
 

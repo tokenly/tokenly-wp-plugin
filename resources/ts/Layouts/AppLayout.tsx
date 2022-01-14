@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Component } from 'react';
-import { ConfirmModal } from '../Admin/Components/ConfirmModal';
+import { useState, useEffect } from 'react';
 import TcaRuleEditor from './../Admin/Components/TcaRuleEditor';
+import ConfirmModal from '../Admin/Components/App/ConfirmModal';
+import Snackbar from './../Admin/Components/App/Snackbar';
 import { ConfirmModalData } from '../Interfaces';
 import eventBus from "../EventBus";
 
@@ -14,96 +15,93 @@ interface AppLayoutProps {
 	pageData: any;
 }
 
-interface AppLayoutState {
-	confirmModalData: ConfirmModalData;
-	confirmModalShow: boolean;
-	postData: any;
-	tcaRules: []
-}
+export default function AppLayout( props: AppLayoutProps ) {
+	const [ confirmModalData, setConfirmModalData ] = useState<any>( null );
+	const [ confirmModalShow, setConfirmModalShow ] = useState<boolean>( false );
 
-export default class AppLayout extends Component<AppLayoutProps, AppLayoutState> {
-	state: AppLayoutState = {
-		confirmModalData: null,
-		confirmModalShow: false,
-		postData: {},
-		tcaRules: []
-	};
-	constructor( props: AppLayoutProps ) {
-		super( props );
-		this.onConfirmModalShow = this.onConfirmModalShow.bind( this );
-		this.onConfirmModalRequestClose = this.onConfirmModalRequestClose.bind( this );
-		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
-		this.onPostDataUpdated = this.onPostDataUpdated.bind( this );
-		this.onTcaUpdate = this.onTcaUpdate.bind( this );
-		console.log(this.props.pageData);
-		this.state.tcaRules = Object.assign( {}, this.props?.pageData?.tca_rules );
-		this.state.postData.tca_rules = this.state.tcaRules;
+	const [ snackbarContent, setSnackbarContent ] = useState<string>( '' );
+	const [ snackbarShow, setSnackbarShow ] = useState<boolean>( false );
+	const [ snackbarTimeout, setSnackbarTimeout ] = useState<any>( null );
+
+	const [ tcaRules, setTcaRules ] = useState<any>( Object.assign( [], props?.pageData?.tca_rules ) );
+	const [ postData, setPostData ] = useState<any>( {
+		tca_rules: tcaRules,
+	} );
+
+	function onConfirmModalRequestClose() {
+		setConfirmModalData( null );
+		setConfirmModalShow( false );
 	}
 
-	onConfirmModalRequestClose() {
-		this.setState( {
-			confirmModalData: null,
-			confirmModalShow: false,
-		} );
-	}
-
-	onConfirmModalChoice( choice: string ) {
+	function onConfirmModalChoice( choice: string ) {
 		eventBus.dispatch( 'confirmModalChoice', {
-			key: this.state?.confirmModalData?.key,
+			key: confirmModalData?.key,
 			choice: choice,
 		} );
-		this.onConfirmModalRequestClose();
+		onConfirmModalRequestClose();
 	}
 
-	onConfirmModalShow( confirmModalData: ConfirmModalData ) {
-		this.setState( {
-			confirmModalData: confirmModalData,
-			confirmModalShow: true,
-		} );
+	function onConfirmModalShow( newConfirmModalData: ConfirmModalData ) {
+		setConfirmModalData( newConfirmModalData )
+		setConfirmModalShow( true );
 	}
 
-	componentDidMount() {
-		eventBus.on( 'confirmModalShow', this.onConfirmModalShow );
-		eventBus.on( 'postDataUpdated', this.onPostDataUpdated );
-	}
-	
-	componentWillUnmount() {
-		eventBus.remove( 'confirmModalShow', this.onConfirmModalShow );
-	}
-
-	onPostDataUpdated( newData: any ) {
-		let state = Object.assign( {}, this.state.postData );
+	function onPostDataUpdated( newData: any ) {
+		let state = Object.assign( {}, postData );
 		state = Object.assign( state, newData );
-		this.setState( { postData: state } );
+		setPostData( state );
 	}
 
-	onTcaUpdate( rules: any ) {
-		this.onPostDataUpdated( {
-			tca_rules: rules,
+	function onTcaUpdate( newTcaRules: any ) {
+		setTcaRules( newTcaRules );
+		onPostDataUpdated( {
+			tca_rules: newTcaRules,
 		} );
 	}
 
-	render() {
-		return (
-			<Fragment>
-				{ this.props.children }
-				{ this.state.confirmModalShow == true &&
-					<ConfirmModal
-						key={ this.state.confirmModalData.key }
-						title={ this.state.confirmModalData.title }
-						subtitle={ this.state.confirmModalData.subtitle }
-						onRequestClose={ this.onConfirmModalRequestClose }
-						onChoice={ this.onConfirmModalChoice }
-					/>
-				}
-				{ this.props.pageData?.tca_enabled == true &&
-					<TcaRuleEditor
-						rules={ this.state.tcaRules }
-						onUpdate={ this.onTcaUpdate }
-					/>
-				}
-				<input type="hidden" name="tokenly_data" value={ JSON.stringify( this.state.postData as any ) } />
-			</Fragment>
-		)
+	function onSnackbarShow( newSnackbarContent: string ) {
+		setSnackbarContent( newSnackbarContent );
+		setSnackbarShow( true );
+		snackBarDebounce();
 	}
+
+	function snackBarDebounce() {
+		clearTimeout( snackbarTimeout );
+		setSnackbarTimeout( setTimeout(() => {
+			setSnackbarShow( false );
+		}, 3000) );
+	}
+
+	useEffect( () => {
+		eventBus.on( 'confirmModalShow', onConfirmModalShow );
+		eventBus.on( 'postDataUpdated', onPostDataUpdated );
+		eventBus.on( 'snackbarShow', onSnackbarShow );
+		return () => {
+			eventBus.remove( 'confirmModalShow', onConfirmModalShow );
+			eventBus.remove( 'snackbarShow', onSnackbarShow );
+		}
+	}, [] );
+
+	return (
+		<Fragment>
+			{ props.children }
+			{ confirmModalShow == true &&
+				<ConfirmModal
+					key={ confirmModalData.key }
+					title={ confirmModalData.title }
+					subtitle={ confirmModalData.subtitle }
+					onRequestClose={ onConfirmModalRequestClose }
+					onChoice={ onConfirmModalChoice }
+				/>
+			}
+			{ props.pageData?.tca_enabled == true &&
+				<TcaRuleEditor
+					rules={ tcaRules }
+					onChange={ onTcaUpdate }
+				/>
+			}
+			<Snackbar show={ snackbarShow }>{ snackbarContent }</Snackbar>
+			<input type="hidden" name="tokenly_data" value={ JSON.stringify( postData as any ) } />
+		</Fragment>
+	);
 }

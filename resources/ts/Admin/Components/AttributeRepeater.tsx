@@ -1,110 +1,107 @@
 import * as React from 'react';
-import { Component } from 'react';
 import { Attribute } from '../../Interfaces';
 
 import { 
 	Button,
 	Flex,
 	TextControl,
-	Dashicon,
 } from '@wordpress/components';
 
 interface AttributeRepeaterProps {
 	label?: string;
 	help?: string;
 	attributes: Array<Attribute>;
-	onUpdate: any;
+	onChange: any;
 }
 
-interface AttributeRepeaterState {
-	attributes: Array<Attribute>;
-}
-
-export class AttributeRepeater extends Component<AttributeRepeaterProps, AttributeRepeaterState> {
-	state: AttributeRepeaterState = {
-		attributes: [],
-	};
-	constructor( props: AttributeRepeaterProps ) {
-		super( props );
-		this.onUpdate = props.onUpdate;
-		this.state.attributes = Object.assign( [], props.attributes );
+export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
+	function onAdd() {
+		const newState = Object.assign( [], props.attributes );
+		newState.push( { key: '', value: '' } );
+		props.onChange( newState );
 	}
 	
-	onUpdate( attributes: Array<Attribute> ) {
-		//
+	function onRemove( index: number ) {
+		let newState = Object.assign( [], props.attributes );
+		delete newState[ index ];
+		removeEmpty( newState );
+		props.onChange( newState );
 	}
 	
-	onAdd() {
-		let newState = Object.assign( {}, this.state );
-		newState.attributes[newState.attributes.length] = { key: '', value: '' };
-		this.setState( newState );
-		this.dispatchUpdate();
-	}
-	
-	onRemove( index: number ) {
-		let newState = Object.assign( {}, this.state );
-		delete newState.attributes[index];
-		this.setState( newState );
-		this.dispatchUpdate();
-	}
-	
-	dispatchUpdate() {
-		this.onUpdate( this.state.attributes );
+	function onKeyFieldChange( key: any, value: any ) {
+		const newState = Object.assign( [], props.attributes );
+		newState[ key ].key = value;
+		props.onChange( newState );
 	}
 
-	render() {
-		const listItems = this.state.attributes.map( ( attribute: Attribute, i: number ) => {
-			return (
-				<Flex justify="flex-start" style={ { alignItems: 'flex-end', margin: '8px 0' } }>
-					<TextControl
-						label="Key"
-						value={ attribute.key }
-						onChange={ ( value: string ) => {
-								let newState = Object.assign( {}, this.state );
-								newState.attributes[i].key = value;
-								this.setState( { ...newState } );
-								this.dispatchUpdate();
-							}
-						}
-					/>
-					<TextControl
-						label="Value"
-						value={ attribute.value }
-						onChange={ ( value: string ) => {
-								let newState = Object.assign( {}, this.state );
-								newState.attributes[ i ].value = value;
-								this.setState( { ...newState } );
-								this.dispatchUpdate();
-							}
-						}
-					/>
-					<Button
-						isTertiary
-						onClick={ () => {
-							this.onRemove( i );
-						}}
-					>
-						<Dashicon icon="no" />
-					</Button>
-				</Flex>
-			);
+	function onValueFieldChange( key: any, value: any ) {
+		const newState = Object.assign( [], props.attributes );
+		newState[ key ].value = value;
+		props.onChange( newState );
+	}
+
+	function removeEmpty( newState: any ) {
+		newState = newState.filter( function ( attribute: any ) {
+			return attribute != null;
 		} );
-		return ( 
-			<div style={ { display: 'inline-block' } }>
-				<label>{ this.props.label }
-					<div style={ { opacity: 0.8 } }>{ this.props.help }</div>
-					<ul>{ listItems }</ul>
-				</label>
-				<Button
-					isSecondary
-					isLarge
-					onClick={ () => {
-						this.onAdd();
-					}}
-				>
-					Add attribute
-				</Button>
-			</div>
-		);
 	}
+
+	const listItems = props.attributes.map( ( attribute: Attribute, i: number ) => {
+		if ( !attribute ) { return }
+		return (
+			<Flex justify="flex-start" align="flex-end">
+				<TextControl
+					label="Key"
+					value={ attribute.key }
+					onChange={ ( value: string ) => {
+						onKeyFieldChange( i, value );
+					} }
+				/>
+				<TextControl
+					label="Value"
+					value={ attribute.value }
+					onChange={ ( value: string ) => {
+						onValueFieldChange( i, value );
+					} }
+				/>
+				<Button
+					isTertiary
+					icon="no"
+					onClick={ () => {
+						onRemove( i );
+					} }
+				/>
+			</Flex>
+		);
+	} );
+	return ( 
+		<Flex
+			//@ts-ignore
+			direction="column"
+			style={ { display: 'inline-block' } }
+		>
+			<label>{ props.label }
+				<Flex
+					//@ts-ignore
+					direction="column"
+				>
+					<div style={ { opacity: 0.8 } }>{ props.help }</div>
+					<Flex
+						//@ts-ignore
+						direction="column"
+					>
+						{ listItems }
+					</Flex>
+				</Flex>
+			</label>
+			<Button
+				isSecondary
+				isLarge
+				onClick={ onAdd }
+				style={ { marginTop: '18px' } }
+			>
+				Add Attribute
+			</Button>
+		</Flex>
+	);
 }

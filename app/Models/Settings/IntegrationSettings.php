@@ -15,6 +15,11 @@ class IntegrationSettings extends Settings implements IntegrationSettingsInterfa
 		'client_secret',
 		'settings_updated',
 	);
+	protected $casts = array(
+		'client_id'        => 'string',
+		'client_secret'    => 'string',
+		'settings_updated' => 'boolean',
+	);
 
 	public function save( array $settings = array() ) {
 		$settings['settings_updated'] = true;

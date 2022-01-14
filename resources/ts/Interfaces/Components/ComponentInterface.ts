@@ -1,3 +1,3 @@
-export interface ComponentInterface {
+export default interface ComponentInterface {
 	register( selector: string ): any;
 }

@@ -2,15 +2,17 @@
 
 namespace Tokenly\Wp\Controllers\Api\Token;
 
+use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\PromiseControllerInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface;
-use Tokenly\Wp\Interfaces\Models\PromiseInterface;
+use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface;
 
 /**
- * Defines promise-related endpoints
+ * Defines promise endpoints
  */
-class PromiseController implements PromiseControllerInterface {
+class PromiseController extends Controller implements PromiseControllerInterface {
 	protected $promise_service;
 	protected $user_repository;
 
@@ -21,18 +23,29 @@ class PromiseController implements PromiseControllerInterface {
 	}
 	
 	/**
-	 * Get a list of current promises
+	 * Gets a collection of promises
+	 * @param PromiseCollectionInterface $promises Bound promises
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function index( \WP_REST_Request $request ) {
-		$promises = $this->promise_service->index();
+	public function index( PromiseCollectionInterface $promises, \WP_REST_Request $request ) {
 		$promises = $promises->to_array();
 		return $promises;
 	}
 
 	/**
-	 * Creates a new promise
+	 * Gets a single promise
+	 * @param PromiseInterface $promise Bound model
+	 * @param \WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function show( PromiseInterface $promise, \WP_REST_Request $request ) {
+		$promise = $promise->to_array();
+		return $promise;
+	}
+
+	/**
+	 * Makes a new promise
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
@@ -50,11 +63,7 @@ class PromiseController implements PromiseControllerInterface {
 	 * @param WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function update( \WP_REST_Request $request ) {
-		$promise = $this->get_promise( $request );
-		if ( !$promise ) {
-			return;
-		}
+	public function update( PromiseInterface $promise, \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$promise->update( $params );
 		return array(
@@ -63,37 +72,37 @@ class PromiseController implements PromiseControllerInterface {
 	}
 
 	/**
-	 * Destroys an existing promise
+	 * Deletes a promise
+	 * @param PromiseInterface $promise Bound promise
 	 * @param WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( \WP_REST_Request $request ) {
-		$promise = $this->get_promise( $request );
-		if ( !$promise ) {
-			return;
-		}
+	public function destroy( PromiseInterface $promise, \WP_REST_Request $request ) {
 		$promise->destroy();
 		return array(
 			'status' => "Promise successfully cancelled!",
 		);
 	}
-	
+
+	protected function remap_parameters( array $params = array() ) {
+		if ( isset( $params['promise'] ) ) {
+			$params['promise_id'] = $params['promise'];
+			unset( $params['promise'] );
+		}
+		return $params;
+	}
+
 	/**
-	 * Retrieves queried promise
-	 * @param WP_REST_Request $request Request data
-	 * @return PromiseInterface
+	 * Gets model binding parameters
+	 * @return array
 	 */
-	protected function get_promise( \WP_REST_Request $request ) {
-		$promise_id = $request->get_param( 'promise' );
-		if ( !$promise_id ) {
-			return;
-		}
-		$promise = $this->promise_service->show( array(
-			'promise_id' => $promise_id,
-		) );
-		if ( !$promise ) {
-			return;
-		}
-		return $promise;
+	protected function get_bind_params() {
+		return array(
+			'service'                   => $this->promise_service,
+			'single_service_method'     => 'show',
+			'single_methods'            => array( 'show', 'update', 'destroy' ),
+			'collection_methods'        => array( 'index' ),
+			'collection_service_method' => 'index',
+		);
 	}
 }

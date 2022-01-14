@@ -1,15 +1,15 @@
 import { injectable, inject } from 'inversify';
-import { SettingsRepositoryInterface } from './../Interfaces/Repositories/SettingsRepositoryInterface';
-import { AdminApiServiceInterface } from '../Interfaces/Services/AdminApiServiceInterface';
+import SettingsRepositoryInterface from './../Interfaces/Repositories/SettingsRepositoryInterface';
+import AdminApiServiceInterface from '../Interfaces/Services/AdminApiServiceInterface';
 import { TYPES } from './../Types';
 
 @injectable()
-export class SettingsRepository implements SettingsRepositoryInterface {
+export default class SettingsRepository implements SettingsRepositoryInterface {
 	adminApiService;
 	settingsType: string;
 	
 	constructor(
-		@inject( TYPES.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
 	) {
 		this.adminApiService = adminApiService;
 	}

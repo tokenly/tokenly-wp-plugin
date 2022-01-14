@@ -6,7 +6,8 @@ use Tokenly\Wp\Middleware\Middleware;
 use Tokenly\Wp\Interfaces\Middleware\Tca\PostResultsFilterMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 
 /**
  * Filters the results of post queries by checking
@@ -16,15 +17,17 @@ class PostResultsFilterMiddleware implements PostResultsFilterMiddlewareInterfac
 	protected $tca_settings;
 	protected $post_service;
 	protected $current_user;
+	protected $user_service;
 	
 	public function __construct(
 		TcaSettingsInterface $tca_settings,
 		PostServiceInterface $post_service,
-		CurrentUserInterface $current_user
+		UserServiceInterface $user_service
 	) {
 		$this->tca_settings = $tca_settings;
 		$this->post_service = $post_service;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 	}
 	
 	/**

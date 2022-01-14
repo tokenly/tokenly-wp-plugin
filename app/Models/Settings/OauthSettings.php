@@ -17,4 +17,10 @@ class OauthSettings extends Settings implements OauthSettingsInterface {
 		'allow_no_email',
 		'allow_unconfirmed_email',
 	);
+	protected $casts = array(
+		'use_single_sign_on'        => 'boolean',
+		'success_url'               => 'string',
+		'allow_no_email'            => 'boolean',
+		'allow_unconfirmed_email'   => 'boolean',
+	);
 }

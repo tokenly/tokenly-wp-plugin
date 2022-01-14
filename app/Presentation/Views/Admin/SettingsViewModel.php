@@ -2,13 +2,14 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SettingsViewModelInterface;
+
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 
-class SettingsViewModel extends ViewModel implements SettingsViewModelInterface {
+class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInterface {
 	protected $integration;
 	protected $tca_settings;
 	protected $oauth_settings;
@@ -26,7 +27,7 @@ class SettingsViewModel extends ViewModel implements SettingsViewModelInterface 
 		$this->oauth_callback_route = $oauth_callback_route;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		$integration_settings = $this->integration->settings->to_array();
 		$tca_settings = $this->tca_settings->to_array();
 		$oauth_settings = $this->oauth_settings->to_array();

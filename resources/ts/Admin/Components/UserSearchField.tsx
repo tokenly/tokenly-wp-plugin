@@ -1,29 +1,20 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
-import { Component } from 'react';
-import { UserRepositoryInterface } from '../../Interfaces/Repositories/UserRepositoryInterface';
-import { UserSuggestion } from '../../Interfaces';
+import { useState } from 'react';
+import { useInjection } from 'inversify-react';
+import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../Types';
-
-declare const wp: any;
-
-const { __ } = wp.i18n;
 
 import { 
 	// @ts-ignore
-	ComboboxControl,
+	ComboboxControl
 } from '@wordpress/components';
 
 interface UserSearchFieldProps {
 	onChange: any;
+	user: any;
 	label?: string;
 	help?: string;
-}
-
-interface UserSearchFieldState {
-	keywords: string;
-	user: number;
-	users: Array<ComboboxOption>;
+	inputProps?: any;
 }
 
 interface ComboboxOption {
@@ -31,64 +22,98 @@ interface ComboboxOption {
 	label: string,
 }
 
-export class UserSearchField extends Component<UserSearchFieldProps, UserSearchFieldState> {
-	@resolve( TYPES.UserRepositoryInterface )
-	userRepository: UserRepositoryInterface;
+export default function UserSearchField( props: UserSearchFieldProps ) {
+	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
+
+	const [ keywords, setKeywords ] = useState( '' );
+	const [ options, setOptions ] = useState( [] );
+	const [ searchTimeout, setSearchTimeout ] = useState( 0 );
 	
-	state: UserSearchFieldState = {
-		keywords: null,
-		user: null,
-		users: [],
-	};
-	constructor( props: UserSearchFieldProps ) {
-		super( props );
-		this.onKeywordsChange = this.onKeywordsChange.bind( this );
-		this.onUserChange = this.onUserChange.bind( this );
-	}
-	
-	onKeywordsChange( keywords: string ) {
-		if( keywords == '' ) {
-			return;
-		}
-		this.setState( { keywords: keywords } );
-		this.userRepository.index({
-			suggestions: true,
-			name: keywords,
-		}).then( ( results: Array<UserSuggestion> ) => {
-			if ( results.length <= 0 ) {
-				return;
-			} 
-			const options = results.map( ( user: any ) => {
-				return {
-					value: user.id,
-					label: user.name,
-				} as ComboboxOption;
+	function getUserOptions( keywords: string ) {
+		return new Promise( ( resolve, reject ) => {
+			let newOptions = [] as any;
+			if ( keywords == '' ) {
+				resolve( newOptions );
+			}
+			searchDebounce( keywords ).then( ( optionsFound ) => {
+				if ( optionsFound && Array.isArray( optionsFound ) ) {
+					newOptions = optionsFound;
+				}
+				setOptions( newOptions );
+				resolve( newOptions );
+			} ).catch( ( error ) => {
+				reject( error );
 			} );
-			this.setState( { users: [options[0]] } );
-		}).catch( ( error: string ) => {
-			console.log( error );
-		} );
-	}
-	
-	onUserChange( id: number ) {
-		this.setState( { user: id} );
-		this.props.onChange( id );
+		});
 	}
 
-	render() {
-		return <div style={{height: '40px'}}>
+	function searchDebounce( keywords: string ) {
+		clearTimeout( searchTimeout );
+		return new Promise( ( resolve, reject ) => {
+			setSearchTimeout( setTimeout(() => {
+				const results = search( keywords );
+				resolve( results );
+			}, 500) );
+		} );
+	}
+
+	function search( keywords: string ) {
+		return new Promise( ( resolve, reject ) => {
+			userRepository.index({
+				suggestions: true,
+				name: keywords,
+			} ).then( ( results: Array<any> ) => {
+				if ( results.length <= 0 ) {
+					resolve( [] );
+				} 
+				const options = results.map( ( user: any ) => {
+					return {
+						value: user.id,
+						label: user.name,
+					} as ComboboxOption;
+				} );
+				if ( options.length > 1 ) {
+					options.length = 1;
+				}
+				resolve( options );
+			} ).catch( ( error: string ) => {
+				reject( error );
+			} );
+		} );
+	}
+
+	function getKeywordsFromOptions() {
+		let keywords = '';
+		const optionsFiltered = options.filter( ( option: any ) => {
+			return option.value == props.user;
+		} );
+		if ( optionsFiltered.length > 0 ) {
+			keywords = optionsFiltered[0].label;
+		}
+		return keywords;
+	}
+
+	function onKeywordsChange( keywords: string ) {
+		if ( keywords == '' && props.user ) {
+			keywords = getKeywordsFromOptions();
+		}
+		getUserOptions( keywords ).then( ( options: any ) => {
+			setOptions( options );
+			setKeywords( keywords );
+		} );
+	}
+
+	return (
+		<div style={ { height: '50px' } }>
+			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.user } />
 			<ComboboxControl
-				label={ this.props.label }
-				help={ this.props.help }
-				value={ this.state.user }
-				onChange={ (value: any) => {
-					this.onUserChange( value );
-				} }
-				options={ this.state.users }
-				onFilterValueChange={ ( keywords: string ) => {
-					this.onKeywordsChange( keywords );
-				} }
+				label={ props.label }
+				help={ props.help }
+				value={ props.user }
+				onChange={ props.onChange }
+				options={ options }
+				onFilterValueChange={ onKeywordsChange }
 			/>
 		</div>
-	}
+	);
 }

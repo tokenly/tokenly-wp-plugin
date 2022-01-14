@@ -35,7 +35,7 @@ class UserService extends DomainService implements UserServiceInterface {
 	/**
 	 * Gets a collection of users
 	 * @param array $params Search parameters
-	 * @return UserCollectionInterface
+	 * @return UserCollectionInterface Users found
 	 */
 	public function index( array $params = array() ) {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
@@ -44,10 +44,25 @@ class UserService extends DomainService implements UserServiceInterface {
 	/**
 	 * Gets a single user
 	 * @param array $params Search parameters
-	 * @return UserInterface
+	 * @return UserInterface User found
 	 */
 	public function show( array $params = array() ) {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Gets the current user
+	 * @param array $params Additional parameters
+	 * @return UserInterface Current user
+	 */
+	public function show_current( array $params = array() ) {
+		$id = get_current_user_id();
+		if ( $id == 0 ) {
+			return;
+		}
+		$params['id'] = $id;
+		$user = $this->show( $params );
+		return $user;
 	}
 
 	/**
@@ -82,13 +97,13 @@ class UserService extends DomainService implements UserServiceInterface {
 	 */
 	protected function show_cacheable( array $params = array() ) {
 		if ( isset( $params['id'] ) && $params['id'] == 'me' ) {
-			$params['id'] = get_current_user_id();
+			unset( $params['id'] );
+			$user = $this->show_current( $params );
+		} else {
+			$user = $this->user_repository->show( $params );
 		}
-		$user = $this->user_repository->show( $params );
 		return $user;
 	}
-
-
 
 	/**
 	 * Adds an inventory link to WordPress admin user list
@@ -97,13 +112,15 @@ class UserService extends DomainService implements UserServiceInterface {
 	 * @return array $actions Modified actions
 	 */
 	public function add_view_inventory_user_action( array $actions, \WP_User $user ) {
-		$user_id = $user->ID;
+		$id = $user->ID;
 		$user = $this->show( array(
-			'id' => $user_id,
+			'id' => $id,
 		) );
 		if ( $user && $user->can_connect() ) {
-			$actions["{$this->namespace}_token_inventory"] = "<a href='/wp-admin/admin.php?page=tokenly-token-balance-index&user={$user_id}'>Token inventory</a>";
-		//	$actions["{$this->namespace}_credit_inventory"] = "<a href='/wp-admin/admin.php?page=tokenly-credit-balance-index&user={$user_id}'>Credit inventory</a>";
+			$token_balance_url = admin_url( "admin.php?page={$this->namespace}-user-token-balance-index&id={$id}" );
+			$credit_balance_url = admin_url( "admin.php?page={$this->namespace}-user-credit-balance-index&id={$id}" );
+			$actions[ "{$this->namespace }_token_balance" ] = "<a href='{$token_balance_url}'>Token Inventory</a>";
+			$actions[ "{$this->namespace }_credit_balance" ] = "<a href='{$credit_balance_url}'>Credit Inventory</a>";
 		}
 		return $actions;
 	}

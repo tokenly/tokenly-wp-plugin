@@ -6,7 +6,8 @@ use Tokenly\Wp\Middleware\Middleware;
 use Tokenly\Wp\Interfaces\Middleware\Tca\PostGuardMiddlewareInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Twig\Environment;
 use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
 
@@ -17,19 +18,21 @@ class PostGuardMiddleware extends Middleware implements PostGuardMiddlewareInter
 	protected $post_service;
 	protected $namespace;
 	protected $current_user;
+	protected $user_service;
 	protected $twig;
 	protected $post_access_denied_view_model;
 	
 	public function __construct(
 		PostServiceInterface $post_service,
 		string $namespace,
-		CurrentUserInterface $current_user,
+		UserServiceInterface $user_service,
 		Environment $twig,
 		PostAccessDeniedViewModelInterface $post_access_denied_view_model
 	) {
 		$this->post_service = $post_service;
 		$this->namespace = $namespace;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 		$this->twig = $twig;
 		$this->post_access_denied_view_model = $post_access_denied_view_model;
 	}
@@ -46,11 +49,11 @@ class PostGuardMiddleware extends Middleware implements PostGuardMiddlewareInter
 	 * @return void
 	 */
 	public function run() {
-		$is_virtual = boolval( get_query_var( "{$this->namespace}_virtual" ) ) ?? false;
-		if ( $is_virtual === true ) {
+		$queried_object = get_queried_object();
+		if ( !$queried_object || $queried_object instanceof \WP_Post === false ) {
 			return;
 		}
-		$post_id = get_the_ID();
+		$post_id = $queried_object->ID;
 		$post = $this->post_service->show( array(
 			'id' => $post_id,
 		) );

@@ -8,7 +8,6 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
 use Tokenly\Wp\Interfaces\Factories\Models\Tca\RuleCheckResultFactoryInterface;
@@ -20,7 +19,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
 
-class User extends Model implements UserInterface, CurrentUserInterface {
+class User extends Model implements UserInterface {
 	public $user;
 	public $oauth_user;
 	public $oauth_token;
@@ -63,15 +62,11 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		return $this->user->$key = $val;
 	}
 	
-	public function is_guest() {
-		return false;
-	}
-	
 	public function to_array() {
 		$array = parent::to_array();
 		$array = array_merge( $array, array(
 			'id'   => $this->ID,
-			'name' => $this->user_nicename,
+			'name' => $this->user_login,
 		) );
 		return $array;
 	}
@@ -133,11 +128,6 @@ class User extends Model implements UserInterface, CurrentUserInterface {
 		if ( user_can( $this, 'administrator' ) ) {
 			$status = true;
 			$need_test = false;
-		}
-		if ( $this instanceof GuestUserInterface === true ) {
-			$status = false;
-			$need_test = false;
-			$note = 'The user is not logged in.';
 		}
 		$this->load( array( 'oauth_user' ) );
 		if ( $this->oauth_user instanceof OauthUserInterface === false ) {

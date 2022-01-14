@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
-import { StatusIndicator } from '../../Components/StatusIndicator';
+import StatusIndicator from '../../Components/StatusIndicator';
 
 import { 
 	Flex,
@@ -13,52 +12,38 @@ interface IntegrationSettingsFormProps {
 	onChange: any;
 }
 
-interface IntegrationSettingsFormState {
-	//
-}
-
-export class IntegrationSettingsForm extends Component<IntegrationSettingsFormProps, IntegrationSettingsFormState> {
-
-	constructor( props: IntegrationSettingsFormProps ) {
-		super( props );
-		this.onChange = this.onChange.bind( this );
+export default function IntegrationSettingsForm( props: IntegrationSettingsFormProps ) {
+	function onClientIdFieldChange( value: any ) {
+		let newState = Object.assign( {}, props.settings );
+		newState.client_id = value;
+		props.onChange( newState );
 	}
 
-	onChange( newSettings: any ) {
-		this.props.onChange( newSettings );
+	function onClientSecretFieldChange( value: any ) {
+		let newState = Object.assign( {}, props.settings );
+		newState.client_secret = value;
+		props.onChange( newState );
 	}
 
-	render() {
-		return (
-			<Flex
-				//@ts-ignore
-				direction="column"
-				style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
-			> 
-				<StatusIndicator status={ this.props.status ?? false }/>
-				<TextControl
-					label="Client ID"
-					value={ this.props.settings.client_id ?? '' }
-					onChange={ ( value: string ) => {
-							let newSettings = Object.assign( {}, this.props.settings );
-							newSettings.client_id = value;
-							this.onChange( newSettings );
-						}
-					}
-				/>
-				<TextControl
-					label="Client Secret"
-					value={ this.props.settings.client_secret ?? '' }
-					onChange={ ( value: string ) => {
-							let newSettings = Object.assign( {}, this.props.settings );
-							newSettings.client_secret = value;
-							this.onChange( newSettings );
-						}
-					}
-				/>
-			</Flex>
-		);
-	}
+	return (
+		<Flex
+			//@ts-ignore
+			direction="column"
+			style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+		> 
+			<StatusIndicator status={ props.status ?? false }/>
+			<TextControl
+				label="Client ID"
+				value={ props.settings.client_id ?? '' }
+				onChange={ onClientIdFieldChange }
+			/>
+			<TextControl
+				label="Client Secret"
+				value={ props.settings.client_secret ?? '' }
+				onChange={ onClientSecretFieldChange }
+			/>
+		</Flex>
+	);
 }
  
 

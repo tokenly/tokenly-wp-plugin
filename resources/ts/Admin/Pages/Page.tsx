@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
+import BackButton from '../Components/BackButton';
 
 import { 
 	Fragment,
@@ -10,24 +10,14 @@ interface PageProps {
 	children: any;
 }
 
-interface PageState {
-	//
-}
-
-export default class Page extends Component<PageProps, PageState> {
-	state: PageState = {
-		//
-	};
-	constructor( props: PageProps ) {
-		super( props );
-	}
-	
-	render() {
-		return (
-			<Fragment>
-				<h2>{ this.props.title }</h2>
-				{ this.props.children }
-			</Fragment>
-		)
-	}
+export default function Page( props: PageProps ) {
+	return (
+		<Fragment>
+			<h2>{ props.title }</h2>
+			<BackButton />
+			<div style={ { marginTop: '8px' } } >
+				{ props.children }
+			</div>
+		</Fragment>
+	)
 }

@@ -6,15 +6,12 @@ use Tokenly\Wp\Presentation\Blocks\BlockModel;
 use Tokenly\Wp\Interfaces\Presentation\Blocks\UserInfoBlockModelInterface;
 
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 
 class UserInfoBlockModel extends BlockModel implements UserInfoBlockModelInterface {
 	public function __construct(
-		UserServiceInterface $user_service,
-		CurrentUserInterface $current_user
+		UserServiceInterface $user_service
 	) {
 		$this->user_service = $user_service;
-		$this->current_user = $current_user;
 	}
 
 	public function prepare( array $data = array() ) {

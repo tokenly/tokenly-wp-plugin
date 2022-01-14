@@ -2,12 +2,13 @@
 
 namespace Tokenly\Wp\Presentation\Views\Admin;
 
-use Tokenly\Wp\Presentation\Views\ViewModel;
+use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
+
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
 
-class PostEditViewModel extends ViewModel implements PostEditViewModelInterface {
+class PostEditViewModel extends DynamicViewModel implements PostEditViewModelInterface {
 	protected $tca_settings;
 	protected $post_service;
 	
@@ -19,7 +20,7 @@ class PostEditViewModel extends ViewModel implements PostEditViewModelInterface 
 		$this->post_service = $post_service;
 	}
 	
-	public function prepare( array $data = array() ) {
+	protected function get_view_props( array $data = array() ) {
 		$post_type = get_post_type();
 		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
 		$post_id = get_the_ID();

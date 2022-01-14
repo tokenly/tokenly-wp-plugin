@@ -43,8 +43,20 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 		return $post;
 	}
 
+	/**
+	 * Gets the arguments for the Store method
+	 * @param array $params Store parameters
+	 * @return array $args
+	 */
+	protected function get_store_args( array $params = array() ) {
+		$args = parent::get_store_args( $params );
+		$args['post_status'] = 'private';
+		return $args;
+	}
+
 	protected function get_query_args( array $params = array() ) {
 		$args = parent::get_query_args( $params );
+		$args['post_status'] = 'private';
 		if ( isset( $params['promise_ids'] ) ) {
 			$promise_ids = $params['promise_ids'] ?? null;
 			$args['meta_query'][] = array(

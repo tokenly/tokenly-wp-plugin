@@ -1,8 +1,8 @@
 import { injectable } from 'inversify';
-import { ComponentInterface } from './../Interfaces/Components/ComponentInterface';
+import ComponentInterface from './../Interfaces/Components/ComponentInterface';
 
 @injectable()
-export class Component implements ComponentInterface {
+export default class Component implements ComponentInterface {
 	constructor() {
 		//
 	}

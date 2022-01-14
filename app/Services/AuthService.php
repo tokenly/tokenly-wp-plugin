@@ -6,7 +6,6 @@ use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
@@ -35,7 +34,6 @@ class AuthService extends Service implements AuthServiceInterface {
 	
 	public function __construct(
 		LoginButtonComponentModelInterface $login_button_component_model,
-		CurrentUserInterface $current_user,
 		TokenpassAPIInterface $client,
 		OauthUserServiceInterface $oauth_user_service,
 		IntegrationSettingsInterface $settings,
@@ -50,11 +48,12 @@ class AuthService extends Service implements AuthServiceInterface {
 		$this->namespace = $namespace;
 		$this->login_button_component_model = $login_button_component_model;
 		$this->client = $client;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $this->user_service->show_current();
 		$this->oauth_callback_route = $oauth_callback_route;
 		$this->oauth_user_service = $oauth_user_service;
 		$this->settings = $settings;
-		$this->user_service = $user_service;
+
 		$this->oauth_settings = $oauth_settings;
 		$this->twig = $twig;
 		$this->state_cookie_name = "{$this->namespace}_oauth_state";
@@ -128,7 +127,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( $can_login === false ) {
 			return false;
 		}
-		if ( $this->current_user->is_guest() === false ) {
+		if ( $this->current_user && $this->current_user instanceof UserInterface ) {
 			$user = $this->current_user;
 		} else {
 			$user = $this->find_existing_user( $oauth_user );

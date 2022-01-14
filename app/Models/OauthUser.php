@@ -57,6 +57,7 @@ class OauthUser extends Model implements OauthUserInterface {
 		'balance',
 		'address',
 		'credit_group',
+		'credit_account',
 	);
 
 	public function __construct(
@@ -161,6 +162,12 @@ class OauthUser extends Model implements OauthUserInterface {
 		return $transactions;
 	}
 
+	/**
+	 * Gets the source user of the transaction
+	 * @param string $source Source address
+	 * @param string $group_uuid Group UUID
+	 * @return OauthUserInterface Source user
+	 */
 	protected function get_transaction_source( string $source, string $group_uuid ) {
 		$user = null;
 		$user = $this->user_service->show( array(
@@ -242,6 +249,7 @@ class OauthUser extends Model implements OauthUserInterface {
 			if ( !$account ) {
 				continue;
 			}
+			$account->group_id = $group_uuid;
 			$credit_account[ $group_uuid ] = $account;
 		}
 		$credit_account = $this->credit_account_collection_factory->create( $credit_account );

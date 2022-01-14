@@ -4,7 +4,8 @@ namespace Tokenly\Wp\Controllers\Web;
 
 use Tokenly\Wp\Interfaces\Controllers\Web\AuthControllerInterface;
 use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
-use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
 
 /**
  * Serves the auth web routes
@@ -12,15 +13,17 @@ use Tokenly\Wp\Interfaces\Models\CurrentUserInterface;
 class AuthController implements AuthControllerInterface {
 	protected $auth_service;
 	protected $current_user;
+	protected $user_service;
 	protected $namespace;
 
 	public function __construct(
 		AuthServiceInterface $auth_service,
-		CurrentUserInterface $current_user,
+		UserServiceInterface $user_service,
 		string $namespace
 	) {
 		$this->auth_service = $auth_service;
-		$this->current_user = $current_user;
+		$this->user_service = $user_service;
+		$this->current_user = $user_service->show_current();
 		$this->namespace = $namespace;
 	}
 	
@@ -38,7 +41,7 @@ class AuthController implements AuthControllerInterface {
 	 * @return array
 	 */
 	public function destroy() {
-		if ( $this->current_user->is_guest() === true ) {
+		if ( !$this->current_user || $this->current_user instanceof UserInterface === false ) {
 			return;
 		}
 		$this->current_user->disconnect();

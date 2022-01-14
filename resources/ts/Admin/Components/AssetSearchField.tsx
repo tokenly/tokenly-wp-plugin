@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
-
-declare const wp: any;
+import { useState } from 'react';
 
 import { 
 	// @ts-ignore
@@ -10,91 +8,55 @@ import {
 
 interface AssetSearchFieldProps {
 	onChange: any;
+	asset: any;
 	assets: any;
 	label?: string;
 	help?: string;
-	value: string;
+	inputProps?: any;
 }
 
-interface AssetSearchFieldState {
-	keywords: string;
-	asset: string;
-	assets: Array<ComboboxOption>;
-}
-
-interface ComboboxOption {
-	value: string,
-	label: string,
-}
-
-export class AssetSearchField extends Component<AssetSearchFieldProps, AssetSearchFieldState> {
-	state: AssetSearchFieldState = {
-		keywords: null,
-		asset: null,
-		assets: [],
-	};
-	constructor( props: AssetSearchFieldProps ) {
-		super( props );
-		this.onKeywordsChange = this.onKeywordsChange.bind( this );
-		this.onAssetChange = this.onAssetChange.bind( this );
-		this.getAssetsAvailable = this.getAssetsAvailable.bind( this );
-		console.log(this.props.assets);
-	}
+export default function AssetSearchField( props: AssetSearchFieldProps ) {
+	const [ keywords, setKeywords ] = useState( '' );
+	const [ options, setOptions ] = useState( [] );
 	
-	onKeywordsChange( keywords: string ) {
-		if ( !keywords || keywords == '' ) {
-			return;
+	function onKeywordsChange( newKeywords: string ) {
+		if ( newKeywords == '' && props.asset ) {
+			newKeywords = props.asset;
 		}
-		let results = this.props.assets.filter( ( asset: string ) => {
-			return asset.toLowerCase().indexOf( keywords.toLowerCase() ) >= 0;
-		} );
-		if ( results?.length > 0 ) {
-			results = results.map( ( result: string ) => {
-				return {
-					label: result,
-					value: result,
-				}
-			} );
-			this.setState( {
-				assets : [ results[0] ],
-			} );
-		}
-		this.onAssetChange( keywords );
-	}
-	
-	onAssetChange( assetName: string ) {
-		this.setState( { 
-			asset    : assetName,
-			keywords : assetName,
-		} );
-		this.props.onChange( assetName );
+		setKeywords( newKeywords );
+		setOptions( getAssetOptions() );
 	}
 
-	getAssetsAvailable() {
-		if ( this.props.assets?.length > 0 ) {
-			return this.props.assets.join( ', ' )
-		} else {
-			return 'none';
+	function getAssetOptions() {
+		if ( !props.assets || !Array.isArray( props.assets ) || keywords == '' ) {
+			return [];
 		}
+		const keywordsFormatted = keywords.toLowerCase();
+		const assetsFiltered = props.assets.filter( ( asset: any ) => {
+			return asset.asset.toLowerCase().indexOf( keywordsFormatted ) >= 0;
+		} );
+		const optionsFiltered = assetsFiltered.map( ( asset ) => {
+			return {
+				label: asset.asset,
+				value: asset.asset,
+			}
+		} )
+		if ( optionsFiltered.length > 1 ) {
+			optionsFiltered.length = 1;
+		}
+		return optionsFiltered;
 	}
 
-	render() {
-		return (
-			<div style={ { marginBottom: '12px' } }>
-				<div style={ { height: '40px' } }>
-					<ComboboxControl
-						label={ this.props.label }
-						value={ this.props.value }
-						onChange={ ( value: any ) => {
-							this.onAssetChange( value );
-						} }
-						options={ this.state.assets }
-						onFilterValueChange={ ( keywords: string ) => {
-							this.onKeywordsChange( keywords );
-						} }
-					/>
-				</div>
-			</div>
-		)
-	}
+	return (
+		<div style={ { height: '50px' } }>
+			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.asset } />
+			<ComboboxControl
+				label={ props.label }
+				value={ props.asset }
+				onChange={ props.onChange }
+				options={ options }
+				onFilterValueChange={ onKeywordsChange }
+			/>
+		</div>
+	)
 }

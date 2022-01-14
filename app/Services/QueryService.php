@@ -18,6 +18,7 @@ class QueryService extends Service implements QueryServiceInterface {
 		'address',
 		'user_id',
 		'success_url',
+		'group',
 		//Routing
 		'oauth_callback',
 		'oauth_connect',

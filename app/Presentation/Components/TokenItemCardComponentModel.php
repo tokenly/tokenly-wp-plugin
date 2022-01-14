@@ -26,8 +26,8 @@ class TokenItemCardComponentModel extends ComponentModel implements TokenItemCar
 		$description = 'No description.';
 		$image = '';
 		$extra = array();
-		if ( isset( $balance->token_meta ) ) {
-			$meta = $balance->token_meta;
+		if ( isset( $balance->meta ) ) {
+			$meta = $balance->meta;
 			$post_id = $meta->ID;
 			$name = $meta->post_title;
 			$image = get_the_post_thumbnail( $post_id, 'full' );

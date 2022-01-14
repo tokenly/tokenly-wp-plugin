@@ -1,5 +1,5 @@
-import { SettingsRepositoryInterface } from "../SettingsRepositoryInterface";
+import SettingsRepositoryInterface from "../SettingsRepositoryInterface";
 
-export interface OauthSettingsRepositoryInterface extends SettingsRepositoryInterface {
+export default interface OauthSettingsRepositoryInterface extends SettingsRepositoryInterface {
 	//
 }
