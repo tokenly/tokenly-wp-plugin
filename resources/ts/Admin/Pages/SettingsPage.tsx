@@ -38,21 +38,29 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	const tcaSettingsRepository: TcaSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface );
 	const oauthSettingsRepository: OauthSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface );
 	
+	console.log( props );
 	const [ integrationSettings, setIntegrationSettings ] = useState<any>( Object.assign( {
 		client_id: '',
 		client_secret: '',
 	}, props.pageData.integration_settings ) );
-	const [ tcaSettings, setTcaSettings ] = useState<any>( Object.assign( {
+	const tcaSettingsProp = Object.assign( {
 		post_types: {},
 		taxonomies: {},
-		filter_menu_items: null,
-		filter_post_results: null,
-	}, props.pageData.tca_settings ) );
+		filter_menu_items: false,
+		filter_post_results: false,
+	}, props.pageData.tca_settings );
+	if ( Array.isArray( tcaSettingsProp.post_types ) ) {
+		tcaSettingsProp.post_types = {};
+	}
+	if ( Array.isArray( tcaSettingsProp.taxonomies ) ) {
+		tcaSettingsProp.taxonomies = {};
+	}
+	const [ tcaSettings, setTcaSettings ] = useState<any>( tcaSettingsProp );
 	const [ oauthSettings, setOauthSettings ] = useState<any>( Object.assign( {
-		use_single_sign_on: null,
+		use_single_sign_on: false,
 		success_url: '',
-		allow_no_email: null,
-		allow_unconfirmed_email: null,
+		allow_no_email: false,
+		allow_unconfirmed_email: false,
 	}, props.pageData.oauth_settings ) );
 	const [ savingIntegrationSettings, setSavingIntegrationSettings ] = useState<boolean>( false );
 	const [ savingTcaSettings, setSavingTcaSettings ] = useState<boolean>( false );
@@ -75,6 +83,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 
 	function onTcaSettingsSave() {
 		setSavingTcaSettings( true );
+		console.log(tcaSettings);
 		tcaSettingsRepository.update( tcaSettings ).then( ( result: any ) => {
 			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingTcaSettings( false );

@@ -7,7 +7,7 @@
  * Author URI:      https://tokenly.com/
  * Text Domain:     tokenly-wp-plugin
  * Domain Path:     /languages
- * Version:         0.3
+ * Version:         0.5
  *
  * @package         Tokenly_Wp_Plugin
  */

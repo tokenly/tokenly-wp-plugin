@@ -7,6 +7,7 @@ import { WhitelistData, WhitelistItem } from '../../../Interfaces';
 import WhitelistSettingsRepositoryInterface from '../../../Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
 import ResourceEditActions from '../../Components/ResourceEditActions';
 import { TYPES } from '../../../Types';
+import eventBus from "../../../EventBus";
 import { 
 	Panel,
 	PanelBody,
@@ -48,6 +49,7 @@ export default function WhitelistPage( props: WhitelistPageProps ) {
 		setSaving( true );
 		whitelistSettingsRepository.update( editData ).then( ( result: any ) => {
 			setSaving( false );
+			eventBus.dispatch( 'snackbarShow', result?.status );
 		} ).catch( ( error: any ) => {
 			console.log( error );
 		} );

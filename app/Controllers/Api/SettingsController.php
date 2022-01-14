@@ -77,7 +77,7 @@ class SettingsController implements SettingsControllerInterface {
 		$this->settings[ $type ]->update( $params );
 		$name = $this->names[ $type ];
 		return array(
-			'status' => "${name} settings were updated successfully!",
+			'status' => "${name} settings were successfully updated!",
 		);
 	}
 }

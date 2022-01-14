@@ -316,8 +316,12 @@ class ApiRouter extends Router implements ApiRouterInterface {
 				'args' => array(
 					'methods'             => 'GET',
 					'callback'            => array( $this->controllers['user'], 'show' ),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
+					'permission_callback' => function ( \WP_REST_Request $request ) {
+						$id = $request->get_param( 'id' );
+						if ( current_user_can( 'administrator' ) === false && $id != 'me' ) {
+							return false;
+						}
+						return true;
 					},
 				),
 			),

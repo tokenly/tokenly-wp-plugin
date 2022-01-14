@@ -16,7 +16,7 @@ class IntegrationSettings extends Settings implements IntegrationSettingsInterfa
 		'settings_updated',
 	);
 	protected $casts = array(
-		'client_id'        => 'integer',
+		'client_id'        => 'string',
 		'client_secret'    => 'string',
 		'settings_updated' => 'boolean',
 	);
