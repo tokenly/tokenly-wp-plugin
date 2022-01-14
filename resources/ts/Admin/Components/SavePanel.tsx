@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { 
 	Button,
-	Spinner,
 	Flex,
 } from '@wordpress/components';
 
@@ -23,16 +22,13 @@ export default function SavePanel( props: SavePanelProps ) {
 			<Button
 				isPrimary
 				isLarge
-				disabled={ props.saving }
+				isBusy={ props.saving }
 				onClick={ () => {
 					props.onClick();
-				}}
+				} }
 			>
 				{ props.label ?? 'Save Settings' }
 			</Button>
-			{ props.saving === true &&
-				<Spinner/>
-			}
 		</Flex>
 	);
 }

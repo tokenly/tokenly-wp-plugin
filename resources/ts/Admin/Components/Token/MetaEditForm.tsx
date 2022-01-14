@@ -33,7 +33,7 @@ export default function MetaEditForm( props: MetaEditFormProps ) {
 				<TextControl
 					value={ props.editData.asset }
 					label="Asset"
-					help="Is used for pairing meta with an asset"
+					help="Is used for pairing meta with an asset."
 					onChange={ onAssetFieldChange }
 				/>
 				<AttributeRepeater

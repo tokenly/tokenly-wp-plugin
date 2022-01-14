@@ -47,10 +47,6 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 		} );
 	}
 
-	function isStoreDisabled() {
-		return ( !storeData?.name || !storeData?.app_whitelist );
-	}
-
 	function onCancel() {
 		goBack();
 	}
@@ -79,7 +75,6 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 								name="Group"
 								storing={ storing }
 								onCancel={ onCancel }
-								disableStore={ isStoreDisabled() }
 							/>
 						</PanelRow>
 					</PanelBody>

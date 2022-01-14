@@ -11,7 +11,6 @@ interface ResourceEditActionsProps {
 	onStore?: any;
 	onCancel: any;
 	name: string;
-	disableStore?: boolean;
 }
 
 export default function ResourceEditActions( props: ResourceEditActionsProps ) {

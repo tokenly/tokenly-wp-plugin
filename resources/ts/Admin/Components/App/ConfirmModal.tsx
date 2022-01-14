@@ -14,12 +14,7 @@ interface ConfirmModalProps {
 	onChoice: any;
 }
 
-interface ComboboxOption {
-	value: string,
-	label: string,
-}
-
-export default function ConfirmModal( props: ConfirmModalProps ) {
+export default function AppConfirmModal( props: ConfirmModalProps ) {
 	function onRequestClose() {
 		props.onRequestClose();
 	}

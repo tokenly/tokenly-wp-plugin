@@ -12,6 +12,7 @@ interface AssetSearchFieldProps {
 	assets: any;
 	label?: string;
 	help?: string;
+	inputProps?: any;
 }
 
 export default function AssetSearchField( props: AssetSearchFieldProps ) {
@@ -47,16 +48,15 @@ export default function AssetSearchField( props: AssetSearchFieldProps ) {
 	}
 
 	return (
-		<div style={ { marginBottom: '12px' } }>
-			<div style={ { height: '40px' } }>
-				<ComboboxControl
-					label={ props.label }
-					value={ props.asset }
-					onChange={ props.onChange }
-					options={ options }
-					onFilterValueChange={ onKeywordsChange }
-				/>
-			</div>
+		<div style={ { height: '50px' } }>
+			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.asset } />
+			<ComboboxControl
+				label={ props.label }
+				value={ props.asset }
+				onChange={ props.onChange }
+				options={ options }
+				onFilterValueChange={ onKeywordsChange }
+			/>
 		</div>
 	)
 }

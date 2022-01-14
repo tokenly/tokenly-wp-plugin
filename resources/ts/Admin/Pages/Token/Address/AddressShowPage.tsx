@@ -44,7 +44,7 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 				<PanelHeader>
 					<Preloader loading={ loading }>Address Info</Preloader>
 				</PanelHeader>
-			{ !loading &&
+			{ ( !loading && address ) &&
 				<PanelBody>
 					<PanelRow>
 						<AddressInfo address={ address } />

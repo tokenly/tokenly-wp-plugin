@@ -4,7 +4,6 @@ import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceEditForm from '../../Components/Token/SourceEditForm';
-import { SourceData } from '../../../Interfaces';
 import eventBus from "../../../EventBus";
 import { TYPES } from '../../../Types';
 import Preloader from '../../Components/Preloader';

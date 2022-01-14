@@ -71,7 +71,7 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 							</a>
 						</b>
 					</PanelRow>
-				{ ( loadingBalance === false || balance ) &&
+				{ ( !loadingBalance && balance ) &&
 					<PanelRow>
 						<BalanceList balance={ balance } />
 					</PanelRow>

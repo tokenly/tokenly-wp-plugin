@@ -33,3 +33,16 @@ body.login {
 	border-radius: 50%;
 }
 
+#adminmenu {
+	a div.with-icon {
+		display: flex;
+		align-items: center;
+		.dashicons {
+			display: flex;
+			align-items: center;
+			font-size: 14px;
+			margin-left: 4px;
+		}
+	}
+}
+

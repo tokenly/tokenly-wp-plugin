@@ -46,7 +46,8 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 		window.location = `${adminPageUrl}${namespace}-token-vendor`;
 	}
 
-	function onSave() {
+	function onSaveSubmit( event: any ) {
+		event.preventDefault();
 		setSaving( true );
 		promiseRepository.update( id, editData ).then( ( result: any ) => {
 			setSaving( false );
@@ -111,37 +112,38 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 	
 	return (
 		<Page title="Promise Editor">
-			<Panel>
-				<PanelHeader>
-					<Preloader loading={ loading } >
-						<PromiseLink id={ id } />
-					</Preloader>
-				</PanelHeader>
-			{ ( !loading && promise ) &&
-				<PanelBody>
-					<PanelRow>
-						<PromiseEditForm
-							onChange={ onEditDataChange }
-							editData={ editData}
-						/>
-					</PanelRow>
-				</PanelBody>
-			}
-			</Panel>
-			<Panel>
-				<PanelBody>
-					<PanelRow>
-						<ResourceEditActions
-							name="Promise"
-							saving={ saving }
-							deleting={ deleting }
-							onSave={ onSave }
-							onDelete={ onDelete }
-							onCancel={ onCancel }
-						/>
-					</PanelRow>
-				</PanelBody>
-			</Panel>
+			<form onSubmit={ onSaveSubmit } >
+				<Panel>
+					<PanelHeader>
+						<Preloader loading={ loading } >
+							<PromiseLink id={ id } />
+						</Preloader>
+					</PanelHeader>
+				{ ( !loading && promise ) &&
+					<PanelBody>
+						<PanelRow>
+							<PromiseEditForm
+								onChange={ onEditDataChange }
+								editData={ editData }
+							/>
+						</PanelRow>
+					</PanelBody>
+				}
+				</Panel>
+				<Panel>
+					<PanelBody>
+						<PanelRow>
+							<ResourceEditActions
+								name="Promise"
+								saving={ saving }
+								deleting={ deleting }
+								onDelete={ onDelete }
+								onCancel={ onCancel }
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+			</form>
 		</Page>
 	);
 }

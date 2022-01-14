@@ -104,7 +104,7 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 	}
 
 	return (
-		<div style={ { height: '40px' } }>
+		<div style={ { height: '50px' } }>
 			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.user } />
 			<ComboboxControl
 				label={ props.label }

@@ -75,18 +75,33 @@ export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 		);
 	} );
 	return ( 
-		<div style={ { display: 'inline-block' } }>
+		<Flex
+			//@ts-ignore
+			direction="column"
+			style={ { display: 'inline-block' } }
+		>
 			<label>{ props.label }
-				<div style={ { opacity: 0.8 } }>{ props.help }</div>
-				<ul>{ listItems }</ul>
+				<Flex
+					//@ts-ignore
+					direction="column"
+				>
+					<div style={ { opacity: 0.8 } }>{ props.help }</div>
+					<Flex
+						//@ts-ignore
+						direction="column"
+					>
+						{ listItems }
+					</Flex>
+				</Flex>
 			</label>
 			<Button
 				isSecondary
 				isLarge
 				onClick={ onAdd }
+				style={ { marginTop: '18px' } }
 			>
 				Add Attribute
 			</Button>
-		</div>
+		</Flex>
 	);
 }

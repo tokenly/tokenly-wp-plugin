@@ -50,8 +50,9 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 		const newStoreData = Object.assign( {}, storeData );
 		newStoreData.type = addresses[ newStoreData.address ].type;	
 		setStoring( true );
-		sourceRepository.store( storeData ).then( ( result: any ) => {
+		sourceRepository.store( newStoreData ).then( ( result: any ) => {
 			setStoring( false );
+			goBack();
 		} );
 	}
 	
@@ -61,10 +62,6 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 
 	function onCancel() {
 		goBack();
-	}
-
-	function isStoreDisabled() {
-		return false;
 	}
 
 	useEffect( () => {
@@ -109,7 +106,6 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 								name="Source"
 								storing={ storing }
 								onCancel={ onCancel }
-								disableStore={ isStoreDisabled() }
 							/>
 						</PanelRow>
 					</PanelBody>

@@ -164,8 +164,22 @@ class AdminRouter extends Router implements AdminRouterInterface {
 				'subroutes'   => array(
 					'dashboard' => array(
 						'page_title' => 'Dashboard',
-						'menu_title' => 'Dashboard',
+						'menu_title' => '
+							<div class="with-icon">
+								<span>Dashboard</span>
+								<span class="dashicons dashicons-external"></span>
+							</div>',
 						'menu_slug'  => 'dashboard',
+						'capability' => 'use_tokenpass',
+					),
+					'inventory' => array(
+						'page_title' => 'Inventory',
+						'menu_title' => '
+							<div class="with-icon">
+								<span>Inventory</span>
+								<span class="dashicons dashicons-external"></span>
+							</div>',
+						'menu_slug'  => 'inventory',
 						'capability' => 'use_tokenpass',
 					),
 					'connection' => array(
@@ -174,12 +188,6 @@ class AdminRouter extends Router implements AdminRouterInterface {
 						'menu_slug'  => 'connection',
 						'callable'   => array( $this->controllers['connection'], 'show' ),
 						'capability' => 'read',
-					),
-					'inventory' => array(
-						'page_title' => 'Inventory',
-						'menu_title' => 'Inventory',
-						'menu_slug'  => 'inventory',
-						'capability' => 'use_tokenpass',
 					),
 					'credit_vendor' => array(
 						'page_title'  => 'Credit Vendor',

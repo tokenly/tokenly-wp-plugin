@@ -73,14 +73,6 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 			setStoreData( newStoreData );
 		} );
 	}, [] );
-
-	function isStoreDisabled() {
-		return (
-			!storeData.source_id ||
-			!storeData.asset ||
-			!storeData.destination
-		);
-	}
 	
 	return (
 		<Page title="Promise Creator">
@@ -110,7 +102,6 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 							loading={ ( loadingSources ) }
 							onStore={ onStore }
 							onCancel={ onCancel }
-							disableStore={ isStoreDisabled() }
 						/>
 					</PanelRow>
 				</PanelBody>

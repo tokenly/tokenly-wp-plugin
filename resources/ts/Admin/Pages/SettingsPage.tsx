@@ -12,6 +12,7 @@ import IntegrationSettingsRepositoryInterface from '../../Interfaces/Repositorie
 import TcaSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
 import OauthSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
 import { TYPES } from '../../Types';
+import eventBus from "../../EventBus";
 
 import { 
 	Panel,
@@ -60,6 +61,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	function onIntegrationSettingsSave() {
 		setSavingIntegrationSettings( true );
 		integrationSettingsRepository.update( integrationSettings ).then( ( result: any ) => {
+			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingIntegrationSettings( false );
 			window.location.reload();
 		} ).catch( ( error: any ) => {
@@ -74,6 +76,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	function onTcaSettingsSave() {
 		setSavingTcaSettings( true );
 		tcaSettingsRepository.update( tcaSettings ).then( ( result: any ) => {
+			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingTcaSettings( false );
 		} ).catch( ( error: any ) => {
 			console.log( error );
@@ -87,6 +90,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	function onOauthSettingsSave() {
 		setSavingOauthSettings( true );
 		oauthSettingsRepository.update( oauthSettings ).then( ( result: any ) => {
+			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingOauthSettings( false );
 		} ).catch( ( error: any ) => {
 			console.log( error );

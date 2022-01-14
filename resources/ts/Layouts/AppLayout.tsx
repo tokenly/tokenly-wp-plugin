@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import ConfirmModal from '../Admin/Components/ConfirmModal';
 import TcaRuleEditor from './../Admin/Components/TcaRuleEditor';
+import ConfirmModal from '../Admin/Components/App/ConfirmModal';
+import Snackbar from './../Admin/Components/App/Snackbar';
 import { ConfirmModalData } from '../Interfaces';
 import eventBus from "../EventBus";
 
@@ -17,6 +18,10 @@ interface AppLayoutProps {
 export default function AppLayout( props: AppLayoutProps ) {
 	const [ confirmModalData, setConfirmModalData ] = useState<any>( null );
 	const [ confirmModalShow, setConfirmModalShow ] = useState<boolean>( false );
+
+	const [ snackbarContent, setSnackbarContent ] = useState<string>( '' );
+	const [ snackbarShow, setSnackbarShow ] = useState<boolean>( false );
+	const [ snackbarTimeout, setSnackbarTimeout ] = useState<any>( null );
 
 	const [ tcaRules, setTcaRules ] = useState<any>( Object.assign( [], props?.pageData?.tca_rules ) );
 	const [ postData, setPostData ] = useState<any>( {
@@ -52,14 +57,28 @@ export default function AppLayout( props: AppLayoutProps ) {
 		onPostDataUpdated( {
 			tca_rules: newTcaRules,
 		} );
-		
+	}
+
+	function onSnackbarShow( newSnackbarContent: string ) {
+		setSnackbarContent( newSnackbarContent );
+		setSnackbarShow( true );
+		snackBarDebounce();
+	}
+
+	function snackBarDebounce() {
+		clearTimeout( snackbarTimeout );
+		setSnackbarTimeout( setTimeout(() => {
+			setSnackbarShow( false );
+		}, 3000) );
 	}
 
 	useEffect( () => {
 		eventBus.on( 'confirmModalShow', onConfirmModalShow );
 		eventBus.on( 'postDataUpdated', onPostDataUpdated );
+		eventBus.on( 'snackbarShow', onSnackbarShow );
 		return () => {
 			eventBus.remove( 'confirmModalShow', onConfirmModalShow );
+			eventBus.remove( 'snackbarShow', onSnackbarShow );
 		}
 	}, [] );
 
@@ -81,6 +100,7 @@ export default function AppLayout( props: AppLayoutProps ) {
 					onChange={ onTcaUpdate }
 				/>
 			}
+			<Snackbar show={ snackbarShow }>{ snackbarContent }</Snackbar>
 			<input type="hidden" name="tokenly_data" value={ JSON.stringify( postData as any ) } />
 		</Fragment>
 	);

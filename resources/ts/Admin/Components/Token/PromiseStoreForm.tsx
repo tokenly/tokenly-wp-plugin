@@ -119,24 +119,31 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 				style={ { maxWidth: '320px' } }
 			>
 				<SourceSelectField
+					label="Source *"
 					onChange={ onSourceFieldChange }
 					source={ props.storeData?.source_id }
 					sources={ props.sources }
 					loading={ props.loadingSources }
+					inputProps={ {
+						required: true,
+					} }
 				/>
 				<div>
 					<label>
-						<div>Destination</div>
-						<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username. The user who will receive the asset.</div>
+						<div>Destination *</div>
+						<div style={ { opacity: 0.8 } }>WordPress username. The user who will receive the asset.</div>
 						<UserSearchField
 							user={ props.storeData.destination }
 							onChange={ onDestinationFieldChange }
+							inputProps={ {
+								required: true,
+							} }
 						/>
 					</label>
 				</div>
 				<div>
 					<CheckboxControl
-						label="Pseudo Promise"
+						label="Pseudo Promise *"
 						help="Pseudo promises allow arbitrary asset names"
 						checked={ props.storeData.pseudo }
 						onChange={ onPseudoFieldChange }
@@ -145,8 +152,8 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 			{ props.storeData.source_id &&
 				<div>
 					<label>
-						<div>Asset</div>
-						<div style={ { opacity: 0.8, marginBottom: '12px' } }>
+						<div>Asset *</div>
+						<div style={ { opacity: 0.8 } }>
 							<div>Name of the asset that will be promised.</div>
 							<div>Note: Only the whitelisted assets are searchable.</div>
 						</div>

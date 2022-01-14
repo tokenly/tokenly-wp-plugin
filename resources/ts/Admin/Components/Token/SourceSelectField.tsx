@@ -11,6 +11,8 @@ interface SourceSelectFieldProps {
 	sources: any;
 	loading: boolean;
 	onChange: any;
+	label?: string;
+	inputProps?: any;
 }
 
 export default function SourceSelectField( props: SourceSelectFieldProps ) {
@@ -34,35 +36,30 @@ export default function SourceSelectField( props: SourceSelectFieldProps ) {
 
 	const sourceOptions = getSourceOptions();
 	return (
-		<Flex> 
-			<label>
-				<div style={ { marginBottom: '8px' } } >Source</div>
+			<Flex
+				//@ts-ignore
+				direction="column"
+			>
 				<Flex
-					//@ts-ignore
-					direction="column"
+					style={ { maxWidth: "320px" } }
+					justify="flex-start"
+					align="center"
+					gap={ 4 }
 				>
-					<Flex
-						style={ { maxWidth: "320px" } }
-						justify="flex-start"
-						align="center"
-						gap={ 4 }
-					>
-						<SelectControl
-							label=""
-							disabled={ props.loading || sourceOptions.length === 1 }
-							value={ props.source }
-							style={ { width: '100%' } }
-							options={ sourceOptions }
-							required
-							onChange={ props.onChange }
-						/>
-						{ props.loading &&
-							<Spinner />
-						}
-					</Flex>
+					<SelectControl
+						label={ props?.label ?? 'Source' }
+						disabled={ props.loading || sourceOptions.length === 1 }
+						value={ props.source }
+						style={ { width: '100%' } }
+						options={ sourceOptions }
+						onChange={ props.onChange }
+						{ ...props.inputProps }
+					/>
+					{ props.loading &&
+						<Spinner />
+					}
 				</Flex>
-			</label>
-		</Flex>
+			</Flex>
 	);
 }
  

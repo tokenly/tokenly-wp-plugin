@@ -45,10 +45,6 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
 	}
 
-	function isStoreDisabled() {
-		return false;
-	}
-
 	function onStoreSubmit( event: any ) {
 		event.preventDefault();
 		setStoring( true );
@@ -116,7 +112,6 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 								name="Transaction"
 								storing={ storing }
 								onCancel={ onCancel }
-								disableStore={ isStoreDisabled() }
 							/>
 						</PanelRow>
 					</PanelBody>

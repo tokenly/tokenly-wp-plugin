@@ -29,6 +29,13 @@ class SettingsController implements SettingsControllerInterface {
 		);
 	}
 
+	protected $names = array(
+		'integration'     => 'Integration',
+		'oauth'           => 'Authentication',
+		'tca'             => 'TCA',
+		'token_whitelist' => 'Token Whitelist',
+	);
+
 	public function show_integration( \WP_REST_Request $request ) {
 		return $this->show( 'integration', $request );
 	}
@@ -68,8 +75,9 @@ class SettingsController implements SettingsControllerInterface {
 	protected function update( string $type, \WP_REST_Request $request ) {
 		$params = $request->get_params();
 		$this->settings[ $type ]->update( $params );
+		$name = $this->names[ $type ];
 		return array(
-			'status' => 'Settings were updated successfully.',
+			'status' => "${name} settings were updated successfully!",
 		);
 	}
 }
