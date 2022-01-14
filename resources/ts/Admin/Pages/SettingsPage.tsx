@@ -1,7 +1,7 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './Page';
-import { Component } from 'react';
 import SavePanel from '../Components/SavePanel';
 import IntegrationSettingsForm from '../Components/Settings/IntegrationSettingsForm';
 import IntegrationSettingsHelp from '../Components/Settings/IntegrationSettingsHelp';
@@ -14,11 +14,9 @@ import OauthSettingsRepositoryInterface from '../../Interfaces/Repositories/Sett
 import { TYPES } from '../../Types';
 
 import { 
-	TextControl,
 	Panel,
 	PanelBody,
 	PanelRow,
-	Flex,
 } from '@wordpress/components';
 
 interface SettingsPageData {
@@ -33,176 +31,133 @@ interface SettingsPageProps {
 	pageData: SettingsPageData; 
 }
 
-interface SettingsPageState {
-	integrationSettings: IntegrationSettings;
-	tcaSettings: TcaSettings;
-	oauthSettings: OauthSettings;
-	savingIntegrationSettings: boolean;
-	savingTcaSettings: boolean;
-	savingOauthSettings: boolean;
-}
-
-export default class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
-	@resolve( TYPES.Variables.brand )
-	brand: string;
-	@resolve( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface )
-	integrationSettingsRepository: IntegrationSettingsRepositoryInterface;
-	@resolve( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
-	tcaSettingsRepository: TcaSettingsRepositoryInterface;
-	@resolve( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface )
-	oauthSettingsRepository: OauthSettingsRepositoryInterface;
+export default function SettingsPage( props: SettingsPageProps ) {
+	const brand: string = useInjection( TYPES.Variables.brand );
+	const integrationSettingsRepository: IntegrationSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface );
+	const tcaSettingsRepository: TcaSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface );
+	const oauthSettingsRepository: OauthSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface );
 	
-	state: SettingsPageState = {
-		integrationSettings: {
-			client_id: '',
-			client_secret: '',
-		},
-		tcaSettings: {
-			post_types: {},
-			taxonomies: {},
-			filter_menu_items: null,
-			filter_post_results: null,
-		},
-		oauthSettings: {
-			use_single_sign_on: null,
-			success_url: '',
-			allow_no_email: null,
-			allow_unconfirmed_email: null,
-		},
-		savingIntegrationSettings: false,
-		savingTcaSettings: false,
-		savingOauthSettings: false,
-	}
-	constructor( props: SettingsPageProps ) {
-		super( props );
-		this.onIntegrationSettingsSave = this.onIntegrationSettingsSave.bind( this );
-		this.onIntegrationSettingsChange = this.onIntegrationSettingsChange.bind( this );
-		this.onTcaSettingsSave = this.onTcaSettingsSave.bind( this );
-		this.onTcaSettingsChange = this.onTcaSettingsChange.bind( this );
-		this.onOauthSettingsSave = this.onOauthSettingsSave.bind( this );
-		this.onOauthSettingsChange = this.onOauthSettingsChange.bind( this );
-		this.state.integrationSettings = Object.assign( this.state.integrationSettings, this.props.pageData.integration_settings );
-		this.state.tcaSettings = Object.assign( {}, this.props.pageData?.tca_settings );
-		this.state.tcaSettings.post_types = Object.assign( {}, this.state.tcaSettings.post_types );
-		this.state.tcaSettings.taxonomies = Object.assign( {}, this.state.tcaSettings.taxonomies );
-		this.state.oauthSettings = Object.assign( this.state.oauthSettings, this.props.pageData.oauth_settings );
-	}
+	const [ integrationSettings, setIntegrationSettings ] = useState<any>( Object.assign( {
+		client_id: '',
+		client_secret: '',
+	}, props.pageData.integration_settings ) );
+	const [ tcaSettings, setTcaSettings ] = useState<any>( Object.assign( {
+		post_types: {},
+		taxonomies: {},
+		filter_menu_items: null,
+		filter_post_results: null,
+	}, props.pageData.tca_settings ) );
+	const [ oauthSettings, setOauthSettings ] = useState<any>( Object.assign( {
+		use_single_sign_on: null,
+		success_url: '',
+		allow_no_email: null,
+		allow_unconfirmed_email: null,
+	}, props.pageData.oauth_settings ) );
+	const [ savingIntegrationSettings, setSavingIntegrationSettings ] = useState<boolean>( false );
+	const [ savingTcaSettings, setSavingTcaSettings ] = useState<boolean>( false );
+	const [ savingOauthSettings, setSavingOauthSettings ] = useState<boolean>( false );
 	
-	setClientId( value: string ) {
-		let state = Object.assign( {}, this.state );
-		state.integrationSettings.client_id = value;
-		this.setState( state );
-	}
-	
-	setClientSecret( value: string ) {
-		let state = Object.assign( {}, this.state );
-		state.integrationSettings.client_secret = value;
-		this.setState( state );
-	}
-	
-	onIntegrationSettingsSave() {
-		this.setState( { savingIntegrationSettings: true } );
-		this.integrationSettingsRepository.update( this.state.integrationSettings ).then( ( result: any ) => {
-			this.setState( { savingIntegrationSettings: false } );
+	function onIntegrationSettingsSave() {
+		setSavingIntegrationSettings( true );
+		integrationSettingsRepository.update( integrationSettings ).then( ( result: any ) => {
+			setSavingIntegrationSettings( false );
 			window.location.reload();
 		} ).catch( ( error: any ) => {
 			console.log( error );
-		})
+		} );
 	}
 
-	onIntegrationSettingsChange( newSettings: any ) {
-		this.setState( { integrationSettings: newSettings } );
+	function onIntegrationSettingsChange( newSettings: any ) {
+	setIntegrationSettings( newSettings );
 	}
 
-	onTcaSettingsSave() {
-		this.setState( { savingTcaSettings: true } );
-		this.tcaSettingsRepository.update( this.state.tcaSettings ).then( ( result: any ) => {
-			this.setState( { savingTcaSettings: false } );
+	function onTcaSettingsSave() {
+		setSavingTcaSettings( true );
+		tcaSettingsRepository.update( tcaSettings ).then( ( result: any ) => {
+			setSavingTcaSettings( false );
 		} ).catch( ( error: any ) => {
 			console.log( error );
-		})
+		} );
 	}
 
-	onTcaSettingsChange( newSettings: any ) {
-		this.setState( { tcaSettings: newSettings } )
+	function onTcaSettingsChange( newSettings: any ) {
+		setTcaSettings( newSettings );
 	}
 
-	onOauthSettingsSave() {
-		this.setState( { savingOauthSettings: true } );
-		this.oauthSettingsRepository.update( this.state.oauthSettings ).then( ( result: any ) => {
-			this.setState( { savingOauthSettings: false } );
+	function onOauthSettingsSave() {
+		setSavingOauthSettings( true );
+		oauthSettingsRepository.update( oauthSettings ).then( ( result: any ) => {
+			setSavingOauthSettings( false );
 		} ).catch( ( error: any ) => {
 			console.log( error );
-		})
+		} );
 	}
 
-	onOauthSettingsChange( newSettings: any ) {
-		this.setState( { oauthSettings: newSettings } )
+	function onOauthSettingsChange( newSettings: any ) {
+		setOauthSettings( newSettings );
 	}
 
-	render() {
-		return (
-			<Page title={ `${this.brand} Settings` }>
-				<Panel>
-					<PanelBody title="Integration">
-						<PanelRow>
-							<IntegrationSettingsHelp
-								appHomepageUrl={ this.props.pageData?.integration_data?.app_homepage_url }
-								clientAuthUrl={ this.props.pageData?.integration_data?.client_auth_url }
-							/>
-						</PanelRow>
-						<PanelRow>
-							<IntegrationSettingsForm
-								status={ this.props.pageData?.integration_data?.status ?? false }
-								settings={ this.state.integrationSettings }
-								onChange={ this.onIntegrationSettingsChange }
-							/>
-						</PanelRow>
-						<PanelRow>
-							<SavePanel
-								label="Save Integration Settings"
-								saving={ this.state.savingIntegrationSettings }
-								onClick={ this.onIntegrationSettingsSave }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelBody title="Token Controlled Access (TCA)">
-						<PanelRow>
-							<TcaSettingsForm
-								settings={ this.state.tcaSettings }
-								data={ this.props.pageData.tca_data }
-								onChange={ this.onTcaSettingsChange }
-							/>
-						</PanelRow>
-						<PanelRow>
-							<SavePanel
-								label="Save TCA Settings"
-								saving={ this.state.savingTcaSettings }
-								onClick={ this.onTcaSettingsSave }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelBody title="Authorization (OAuth)">
-						<PanelRow>
-							<OauthSettingsForm
-								settings={ this.state.oauthSettings }
-								onChange={ this.onOauthSettingsChange }
-							/>
-						</PanelRow>
-						<PanelRow>
-							<SavePanel
-								label="Save OAuth Settings"
-								saving={ this.state.savingOauthSettings }
-								onClick={ this.onOauthSettingsSave }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title={ `${brand} Settings` }>
+			<Panel>
+				<PanelBody title="Integration">
+					<PanelRow>
+						<IntegrationSettingsHelp
+							appHomepageUrl={ props.pageData?.integration_data?.app_homepage_url }
+							clientAuthUrl={ props.pageData?.integration_data?.client_auth_url }
+						/>
+					</PanelRow>
+					<PanelRow>
+						<IntegrationSettingsForm
+							status={ props.pageData?.integration_data?.status ?? false }
+							settings={ integrationSettings }
+							onChange={ onIntegrationSettingsChange }
+						/>
+					</PanelRow>
+					<PanelRow>
+						<SavePanel
+							label="Save Integration Settings"
+							saving={ savingIntegrationSettings }
+							onClick={ onIntegrationSettingsSave }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody title="Token Controlled Access (TCA)">
+					<PanelRow>
+						<TcaSettingsForm
+							settings={ tcaSettings }
+							data={ props.pageData.tca_data }
+							onChange={ onTcaSettingsChange }
+						/>
+					</PanelRow>
+					<PanelRow>
+						<SavePanel
+							label="Save TCA Settings"
+							saving={ savingTcaSettings }
+							onClick={ onTcaSettingsSave }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody title="Authorization (OAuth)">
+					<PanelRow>
+						<OauthSettingsForm
+							settings={ oauthSettings }
+							onChange={ onOauthSettingsChange }
+						/>
+					</PanelRow>
+					<PanelRow>
+						<SavePanel
+							label="Save OAuth Settings"
+							saving={ savingOauthSettings }
+							onClick={ onOauthSettingsSave }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 import StatusIndicator from '../Components/StatusIndicator';
 
 interface ConnectionInfoProps {

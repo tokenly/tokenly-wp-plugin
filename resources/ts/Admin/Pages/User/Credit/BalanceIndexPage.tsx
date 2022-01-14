@@ -1,10 +1,9 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../../Page';
-import { Component } from 'react';
 import Preloader from '../../../Components/Preloader';
 import BalanceList from '../../../Components/Credit/BalanceList';
-import UserInfo from '../../../Components/UserInfo';
 import UserRepositoryInterface from '../../../../Interfaces/Repositories/UserRepositoryInterface';
 import GroupRepositoryInterface from '../../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import { TYPES } from '../../../../Types';
@@ -24,100 +23,71 @@ interface BalanceIndexPageProps {
 	pageData: BalanceIndexPageData;
 }
 
-interface BalanceIndexPageState {
-	loading: boolean;
-	id: string;
-	user: any;
-	balance: any;
-	groups: any;
-}
+export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 
-export default class BalanceIndexPage extends Component<BalanceIndexPageProps, BalanceIndexPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.UserRepositoryInterface )
-	userRepository: UserRepositoryInterface;
-	@resolve( TYPES.Repositories.Credit.GroupRepositoryInterface )
-	groupRepository: GroupRepositoryInterface;
+	const urlParams = new URLSearchParams( window.location.search );
 
-	state: BalanceIndexPageState = {
-		loading: false,
-		id: null,
-		user: null,
-		balance: null,
-		groups: null,
-	}
-	constructor( props: BalanceIndexPageProps ) {
-		super( props );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.id = urlParams.get( 'id' );
-	}
+	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
+	const [ loading, setLoading ] = useState<boolean>( false );
+	const [ user, setUser ] = useState<any>( null );
+	const [ balance, setBalance ] = useState<any>( null );
 
-	componentWillMount() {
-		this.setState( {
-			loading: true,
-		} );
-		this.userRepository.creditBalanceIndex( this.state.id ).then( ( balances: any ) => {
-			this.setState( {
-				balance: balances,
-			} );
-			return balances;
+	useEffect( () => {
+		setLoading( true );
+		userRepository.creditBalanceIndex( id ).then( ( balancesFound: any ) => {
+			setBalance( balancesFound );
+			return balancesFound;
 		} )
-		.then( ( balances: any ) => {
-			this.groupRepository.index( this.state.id ).then( ( groups: any ) => {
-				balances = balances.map( ( balance: any ) => {
-					for ( let i = 0; i < groups.length; ++i ) {
-						const group = groups[ i ];
-						if ( balance.group_id === group.uuid ) {
-							balance.group = group;
+		.then( ( balancesFound: any ) => {
+			groupRepository.index( id ).then( ( groupsFound: any ) => {
+				balancesFound = balancesFound.map( ( balanceFound: any ) => {
+					for ( let i = 0; i < groupsFound.length; ++i ) {
+						const groupFound = groupsFound[ i ];
+						if ( balanceFound.group_id === groupFound.uuid ) {
+							balanceFound.group = groupFound;
 							break;
 						}
 					}
-					return balance;
+					return balanceFound;
 				} );
-				this.setState( {
-					balance: balances,
-				} );
+				setBalance( balancesFound );
 			} );
 		} )
 		.then( () => {
-			this.userRepository.show( this.state.id, {
+			userRepository.show( id, {
 				with: [ 'oauth_user' ],
-			} ).then( ( user: any ) => {
-				this.setState( {
-					loading: false,
-					user: user,
-				} );
+			} ).then( ( userFound: any ) => {
+				setLoading( false );
+				setUser( userFound );
 			} );
 		} );
-	}
+	}, [] );
 
-	render() {
-		return (
-			<Page title="User Credit Balance Listing">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loading }>Balance Listing</Preloader>
-					</PanelHeader>
-					<PanelBody>
-						<PanelRow>
-							<b>
-								<span>User: </span>
-								<a href={ `/${this.namespace}/user/${this.state.id}` }>
-									{ this.state?.user?.name ?? this.state.id }
-								</a>
-							</b>
-						</PanelRow>
-					{ ( this.state.loading === false || this.state.balance ) &&
-						<PanelRow>
-							<BalanceList balance={ this.state.balance } />
-						</PanelRow>
-					}
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="User Credit Balance Listing">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loading }>Balance Listing</Preloader>
+				</PanelHeader>
+				<PanelBody>
+					<PanelRow>
+						<b>
+							<span>User: </span>
+							<a href={ `/${namespace}/user/${id}` }>
+								{ user?.name ?? id }
+							</a>
+						</b>
+					</PanelRow>
+				{ ( loading === false || balance ) &&
+					<PanelRow>
+						<BalanceList balance={ balance } />
+					</PanelRow>
+				}
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

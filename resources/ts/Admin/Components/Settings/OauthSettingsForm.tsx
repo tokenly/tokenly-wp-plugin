@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 import { OauthSettings } from '../../../Interfaces';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';

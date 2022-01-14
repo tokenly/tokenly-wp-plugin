@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import { Component } from 'react';
-import MetaRepositoryInterface from '../../../Interfaces/Repositories/Token/MetaRepositoryInterface';
+import { useState } from 'react';
 import { TokenMetaData } from '../../../Interfaces';
-import { TYPES } from '../../../Types';
 import MetaEditForm from '../../Components/Token/MetaEditForm';
 import eventBus from './../../../EventBus';
 
@@ -25,17 +21,7 @@ interface MetaEditPageProps {
 	pageData: MetaEditPageData;
 }
 
-interface MetaEditPageState {
-	id: number;
-	editData: any;
-}
-
 export default function MetaEditPage( props: MetaEditPageProps ) {
-	const metaRepository: MetaRepositoryInterface = useInjection( TYPES.Repositories.Token.MetaRepositoryInterface );
-
-	const urlParams = new URLSearchParams(window.location.search);
-	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
-
 	const asset = props.pageData.meta?.asset ?? '';
 	let extra = Object.assign( [], props.pageData.meta?.extra );
 	if ( extra && Array.isArray( extra ) ) {

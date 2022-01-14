@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
 import Page from './../Page';
-import { Component } from 'react';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
 import TransactionStoreForm from '../../Components/Credit/TransactionStoreForm';
@@ -26,7 +25,6 @@ interface TransactionStorePageData {
 
 interface TransactionStorePageProps {
 	pageData: TransactionStorePageData;
-	saving: boolean;
 }
 
 export default function TransactionStorePage( props: TransactionStorePageProps ) {
@@ -38,7 +36,10 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 	const [ storing, setStoring ] = useState<boolean>( false );
 	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
 	const [ groups, setGroups ] = useState<any>( null );
-	const [ storeData, setStoreData ] = useState<any>( {} );
+	const [ storeData, setStoreData ] = useState<any>( {
+		quantity: 0,
+		type: 'credit',
+	} );
 
 	function goBack() {
 		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
@@ -67,14 +68,8 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 	useEffect( () => {
 		setLoadingGroups( true );
 		groupRepository.index().then( ( groupsFound: any ) => {
-			const storeData = {
-				quantity: 0,
-				pseudo: false,
-				type: 'credit',
-			}
 			setLoadingGroups( false );
 			setGroups( groupsFound );
-			setStoreData( storeData );
 		} )
 		.then( () => {
 			const urlParams = new URLSearchParams( window.location.search );

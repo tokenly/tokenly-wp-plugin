@@ -1,8 +1,8 @@
-import { resolve } from 'inversify-react';
-import { TYPES } from '../../../Types';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '../../../Types';
 import Page from './../Page';
-import { Component } from 'react';
 import PromiseLink from '../../Components/Token/PromiseLink';
 import PromiseEditForm from '../../Components/Token/PromiseEditForm';
 import Preloader from '../../Components/Preloader';
@@ -21,159 +21,127 @@ import {
 declare const window: any;
 
 interface PromiseEditPageData {
-	promise: PromiseData;
+	//
 }
 
 interface PromiseEditPageProps {
 	pageData: PromiseEditPageData;
 }
 
-interface PromiseEditPageState {
-	saving: boolean;
-	deleting: boolean;
-	loading: boolean;
-	promise: any;
-	id: number;
-	editData: any;
-}
-
-export default class PromiseEditPage extends Component<PromiseEditPageProps, PromiseEditPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
-	promiseRepository: PromiseRepositoryInterface;
+export default function PromiseEditPage( props: PromiseEditPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const promiseRepository: PromiseRepositoryInterface = useInjection( TYPES.Repositories.Token.PromiseRepositoryInterface );
 	
-	state: PromiseEditPageState = {
-		saving: false,
-		deleting: false,
-		loading: false,
-		promise: null,
-		id: null,
-		editData: {},
+	const urlParams = new URLSearchParams( window.location.search );
+
+	const [ saving, setSaving ] = useState<boolean>( false );
+	const [ deleting, setDeleting ] = useState<boolean>( false );
+	const [ loading, setLoading ] = useState<boolean>( false );
+	const [ promise, setPromise ] = useState<any>( null );
+	const [ id, setId ] = useState<number>( parseInt( urlParams.get( 'promise' ) ) );
+	const [ editData, setEditData ] = useState<any>( {} );
+
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-token-vendor`;
 	}
 
-	constructor( props: PromiseEditPageProps ) {
-		super( props );
-		this.onSave = this.onSave.bind( this );
-		this.onDelete = this.onDelete.bind( this );
-		this.deletePromise = this.deletePromise.bind( this );
-		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
-		this.onEditDataChange = this.onEditDataChange.bind( this );
-		this.onCancel = this.onCancel.bind( this );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.id = parseInt( urlParams.get( 'promise' ) );
-	}
-
-	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-token-vendor`;
-	}
-
-	onSave() {
-		this.setState( { saving: true } );
-		this.promiseRepository.update( this.state.id, this.state.editData ).then( ( result: any ) => {
-			this.setState( { saving: false } );
-			this.return();
+	function onSave() {
+		setSaving( true );
+		promiseRepository.update( id, editData ).then( ( result: any ) => {
+			setSaving( false );
+			goBack();
 		});
 	}
 
-	onDelete() {
+	function onDelete() {
 		eventBus.dispatch( 'confirmModalShow', {
 			key: 'promiseDelete',
 			title: 'Deleting Promise',
 			subtitle: 'Are you sure you want to delete the promise?',
-		});
+		} );
 	}
 
-	deletePromise() {
-		this.setState( { deleting: true } );
-		this.promiseRepository.destroy( this.state.id ).then( ( result: any ) => {
-			this.setState( { deleting: false } );
-			this.return();
-		});
+	function deletePromise() {
+		setDeleting( true );
+		promiseRepository.destroy( id ).then( ( result: any ) => {
+			setDeleting( false );
+			goBack();
+		} );
 	}
 
-	onConfirmModalChoice( payload: any ) {
+	function onConfirmModalChoice( payload: any ) {
 		switch( payload.key ) {
 			case 'promiseDelete':
 				if ( payload.choice == 'accept' ){
-					this.deletePromise();
+					deletePromise();
 				}
 				break;
 		}
 	}
 
-	componentDidMount() {
-		eventBus.on( 'confirmModalChoice', this.onConfirmModalChoice );
+	function onCancel() {
+		goBack();
 	}
 	
-	componentWillUnmount() {
-		eventBus.remove( 'confirmModalChoice', this.onConfirmModalChoice );
+	function onEditDataChange( newData: any ) {
+		setEditData( newData );
 	}
 
-	onCancel() {
-		this.return();
-	}
-	
-	componentWillMount() {
-		this.setState( { loading: true } );
-		this.promiseRepository.show( this.state.id ).then( ( promise: any ) => {
-			const editData = {
-				quantity: promise?.quantity?.value_sat,
+	useEffect( () => {
+		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
+		setLoading( true );
+		promiseRepository.show( id ).then( ( promiseFound: any ) => {
+			const newEditData = {
+				quantity: promiseFound?.quantity?.value_sat,
 				expiration: null,
 				txid: null,
 				fingerprint: null,
-				ref: promise.ref,
-				note: promise.note,
+				ref: promiseFound?.ref,
+				note: promiseFound?.note,
 			} as any;
-			this.setState( {
-				loading: false,
-				promise: promise,
-				editData: editData,
-			} );
+			setLoading( false );
+			setPromise( promiseFound );
+			setEditData( newEditData );
 		} );
-	}
-
-	onEditDataChange( newData: any ) {
-		this.setState( { editData: newData } );
-	}
+		return () => {
+			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
+		}
+	}, [] );
 	
-	render() {
-		return (
-			<Page title="Promise Editor">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loading } >
-							<PromiseLink id={ this.state.id } />
-						</Preloader>
-					</PanelHeader>
-				{ !this.state.loading &&
-					<PanelBody>
-						<PanelRow>
-							<PromiseEditForm
-								onChange={ this.onEditDataChange }
-								editData={this.state?.editData}
-							/>
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ResourceEditActions
-								name="Promise"
-								saving={ this.state.saving }
-								deleting={ this.state.deleting }
-								onSave={ this.onSave }
-								onDelete={ this.onDelete }
-								onCancel={ this.onCancel }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Promise Editor">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loading } >
+						<PromiseLink id={ id } />
+					</Preloader>
+				</PanelHeader>
+			{ ( !loading && promise ) &&
+				<PanelBody>
+					<PanelRow>
+						<PromiseEditForm
+							onChange={ onEditDataChange }
+							editData={ editData}
+						/>
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ResourceEditActions
+							name="Promise"
+							saving={ saving }
+							deleting={ deleting }
+							onSave={ onSave }
+							onDelete={ onDelete }
+							onCancel={ onCancel }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

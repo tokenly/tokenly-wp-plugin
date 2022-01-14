@@ -2,12 +2,10 @@ import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
 import Page from './../Page';
-import { Component } from 'react';
 import { TYPES } from '../../../Types';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupInfo from '../../Components/Credit/GroupInfo';
 import Preloader from '../../Components/Preloader';
-import GroupLink from '../../Components/Credit/GroupLink';
 
 import { 
 	Button,

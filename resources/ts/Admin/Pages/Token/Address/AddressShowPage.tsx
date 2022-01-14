@@ -1,20 +1,16 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import { Component } from 'react';
 import { TYPES } from '../../../../Types';
 import AddressRepositoryInterface from '../../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import Page from './../../Page';
 import Preloader from '../../../Components/Preloader';
-import SourceLink from '../../../Components/Token/SourceLink';
 import AddressInfo from '../../../Components/Token/AddressInfo';
 
 import { 
-	Button,
 	Panel,
 	PanelBody,
 	PanelRow,
-	Flex,
 	PanelHeader,
 } from '@wordpress/components';
 
@@ -27,8 +23,6 @@ interface AddressShowPageProps {
 }
 
 export default function AddressShowPage( props: AddressShowPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
 
 	const urlParams = new URLSearchParams( window.location.search );

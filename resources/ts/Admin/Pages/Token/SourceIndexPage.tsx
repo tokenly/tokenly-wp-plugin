@@ -1,6 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { TYPES } from '../../../Types';
 import { SourceItem } from '../../../Interfaces';
@@ -17,85 +17,65 @@ import {
 } from '@wordpress/components';
 
 interface SourceIndexPageData {
-	sources: Array<SourceItem>;
+	//
 }
 
 interface SourceIndexPageProps {
 	pageData: SourceIndexPageData;
-	saving: boolean;
 }
 
-interface SourceIndexPageState {
-	sourceData: Array<SourceItem>;
-	loadingSources: boolean;
-	sources: any;
-}
+export default function SourceIndexPage( props: SourceIndexPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
 
-export default class SourceIndexPage extends Component<SourceIndexPageProps, SourceIndexPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
-	sourceRepository: SourceRepositoryInterface;
+	const [ sources, setSources ] = useState<any>( null );
+	const [ loadingSources, setLoadingSources ] = useState<boolean>( false );
 
-	state: SourceIndexPageState = {
-		sourceData: [],
-		sources: null,
-		loadingSources: false,
-	}
-	constructor( props: SourceIndexPageProps ) {
-		super( props );
-	}
-
-	componentWillMount() {
-		this.setState( { loadingSources: true } );
-		this.sourceRepository.index( {
+	useEffect( () => {
+		setLoadingSources( true );
+		sourceRepository.index( {
 			with: [ 'address' ],
-		} ).then( ( sources: any ) => {
-			sources = Object.values( sources );
-			this.setState( {
-				loadingSources: false,
-				sources: sources,
-			} );
+		} ).then( ( sourcesFound: any ) => {
+			sourcesFound = Object.values( sourcesFound );
+			setLoadingSources( false );
+			setSources( sourcesFound );
 		} );
-	}
+	}, [] );
 	
-	render() {
-		return (
-			<Page title="Source Listing">
-				<Panel header="Source Actions">
-					<PanelBody>
-						<PanelRow>
-							<Flex style={{width: '100%'}}>
-								<Button
-									isPrimary
-									href={ `${this.adminPageUrl}${this.namespace}-token-source-store` }
-								>
-									Register Source
-								</Button>
-							</Flex>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={this.state.loadingSources}>Registered Sources</Preloader>
-					</PanelHeader>
-				{
-				(
-					!this.state.loadingSources &&
-					this.state.sources &&
-					typeof this.state.sources === 'object'
-				) &&
-					<PanelBody>
-						<PanelRow>
-							<SourceList sources={ this.state.sources } />
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Source Listing">
+			<Panel header="Source Actions">
+				<PanelBody>
+					<PanelRow>
+						<Flex style={ { width: '100%' } }>
+							<Button
+								isPrimary
+								href={ `${adminPageUrl}${namespace}-token-source-store` }
+							>
+								Register Source
+							</Button>
+						</Flex>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingSources }>Registered Sources</Preloader>
+				</PanelHeader>
+			{
+			(
+				!loadingSources &&
+				sources &&
+				typeof sources === 'object'
+			) &&
+				<PanelBody>
+					<PanelRow>
+						<SourceList sources={ sources } />
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+		</Page>
+	);
 }

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 import CardActions from './../CardActions';
@@ -33,6 +32,10 @@ export default function GroupCard( props: GroupCardProps ) {
 				<CardActions
 					actions={
 						[
+							{
+								title: 'Make Transaction',
+								url: `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.group.uuid }`,
+							},
 							{
 								title: 'View Transactions',
 								url: `${ adminPageUrl }${ namespace }-credit-transaction-index&group=${ props.group.uuid }`,

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 
 import { 
 	Flex,
@@ -35,36 +34,28 @@ export default function GroupSelectField( props: GroupSelectFieldProps ) {
 
 	const groupOptions = getGroupOptions();
 	return (
-		<Flex> 
-			<label>
-				<div style={ { marginBottom: '8px' } } >Group</div>
-				<Flex
-					//@ts-ignore
-					direction="column"
-				>
-					<Flex
-						style={ { maxWidth: "320px" } }
-						justify="flex-start"
-						align="center"
-						gap={4}
-					>
-						<SelectControl
-							label=""
-							disabled={props.loading || groupOptions.length === 1}
-							value={ props.group }
-							style={ { width: '100%' } }
-							options={ groupOptions }
-							required
-							onChange={ ( value: any ) => {
-								props.onChange( value );
-							} }
-						/>
-						{ props.loading &&
-							<Spinner />
-						}
-					</Flex>
-				</Flex>
-			</label>
+		<Flex
+			style={ { width: '100%' } }
+			justify="flex-start"
+			align="center"
+			gap={4}
+		>
+			<div style={ { width: '100%', flex: '1', flexGrow: 1 } }>
+				<SelectControl
+					label="Group"
+					disabled={ props.loading || groupOptions.length === 1 }
+					value={ props.group }
+					style={ { width: '100%' } }
+					options={ groupOptions }
+					required
+					onChange={ ( value: any ) => {
+						props.onChange( value );
+					} }
+				/>
+				{ props.loading &&
+					<Spinner />
+				}
+			</div>
 		</Flex>
 	);
 }

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
 import Page from './../Page';
-import { Component } from 'react';
 import TransactionList from '../../Components/Credit/TransactionList';
 import Preloader from '../../Components/Preloader';
 import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
@@ -12,7 +11,6 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
-	Flex,
 	PanelHeader,
 } from '@wordpress/components';
 

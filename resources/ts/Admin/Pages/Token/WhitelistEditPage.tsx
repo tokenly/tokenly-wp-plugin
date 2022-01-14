@@ -1,8 +1,8 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import WhitelistEditor from '../../Components/Token/WhitelistEditor';
-import { Component } from 'react';
 import { WhitelistData, WhitelistItem } from '../../../Interfaces';
 import WhitelistSettingsRepositoryInterface from '../../../Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
 import ResourceEditActions from '../../Components/ResourceEditActions';
@@ -22,128 +22,99 @@ interface WhitelistPageProps {
 	pageData: WhitelistPageData; 
 }
 
-interface WhitelistPageState {
-	editData: WhitelistData;
-	saving: boolean;
-}
-
 declare const window: any;
 
-export default class WhitelistPage extends Component<WhitelistPageProps, WhitelistPageState> {
-	@resolve( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface )
-	whitelistSettingsRepository: WhitelistSettingsRepositoryInterface;
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
+export default function WhitelistPage( props: WhitelistPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const whitelistSettingsRepository: WhitelistSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface );
 	
-	state: WhitelistPageState = {
-		editData: {
-			enabled: false,
-			items: [
-				{
-					address: '',
-					index: '',
-				},
-			],
-		},
-		saving: false,
-	};
-	
-	constructor( props: WhitelistPageProps ) {
-		super( props );
-		this.onSave = this.onSave.bind( this );
-		this.onCancel = this.onCancel.bind( this );
-		const enabled = this.props.pageData?.whitelist?.enabled ?? false;
-		let items = Object.assign( [], this.props.pageData?.whitelist?.items ) as any;
-		if ( items && Array.isArray( items ) ) {
-			items = items.filter( function ( item: any ) {
-				return item != null;
-			} );
-		} else {
-			items = [];
-		}
-		this.state.editData = {
-			enabled: enabled,
-			items: items,
-		}
-		this.onWhitelistFieldChange = this.onWhitelistFieldChange.bind( this );
-		this.onEnabledFieldChange = this.onEnabledFieldChange.bind( this );
+	const enabled = props.pageData?.whitelist?.enabled ?? false;
+	let items = Object.assign( [], props.pageData?.whitelist?.items ) as any;
+	if ( items && Array.isArray( items ) ) {
+		items = items.filter( function ( item: any ) {
+			return item != null;
+		} );
+	} else {
+		items = [];
 	}
+	const [ editData, setEditData ] = useState<any>( {
+		enabled: enabled,
+		items: items,
+	}, );
+	const [ saving, setSaving ] = useState<any>( false );
 	
-	onSave() {
-		this.setState( { saving: true } );
-		this.whitelistSettingsRepository.update( this.state.editData ).then( ( result: any ) => {
-			this.setState( { saving: false } );
+	function onSave() {
+		setSaving( true );
+		whitelistSettingsRepository.update( editData ).then( ( result: any ) => {
+			setSaving( false );
 		} ).catch( ( error: any ) => {
 			console.log( error );
-		})
+		} );
 	}
 
-	onCancel() {
-		this.return();
+	function onCancel() {
+		goBack();
 	}
 
-	onEnabledFieldChange( value: boolean ) {
-		let newState = Object.assign( {}, this.state );
-		newState.editData.enabled = value;
-		this.setState( newState );
+	function onEnabledFieldChange( value: boolean ) {
+		let newState = Object.assign( {}, editData );
+		newState.enabled = value;
+		setEditData( newState );
 	}
 
-	onWhitelistFieldChange( value: Array<any> ) {
+	function onWhitelistFieldChange( value: Array<any> ) {
 		value = value.filter( function ( item: any ) {
 			return item != null;
 		} );
-		let newState = Object.assign( {}, this.state.editData );
+		const newState = Object.assign( {}, editData );
 		newState.items = value;
-		this.setState( { editData: newState } );
+		setEditData( newState );
 	}
 
-	return() {
-		window.location = `${ this.adminPageUrl }${ this.namespace }-token-vendor`;
+	function goBack() {
+		window.location = `${ adminPageUrl }${ namespace }-token-vendor`;
 	}
 
-	render() {
-		return (
-			<Page title="Whitelist Editor" >
-				<Panel header="Whitelist Settings">
-					<PanelBody>
+	return (
+		<Page title="Whitelist Editor" >
+			<Panel header="Whitelist Settings">
+				<PanelBody>
+					<PanelRow>
+						<p style={ { maxWidth: '550px', opacity: 0.8 } }>Whitelist allows to control which assets to filter when working with token assets. Only the specified assets will be displayed and searchable.</p>
+					</PanelRow>
+					<PanelRow>
+						<ToggleControl
+							label="Use Whitelist"
+							checked={ editData.enabled }
+							onChange={ onEnabledFieldChange }
+						/>
+					</PanelRow>
+					{ editData.enabled == true &&
 						<PanelRow>
-							<p style={ { maxWidth: '550px', opacity: 0.8 } }>Whitelist allows to control which assets to filter when working with token assets. Only the specified assets will be displayed and searchable.</p>
+							<WhitelistEditor
+								onChange={ onWhitelistFieldChange }
+								items={ editData?.items }
+							/>		
 						</PanelRow>
-						<PanelRow>
-							<ToggleControl
-								label="Use Whitelist"
-								checked={ this.state.editData.enabled }
-								onChange={ this.onEnabledFieldChange }
-							/>
-						</PanelRow>
-						{ this.state.editData.enabled == true &&
-							<PanelRow>
-								<WhitelistEditor
-									onChange={ this.onWhitelistFieldChange }
-									items={ this.state.editData?.items }
-								/>		
-							</PanelRow>
-						}
-					</PanelBody>					
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ResourceEditActions
-								name="Whitelist"
-								saving={ this.state.saving }
-								onSave={ this.onSave }
-								onCancel={ this.onCancel }
-								noDelete
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+					}
+				</PanelBody>					
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ResourceEditActions
+							name="Whitelist"
+							saving={ saving }
+							onSave={ onSave }
+							onCancel={ onCancel }
+							noDelete
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }
  
 

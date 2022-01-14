@@ -1,9 +1,8 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import { Component } from 'react';
 import { TYPES } from '../../../Types';
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface';
 import SourceStoreForm from '../../Components/Token/SourceStoreForm';
@@ -27,121 +26,94 @@ interface SourceStorePageProps {
 	pageData: SourceStorePageData;
 }
 
-interface SourceStorePageState {
-	storing: boolean;
-	loadingAddresses: boolean;
-	address: any;
-	addresses: any;
-	storeData: any;
-}
-
-export default class SourceStorePage extends Component<SourceStorePageProps, SourceStorePageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
-	addressRepository: AddressRepositoryInterface;
-	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
-	sourceRepository: SourceRepositoryInterface;
-	@resolve( TYPES.Repositories.UserRepositoryInterface )
-	userRepository: UserRepositoryInterface;
+export default function SourceStorePage ( props: SourceStorePageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
+	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
 	
-	state: SourceStorePageState = {
-		storing: false,
-		loadingAddresses: false,
-		address: null,
-		addresses: null,
-		storeData: {},
-	}
-	constructor( props: SourceStorePageProps ) {
-		super( props );
-		this.onStore = this.onStore.bind( this );
-		this.onStoreDataChange = this.onStoreDataChange.bind( this );
-		this.onCancel = this.onCancel.bind( this );
+	const [ storing, setStoring ] = useState<boolean>( false );
+	const [ loadingAddresses, setLoadingAddresses ] = useState<boolean>( false );
+	const [ addresses, setAddresses ] = useState<any>( null );
+	const [ storeData, setStoreData ] = useState<any>( {} );
+
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-token-source-index`;
 	}
 
-	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-token-source-index`;
-	}
-
-	componentWillMount() {
-		this.setState( { loadingAddresses: true } );
-		const params = {
-			registered: true,
-		}
-		this.userRepository.tokenAddressIndex( 'me', params ).then( ( addresses: any ) => {
-			const addressesKeyed = {} as any;
-			addresses.forEach( ( address: any ) => {
-				addressesKeyed[ address.address ] = address;
-			} );
-			this.setState( {
-				loadingAddresses: false,
-				addresses: addressesKeyed,
-			} );
-		} );
-	}
-
-	onStore() {
-		const selectedAddress = this.state.addresses[this.state.storeData?.address];
+	function onStore() {
+		const selectedAddress = addresses[storeData?.address];
 		if ( !selectedAddress ) {
 			return;
 		}
-		const storeData = Object.assign( {}, this.state.storeData );
-		storeData.type = this.state.addresses[ this.state.storeData.address ].type;	
-		this.setState( { storing: true } );
-		this.sourceRepository.store( storeData ).then( ( result: any ) => {
-			this.setState( { storing: false } );
-			this.return();
+		const newStoreData = Object.assign( {}, storeData );
+		newStoreData.type = addresses[ newStoreData.address ].type;	
+		setStoring( true );
+		sourceRepository.store( storeData ).then( ( result: any ) => {
+			setStoring( false );
+			goBack();
 		});
 	}
 	
-	onStoreDataChange( newData: any ) {
-		this.setState( { storeData: newData } );
+	function onStoreDataChange( newData: any ) {
+		setStoreData( newData );
 	}
 
-	onCancel() {
-		this.return();
+	function onCancel() {
+		goBack();
 	}
 
-	isStoreDisabled() {
+	function isStoreDisabled() {
 		return false;
 	}
+
+	useEffect( () => {
+		setLoadingAddresses( true );
+		const params = {
+			registered: true,
+		}
+		userRepository.tokenAddressIndex( 'me', params ).then( ( addressesFound: any ) => {
+			const addressesKeyed = {} as any;
+			addressesFound.forEach( ( addressFound: any ) => {
+				addressesKeyed[ addressFound.address ] = addressFound;
+			} );
+			setLoadingAddresses( false );
+			setAddresses( addressesKeyed );
+		} );
+	}, [] );
 	
-	render() {
-		return (
-			<Page title="Source Creator">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingAddresses }>Source Form</Preloader>
-					</PanelHeader>
-				{ !this.state.loadingAddresses &&
-					<PanelBody>
-						<PanelRow>
-							<SourceStoreForm
-								onChange={ this.onStoreDataChange }
-								loadingAddresses={ this.state.loadingAddresses }
-								addresses={ this.state.addresses }
-								storeData={ this.state.storeData }
-							/>
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ResourceStoreActions
-								name="Source"
-								storing={ this.state.storing }
-								onStore={ this.onStore }
-								onCancel={ this.onCancel }
-								disableStore={ this.isStoreDisabled() }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Source Creator">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingAddresses }>Source Form</Preloader>
+				</PanelHeader>
+			{ !loadingAddresses &&
+				<PanelBody>
+					<PanelRow>
+						<SourceStoreForm
+							onChange={ onStoreDataChange }
+							loadingAddresses={ loadingAddresses }
+							addresses={ addresses }
+							storeData={ storeData }
+						/>
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ResourceStoreActions
+							name="Source"
+							storing={ storing }
+							onStore={ onStore }
+							onCancel={ onCancel }
+							disableStore={ isStoreDisabled() }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

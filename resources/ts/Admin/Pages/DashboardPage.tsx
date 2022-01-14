@@ -1,7 +1,6 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './Page';
-import { Component } from 'react';
 import { TYPES } from './../../Types';
 
 import { 
@@ -32,130 +31,106 @@ interface DashboardPageProps {
 	pageData: DashboardPageData; 
 }
 
-interface DashboardPageState {
-	cards?: any;
-	offlineRoutesUser: Array<string>;
-	offlineRoutesIntegration: Array<string>;
-	adminRoutes: Array<string>;
-}
+export default function DashboardPage( props: DashboardPageProps ) {
+	const apiHost: string = useInjection( TYPES.Variables.apiHost );
+	const brand: string = useInjection( TYPES.Variables.brand );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
 
-export default class DashboardPage extends Component<DashboardPageProps, DashboardPageState> {
-	@resolve( TYPES.Variables.apiHost )
-	apiHost: string;
-	@resolve( TYPES.Variables.brand )
-	brand: string;
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
+	const offlineRoutesUser = [
+		'connection'
+	];
+	const offlineRoutesIntegration = [
+		'settings',
+	];
+	const adminRoutes = [
+		'creditVendor',
+		'tokenVendor',
+		'settings',
+	];
 
-	state: DashboardPageState = {
-		offlineRoutesUser: [
-			'connection'
-		],
-		offlineRoutesIntegration: [
-			'settings',
-		],
-		adminRoutes: [
-			'creditVendor',
-			'tokenVendor',
-			'settings',
-		],
-	}
-	
-	constructor( props: DashboardPageProps ) {
-		super( props );
-		this.canView = this.canView.bind( this );
-	}
+	const cardData = {
+		dashboard: {
+			title: 'Main Dashboard',
+			description: `${brand} main dashboard (external).`,
+			icon: 'dashboard',
+			url: `${apiHost}/dashboard`,
+		},
+		inventory: {
+			title: 'Inventory',
+			description: 'View the list of currently owned token assets.',
+			icon: 'money',
+			url: `/${namespace}/user/me`,
+		},
+		connection: {
+			title: 'Connection',
+			description: `Connect or disconnect to ${brand} network.`,
+			icon: 'admin-plugins',
+			url: `${adminPageUrl}${namespace}-connection`,
+		},
+		tokenVendor: {
+			title: 'Token Vendor',
+			description: 'Manage token assets.',
+			icon: 'money-alt',
+			url: `${adminPageUrl}${namespace}-token-vendor`,
+		},
+		creditVendor: {
+			title: 'Credit Vendor',
+			description: 'Manage credit groups and transactions.',
+			icon: 'money-alt',
+			url: `${adminPageUrl}${namespace}-credit-vendor`,
+		},
+		settings: {
+			title: 'Settings',
+			description: 'Manage plugin settings.',
+			icon: 'admin-settings',
+			url: `${adminPageUrl}${namespace}-settings`,
+		},
+	} as any;
 
-	componentWillMount() {
-		this.setState( {
-			cards: {
-				dashboard: {
-					title: 'Main Dashboard',
-					description: `${this.brand} main dashboard (external).`,
-					icon: 'dashboard',
-					url: `${this.apiHost}/dashboard`,
-				},
-				inventory: {
-					title: 'Inventory',
-					description: 'View the list of currently owned token assets.',
-					icon: 'money',
-					url: `/${this.namespace}/user/me`,
-				},
-				connection: {
-					title: 'Connection',
-					description: `Connect or disconnect to ${this.brand} network.`,
-					icon: 'admin-plugins',
-					url: `${this.adminPageUrl}${this.namespace}-connection`,
-				},
-				tokenVendor: {
-					title: 'Token Vendor',
-					description: 'Manage token assets.',
-					icon: 'money-alt',
-					url: `${this.adminPageUrl}${this.namespace}-token-vendor`,
-				},
-				creditVendor: {
-					title: 'Credit Vendor',
-					description: 'Manage credit groups and transactions.',
-					icon: 'money-alt',
-					url: `${this.adminPageUrl}${this.namespace}-credit-vendor`,
-				},
-				settings: {
-					title: 'Settings',
-					description: 'Manage plugin settings.',
-					icon: 'admin-settings',
-					url: `${this.adminPageUrl}${this.namespace}-settings`,
-				},
-			}
-		} );
-	}
-
-	canView( key: string ) {
+	function canView( key: string ) {
 		let canView = false;
-		if ( this.props.pageData?.integration_can_connect ?? false ) {
-			if ( this.props.pageData?.user_can_connect ?? false ) {
+		if ( props.pageData?.integration_can_connect ?? false ) {
+			if ( props.pageData?.user_can_connect ?? false ) {
 				canView = true;
-			} else if ( this.state.offlineRoutesUser.includes( key ) ) {
+			} else if ( offlineRoutesUser.includes( key ) ) {
 				canView = true;
 			}
 		}
-		if ( this.state.offlineRoutesIntegration.includes( key ) ) {
+		if ( offlineRoutesIntegration.includes( key ) ) {
 			canView = true;
 		}
-		if ( this.state.adminRoutes.includes( key ) && this.props.pageData.is_admin === false ) {
+		if ( adminRoutes.includes( key ) && props.pageData.is_admin === false ) {
 			canView = false;
 		}
 		return canView;
 	}
 
-	render() {
-		let cards = [] as any;
-		Object.keys( this.state.cards ).map( ( key: string, index ) => {
-			const cardItem = this.state.cards[ key ];
-			if ( this.canView( key ) ) {
-				cards.push(
-					<Card>
-						<CardHeader>
-							<Flex justify="flex-start">
-								<Dashicon icon={ cardItem.icon as any } />
-								<h3>{ cardItem.title }</h3>
-							</Flex>
-						</CardHeader>
-						<CardBody size="large">{ cardItem.description }</CardBody>
-						<CardFooter>
-							<Button isPrimary href={ cardItem.url }>Visit page</Button>
-						</CardFooter>
-					</Card>
-				);
-			}
-		} );
-		return (
-			<Page title={ `${this.brand} Dashboard` }>
-				<div className="dashboard-card-grid">
-					{ cards }
-				</div>
-			</Page>
-		);
-	}
+	let cards = [] as any;
+	Object.keys( cardData ).map( ( key: string, index ) => {
+		const cardItem = cardData[ key ];
+		if ( canView( key ) ) {
+			cards.push(
+				<Card>
+					<CardHeader>
+						<Flex justify="flex-start">
+							<Dashicon icon={ cardItem.icon as any } />
+							<h3>{ cardItem.title }</h3>
+						</Flex>
+					</CardHeader>
+					<CardBody size="large">{ cardItem.description }</CardBody>
+					<CardFooter>
+						<Button isPrimary href={ cardItem.url }>Visit page</Button>
+					</CardFooter>
+				</Card>
+			);
+		}
+	} );
+	return (
+		<Page title={ `${brand} Dashboard` }>
+			<div className="dashboard-card-grid">
+				{ cards }
+			</div>
+		</Page>
+	);
 }

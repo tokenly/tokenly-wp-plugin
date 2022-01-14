@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 import UserSearchField from './../UserSearchField';
 import AssetSearchField from './../AssetSearchField';
 import SourceSelectField from './../Token/SourceSelectField';
@@ -21,7 +20,6 @@ interface PromiseStoreFormProps {
 
 export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 	function getBalance() {
-		const options = [] as any;
 		if ( !props.storeData?.source_id ) {
 			return [];
 		}

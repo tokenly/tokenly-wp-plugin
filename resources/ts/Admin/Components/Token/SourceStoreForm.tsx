@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { Component } from 'react';
 import AddressInfo from './AddressInfo';
 import AddressSelectField from './AddressSelectField';
 
 import { 
-	Button,
-	Spinner,
 	Flex,
 	TextareaControl,
 } from '@wordpress/components';
@@ -19,13 +15,6 @@ interface SourceStoreFormProps {
 }
 
 export default function SourceStoreForm( props: SourceStoreFormProps ) {
-	const [ addressOptions, setAddressOptions ] = useState( [
-		{
-			label: 'Not Selected',
-			value: '',
-		}
-	] );
-
 	function getCurrentAddress() {
 		if ( props.addresses && typeof props.addresses === 'object' && props.storeData?.address ) {
 			return props.addresses[ props.storeData.address ];

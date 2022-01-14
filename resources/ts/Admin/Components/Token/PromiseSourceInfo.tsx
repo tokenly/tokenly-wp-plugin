@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { Component } from 'react';
 import { PromiseData } from '../../../Interfaces';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 
 import { 
 	Flex,
-	Spinner,
 } from '@wordpress/components';
 
 interface PromiseSourceInfoProps {

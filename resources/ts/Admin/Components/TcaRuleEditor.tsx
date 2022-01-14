@@ -1,13 +1,10 @@
 import * as React from 'react';
-import { Component } from 'react';
-import { Attribute } from '../../Interfaces';
 
 import { 
 	Button,
 	Flex,
 	SelectControl,
 	TextControl,
-	Dashicon,
 	// @ts-ignore
 	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';

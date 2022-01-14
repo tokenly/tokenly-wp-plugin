@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Component } from 'react';
 
 import { 
 	Flex,
 	Button,
-	Spinner,
 } from '@wordpress/components';
 
 interface ResourceEditActionsProps {

@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Component } from 'react';
 import UserSearchField from './../UserSearchField';
 import GroupSelectField from './GroupSelectField';
+import TransactionTypeField from './TransactionTypeField';
 
 import { 
 	TextControl,
-	SelectControl,
 	Flex,
 } from '@wordpress/components';
 
@@ -78,13 +77,8 @@ export default function TransactionStoreForm( props: TransactionStoreFormProps )
 					groups={ props.groups }
 					loading={ props.loadingGroups }
 				/>
-				<SelectControl
-					label="Transaction Type"
-					value={ props.storeData?.type }
-					options={ [
-						{ label: 'Debit' , value: 'debit' },
-						{ label: 'Credit'  , value: 'credit'  },
-					] }
+				<TransactionTypeField
+					type={ props.storeData?.type }
 					onChange={ onTypeFieldChange }
 				/>
 				<div>
@@ -98,7 +92,7 @@ export default function TransactionStoreForm( props: TransactionStoreFormProps )
 				</div>
 				<div>
 					<label>{ getSourceLabel() }
-						<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username. (optional)</div>
+						<div style={ { opacity: 0.8, marginBottom: '12px' } }>WordPress username. (optional)</div>
 						<UserSearchField
 							user={ props.storeData?.source }
 							onChange={ onSourceFieldChange }

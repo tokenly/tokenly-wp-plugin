@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import { Component } from 'react';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupStoreForm from '../../Components/Credit/GroupStoreForm';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';

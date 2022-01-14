@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 import PromiseParticipants from './PromiseParticipants';
 import * as dayjs from 'dayjs'
 import { useInjection } from 'inversify-react';

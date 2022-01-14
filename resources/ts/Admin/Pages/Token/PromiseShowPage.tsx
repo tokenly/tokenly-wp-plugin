@@ -1,13 +1,12 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import { Component } from 'react';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import { TYPES } from '../../../Types';
 import Preloader from '../../Components/Preloader';
 import PromiseInfo from '../../Components/Token/PromiseInfo';
-import PromiseLink from '../../Components/Token/PromiseLink'
 import { 
 	Button,
 	Panel,
@@ -25,98 +24,72 @@ interface PromiseShowPageProps {
 	pageData: PromiseShowPageData;
 }
 
-interface PromiseShowPageState {
-	id: number;
-	promise: any;
-	loadingPromise: boolean;
-	loadingAddress: boolean;
-}
+export default function PromiseShowPage( props: PromiseShowPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const promiseRepository: PromiseRepositoryInterface = useInjection( TYPES.Repositories.Token.PromiseRepositoryInterface );
+	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
 
-export default class PromiseShowPage extends Component<PromiseShowPageProps, PromiseShowPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.PromiseRepositoryInterface )
-	promiseRepository: PromiseRepositoryInterface;
-	@resolve( TYPES.Repositories.Token.AddressRepositoryInterface )
-	addressRepository: AddressRepositoryInterface;
+	const urlParams = new URLSearchParams( window.location.search );
+	const [ id, setId ] = useState<number>( parseInt( urlParams.get( 'promise' ) ) );
+	const [ promise, setPromise ] = useState<any>( null );
+	const [ loadingPromise, setLoadingPromise ] = useState<boolean>( false );
+	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
 
-	state: PromiseShowPageState = {
-		id: null,
-		promise: null,
-		loadingPromise: false,
-		loadingAddress: false,
-	}
-	constructor( props: PromiseShowPageProps ) {
-		super( props );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.id = parseInt( urlParams.get( 'promise' ) );
-	}
-
-	componentWillMount() {
-		this.setState( {
-			loadingPromise: true,
-			loadingAddress: true,
-		} );
+	useEffect( () => {
+		setLoadingPromise( true );
+		setLoadingAddress( true );
 		const params = {
 			with: [
 				'promise_meta.source_user',
 				'promise_meta.destination_user',
 			],
 		}
-		this.promiseRepository.show( this.state.id, params ).then( ( promise: any ) => {
-			this.setState( {
-				loadingPromise: false,
-				promise: promise,
-			} );
-			return promise;
-		} ).then( ( promise: any ) => {
-			this.addressRepository.show( promise.source_id ).then( ( address: any ) => {
-				promise.source = {};
-				promise.source.address = address;
-				this.setState( {
-					loadingAddress: false,
-					promise: promise,
-				} );
+		promiseRepository.show( id, params ).then( ( promiseFound: any ) => {
+			setLoadingPromise( false );
+			setPromise( promiseFound );
+			return promiseFound;
+		} ).then( ( promiseFound: any ) => {
+			addressRepository.show( promiseFound.source_id ).then( ( addressFound: any ) => {
+				promiseFound.source = {};
+				promiseFound.source.address = addressFound;
+				setLoadingAddress( false );
+				setPromise( promiseFound );
 			} );
 		} );
-	}
+	}, [] );
 	
-	render() {
-
-		return (
-			<Page title="Promise Display">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ ( this.state.loadingPromise || this.state.loadingAddress ) }>
-							Promise Info
-						</Preloader>
-					</PanelHeader>
-					{ ( !this.state.loadingPromise && this.state.promise ) &&
-					<PanelBody>
-						<PanelRow>
-							<PromiseInfo promise={this.state.promise} verbose />
-						</PanelRow>
-					</PanelBody>
-					}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<Flex>
-								<Button
-									isSecondary
-									isLarge
-									href={ `${this.adminPageUrl}${this.namespace}-token-promise-edit&promise=${ this.state.id }` }
-								>
-									Manage Promise
-								</Button>
-							</Flex>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Promise Display">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ ( loadingPromise || loadingAddress ) }>
+						Promise Info
+					</Preloader>
+				</PanelHeader>
+				{ ( !loadingPromise && promise ) &&
+				<PanelBody>
+					<PanelRow>
+						<PromiseInfo promise={ promise } verbose />
+					</PanelRow>
+				</PanelBody>
+				}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<Flex>
+							<Button
+								isSecondary
+								isLarge
+								href={ `${adminPageUrl}${namespace}-token-promise-edit&promise=${ id }` }
+							>
+								Manage Promise
+							</Button>
+						</Flex>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

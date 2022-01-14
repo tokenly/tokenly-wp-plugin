@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import { Component } from 'react';
 import GroupList from '../../Components/Credit/GroupList';
 import VendorActions from '../../Components/Credit/VendorActions';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
@@ -12,7 +11,6 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
-	Flex,
 	PanelHeader,
 } from '@wordpress/components';
 import Preloader from '../../Components/Preloader';
@@ -29,7 +27,7 @@ export default function VendorPage( props: VendorPageProps ) {
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 
 	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
-	const [ groups, setGroups ] = useState<any>( {} );
+	const [ groups, setGroups ] = useState<any>( null );
 
 	useEffect( () => {
 		setLoadingGroups( true );

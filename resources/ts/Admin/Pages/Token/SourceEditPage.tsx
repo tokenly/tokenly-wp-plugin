@@ -1,7 +1,7 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import { Component } from 'react';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceEditForm from '../../Components/Token/SourceEditForm';
 import { SourceData } from '../../../Interfaces';
@@ -21,167 +21,135 @@ import {
 declare const window: any;
 
 interface SourceEditPageData {
-	source: SourceData;
+	//
 }
 
 interface SourceEditPageProps {
 	pageData: SourceEditPageData;
 }
 
-interface SourceEditPageState {
-	id: string;
-	source: any;
-	editData: any;
-	loading: boolean;
-	saving: boolean;
-	deleting: boolean;
-}
-
-export default class SourceEditPage extends Component<SourceEditPageProps, SourceEditPageState> {
-	@resolve( TYPES.Variables.adminPageUrl )
-	adminPageUrl: string;
-	@resolve( TYPES.Variables.namespace )
-	namespace: string;
-	@resolve( TYPES.Repositories.Token.SourceRepositoryInterface )
-	sourceRepository: SourceRepositoryInterface;
+export default function SourceEditPage( props: SourceEditPageProps ) {
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
 	
-	state: SourceEditPageState = {
-		id: null,
-		source: null,
-		editData: {},
-		loading: false,
-		saving: false,
-		deleting: false,
+	const urlParams = new URLSearchParams( window.location.search );
+
+	const [ id, setId ] = useState<string>( urlParams.get( 'source' ) );
+	const [ source, setSource ] = useState<any>( null );
+	const [ editData, setEditData ] = useState<any>( {} );
+	const [ loading, setLoading ] = useState<boolean>( false );
+	const [ saving, setSaving ] = useState<boolean>( false );
+	const [ deleting, setDeleting ] = useState<boolean>( false );
+
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-token-source-index`;
 	}
 
-	constructor( props: SourceEditPageProps ) {
-		super( props );
-		this.onSave = this.onSave.bind( this );
-		this.onDelete = this.onDelete.bind( this );
-		this.deleteSource = this.deleteSource.bind( this );
-		this.onConfirmModalChoice = this.onConfirmModalChoice.bind( this );
-		this.onEditDataChange = this.onEditDataChange.bind( this );
-		const urlParams = new URLSearchParams( window.location.search );
-		this.state.id = urlParams.get( 'source' );
+	function onSave() {
+		setSaving( true );
+		const newEditData = Object.assign( {}, editData );
+		sourceRepository.update( id, newEditData ).then( ( result: any ) => {
+			setSaving( false );
+			goBack();
+		} );
 	}
 
-	return() {
-		window.location = `${this.adminPageUrl}${this.namespace}-token-source-index`;
-	}
-
-	onSave() {
-		this.setState( { saving: true } );
-		const editData = Object.assign( {}, this.state.editData );
-		this.sourceRepository.update( this.state.id, editData ).then( ( result: any ) => {
-			this.setState( { saving: false } );
-			this.return();
-		});
-	}
-
-	onDelete() {
+	function onDelete() {
 		eventBus.dispatch( 'confirmModalShow', {
 			key: 'sourceDelete',
 			title: 'Deleting Source',
 			subtitle: 'Are you sure you want to delete the source?',
-		});
+		} );
 	}
 
-	deleteSource() {
-		this.setState( { deleting: true } );
-		this.sourceRepository.destroy( this.state.id ).then( ( result: any ) => {
-			this.setState( { deleting: false } );
-			this.return();
-		});
+	function deleteSource() {
+		setDeleting( true );
+		sourceRepository.destroy( id ).then( ( result: any ) => {
+			setDeleting( false );
+			goBack();
+		} );
 	}
 
-	onConfirmModalChoice( payload: any ) {
+	function onConfirmModalChoice( payload: any ) {
 		switch( payload.key ) {
 			case 'sourceDelete':
 				if ( payload.choice == 'accept' ){
-					this.deleteSource();
+					deleteSource();
 				}
 				break;
 		}
 	}
 
-	componentDidMount() {
-		eventBus.on( 'confirmModalChoice', this.onConfirmModalChoice );
-	}
-	
-	componentWillUnmount() {
-		eventBus.remove( 'confirmModalChoice', this.onConfirmModalChoice );
-	}
-
-	componentWillMount() {
-		this.setState( { loading: true } );
+	useEffect( () => {
+		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
+		setLoading( true );
 		const params = {
 			with: ['address'],
 		}
-
-		this.sourceRepository.show( this.state.id, params ).then( ( source: any ) => {
-			if ( source.assets && Array.isArray( source.assets ) ) {
-				source.assets = source.assets.join( ', ' );
+		sourceRepository.show( id, params ).then( ( sourceFound: any ) => {
+			if ( sourceFound.assets && Array.isArray( sourceFound.assets ) ) {
+				sourceFound.assets = sourceFound.assets.join( ', ' );
 			}
-			const editData = Object.assign( {}, this.state.editData );
-			editData.assets = source.assets;
-			this.setState( {
-				loading: false,
-				source: source,
-				editData: editData,
-			} );
+			const newEditData = Object.assign( {}, editData );
+			newEditData.assets = sourceFound.assets;
+			setLoading( false );
+			setSource( sourceFound );
+			setEditData( newEditData );
 		} );
+		return () => {
+			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
+		}
+	}, [] );
+
+	function onEditDataChange( newData: any ) {
+		setEditData( newData );
 	}
 
-	onEditDataChange( newData: any ) {
-		this.setState( { editData: newData } );
-	}
-
-	render() {
-		return (
-			<Page title="Source Editor">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loading }>
-							Source Edit Form
-						</Preloader>
-					</PanelHeader>
-				{ !this.state.loading &&
-					<PanelBody>
-						<PanelRow>
-							<div>
-								<span>Source: </span>
-								<b>
-									<SourceLink id={ this.state.id } label={ this.state.source?.address?.label } />
-								</b>
-							</div>
-						</PanelRow>
-						<PanelRow>
-							<SourceEditForm
-								onChange={ this.onEditDataChange }
-								loading={ this.state.loading }
-								editData={ this.state.editData }
-							/>
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ResourceEditActions
-								name="Source"
-								saving={ this.state.saving }
-								deleting={ this.state.deleting }
-								onSave={ this.onSave }
-								onDelete={ this.onDelete }
-								onCancel={ () => {
-									this.return();
-								} }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Source Editor">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loading }>
+						Source Edit Form
+					</Preloader>
+				</PanelHeader>
+			{ ( !loading && source ) &&
+				<PanelBody>
+					<PanelRow>
+						<div>
+							<span>Source: </span>
+							<b>
+								<SourceLink id={ id } label={ source?.address?.label } />
+							</b>
+						</div>
+					</PanelRow>
+					<PanelRow>
+						<SourceEditForm
+							onChange={ onEditDataChange }
+							loading={ loading }
+							editData={ editData }
+						/>
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ResourceEditActions
+							name="Source"
+							saving={ saving }
+							deleting={ deleting }
+							onSave={ onSave }
+							onDelete={ onDelete }
+							onCancel={ () => {
+								goBack();
+							} }
+						/>
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }

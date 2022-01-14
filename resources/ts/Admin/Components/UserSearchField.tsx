@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useInjection } from 'inversify-react';
-import { Component } from 'react';
 import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../Types';
 

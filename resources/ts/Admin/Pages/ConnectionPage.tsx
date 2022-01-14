@@ -1,9 +1,8 @@
-import { resolve } from 'inversify-react';
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { useInjection } from 'inversify-react';
 import Page from './Page';
-import AuthServiceInterface from '../../Interfaces/Services/AuthServiceInterface';
 import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
-import { Component } from 'react';
 import { TYPES } from '../../Types';
 import ConnectionInfo from '../Components/ConnectionInfo';
 import ConnectionActions from '../Components/ConnectionActions';
@@ -25,66 +24,45 @@ interface ConnectionPageProps {
 	pageData: ConnectionPageData;
 }
 
-interface ConnectionPageState {
-	user: any;
-	loadingUser: boolean;
-}
+export default function ConnectionPage( props: ConnectionPageProps ) {
+	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
 
-export default class ConnectionPage extends Component<ConnectionPageProps, ConnectionPageState> {
-	@resolve( TYPES.Services.AuthServiceInterface )
-    authService: AuthServiceInterface;
-	@resolve( TYPES.Repositories.UserRepositoryInterface )
-    userRepository: UserRepositoryInterface;
+	const [ user, setUser ] = useState<any>( null );
+	const [ loadingUser, setLoadingUser ] = useState<boolean>( false );
 
-	state: ConnectionPageState = { 
-		user: null,
-		loadingUser: false,
-	}
-	
-	constructor( props: ConnectionPageProps ) {
-		super( props );
-	}
-
-	componentWillMount() {
-		this.setState( {
-			loadingUser: true,
-		} );
-		this.userRepository.show( 'me', {
+	useEffect( () => {
+		setLoadingUser( true );
+		userRepository.show( 'me', {
 			with: [ 'oauth_user' ],
-		} ).then( ( user: any ) => {
-			console.log(user);
-			this.setState( {
-				loadingUser: false,
-				user: user,
-			} );
+		} ).then( ( userFound: any ) => {
+			setLoadingUser( false );
+			setUser( userFound );
 		} );
-	}
+	}, [] );
 
-	render() {
-		return (
-			<Page title="Connection">
-				<Panel>
-					<PanelHeader>
-						<Preloader loading={ this.state.loadingUser }>Connection Status</Preloader>
-					</PanelHeader>
-				{ !this.state.loadingUser && 
-					<PanelBody>
-						<PanelRow>
-							<ConnectionInfo status={ this.state.user?.can_connect } user={ this.state.user } />
-						</PanelRow>
-					</PanelBody>
-				}
-				</Panel>
-				<Panel>
-					<PanelBody>
-						<PanelRow>
-							<ConnectionActions disabled={ this.state.loadingUser } status={ this.state.user?.can_connect } />
-						</PanelRow>
-					</PanelBody>
-				</Panel>
-			</Page>
-		);
-	}
+	return (
+		<Page title="Connection">
+			<Panel>
+				<PanelHeader>
+					<Preloader loading={ loadingUser }>Connection Status</Preloader>
+				</PanelHeader>
+			{ !loadingUser && 
+				<PanelBody>
+					<PanelRow>
+						<ConnectionInfo status={ user?.can_connect } user={ user } />
+					</PanelRow>
+				</PanelBody>
+			}
+			</Panel>
+			<Panel>
+				<PanelBody>
+					<PanelRow>
+						<ConnectionActions disabled={ loadingUser } status={ user?.can_connect } />
+					</PanelRow>
+				</PanelBody>
+			</Panel>
+		</Page>
+	);
 }
  
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 import * as dayjs from 'dayjs';
 import TransactionInfo from './TransactionInfo';
 import TransactionLink from './TransactionLink';

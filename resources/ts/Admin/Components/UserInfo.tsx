@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Component } from 'react';
 
 import { 
 	 Flex,
@@ -15,7 +14,7 @@ export default function UserInfo( props: UserInfoProps ) {
 			//@ts-ignore
 			direction="column"
 		>
-			<div>Name: <b>{ this.props.user?.name } ({ this.props.user?.oauth_user?.username ?? '-' })</b></div>
+			<div>Name: <b>{ props.user?.name } ({ props.user?.oauth_user?.username ?? '-' })</b></div>
 		</Flex>
 	);
 }

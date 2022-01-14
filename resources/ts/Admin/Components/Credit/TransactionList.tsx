@@ -1,11 +1,6 @@
 import * as React from 'react';
-import { Component } from 'react';
 import TransactionCard from './TransactionCard';
 import ResourceList from '../../Components/ResourceList';
-
-import { 
-	Flex,
-} from '@wordpress/components';
 
 interface TransactionList {
 	transactions: Array<any>;

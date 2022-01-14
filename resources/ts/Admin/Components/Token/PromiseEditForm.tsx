@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Component } from 'react';
 
 import { 
 	TextControl,
 	TextareaControl,
 	Flex,
-	Disabled,
 } from '@wordpress/components';
 
 interface PromiseEditFormProps {
