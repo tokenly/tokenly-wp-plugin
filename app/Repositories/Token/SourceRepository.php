@@ -71,6 +71,9 @@ class SourceRepository implements SourceRepositoryInterface {
 	 * @return boolean
 	 */
 	public function store( array $params = array() ) {
+		if ( isset( $params['assets'] ) && empty( $params['assets'] ) ) {
+			$params['assets'] = null;
+		}
 		$source = $this->client->registerProvisionalSource(
 			$params['address'] ?? null,
 			$params['type'] ?? null,
