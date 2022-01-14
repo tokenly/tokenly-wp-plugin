@@ -98,7 +98,12 @@ class UserController extends Controller implements UserControllerInterface {
 			isset( $user->oauth_user->address ) &&
 			$user->oauth_user->address instanceof AddressCollectionInterface === true
 		) {
-			$address = $user->oauth_user->address->to_array();
+			$address = clone $user->oauth_user->address;
+			$registered = $request->get_param( 'registered' );
+			if ( $registered ) {
+				$address->filter_registered();
+			}
+			$address = $address->to_array();
 			return $address;
 		} else {
 			return array();

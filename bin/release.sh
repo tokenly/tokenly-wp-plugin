@@ -1,4 +1,4 @@
-# npm run build
+npm run build
 cd ..
 rm -f -r ./release
 mkdir release
