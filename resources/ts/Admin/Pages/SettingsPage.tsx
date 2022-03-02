@@ -20,16 +20,12 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface SettingsPageData {
+interface SettingsPageProps {
 	integration_settings: IntegrationSettings;
 	integration_data: any;
 	tca_settings: TcaSettings;
 	oauth_settings: OauthSettings;
 	tca_data: any;
-}
-
-interface SettingsPageProps {
-	pageData: SettingsPageData; 
 }
 
 export default function SettingsPage( props: SettingsPageProps ) {
@@ -38,17 +34,16 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	const tcaSettingsRepository: TcaSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface );
 	const oauthSettingsRepository: OauthSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface );
 	
-	console.log( props );
 	const [ integrationSettings, setIntegrationSettings ] = useState<any>( Object.assign( {
 		client_id: '',
 		client_secret: '',
-	}, props.pageData.integration_settings ) );
+	}, props.integration_settings ) );
 	const tcaSettingsProp = Object.assign( {
 		post_types: {},
 		taxonomies: {},
 		filter_menu_items: false,
 		filter_post_results: false,
-	}, props.pageData.tca_settings );
+	}, props.tca_settings );
 	if ( Array.isArray( tcaSettingsProp.post_types ) ) {
 		tcaSettingsProp.post_types = {};
 	}
@@ -61,7 +56,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 		success_url: '',
 		allow_no_email: false,
 		allow_unconfirmed_email: false,
-	}, props.pageData.oauth_settings ) );
+	}, props.oauth_settings ) );
 	const [ savingIntegrationSettings, setSavingIntegrationSettings ] = useState<boolean>( false );
 	const [ savingTcaSettings, setSavingTcaSettings ] = useState<boolean>( false );
 	const [ savingOauthSettings, setSavingOauthSettings ] = useState<boolean>( false );
@@ -83,7 +78,6 @@ export default function SettingsPage( props: SettingsPageProps ) {
 
 	function onTcaSettingsSave() {
 		setSavingTcaSettings( true );
-		console.log(tcaSettings);
 		tcaSettingsRepository.update( tcaSettings ).then( ( result: any ) => {
 			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingTcaSettings( false );
@@ -116,13 +110,13 @@ export default function SettingsPage( props: SettingsPageProps ) {
 				<PanelBody title="Integration">
 					<PanelRow>
 						<IntegrationSettingsHelp
-							appHomepageUrl={ props.pageData?.integration_data?.app_homepage_url }
-							clientAuthUrl={ props.pageData?.integration_data?.client_auth_url }
+							appHomepageUrl={ props.integration_data?.app_homepage_url }
+							clientAuthUrl={ props.integration_data?.client_auth_url }
 						/>
 					</PanelRow>
 					<PanelRow>
 						<IntegrationSettingsForm
-							status={ props.pageData?.integration_data?.status ?? false }
+							status={ props.integration_data?.status ?? false }
 							settings={ integrationSettings }
 							onChange={ onIntegrationSettingsChange }
 						/>
@@ -141,7 +135,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 					<PanelRow>
 						<TcaSettingsForm
 							settings={ tcaSettings }
-							data={ props.pageData.tca_data }
+							data={ props.tca_data }
 							onChange={ onTcaSettingsChange }
 						/>
 					</PanelRow>

@@ -1,0 +1,28 @@
+@use '/resources/scss/variables' as *;
+
+.tokenly-search {
+	position: relative;
+}
+
+.tokenly-autocomplete {
+	position: absolute;
+	bottom: 4px;
+	left: 0;
+	transform: translateY( 100% );
+	background-color: white;
+	border: 2px solid var(--wp-admin-theme-color);
+	width: calc( 100% - 2px );
+	color: #3c434a;
+	z-index: 100;
+	border-radius: 2px;
+	.autocomplete-item {
+		padding: 8px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		&:hover {
+			color: white;
+			background-color: var(--wp-admin-theme-color);
+		}
+	}
+}

@@ -1,0 +1,57 @@
+@use '/resources/scss/variables' as *;
+
+.component-card-credit-item {
+	&.style-grid {
+		.item-content {
+			width: 100%;
+			display: flex;
+			position: relative;
+			overflow: hidden;
+			background-color: white;
+			border-radius: 12px;
+			min-height: 48px;
+			border: 1px solid #cecece;
+			padding: 18px;
+			.name {
+				font-size: 1.125rem;
+				word-wrap: break-word;
+				font-weight: 700;
+				flex: 1;
+				color: var( --tokenly-color-text );
+				max-width: 24ch;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				word-wrap: normal;
+			}
+			.balance-container {
+				margin-top: 12px;
+				color: var( --tokenly-color-text );
+				.label {
+					font-weight: 300;
+					font-size: 0.875rem;
+				}
+			}
+		}
+	}
+	&.style-list {
+		min-height: 40px;
+		.item-content {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px;
+			border-bottom: 1px solid #cecece;
+			cursor: pointer;
+			.name {
+				font-weight: 400;
+			}
+			.balance-container {
+				margin-left: 8px;
+				margin-top: 0;
+				.label {
+					display: none;
+				}
+			}
+		}
+	}
+}

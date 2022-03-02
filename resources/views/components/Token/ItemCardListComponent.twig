@@ -1,0 +1,40 @@
+{% macro item_card_list_component( user, items, vendor_url, is_admin, namespace, style = "masonry" ) %}
+	{% from 'components/Token/ItemCardComponent.twig' import item_card_component %}
+	{% from 'components/LoaderComponent.twig' import loader_component %}
+	<div class="tokenly-component {{ namespace }}-token-item-card-list loading" data-style="{{ style }}" data-user="{{ user }}">
+		<div class="title-container">
+			<h2>Token Assets</h2>
+			{% if is_admin == true %}
+			<div class="options-container">
+				<div class="link-container">
+					<a href="{{ vendor_url }}">View in Admin</a>
+				</div>
+				<div class="action-container">
+					<input type="search" id="filter_name" placeholder="Search in profile..." name="filter_name">
+					<span class="style-select" data-style="masonry">
+						<i class="tokenly-icon-th-large"></i>
+					</span>
+					<span class="style-select" data-style="list">
+						<i class="tokenly-icon-list-bullet"></i>
+					</span>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		<div class="items">
+			{% for item in items %}
+				{# {{ item_card_component(
+					item.image,
+					item.name,
+					item.description,
+					0,
+					item.asset,
+					item.extra,
+					style,
+				) }} #}
+			{% endfor %}
+		</div>
+		<div class="empty-label">There are no tokens.</div>
+		{{ loader_component( namespace, "large", "dark" ) }}
+	</div>
+{% endmacro %}

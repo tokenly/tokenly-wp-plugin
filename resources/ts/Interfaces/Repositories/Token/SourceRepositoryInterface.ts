@@ -1,11 +1,14 @@
 import {
-	SourceData,
-} from '../../../Interfaces';
+	TokenSourceIndexParamsInterface,
+	TokenSourceShowParamsInterface,
+	TokenSourceStoreParamsInterface,
+	TokenSourceUpdateParamsInterface,
+} from './../../../Interfaces/Services/ApiServiceInterface';
 
 export default interface SourceRepositoryInterface {
-	index( params: any ): Promise<Array<SourceData>>;
-	show( id: string, params?: any ): Promise<Array<any>>
-	store( params: SourceData ): Promise<any>;
-	update( address: string, params: SourceData ): Promise<any>;
+	index( params?: TokenSourceIndexParamsInterface ): Promise<Array<any>>;
+	show( id: string, params?: TokenSourceShowParamsInterface ): Promise<Array<any>>
+	store( params: TokenSourceStoreParamsInterface ): Promise<any>;
+	update( address: string, params: TokenSourceUpdateParamsInterface ): Promise<any>;
 	destroy( address: string ): Promise<any>;
 }

@@ -2,9 +2,10 @@ import * as React from 'react';
 import PromiseParticipants from './PromiseParticipants';
 import * as dayjs from 'dayjs'
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
-import { 
+import {
+	Button,
 	Flex,
 } from '@wordpress/components';
 
@@ -36,11 +37,24 @@ export default function AddressInfo( props: AddressInfoProps ) {
 		} );
 	}
 
+	function getAssetName(): string {
+		let name: string;
+		if ( props.promise.token_meta ) {
+			name = props.promise.token_meta.name;
+		} else {
+			name = props.promise.asset.address;
+			if ( props.promise.asset.index ) {
+				name = `${name}:${props.promise.asset.index}`;
+			}
+		}
+		return name;
+	}
+
 	function getProperties() {
 		const properties = [
 			{
 				label: 'Asset',
-				value: props.promise?.asset,
+				value: getAssetName(),
 			},
 			{
 				label: 'Quantity',
@@ -91,9 +105,12 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				<div style={ { flex: 1 } }>
 					<div>
 						<span>Source: </span>
-						<a href={`${adminPageUrl}${namespace}-token-source-show&source=${props.promise?.source_id}`}>
-							<b>{props.promise?.source?.address.label ?? props.promise.source_id}</b>
-						</a>
+						<Button
+							isLink
+							href={ `${adminPageUrl}${namespace}-token-source-show&source=${props.promise?.source_id}` }
+						>
+							<span>{props.promise?.source?.address.label ?? props.promise.source_id}</span>
+						</Button>
 					</div>
 					<PromiseParticipants promise={ props.promise } />
 					{ getListItems() }

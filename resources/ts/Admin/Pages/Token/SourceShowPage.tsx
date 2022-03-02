@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import Page from './../Page';
@@ -17,12 +17,8 @@ import {
 	PanelHeader,
 } from '@wordpress/components';
 
-interface SourceShowPageData {
-	//
-}
-
 interface SourceShowPageProps {
-	pageData: SourceShowPageData;
+	//
 }
 
 export default function SourceShowPage( props: SourceShowPageProps ) {
@@ -37,6 +33,10 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 	const [ source, setSource ] = useState<any>( null );
 	const [ loadingSource, setLoadingSource ] = useState<boolean>( false );
 	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
+
+	function isDisabled(): boolean {
+		return ( !source?.address );
+	}
 
 	function isSourceValid() {
 		return ( source && typeof source === 'object' );
@@ -90,6 +90,7 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 								Edit Source
 							</Button>
 							<Button
+								disabled={ isDisabled() }
 								isSecondary
 								isLarge
 								href={ `${adminPageUrl}${namespace}-token-address-balance-index&id=${id}` }

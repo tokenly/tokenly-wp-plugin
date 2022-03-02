@@ -1,0 +1,28 @@
+{% macro meta_info_component( post, terms, user ) %}
+	<div class="token-meta-info">
+		<div class="grid-container">
+			<div class="image-container">
+				<img src="{{post.image}}" />
+			</div>
+			<div class="info-container">
+				<div class="name"><h1>{{post.name}}</h1></div>
+				<div class="tokenly-component spacer sm"></div>
+				<div class="categories">
+					<b>Categories:</b>
+					{% if terms|length > 0 %}
+						{% for term in terms %}
+							<a href="{{term.link}}">{{term.name}}</a>
+						{% endfor %}
+					{% else %}
+						<span>No category</span>
+					{% endif %}
+				</div>
+				<div>
+					<span><b>Balance:</b></span>
+					{{ do_shortcode( "[tokenly_token_balance asset='#{post.asset_name}' user='#{user.id}']" )|raw }}
+				</div>
+				<div class="description">{{post.description ?? "No description."}}</div>
+			</div>
+		</div>
+	</div>
+{% endmacro %}

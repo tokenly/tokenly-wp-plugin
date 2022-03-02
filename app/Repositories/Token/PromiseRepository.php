@@ -2,31 +2,44 @@
 
 namespace Tokenly\Wp\Repositories\Token;
 
+use Tokenly\Wp\Repositories\Repository;
 use Tokenly\Wp\Interfaces\Repositories\Token\PromiseRepositoryInterface;
 
+use Tokenly\Wp\Models\Token\Promise;
+use Tokenly\Wp\Collections\Token\PromiseCollection;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface;
+use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface;
+use Tokenly\Wp\Interfaces\Models\Token\SourceInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Token\PromiseFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Token\PromiseCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Token\QuantityFactoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\PromiseMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\AssetNameFormatterServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Domain\Token\QuantityCalculatorServiceInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class PromiseRepository implements PromiseRepositoryInterface {
-	protected $client;
-	protected $promise_factory;
-	protected $promise_collection_factory;
-	protected $quantity_factory;
+class PromiseRepository extends Repository implements PromiseRepositoryInterface {
+	protected TokenpassAPIInterface $client;
+	protected MetaRepositoryInterface $meta_repository;
+	protected PromiseMetaRepositoryInterface $promise_meta_repository;
+	protected SourceRepositoryInterface $source_repository;
+	protected AssetNameFormatterServiceInterface $asset_name_formatter_service;
+	protected QuantityCalculatorServiceInterface $quantity_calculator_service;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
-		PromiseFactoryInterface $promise_factory,
-		PromiseCollectionFactoryInterface $promise_collection_factory,
-		QuantityFactoryInterface $quantity_factory
+		MetaRepositoryInterface $meta_repository,
+		PromiseMetaRepositoryInterface $promise_meta_repository,
+		SourceRepositoryInterface $source_repository,
+		AssetNameFormatterServiceInterface $asset_name_formatter_service,
+		QuantityCalculatorServiceInterface $quantity_calculator_service
 	) {
 		$this->client = $client;
-		$this->promise_factory = $promise_factory;
-		$this->promise_collection_factory = $promise_collection_factory;
-		$this->quantity_factory = $quantity_factory;
+		$this->meta_repository = $meta_repository;
+		$this->promise_meta_repository = $promise_meta_repository;
+		$this->source_repository = $source_repository;
+		$this->asset_name_formatter_service = $asset_name_formatter_service;
+		$this->quantity_calculator_service = $quantity_calculator_service;
 	}
 
 	/**
@@ -34,44 +47,25 @@ class PromiseRepository implements PromiseRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return PromiseCollectionInterface Promises found
 	 */
-	public function index( array $params = array() ) {
-		$promises = $this->client->getPromisedTransactionList();
-		if ( $promises && is_array( $promises ) ) {
-			foreach ( $promises as &$promise ) {
-				$promise = $this->remap_fields( $promise );
-			}
-		} else {
-			$promises = array();
-		}
-		$promises = $this->promise_collection_factory->create( $promises );
-		return $promises;
+	public function index( array $params = array() ): PromiseCollectionInterface {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
 	 * Gets a single promise
-	 * @param array $params Search parameters
-	 * @return PromiseInterface Promise found
+	 * @param integer $promise_id Tokenpass promise index
+	 * @return PromiseInterface|null Promise found
 	 */
-	public function show( array $params = array() ) {
-		if ( !isset( $params['promise_id'] ) ) {
-			return false;
-		}
-		$promise_id = $params['promise_id'];
-		$promise = $this->client->getPromisedTransaction( $promise_id );
-		if ( !$promise ) {
-			return false;
-		}
-		$promise = $this->remap_fields( $promise );
-		$promise = $this->promise_factory->create( $promise );
-		return $promise;
+	public function show( array $params = array() ): ?PromiseInterface {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
-	
+
 	/**
 	 * Makes a new promise
-	 * @param array $params New promise properties
-	 * @return PromiseInterface New promise
+	 * @param array $params New promise data
+	 * @return PromiseInterface|null
 	 */
-	public function store( array $params = array() ) {
+	public function store( array $params = array() ): ?PromiseInterface {
 		$promise_data = $this->client->promiseTransaction(
 			$params['address'] ?? null,
 			$params['destination'] ?? null,
@@ -87,48 +81,149 @@ class PromiseRepository implements PromiseRepositoryInterface {
 			$params['note'] ?? null
 		);
 		if ( !$promise_data ) {
-			throw new \Exception( 'Promise was not created on the remote server.' );
+			return null;
 		}
 		if ( !isset( $promise_data['promise_id'] ) ) {
-			throw new \Exception( 'No ID on the returned promise.' );
+			return null;
 		}
-		$promise = $this->promise_factory->create( $promise_data );
+		$promise_data = $this->format_item( $promise_data );
+		$promise = ( new Promise() )->from_array( $promise_data );
 		return $promise;
 	}
 
 	/**
-	 * Updates the existing promised transaction
-	 * @param PromiseInterface $promise Promise to update
-	 * @param $params New promise properties
-	 * @return array
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return PromiseCollectionInterface Promises found
 	 */
-	public function update( PromiseInterface $promise, array $params = array() ) {
+	protected function index_cacheable( array $params = array() ): PromiseCollectionInterface {
+		$promises = $this->client->getPromisedTransactionList();
+		if ( $promises && is_array( $promises ) ) {
+			foreach ( $promises as &$promise ) {
+				$promise = $this->format_item( $promise );
+			}
+		} else {
+			$promises = array();
+		}
+		$promises = ( new PromiseCollection() )->from_array( $promises );
+		return $promises;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param integer $promise_id Tokenpass promise index
+	 * @return PromiseInterface|null Promise found
+	 */
+	protected function show_cacheable( array $params = array() ): ?PromiseInterface {
+		if ( !isset( $params['promise_id'] ) ) {
+			return null;
+		}
+		$promise_id = $params['promise_id'];
+		$promise = $this->client->getPromisedTransaction( $promise_id );
+		if ( !$promise ) {
+			return null;
+		}
+		$promise = $this->format_item( $promise );
+		$promise = ( new Promise() )->from_array( $promise );
+		return $promise;
+	}
+
+	/**
+	 * Updates the promise
+	 * @param PromiseInterface $promise Target promise
+	 * @param array $params Update parameters
+	 * @return void
+	 */
+	public function update( PromiseInterface $promise, array $params = array() ): void {
 		if ( isset( $params['destination'] ) ) {
 			unset( $params['destination'] );
 		}
-		$response = $this->client->updatePromisedTransaction( $promise->promise_id, $params );
+		if ( isset( $params['quantity'] ) && is_array( $params['quantity'] ) ) {
+			$params['quantity'] = $params['quantity']['value_sat'];
+		}
+		$expiration = $params['expiration'];
+		if ( ( !is_numeric( $expiration ) || ( int )$expiration != $expiration ) ) {
+			unset( $params['expiration'] );
+		}
+		$this->client->updatePromisedTransaction( $promise->get_promise_id(), $params );
 	}
 
 	/**
-	 * Destroys the existing promise
-	 * @param PromiseInterface $promise Promise to destroy
+	 * Destroys the promise
+	 * @param PromiseInterface $promise Target promise
 	 * @return void
 	 */
-	public function destroy( PromiseInterface $promise ) {
-		$this->client->deletePromisedTransaction( $promise->promise_id );
+	public function destroy( PromiseInterface $promise ): void {
+		$this->load( $promise, array( 'promise_meta' ) );
+		if ( $promise->get_promise_meta() ) {
+			$promise_meta = $promise->get_promise_meta();
+			$this->promise_meta_repository->destroy( $promise_meta );
+		}
+		$this->client->deletePromisedTransaction( $promise->get_promise_id() );
 	}
 
-	protected function remap_fields( array $promise ) {
+	/**
+	 * @inheritDoc
+	 */
+	protected function format_item( array $item ): array {
 		$quantity_fields = array();
-		if ( isset( $promise['quantity'] ) ) {
-			$quantity_fields[ 'value_sat' ] = $promise['quantity'];
+		if ( isset( $item['quantity'] ) ) {
+			$quantity_fields[ 'value_sat' ] = $item['quantity'];
 		}
-		if ( isset( $promise['precision'] ) ) {
-			$quantity_fields[ 'precision' ] = $promise['precision'];
+		if ( isset( $item['precision'] ) ) {
+			$quantity_fields[ 'precision' ] = $item['precision'];
 		}
-		$promise['quantity'] = $this->quantity_factory->create( $quantity_fields );
-		$promise['source_id'] = $promise['source'];
-		unset( $promise['source'] );
-		return $promise;
+		if ( isset( $quantity_fields['value_sat'] ) && isset( $quantity_fields['precision'] ) ) {
+			$quantity_fields['value'] = $this->quantity_calculator_service->from_sat( $quantity_fields['value_sat'], $quantity_fields['precision'] );
+		}
+		$item['quantity'] = $quantity_fields;
+		$item['asset'] = $this->asset_name_formatter_service->split( $item['asset'] );
+		$item['source_id'] = $item['source'];
+		unset( $item['source'] );
+		return $item;
+	}
+
+	/**
+	 * Loads the promise asset meta relation
+	 * @param PromiseInterface $promsie Target promise
+	 * @param string[] $relations Further relations
+	 * @return MetaInterface|null
+	 */
+	protected function load_token_meta( PromiseInterface $promise, array $relations = array() ): ?MetaInterface {
+		$token_meta = $this->meta_repository->show( array(
+			'with'        => $relations,
+			'assets' => array( $promise->get_asset()->get_name() ), 
+		) );
+		return $token_meta;
+	}
+
+	/**
+	 * Loads the promise meta relation
+	 * @param PromiseInterface $promise Target promise
+	 * @param string[] $relations Further relations
+	 * @return PromiseMetaInterface|null
+	 */
+	protected function load_promise_meta( PromiseInterface $promise, array $relations = array() ): ?PromiseMetaInterface {
+		$promise_meta = $this->promise_meta_repository->show( array(
+			'with'        => $relations,
+			'promise_ids' => array( $promise->get_promise_id() ), 
+		) );
+		return $promise_meta;
+	}
+
+	/**
+	 * Loads the source relation
+	 * @param PromiseInterface $promise Target promise
+	 * @param string[] $relations Further relations
+	 * @return SourceInterface|null
+	 */
+	protected function load_source( PromiseInterface $promise, array $relations ): ?SourceInterface {
+		$source = $this->source_repository->show( array(
+			'address' => $promise->get_source_id(),
+			'with'    => $relations,
+		) );
+		return $source;
 	}
 }

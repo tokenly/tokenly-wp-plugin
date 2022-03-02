@@ -1,7 +1,23 @@
-{% macro user_info_component( name ) %}
-	<div class="tokenly-component user-info">
-		<div class="username-container">
-			<h2>{{name}}'s collections</h2>
+{% macro user_info_component( id, name, description, avatar ) %}
+	<div class="tokenly-component user-info" data-user="{{ id }}">
+		<div class="avatar-container">
+			<div class="avatar-background">
+				<div class="options-container">
+					<i class="tokenly-icon-share" ></i>
+					<a href="/wp-admin/profile.php" >
+						<i class="tokenly-icon-cog" ></i>
+					</a>
+				</div>
+			</div>
+			<img class="avatar" src="{{ avatar ?? '/wp-content/plugins/tokenly-wp-plugin/resources/images/avatar_placeholder.png' }}">
+		</div>
+		<div class="info-container">
+			<div class="username-container">
+				<div>{{ name }}</div>
+			</div>
+			<div class="description-container">
+				<div class="description">{{ description }}</div>
+			</div>
 		</div>
 	</div>
 {% endmacro %}

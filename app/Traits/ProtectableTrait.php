@@ -2,12 +2,10 @@
 
 namespace Tokenly\Wp\Traits;
 
-use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Tca\RuleCheckResultCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCheckResultCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Tca\AccessVerdictFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface;
-use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Collections\Token\Access\RuleCollection;
+use Tokenly\Wp\Collections\Token\Access\RuleCollectionCollection;
+use Tokenly\Wp\Interfaces\Collections\Token\Access\RuleCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\Access\RuleCollectionCollectionInterface;
 
 /**
  * Common logic for entities which can be protected by TCA.
@@ -17,215 +15,34 @@ trait ProtectableTrait {
 	 * Associated TCA rules
 	 * @var RuleCollectionInterface
 	 */
-	public $tca_rules;
-	/**
-	 * @Inject
-	 * @var AccessVerdictFactoryInterface
-	 */
-	private $tca_access_verdict_factory;
-	/**
-	 * @Inject
-	 * @var RuleCheckResultCollectionFactoryInterface
-	 */
-	private $tca_rule_check_result_collection_factory;
+	protected ?RuleCollectionInterface $tca_rules = null;
 
-	/**
-	 * Begins the TCA check procedure
-	 * @param UserInterface $user User to test
-	 * @return AccessVerdictInterface Access verdict
-	 */
-	public function can_access( UserInterface $user = null ) {
-		$verdict = null;
-		$status = false;
-		$note = '';
-		$is_protected = $this->is_protected();
-		if ( $is_protected === true ) {
-			if ( $user && $user instanceof UserInterface ) {
-				$precheck = $user->get_tca_precheck_data();
-				if ( isset( $precheck['need_test'] ) && $precheck['need_test'] === true ) {
-					$verdict = $this->test_access( $user );
-					return $verdict;
-				} else {
-					if ( isset( $precheck['status'] ) ) {
-						$status = $precheck['status'];
-					}
-					if ( isset( $precheck['note'] ) ) {
-						$note = $precheck['note'];
-					}
-				}
-			} else {
-				$status = false;
-				$need_test = false;
-				$note = 'The user is not logged in.';
-			}
-		} else {
-			$status = true;
+	public function get_tca_rules(): ?RuleCollectionInterface {
+		return $this->tca_rules ?? null;
+	}
+
+	public function set_tca_rules( ?RuleCollectionInterface $value ): void {
+		$this->tca_rules = $value;
+	}
+
+	protected function protectable_from_array( array $data = array() ): array {
+		if ( isset( $data['tca_rules'] ) && is_array( $data['tca_rules'] ) ) {
+			$data['tca_rules'] = ( new RuleCollection() )->from_array( $data['tca_rules'] );
 		}
-		$verdict = $this->tca_access_verdict_factory->create(
-			array(
-				'status'  => $status,
-				'reports' => null,
-				'note'    => $note,
-			)
+		return $data;
+	}
+
+	protected function protectable_to_array(): array {
+		$array = array();
+		if ( $this->get_tca_rules() ) {
+			$array['tca_rules'] = $this->get_tca_rules()->to_array();
+		}
+		return $array;
+	}
+
+	protected function protectable_get_fillable(): array {
+		return array(
+			'tca_rules',
 		);
-		return $verdict;
-	}
-
-	/**
-	 * Checks if any element of the item is protected by TCA
-	 * @return bool
-	 */
-	public function is_protected() {
-		$root_protected = $this->check_root_protected();
-		$relations_protected = $this->check_relations_protected();
-		if ( $root_protected === true || $relations_protected === true ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Gets all associated TCA rule groups
-	 * @return array
-	 */
-	public function get_tca_rules() {
-		$rules = array();
-		$tca_enabled = $this->check_tca_enabled();
-		if (
-			$tca_enabled === true &&
-			isset( $this->tca_rules ) &&
-			$this->tca_rules instanceof RuleCollectionInterface &&
-			count( ( array ) $this->tca_rules ) > 0
-		) {
-			$rules[] = $this->tca_rules;
-		}
-		$relation_rules = $this->get_tca_rules_relation();
-		$rules = array_merge( $rules, $relation_rules );
-		$rules = $this->key_tca_rule_groups( $rules );
-		return $rules;
-	}
-
-	/**
-	 * Checks if the specified user can access the post and its terms
-	 * @param UserInterface $user User to check
-	 * @return AccessVerdictInterface
-	 */
-	protected function test_access( UserInterface $user ) {
-		$status = false;
-		$reports = $this->tca_rule_check_result_collection_factory->create();
-		$root_verdict = $this->test_access_root( $user );
-		$relation_verdict = $this->test_access_relations( $user );
-		if (
-			$root_verdict->status === false ||
-			$relation_verdict->status === false
-		) {
-			$status = false;
-		} else {
-			$status = true;
-		}
-		foreach ( array( $root_verdict, $relation_verdict ) as $verdict ) {
-			if (
-				$verdict instanceof AccessVerdictInterface &&
-				isset( $verdict->reports ) &&
-				$verdict->reports instanceof RuleCheckResultCollectionInterface
-			) {
-				$reports = $reports->merge( $verdict->reports );
-			}
-		}
-		$verdict = $this->tca_access_verdict_factory->create( array(
-			'status'  => $status,
-			'reports' => $reports,
-		) );
-		return $verdict;
-	}
-
-	/**
-	 * Checks if the specified user can access the post
-	 * @param UserInterface $user User to check
-	 * @return AccessVerdictInterface
-	 */
-	protected function test_access_root( UserInterface $user ) {
-		$need_test = true;
-		$status = false;
-		$reports = null;
-		$tca_enabled = $this->check_tca_enabled();
-		if ( $tca_enabled === false ) {
-			$status = true;
-			$need_test = false;
-		}
-		if ( $need_test === true ) {
-			$result = $user->check_token_access( $this->tca_rules );
-			$status = $result->status;
-			$reports = $this->tca_rule_check_result_collection_factory->create( array( $result ) );
-		}
-		$verdict = $this->tca_access_verdict_factory->create( array(
-			'status'  => $status,
-			'reports' => $reports,
-		) );
-		return $verdict;
-	}
-
-	/**
-	 * Test if the specified user is allowed to access the relations
-	 * @param UserInterface $user User to test
-	 * @return AccessVerdictInterface
-	 */
-	protected function test_access_relations( UserInterface $user ) {
-		$verdict = $this->tca_access_verdict_factory->create( array(
-			'status'  => true,
-			'reports' => null,
-		) );
-		return $verdict;
-	}
-
-	/**
-	 * Gets the TCA rule groups of the relations
-	 * @return array
-	 */
-	protected function get_tca_rules_relation() {
-		return array();
-	}
-
-	/**
-	 * Keys the TCA rule groups by their rule attribute hash
-	 * @param array $rule_groups Rule groups to key
-	 * @return array
-	 */
-	protected function key_tca_rule_groups( array $rule_groups ) {
-		$rules_keyed = array();
-		foreach ( $rule_groups as $rule ) {
-			$rules_keyed[ $rule->to_hash() ] = $rule;
-		}
-		return $rules_keyed;
-	}
-
-	/**
-	 * Checks if TCA is enabled for type
-	 * @return bool
-	 */
-	protected function check_tca_enabled() {
-		return false;
-	}
-
-	protected function check_root_protected() {
-		$tca_enabled = $this->check_tca_enabled();
-		$rules_total = 0;
-		if ( isset( $this->tca_rules ) && $this->tca_rules instanceof RuleCollectionInterface ) {
-			$rules_total = count( ( array ) $this->tca_rules );
-		}
-		if ( $tca_enabled === true && $rules_total > 0 ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Checks if the relations are TCA protected
-	 * @return bool
-	 */
-	protected function check_relations_protected() {
-		return false;
 	}
 }

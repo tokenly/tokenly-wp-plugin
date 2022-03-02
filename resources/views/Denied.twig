@@ -1,7 +1,7 @@
 {% extends "Index.twig" %}
 {% block content %}
 	<div class="tokenly-access-denied">
-		<h1>Access denied</h1>
+		<h1>Access Denied</h1>
 		<div class="note">{{ verdict.note }}</div>
 		{% if verdict.reports %}
 			<div class="rule-groups">
@@ -12,7 +12,7 @@
 								<div class="rule">
 									<div class="attributes" >
 										{% if key > 0 %}
-											<div class="group-operator">{{ rule.stackOp }}</div>
+											<div class="group-operator">{{ rule.stack_op }}</div>
 										{% endif %}
 										<div class="expression">
 											<span class="asset">{{ rule.asset }}</span>

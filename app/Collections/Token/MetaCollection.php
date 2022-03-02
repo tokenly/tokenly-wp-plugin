@@ -6,11 +6,11 @@
 
 namespace Tokenly\Wp\Collections\Token;
 
-use Tokenly\Wp\Collections\Collection;
+use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface;
 
-use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
+use Tokenly\Wp\Models\Token\Meta;
 
-class MetaCollection extends Collection implements MetaCollectionInterface {
-	protected $item_type = MetaInterface::class;
+class MetaCollection extends PostCollection implements MetaCollectionInterface {
+	protected string $item_type = Meta::class;
 }

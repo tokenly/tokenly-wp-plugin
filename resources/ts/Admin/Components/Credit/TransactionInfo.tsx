@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as dayjs from 'dayjs'
 import UserLink from './../UserLink';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
 import { 
 	Flex,
@@ -16,7 +16,6 @@ interface TransactionInfoProps {
 export default function TransactionInfo( props: TransactionInfoProps ) {
 	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace = useInjection( TYPES.Variables.namespace );
-
 	function dateFormatted( date: Date ) {
 		if ( date ) {
 			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
@@ -25,7 +24,7 @@ export default function TransactionInfo( props: TransactionInfoProps ) {
 	}
 
 	function getUserLink() {
-		if ( props.transaction?.user.id ) {
+		if ( props.transaction?.user?.id ) {
 			return `${adminPageUrl}${namespace}-user-credit-balance-index&id=${props.transaction?.user.id}`;
 		} else {
 			return null
@@ -37,11 +36,14 @@ export default function TransactionInfo( props: TransactionInfoProps ) {
 			<div style={ { flex: 1 } }>
 				<Flex justify="flex-start">
 					<span>User: </span>
-					<UserLink
-						url={ getUserLink() }
-						name={ props.transaction?.user?.name ? props.transaction?.user?.name : props.transaction?.account }
-						alt={ props.transaction.account }
-					/>
+					{ getUserLink() 
+					? 	<UserLink
+							url={ getUserLink() }
+							name={ props.transaction?.user?.name ? props.transaction?.user?.name : props.transaction?.account }
+							alt={ props.transaction.account }
+						/>
+					:	<span>{ props.transaction?.account }</span>
+					}
 				</Flex>
 				<div>
 					<span>Amount: </span>

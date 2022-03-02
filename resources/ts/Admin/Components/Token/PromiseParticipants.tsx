@@ -1,7 +1,7 @@
 import * as React from 'react';
 import UserLink from './../UserLink';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
 import { 
 	 Flex,

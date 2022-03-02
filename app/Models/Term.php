@@ -4,12 +4,8 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
-use Tokenly\Wp\Interfaces\Models\ProtectableInterface;
+use Tokenly\Wp\Interfaces\Traits\ProtectableInterface;
 use Tokenly\Wp\Traits\ProtectableTrait;
-
-use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 /**
  * WP_Term with some upgrades to support TCA
@@ -17,26 +13,7 @@ use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 class Term extends Model implements TermInterface, ProtectableInterface {
 	use ProtectableTrait;
 
-	public $tca_rules;
-	protected $term = null;
-	protected $meta_repository;
-	protected $tca_settings;
-	protected $fillable = array(
-		'term',
-		'tca_rules',
-	);
-
-	public function __construct(
-		TermRepositoryInterface $domain_repository,
-		PostMetaRepositoryInterface $meta_repository,
-		TcaSettingsInterface $tca_settings,
-		array $data = array()
-	) {
-		$this->domain_repository = $domain_repository;
-		$this->meta_repository = $meta_repository;
-		$this->tca_settings = $tca_settings;
-		parent::__construct( $data );
-	}
+	protected ?\WP_Term $term = null;
 
 	public function __call( $method, $args ) {
 		return call_user_func_array( array( $this->term, $method ), $args );
@@ -46,14 +23,53 @@ class Term extends Model implements TermInterface, ProtectableInterface {
 		return $this->term->$key;
 	}
 
-	public function __set( $key, $val ) {
-		return $this->term->$key = $val;
+	public function __set( $key, $value ) {
+		return $this->term->$key = $value;
 	}
 
-	/* Protectable trait */
+	public function get_term(): ?\WP_Term {
+		return $this->term ?? null;
+	}
 
-	protected function check_tca_enabled() {
-		$is_enabled = $this->tca_settings->is_enabled_for_taxonomy( $this->taxonomy ) ?? false;
-		return $is_enabled;
+	public function set_term( ?\WP_Term $value ): void {
+		$this->term = $value;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function from_array( array $data = array() ): self {
+		$data = $this->protectable_from_array( $data );
+		return parent::from_array( $data );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function to_array(): array {
+		$term = $this->get_term();
+		$array = array(
+			'id'          => $term->slug,
+			'name'        => $term->name,
+			'description' => $term->description,
+			'slug'        => $term->slug,
+			'link'        => get_term_link( $term, $term->taxonomy )
+		);
+		$array_protectable = $this->protectable_to_array();
+		$array = array_merge( $array, $array_protectable );
+		return $array;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_fillable(): array {
+		return array_merge( parent::get_fillable(), $this->protectable_get_fillable(), array(
+			'term',
+		) );
+	}
+
+	public function get_tca_rules_relation() {
+		return null;
 	}
 }

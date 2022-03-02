@@ -2,35 +2,28 @@ import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
 import Page from './../Page';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupInfo from '../../Components/Credit/GroupInfo';
+import GroupShowActions from '../../Components/Credit/GroupShowActions';
 import Preloader from '../../Components/Preloader';
 
 import { 
-	Button,
 	Panel,
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Flex,
 } from '@wordpress/components';
 
-interface GroupShowPageData {
+interface GroupShowPageProps {
 	//
 }
 
-interface GroupShowPageProps {
-	pageData: GroupShowPageData;
-}
-
 export default function GroupShowPage( props: GroupShowPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 	
 	const urlParams = new URLSearchParams( window.location.search );
-	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'group' ) );
+	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'id' ) );
 	const [ group, setGroup ] = useState<any>( null );
 	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( null );
 
@@ -62,15 +55,7 @@ export default function GroupShowPage( props: GroupShowPageProps ) {
 			<Panel>
 				<PanelBody>
 					<PanelRow>
-						<Flex justify="flex-start">
-							<Button
-								isSecondary
-								isLarge
-								href={ `${adminPageUrl}${namespace}-credit-group-edit&group=${ group?.uuid }` }
-							>
-								Manage Group
-							</Button>
-						</Flex>
+						<GroupShowActions group={ uuid } />
 					</PanelRow>
 				</PanelBody>
 			</Panel>

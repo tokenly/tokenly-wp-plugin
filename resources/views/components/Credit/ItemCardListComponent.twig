@@ -1,0 +1,34 @@
+{% macro item_card_list_component( user, items, vendor_url, is_admin, namespace, style = "grid" ) %}
+	{% from 'components/Credit/ItemCardComponent.twig' import item_card_component %}
+	{% from 'components/LoaderComponent.twig' import loader_component %}
+	<div class="tokenly-component {{ namespace }}-credit-item-card-list loading" data-style="{{ style }}" data-user="{{ user }}" >
+		<div class="title-container">
+			<h2>Credits</h2>
+			{% if is_admin == true %}
+			<div class="options-container">
+				<div class="link-container">
+					<a href="{{ vendor_url }}">View in Admin</a>
+				</div>
+				<div class="action-container">
+					<span class="style-select" data-style="grid">
+						<i class="tokenly-icon-th-large"></i>
+					</span>
+					<span class="style-select" data-style="list">
+						<i class="tokenly-icon-list-bullet"></i>
+					</span>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		<div class="items">
+			{% for item in items %}
+				{{ item_card_component(
+					item.name,
+					item.balance
+				) }}
+			{% endfor %}
+		</div>
+		<div class="empty-label">There are no credits.</div>
+		{{ loader_component( namespace, "large", "dark" ) }}
+	</div>
+{% endmacro %}

@@ -5,7 +5,7 @@ import Page from './../Page';
 import TransactionList from '../../Components/Credit/TransactionList';
 import Preloader from '../../Components/Preloader';
 import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
 import {
 	Panel,
@@ -14,12 +14,8 @@ import {
 	PanelHeader,
 } from '@wordpress/components';
 
-interface TransactionIndexPageData {
-	//
-}
-
 interface TransactionIndexPageProps {
-	pageData: TransactionIndexPageData;
+	//
 }
 
 export default function TransactionIndexPage( props: TransactionIndexPageProps ) {
@@ -33,7 +29,6 @@ export default function TransactionIndexPage( props: TransactionIndexPageProps )
 		const group = urlParams.get( 'group' );
 		const params = {
 			group: group,
-			with: [ 'user' ],
 		}
 		setLoadingTransactions( true );
 		transactionRepository.index( params ).then( ( transactionsFound: any ) => {

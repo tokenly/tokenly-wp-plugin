@@ -1,0 +1,22 @@
+{% macro meta_media_component( media ) %}
+	<div class="token-meta-extra-media">
+		<h2>Media</h2>
+		<div class="tokenly-component spacer md"></div>
+		{% if media|length > 0 %}
+		<div class="swiper">
+			<div class="swiper-wrapper">
+				{% for media_item in media %}
+					<div class="swiper-slide">
+						<img src="{{media_item.url}}" />
+					</div>
+				{% endfor %}
+			</div>
+			<div class="swiper-pagination"></div>
+			<div class="swiper-button-prev"></div>
+			<div class="swiper-button-next"></div>
+		</div>
+		{% else %}
+		<div class="empty">No extra media.</div>
+		{% endif %}
+	</div>
+{% endmacro %}

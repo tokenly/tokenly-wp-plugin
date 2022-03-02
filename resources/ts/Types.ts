@@ -1,21 +1,26 @@
 const TYPES = {
 	Variables: {
-		adminUrl: Symbol.for( 'adminUrl' ),
-		adminPageUrl: Symbol.for( 'adminPageUrl' ),
-		apiHost: Symbol.for( 'apiHost' ),
-		brand: Symbol.for( 'brand' ),
-		namespace: Symbol.for( 'namespace' ),
-	},
-	Components: {
-		LoginButtonComponentInterface       : Symbol.for( 'LoginButtonComponentInterface' ),
-		TokenItemCardComponentInterface     : Symbol.for( 'TokenItemCardComponentInterface' ),
+		adminUrl      : Symbol.for( 'adminUrl' ),
+		adminPageUrl  : Symbol.for( 'adminPageUrl' ),
+		apiHost       : Symbol.for( 'apiHost' ),
+		brand         : Symbol.for( 'brand' ),
+		namespace     : Symbol.for( 'namespace' ),
+		pluginUrl     : Symbol.for( 'pluginUrl' ),
+		nonce         : Symbol.for( 'nonce' ),
+		routes        : Symbol.for( 'routes' ),
+		fallbackImage : Symbol.for( 'fallbackImage' ),
 	},
 	Services: {
-		AuthServiceInterface                : Symbol.for( 'AuthServiceInterface' ),
-		AdminApiServiceInterface            : Symbol.for( 'AdminApiServiceInterface' ),
-	},
-	Providers: {
-		ComponentServiceProviderInterface   : Symbol.for( 'ComponentServiceProviderInterface' ),
+		AuthServiceInterface  : Symbol.for( 'AuthServiceInterface' ),
+		ApiServiceInterface   : Symbol.for( 'ApiServiceInterface' ),
+		Application: {
+			Credit : {
+				VendorServiceInterface : Symbol.for( 'CreditVendorServiceInterface' ),
+			},
+			Token  : {
+				VendorServiceInterface : Symbol.for( 'TokenVendorServiceInterface' ),
+			},
+		}
 	},
 	Repositories: {
 		UserRepositoryInterface             : Symbol.for( 'UserRepositoryInterface' ),
@@ -24,17 +29,19 @@ const TYPES = {
 			TransactionRepositoryInterface  : Symbol.for( 'TransactionRepositoryInterface' ),
 		},
 		Settings: {
-			OauthSettingsRepositoryInterface        : Symbol.for( 'OauthSettingsRepositoryInterface' ),
-			IntegrationSettingsRepositoryInterface  : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
-			TcaSettingsRepositoryInterface          : Symbol.for( 'TcaSettingsRepositoryInterface' ),
-			WhitelistSettingsRepositoryInterface    : Symbol.for( 'WhitelistSettingsRepositoryInterface' ),
+			OauthSettingsRepositoryInterface           : Symbol.for( 'OauthSettingsRepositoryInterface' ),
+			IntegrationSettingsRepositoryInterface     : Symbol.for( 'IntegrationSettingsRepositoryInterface' ),
+			TcaSettingsRepositoryInterface             : Symbol.for( 'TcaSettingsRepositoryInterface' ),
+			CreditWhitelistSettingsRepositoryInterface : Symbol.for( 'CreditWhitelistSettingsRepositoryInterface' ),
+			TokenWhitelistSettingsRepositoryInterface  : Symbol.for( 'TokenWhitelistSettingsRepositoryInterface' ),
 		},
 		Token: {
-			AddressRepositoryInterface  : Symbol.for( 'AddressRepositoryInterface' ),
-			BalanceRepositoryInterface  : Symbol.for( 'BalanceRepositoryInterface' ),
-			PromiseRepositoryInterface  : Symbol.for( 'PromiseRepositoryInterface' ),
-			SourceRepositoryInterface   : Symbol.for( 'SourceRepositoryInterface' ),
-			MetaRepositoryInterface     : Symbol.for( 'MetaRepositoryInterface' ),
+			AddressRepositoryInterface     : Symbol.for( 'AddressRepositoryInterface' ),
+			BalanceRepositoryInterface     : Symbol.for( 'BalanceRepositoryInterface' ),
+			PromiseRepositoryInterface     : Symbol.for( 'PromiseRepositoryInterface' ),
+			SourceRepositoryInterface      : Symbol.for( 'SourceRepositoryInterface' ),
+			MetaRepositoryInterface        : Symbol.for( 'MetaRepositoryInterface' ),
+			WhitelistRepositoryInterface   : Symbol.for( 'WhitelistRepositoryInterface' ),
 		},
 	},
 	Routes: {

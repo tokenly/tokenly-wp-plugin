@@ -7,153 +7,104 @@
 namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-
-use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Tca\RuleCheckResultFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\GuestUserInterface;
-use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
+
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 class User extends Model implements UserInterface {
-	public $user;
-	public $oauth_user;
-	public $oauth_token;
-	public $uuid;
-	public $can_connect;
-	protected $oauth_user_service;
-	protected $user_meta_repository;
-	protected $tca_rule_check_result_factory;
-	protected $fillable = array(
-		'user',
-		'oauth_user',
-		'oauth_token',
-		'uuid',
-		'can_connect',
-	);
+	protected ?\WP_User $user;
+	protected ?OauthUserInterface $oauth_user;
+	protected ?string $oauth_token;
+	protected ?string $uuid;
+	protected ?bool $can_connect;
 
-	public function __construct(
-		OauthUserServiceInterface $oauth_user_service,
-		UserMetaRepositoryInterface $user_meta_repository,
-		UserRepositoryInterface $domain_repository,
-		RuleCheckResultFactoryInterface $tca_rule_check_result_factory,
-		array $data = array()
-	) {
-		$this->oauth_user_service = $oauth_user_service;
-		$this->user_meta_repository = $user_meta_repository;
-		$this->domain_repository = $domain_repository;
-		$this->tca_rule_check_result_factory = $tca_rule_check_result_factory;
-		parent::__construct( $data );
+	public function get_user(): ?\WP_User {
+		return $this->user ?? null;
+	}
+
+	public function set_user( ?\WP_User $value ): void {
+		$this->user = $value;
+	}
+
+	public function get_oauth_user(): ?OauthUserInterface {
+		return $this->oauth_user ?? null;
+	}
+
+	public function set_oauth_user( ?OauthUserInterface $value ): void {
+		$this->oauth_user = $value;
+	}
+
+	public function get_oauth_token(): ?string {
+		return $this->oauth_token ?? null;
+	}
+
+	public function set_oauth_token( ?string $value ): void {
+		$this->oauth_token = $value;
+	}
+
+	public function get_uuid(): ?string {
+		return $this->uuid ?? null;
+	}
+
+	public function set_uuid( ?string $value ): void {
+		$this->uuid = $value;
+	}
+
+	public function get_can_connect(): ?bool {
+		return $this->can_connect ?? null;
+	}
+
+	public function set_can_connect( ?bool $value ): void {
+		$this->can_connect = $value;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_fillable(): array {
+		return array_merge( parent::get_fillable(), array(
+			'user',
+			'oauth_token',
+			'uuid',
+			'can_connect',
+		) );
 	}
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->user, $method ), $args );
+		return call_user_func_array( array( $this->get_user(), $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->user->$key;
+		return $this->get_user()->$key;
 	}
 
-	public function __set( $key, $val ) {
-		return $this->user->$key = $val;
+	public function __set( $key, $value ) {
+		return $this->get_user()->$key = $value;
 	}
 	
-	public function to_array() {
-		$array = parent::to_array();
-		$array = array_merge( $array, array(
-			'id'   => $this->ID,
-			'name' => $this->user_login,
-		) );
+	/**
+	 * @inheritDoc
+	 */
+	public function to_array(): array {
+		$array = array();
+		$array_parent = parent::to_array();
+		$array_user = array();
+		if ( $this->get_user() ) {
+			$array_user = array_merge( $array_user, array(
+				'id'           => $this->get_user()->ID,
+				'name'         => $this->get_user()->user_login,
+				'name_display' => $this->get_user()->display_name,
+				'description'  => $this->get_user()->description,
+				'avatar'       => get_avatar_url( $this->get_user()->ID, array(
+					'size' => 180,
+				) ),
+				'can_connect'  => $this->get_can_connect(),
+			) );
+		}
+		if ( $this->get_oauth_user() ) {
+			$array['oauth_user'] = $this->get_oauth_user()->to_array();
+		}
+		$array = array_merge( $array, $array_parent, $array_user );
 		return $array;
-	}
-
-	/**
-	 * Checks if the user is currently connected to Tokenpass
-	 * @return bool
-	 */
-	public function can_connect() {
-		return $this->can_connect;
-	}
-
-	/**
-	 * Connects the user to Tokenpass
-	 * @param OauthUserInterface $oauth_user OAuth user to associate the current user with
-	 * @param string $oauth_token OAuth token of the OAuth user
-	 * @return self
-	 */
-	public function connect( OauthUserInterface $oauth_user, string $oauth_token ) {
-		$this->update( array(
-			'uuid'        => $oauth_user->id,
-			'oauth_token' => $oauth_token,
-			'can_connect' => true,
-		) );
-		$this->add_cap( 'use_tokenpass' );
-		return $this;
-	}
-
-	/**
-	 * Disconnects the user from Tokenpass
-	 * @return void
-	 */
-	public function disconnect() {
-		$this->user_meta_repository->destroy( $this->ID, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
-		$this->remove_cap( 'use_tokenpass');
-		return $this;
-	}
-
-	/**
-	 * Checks if the user can pass the specified TCA rules
-	 * @param RuleCollectionInteface $rules Rules to test
-	 * @return RuleCheckResultInterface
-	 */
-	public function check_token_access( RuleCollectionInterface $rules ) {
-		$this->load( array( 'oauth_user' ) );
-		if ( $this->oauth_user instanceof OauthUserInterface ) {
-			return $access_report = $this->oauth_user->check_token_access( $rules );
-		}
-	}
-
-	/**
-	 * Tests the user before starting TCA check
-	 * @return array
-	 */
-	public function get_tca_precheck_data() {
-		$status = false;
-		$note = '';
-		$need_test = true;
-		if ( user_can( $this, 'administrator' ) ) {
-			$status = true;
-			$need_test = false;
-		}
-		$this->load( array( 'oauth_user' ) );
-		if ( $this->oauth_user instanceof OauthUserInterface === false ) {
-			$status = false;
-			$need_test = false;
-			$note = 'The user is not connected.';
-		}
-		return array(
-			'need_test' => $need_test,
-			'status'    => $status,
-			'note'      => $note,
-		);
-	}
-
-	/**
-	 * Loads the oauth_user relation
-	 * @param string[] $relations Further relations
-	 * @return OauthUserInterface
-	 */
-	protected function load_oauth_user( array $relations = array() ) {
-		$oauth_user = $this->oauth_user_service->show(
-			array(
-				'id'   => $this->ID,
-				'with' => $relations,
-			)
-		);
-		return $oauth_user;
 	}
 }

@@ -1,66 +1,94 @@
-import { injectable, inject } from 'inversify';
-import { UserIndexParams, UserShowParams } from '../Interfaces';
 import UserRepositoryInterface from './../Interfaces/Repositories/UserRepositoryInterface';
-import AdminApiServiceInterface from '../Interfaces/Services/AdminApiServiceInterface';
+
+import { injectable, inject } from 'inversify';
 import { TYPES } from './../Types';
+
+import {
+	ApiServiceInterface,
+	UserIndexParamsInterface,
+	UserShowParamsInterface,
+	UserCreditBalanceIndexParamsInterface,
+	UserTokenBalanceIndexParamsInterface,
+	UserTokenAddressIndexParamsInterface,
+} from './../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class UserRepository implements UserRepositoryInterface {
-	adminApiService;
+	protected ApiService: ApiServiceInterface;
 
 	constructor(
-		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
 	) {
-		this.adminApiService = adminApiService;
+		this.ApiService = ApiService;
 	}
 	
-	index( params: UserIndexParams ): Promise<any> {
+	public index( params?: UserIndexParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.userIndex( params ).then( result => {
+			this.ApiService.userIndex( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	show( id: string, params: any = [] ): Promise<any> {
+	public show( id: string, params?: UserShowParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.userShow( id, params ).then( result => {
+			this.ApiService.userShow( id, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	creditBalanceIndex( id: string, params: any = [] ): Promise<any> {
+	public creditBalanceIndex( id: string, params: UserCreditBalanceIndexParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.userCreditBalanceIndex( id, params ).then( result => {
+			this.ApiService.userCreditBalanceIndex( id, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	tokenBalanceIndex( id: string, params: any = [] ): Promise<any> {
+	public creditBalanceShow( id: string, group: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.userTokenBalanceIndex( id, params ).then( result => {
+			this.ApiService.userCreditBalanceShow( id, group ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	tokenAddressIndex( id: string, params: any = [] ): Promise<any> {
+	public tokenBalanceIndex( id: string, params?: UserTokenBalanceIndexParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.userTokenAddressIndex( id, params ).then( result => {
+			this.ApiService.userTokenBalanceIndex( id, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
+	}
+
+	public tokenBalanceShow( id: string, asset: string ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.userTokenBalanceShow( id, asset ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public tokenAddressIndex( id: string, params?: UserTokenAddressIndexParamsInterface ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.userTokenAddressIndex( id, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
 	}
 }

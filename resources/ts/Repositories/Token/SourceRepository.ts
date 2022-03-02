@@ -1,22 +1,29 @@
-import { injectable, inject } from 'inversify';
-import { SourceData } from '../../Interfaces';
 import SourceRepositoryInterface from '../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import AdminApiServiceInterface from '../../Interfaces/Services/AdminApiServiceInterface';
+
+import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
+
+import {
+	ApiServiceInterface,
+	TokenSourceIndexParamsInterface,
+	TokenSourceShowParamsInterface,
+	TokenSourceStoreParamsInterface,
+	TokenSourceUpdateParamsInterface,
+} from './../../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class SourceRepository implements SourceRepositoryInterface {
-	adminApiService;
+	ApiService: ApiServiceInterface;
 	
 	constructor(
-		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
 	) {
-		this.adminApiService = adminApiService;
+		this.ApiService = ApiService;
 	}
 
-	index( params: any ): Promise<Array<SourceData>> {
+	public index( params?: TokenSourceIndexParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenSourceIndex( params ).then( ( result: Array<SourceData> ) => {
+			this.ApiService.tokenSourceIndex( params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -24,9 +31,9 @@ export default class SourceRepository implements SourceRepositoryInterface {
 		});
 	}
 
-	show( id: string, params?: any ): Promise<Array<any>> {
+	public show( id: string, params?: TokenSourceShowParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenSourceShow( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenSourceShow( id, params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -34,33 +41,33 @@ export default class SourceRepository implements SourceRepositoryInterface {
 		} );
 	}
 
-	store( params: SourceData ): Promise<any> {
+	public store( params: TokenSourceStoreParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenSourceStore( params ).then( result => {
+			this.ApiService.tokenSourceStore( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	update( address: string, params: SourceData ): Promise<any> {
+	public update( address: string, params: TokenSourceUpdateParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenSourceUpdate( address, params ).then( result => {
+			this.ApiService.tokenSourceUpdate( address, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	destroy( address: string ): Promise<any> {
+	public destroy( address: string ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenSourceDestroy( address ).then( result => {
+			this.ApiService.tokenSourceDestroy( address ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 }

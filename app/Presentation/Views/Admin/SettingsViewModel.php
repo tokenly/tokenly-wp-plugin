@@ -5,30 +5,42 @@ namespace Tokenly\Wp\Presentation\Views\Admin;
 use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\SettingsViewModelInterface;
 
-use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\IntegrationSettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\OauthSettingsRepositoryInterface;
 
 class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInterface {
-	protected $integration;
-	protected $tca_settings;
-	protected $oauth_settings;
-	protected $oauth_callback_route;
+	protected IntegrationSettingsInterface $integration_settings;
+	protected IntegrationSettingsRepositoryInterface $integration_settings_repository;
+	protected OauthSettingsInterface $oauth_settings;
+	protected OauthSettingsRepositoryInterface $oauth_settings_repository;
+	protected TcaSettingsInterface $tca_settings;
+	protected TcaSettingsRepositoryInterface $tca_settings_repository;
+	protected string $oauth_callback_route;
 	
 	public function __construct(
-		IntegrationInterface $integration,
-		TcaSettingsInterface $tca_settings,
-		OauthSettingsInterface $oauth_settings,
+		IntegrationSettingsRepositoryInterface $integration_settings_repository,
+		OauthSettingsRepositoryInterface $oauth_settings_repository,
+		TcaSettingsRepositoryInterface $tca_settings_repository,
 		string $oauth_callback_route
 	) {
-		$this->integration = $integration;
-		$this->tca_settings = $tca_settings;
-		$this->oauth_settings = $oauth_settings;
+		$this->integration_settings_repository = $integration_settings_repository;
+		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->oauth_settings_repository = $oauth_settings_repository;
+		$this->oauth_settings = $this->oauth_settings_repository->show();
+		$this->tca_settings_repository = $tca_settings_repository;
+		$this->tca_settings = $this->tca_settings_repository->show();
 		$this->oauth_callback_route = $oauth_callback_route;
 	}
 	
-	protected function get_view_props( array $data = array() ) {
-		$integration_settings = $this->integration->settings->to_array();
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_view_props( array $data = array() ): array {
+		$integration_settings = $this->integration_settings->to_array();
 		$tca_settings = $this->tca_settings->to_array();
 		$oauth_settings = $this->oauth_settings->to_array();
 		$post_types = $this->tca_settings->get_available_post_types();
@@ -38,7 +50,7 @@ class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInt
 			'integration_data'     => array(
 				'app_homepage_url'  => get_site_url(),
 				'client_auth_url'   => $this->oauth_callback_route,
-				'status'            => $this->integration->can_connect(),
+				'status'            => $this->integration_settings->get_can_connect(),
 			),
 			'tca_settings'          => $tca_settings,
 			'tca_data'              => array(

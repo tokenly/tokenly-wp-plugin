@@ -9,43 +9,46 @@ namespace Tokenly\Wp\Collections\Token;
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 
-use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\WhitelistSettingsInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Token\BalanceFactoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface;
+use Tokenly\Wp\Models\Token\Balance;
+use Tokenly\Wp\Interfaces\Models\Token\WhitelistInterface;
 
 class BalanceCollection extends Collection implements BalanceCollectionInterface {
-	protected $item_type = BalanceInterface::class;
-	protected $balance_factory;
-	protected $meta_service;
+	protected string $item_type = Balance::class;
 
-	public function __construct(
-		WhitelistSettingsInterface $whitelist,
-		BalanceFactoryInterface $balance_factory,
-		MetaServiceInterface $meta_service,
-		array $items
-	) {
-		$this->whitelist = $whitelist;
-		$this->balance_factory = $balance_factory;
-		$this->meta_service = $meta_service;
-		parent::__construct( $items );
-		$this->apply_whitelist();
+	/**
+	 * Keys the collection by asset name
+	 * @return self
+	 */
+	public function key_by_asset_name(): self {
+		$keyed = array();
+		foreach ( ( array ) $this as $item ) {
+			if ( $item->get_asset() ) {
+				$name = $item->get_asset()->get_name();
+				$keyed[ $name ] = $item;
+			}
+		}
+		$this->exchangeArray( $keyed );
+		return $this;
 	}
 
 	/**
 	 * Applies the whitelist to the balances
-	 * @return array
+	 * @return void
 	 */
-	public function apply_whitelist() {
-		if ( $this->whitelist->enabled == true ) {
-			$items = $this->whitelist->items ?? null;
+	public function apply_whitelist( WhitelistInterface $whitelist ):void {
+		if ( $whitelist->get_enabled() == true ) {
+			$items = $whitelist->get_items() ?? null;
 			$balances_filtered = array();
 			if ( $items ) {
+				$assets = array_map( function( $item ) {
+					return $item->get_asset()->get_name();
+				}, ( array ) $this );	
 				foreach ( ( array ) $items as $item ) {
-					$whitelist_rule = implode( ':', array_filter( array( $item->address, $item->index ) ) );
-					$assets = array_column( (array) $this, 'asset' );
-					
-					$search = array_search( $whitelist_rule, $assets );
+					$asset = $item->get_asset();
+					if ( !$asset ) {
+						continue;
+					}
+					$search = array_search( $asset->get_name(), $assets );
 					if ( $search !== false ) {
 						$balances_filtered[] = $this[ $search ];
 					}
@@ -53,37 +56,5 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 			}
 			$this->exchangeArray( $balances_filtered );
 		}
-	}
-
-	/**
-	 * Loads the meta relation
-	 * @param string[] $relations Further relations
-	 * @return self
-	 */
-	protected function load_meta( array $relations ) {
-		$assets = array_map( function( BalanceInterface $balance ) {
-			return $balance->name;
-		}, ( array ) $this );
-		$meta = $this->meta_service->index( array(
-			'assets' => $assets,
-			'with'   => $relations,
-		) );
-		$meta_keyed = array();
-		foreach ( ( array ) $meta as $meta_item ) {
-			$asset = $meta_item->asset;
-			$meta_keyed[ $asset ] = $meta_item;
-		}
-		foreach ( (array) $this as &$balance ) {
-			$asset = $balance->asset;
-			if ( !$asset ) {
-				continue;
-			}
-			$meta = $meta_keyed[ $asset ] ?? null;
-			if ( !$meta ) {
-				continue;
-			}
-			$balance->meta = $meta;
-		}
-		return $this;
 	}
 }

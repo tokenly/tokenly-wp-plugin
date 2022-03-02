@@ -8,11 +8,9 @@ use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
  * Helps to prefix all options being retrieved and saved by the plugin.
  */
 class OptionRepository implements OptionRepositoryInterface {
-	protected $namespace;
+	protected string $namespace;
 
-	public function __construct(
-		string $namespace
-	) {
+	public function __construct( string $namespace ) {
 		$this->namespace = $namespace;
 	}
 
@@ -21,7 +19,7 @@ class OptionRepository implements OptionRepositoryInterface {
 	 * @param array $keys Keys to retrieve
 	 * @return array
 	 */
-	public function index( $keys ) {
+	public function index( array $keys ): array {
 		$options = array();
 		foreach ( $keys as $key ) {
 			$options[ $key ] = $this->show( $key );
@@ -32,9 +30,9 @@ class OptionRepository implements OptionRepositoryInterface {
 	/**
 	 * Retrieves the specified key from the options
 	 * @param string $key Key to retrieve
-	 * @return string
+	 * @return mixed
 	 */
-	public function show( $key ) {
+	public function show( string $key ): mixed {
 		$key = "{$this->namespace}_{$key}";
 		$option = get_option( $key, null );
 		return $option;
@@ -45,7 +43,7 @@ class OptionRepository implements OptionRepositoryInterface {
 	 * @param array $payload Key-value pairs (option and value)
 	 * @return void
 	 */
-	public function update( $payload ) {
+	public function update( array $payload ): void {
 		foreach ( $payload as $key => $value ) {
 			$key = "{$this->namespace}_{$key}";
 			update_option( $key, $value );

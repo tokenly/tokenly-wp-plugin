@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { 
-	 Dashicon,
+	Button,
+	Dashicon,
 } from '@wordpress/components';
 
 interface UserLinkProps {
@@ -15,9 +16,12 @@ export default function UserLink( props: UserLinkProps ) {
 		<div>
 			<Dashicon icon="admin-users" style={ { marginRight: '2px' } } />
 			<b title={ props.alt }>
-				<a href={ props.url } >
+				<Button
+					isLink
+					href={ props.url }
+				>
 					<span>{ props.name ? props.name : 'Unknown' }</span>
-				</a>
+				</Button>
 			</b>
 		</div>
 	);

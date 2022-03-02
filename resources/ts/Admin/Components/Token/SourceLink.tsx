@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
+
+import { 
+	Button,
+} from '@wordpress/components';
 
 interface SourceLinkProps {
 	id: string,
@@ -20,7 +24,12 @@ export default function SourceLink( props: SourceLinkProps ) {
 		)
 	}
 	return (
-		<b><a href={ url }>{ title }</a></b>
+		<Button
+			isLink
+			href={ url }
+		>
+			{ title }
+		</Button>
 	);
 }
  

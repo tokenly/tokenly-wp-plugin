@@ -7,16 +7,15 @@
 namespace Tokenly\Wp\Collections;
 
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
-use Tokenly\Wp\Traits\RelatableTrait;
+
+use Tokenly\Wp\Models\Model;
 
 class Collection extends \ArrayObject implements CollectionInterface {
-	use RelatableTrait;
+	protected string $item_type = Model::class;
+	protected object $domain_service;
+	protected bool $keyed = false;
 
-	protected $item_type;
-	protected $domain_service;
-	protected $keyed = false;
-
-	public function __construct( array $items ) {
+	public function __construct( array $items = array() ) {
 		$this->fill( $items );
 	}
 
@@ -25,14 +24,25 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * @param array $items Items to add
 	 * @return self
 	 */
-	public function fill( array $items ) {
+	public function fill( array $items = array() ): self {
 		foreach ( $items as $item )
 		{
-			if ($item instanceof $this->item_type === FALSE ) {
-				throw new \Exception("Cannot append non " . $this->item_type . " to collection");
+			if ( !$item ) {
+				continue;
+			}
+			if ( $item instanceof $this->item_type === FALSE ) {
+				continue;
 			}
 		}
 		$this->exchangeArray( $items );
+		return $this;
+	}
+
+	public function from_array( array $data = array() ): self {
+		foreach ( $data as &$item ) {
+			$item = ( new $this->item_type() )->from_array( $item );
+		}
+		$this->fill( $data );
 		return $this;
 	}
 
@@ -40,7 +50,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * Converts the collection to array
 	 * @return array
 	 */
-	public function to_array() {
+	public function to_array(): array {
 		$array = array();
 		foreach ( ( array ) $this as $key => $item ) {
 			$item_array = $item->to_array();
@@ -58,11 +68,11 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * @param string $field Field name
 	 * @return self
 	 */
-	public function key_by_field( string $field ) {
+	public function key_by_field( string $field ): self {
 		$this->keyed = true;
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
-			$keyed[ $item->$field ] = $item;
+			$keyed[ $item->{"get_{$field}"}() ] = $item;
 		}
 		$this->exchangeArray( $keyed );
 		return $this;
@@ -73,7 +83,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 	 * @param ColectionInterface $collection Collection to merge
 	 * @return self
 	 */
-	public function merge( CollectionInterface $collection ) {
+	public function merge( CollectionInterface $collection ): self {
 		foreach ( ( array ) $collection as $item ) {
 			if ( $item instanceof $this->item_type === true ) {
 				$this[] = $item;
@@ -82,26 +92,47 @@ class Collection extends \ArrayObject implements CollectionInterface {
 		return $this;
 	}
 
-	/**
-	 * Loads the specified relations.
-	 * @param string[] $relations Relations to load
-	 * @return self
-	 */
-	public function load( array $relations = array() ) {
-		foreach ( $relations as $key => $relation ) {
-			if ( !$relation ) {
+	public function extract( string $field ): array {
+		$extracted = array();
+		foreach ( ( array ) $this as $key => $item ) {
+			if ( !$item ) {
 				continue;
 			}
-			$relation_formatted = $this->format_relation( $relation );
-			$method = "load_{$relation_formatted['root']}";
-			if ( method_exists( $this, $method ) ) {
-				call_user_func( array( $this, $method ), array( $relation_formatted['relations'] ) );
+			$value = $item->{"get_{$field}"}();
+			if ( $this->keyed === true ) {
+				$extracted[ $key ] = $value;
 			} else {
-				foreach ( (array) $this as $item ) {
-					$item->load( array( $relation ) );
+				$extracted[] = $value;
+			}
+		}
+		return $extracted;
+	}
+
+	/**
+	 * Groups the collection items by a field and its value
+	 * @param string $field Field to group by
+	 * @return array
+	 */
+	public function group_by_field( string $field ): array {
+		$grouped = array();
+		foreach ( ( array ) $this as $key => $item ) {
+			if ( isset( $item[ $field ] ) ) {
+				$value = $item[ $field ];
+				if ( is_array( $value ) ) {
+					foreach ( $value as $value_item ) {
+						if ( !array_key_exists( $value_item, $grouped ) ) {
+							$grouped[ $value_item ] = array();
+						}
+						$grouped[ $value_item ][ $key ] = $item;
+					}
+				} else {
+					if ( !array_key_exists( $value, $grouped ) ) {
+						$grouped[ $value ] = new self( array() );
+					}
+					$grouped[ $value ][ $key ] = $item;
 				}
 			}
 		}
-		return $this;
+		return $grouped;
 	}
 }

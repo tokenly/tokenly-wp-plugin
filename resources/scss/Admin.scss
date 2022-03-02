@@ -2,9 +2,11 @@
 @use '/resources/scss/Pages/DashboardPage.scss' as *;
 @use '/resources/scss/Pages/SettingsPage.scss' as *;
 @use '/resources/scss/Pages/WhitelistPage.scss' as *;
+@use '/resources/scss/Admin/Components/Chip.scss' as *;
+@use '/resources/scss/Admin/Components/Search.scss' as *;
 
 body.login {
-	.tokenpass-login-container {
+	.tokenly-login.login-container {
 		display: flex;
 		justify-content: center;
 		margin-top: 24px;
@@ -46,3 +48,33 @@ body.login {
 	}
 }
 
+#featured_image{
+	width:120px;
+}
+td.featured_image.column-featured_image img{
+	max-width: 100%;
+	height: auto;
+}
+
+/* some styles to make Quick Edit meny beautiful */
+.tokenly_featured_image .title {
+	margin-top: 10px;
+	display: block;
+}
+.tokenly_featured_image a.tokenly_upload_featured_image{
+	display: inline-block;
+	margin: 10px 0 0;
+}
+.tokenly_featured_image img{
+	display: block;
+	width: 100px;
+	height: 100px;
+	object-fit: cover;
+}
+.tokenly_featured_image .tokenly_remove_featured_image{
+	display: none;
+}
+
+.token-meta-list-featured-image a {
+	display: inline-block;
+}

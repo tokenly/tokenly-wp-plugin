@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { useInjection } from 'inversify-react';
 import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../Types';
+import Autocomplete from './Autocomplete';
 
 import { 
 	// @ts-ignore
-	ComboboxControl
+	TextControl
 } from '@wordpress/components';
 
 interface UserSearchFieldProps {
@@ -25,9 +26,10 @@ interface ComboboxOption {
 export default function UserSearchField( props: UserSearchFieldProps ) {
 	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
 
+	const [ focused, setFocused ] = useState<boolean>( false );
 	const [ keywords, setKeywords ] = useState( '' );
 	const [ options, setOptions ] = useState( [] );
-	const [ searchTimeout, setSearchTimeout ] = useState( 0 );
+	const [ searchTimeout, setSearchTimeout ] = useState<any>( 0 );
 	
 	function getUserOptions( keywords: string ) {
 		return new Promise( ( resolve, reject ) => {
@@ -50,7 +52,7 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 	function searchDebounce( keywords: string ) {
 		clearTimeout( searchTimeout );
 		return new Promise( ( resolve, reject ) => {
-			setSearchTimeout( setTimeout(() => {
+			setSearchTimeout( setTimeout( () => {
 				const results = search( keywords );
 				resolve( results );
 			}, 500) );
@@ -68,12 +70,12 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 				} 
 				const options = results.map( ( user: any ) => {
 					return {
-						value: user.id,
+						value: user.name,
 						label: user.name,
 					} as ComboboxOption;
 				} );
-				if ( options.length > 1 ) {
-					options.length = 1;
+				if ( options.length > 3 ) {
+					options.length = 3;
 				}
 				resolve( options );
 			} ).catch( ( error: string ) => {
@@ -94,6 +96,7 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 	}
 
 	function onKeywordsChange( keywords: string ) {
+		props.onChange( keywords );
 		if ( keywords == '' && props.user ) {
 			keywords = getKeywordsFromOptions();
 		}
@@ -104,16 +107,22 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 	}
 
 	return (
-		<div style={ { height: '50px' } }>
+		<div className="tokenly-search">
 			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.user } />
-			<ComboboxControl
+			<TextControl
 				label={ props.label }
-				help={ props.help }
 				value={ props.user }
-				onChange={ props.onChange }
-				options={ options }
-				onFilterValueChange={ onKeywordsChange }
+				onChange={ onKeywordsChange }
+				onFocus={ () => {
+					setFocused( true );
+				} }
+				onBlur={ ( event: any ) => {
+					setFocused( false );
+				} }
 			/>
+		{ ( focused && options.length > 0 ) &&
+			<Autocomplete onChange={ onKeywordsChange } options={ options } />
+		}
 		</div>
 	);
 }

@@ -5,38 +5,55 @@ namespace Tokenly\Wp\Repositories\Token;
 use Tokenly\Wp\Repositories\PostRepository;
 use Tokenly\Wp\Interfaces\Repositories\Token\PromiseMetaRepositoryInterface;
 
-use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Token\PromiseMetaFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Token\PromiseMetaCollectionFactoryInterface;
+use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
+use Tokenly\Wp\Models\Token\PromiseMeta;
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface;
 use Tokenly\Wp\Interfaces\Models\Token\PromiseInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCollectionFactoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 
 /**
  * Manages promise meta data
  */
 class PromiseMetaRepository extends PostRepository implements PromiseMetaRepositoryInterface {
-	protected $namespace;
+	protected string $namespace;
+	protected string $class = PromiseMeta::class;
+	protected string $class_collection = PromiseMetaCollection::class;
 	
 	public function __construct(
-		PromiseMetaFactoryInterface $post_factory,
-		PromiseMetaCollectionFactoryInterface $post_collection_factory,
 		PostMetaRepositoryInterface $meta_repository,
-		RuleCollectionFactoryInterface $tca_rule_collection_factory,
+		TermRepositoryInterface $term_repository,
 		string $namespace
-		
 	) {
 		$this->namespace = $namespace;
-		parent::__construct(
-			$post_factory,
-			$post_collection_factory,
-			$meta_repository,
-			$tca_rule_collection_factory
-		);
+		parent::__construct( $meta_repository, $term_repository );
 	}
 
-	protected function get_store_existing_post( $params ) {
+	protected function destroy_all() {
+		$meta = $this->index();
+		foreach ( (array) $meta as $meta_item ) {
+			$this->destroy( $meta_item );
+		}
+	}
+
+	/**
+	 * Associates promise meta with the promise
+	 * @param PromiseMetaInterface $promise_meta_data Promise meta to associate
+	 * @return PromiseMetaInterface
+	 */
+	public function associate( PromiseMetaInterface $promise_meta, PromiseInterface $promise ): PromiseMetaInterface {
+		$this->update( $promise_meta, array(
+			'promise_id' => $promise->get_promise_id(),
+		) );
+		$promise->set_promise_meta( $promise_meta );
+		return $promise_meta;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_store_existing_post( array $params = array() ): ?PromiseMetaInterface {
 		$post = $this->show( array(
 			'promise_ids' => array( $params['promise_id'] ),
 		) );
@@ -44,17 +61,18 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 	}
 
 	/**
-	 * Gets the arguments for the Store method
-	 * @param array $params Store parameters
-	 * @return array $args
+	 * @inheritDoc
 	 */
-	protected function get_store_args( array $params = array() ) {
+	protected function get_store_args( array $params = array() ): array {
 		$args = parent::get_store_args( $params );
 		$args['post_status'] = 'private';
 		return $args;
 	}
 
-	protected function get_query_args( array $params = array() ) {
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_query_args( array $params = array() ): array {
 		$args = parent::get_query_args( $params );
 		$args['post_status'] = 'private';
 		if ( isset( $params['promise_ids'] ) ) {
@@ -68,7 +86,10 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 		return $args;
 	}
 
-	protected function get_meta_fields() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_meta_fields(): array {
 		$meta = parent::get_meta_fields();
 		$meta = array_merge( $meta, array(
 			'promise_id',
@@ -78,7 +99,10 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 		return $meta;
 	}
 
-	protected function get_post_type() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_post_type(): string {
 		return "{$this->namespace}_promise_meta";
 	}
 }

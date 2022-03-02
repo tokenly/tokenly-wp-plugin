@@ -4,5 +4,5 @@ import IntegrationSettingsRepositoryInterface from '../../Interfaces/Repositorie
 
 @injectable()
 export default class IntegrationSettingsRepository extends SettingsRepository implements IntegrationSettingsRepositoryInterface {
-	settingsType: string = 'integration';
+	protected settingsType: string = 'integration';
 }

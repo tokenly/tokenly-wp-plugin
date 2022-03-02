@@ -1,0 +1,14 @@
+{% from 'components/SectionComponent.twig' import section_component %}
+<div class="inventory">
+	<div class="tokenly-component spacer lg"></div>
+	{{ do_shortcode( "[tokenly_user_info user_id='#{user_id}']" )|raw }}
+	<div class="tokenly-component spacer lg"></div>
+	{% if can_connect == true %}
+	{{ do_shortcode( "[tokenly_token_inventory user_id='#{user_id}']" )|raw }}
+	<div class="tokenly-component spacer lg"></div>
+	{{ do_shortcode( "[tokenly_credit_inventory user_id='#{user_id}']" )|raw }}
+	<div class="tokenly-component spacer lg"></div>
+	{% else %}
+	<div style="display: flex; justify-content: center; margin: 32px 0; white-space: pre-wrap;">Not connected to the Tokenpass network. <a href="/tokenly/oauth/connect">Connect?</a>
+	{% endif %}
+</div>

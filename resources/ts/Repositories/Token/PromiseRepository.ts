@@ -1,22 +1,29 @@
-import { injectable, inject } from 'inversify';
-import { PromiseStoreParams, PromiseUpdateParams, PromiseData } from '../../Interfaces';
 import PromiseRepositoryInterface from '../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
-import AdminApiServiceInterface from '../../Interfaces/Services/AdminApiServiceInterface';
+
+import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
+
+import {
+	ApiServiceInterface,
+	TokenPromiseIndexParamsInterface,
+	TokenPromiseShowParamsInterface,
+	TokenPromiseStoreParamsInterface,
+	TokenPromiseUpdateParamsInterface,
+} from './../../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class PromiseRepository implements PromiseRepositoryInterface {
-	adminApiService;
+	protected ApiService: ApiServiceInterface;
 	
 	constructor(
-		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
 	) {
-		this.adminApiService = adminApiService;
+		this.ApiService = ApiService;
 	}
 
-	index( params: any = {} ): Promise<Array<PromiseData>> {
+	public index( params?: TokenPromiseIndexParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenPromiseIndex( params ).then( ( result: Array<PromiseData> ) => {
+			this.ApiService.tokenPromiseIndex( params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -24,9 +31,9 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		} );
 	}
 	
-	show( id: number, params?: any ): Promise<Array<any>> {
+	public show( id: number, params?: TokenPromiseShowParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenPromiseShow( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenPromiseShow( id, params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -34,33 +41,33 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		} );
 	}
 
-	store( params: PromiseStoreParams ): Promise<any> {
+	public store( params: TokenPromiseStoreParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenPromiseStore( params ).then( result => {
+			this.ApiService.tokenPromiseStore( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	update( id: number, params: PromiseUpdateParams ): Promise<any> {
+	public update( id: number, params: TokenPromiseUpdateParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenPromiseUpdate( id, params ).then( result => {
+			this.ApiService.tokenPromiseUpdate( id, params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	destroy( id: number ): Promise<any> {
+	public destroy( id: number ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenPromiseDestroy( id ).then( result => {
+			this.ApiService.tokenPromiseDestroy( id ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 }

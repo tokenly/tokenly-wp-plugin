@@ -1,7 +1,10 @@
 @use '/resources/scss/variables' as *;
-@use '/resources/scss/Components/TokenItemCardComponent.scss' as *;
+@use '/resources/scss/Components/Credit/ItemCardComponent.scss' as *;
+@use '/resources/scss/Components/Token/ItemCardComponent.scss' as *;
 @use '/resources/scss/Components/TokenItemCardListComponent.scss' as *;
+@use '/resources/scss/Components/UserInfoComponent.scss' as *;
 @use '/resources/scss/Pages/Web/Denied.scss' as *;
+@use '/resources/scss/Pages/Web/TokenMetaPage.scss' as *;
 
 .tokenly-block {
 	& * {
@@ -44,6 +47,18 @@
 		&.xl {
 			margin: 86px;
 		}	
+	}
+}
+
+.swiper {
+	.swiper-wrapper {
+		.swiper-slide {
+			img {
+				height: 550px;
+				object-fit: cover;
+				width: 100%;
+			}
+		}
 	}
 }
 

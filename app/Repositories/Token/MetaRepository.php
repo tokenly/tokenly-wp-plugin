@@ -5,40 +5,40 @@ namespace Tokenly\Wp\Repositories\Token;
 use Tokenly\Wp\Repositories\PostRepository;
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 
-use Tokenly\Wp\Interfaces\Factories\Models\Token\MetaFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Token\MetaCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Tca\RuleCollectionFactoryInterface;
+use Tokenly\Wp\Collections\Token\MetaCollection;
+use Tokenly\Wp\Models\Token\Meta;
 use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\PostInterface;
 
 /**
  * Manages meta data
  */
 class MetaRepository extends PostRepository implements MetaRepositoryInterface {
-	protected $namespace;
+	protected string $namespace;
+	protected string $class = Meta::class;
+	protected string $class_collection = MetaCollection::class;
 	
 	public function __construct(
-		MetaFactoryInterface $post_factory,
-		MetaCollectionFactoryInterface $post_collection_factory,
 		PostMetaRepositoryInterface $meta_repository,
-		RuleCollectionFactoryInterface $tca_rule_collection_factory,
+		TermRepositoryInterface $term_repository,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
-		parent::__construct(
-			$post_factory,
-			$post_collection_factory,
-			$meta_repository,
-			$tca_rule_collection_factory
-		);
+		parent::__construct( $meta_repository, $term_repository );
 	}
 
-	protected function get_query_args( array $params = array() ) {
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_query_args( array $params = array() ): array {
 		$args = parent::get_query_args( $params );
 		if ( isset( $params['assets'] ) ) {
+			$assets = $params['assets'];
 			$args['meta_query'][] = array(
-				'key'     => "{$this->namespace}_asset",
+				'key'     => "{$this->namespace}_asset_name",
 				'value'   => $params['assets'] ?? null,
 				'compare' => 'IN',
 			);
@@ -46,16 +46,41 @@ class MetaRepository extends PostRepository implements MetaRepositoryInterface {
 		return $args;
 	}
 
-	protected function get_meta_fields() {
-		$meta = parent::get_meta_fields();
-		$meta = array_merge( $meta, array(
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_meta_fields(): array {
+		$meta = array_merge( parent::get_meta_fields(), array(
 			'asset',
-			'extra',
+			'asset_name',
+			'attributes',
+			'media',
+			'blockchain',
+			'protocol',
 		) );
 		return $meta;
 	}
 
-	protected function get_post_type() {
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_post_type(): string {
 		return "{$this->namespace}_token_meta";
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function update( PostInterface $post, array $params = array() ): PostInterface {
+		$post = parent::update( $post, $params );
+		if ( !$post->get_asset() ) {
+			return $post;
+		}
+		$params = array(
+			'asset_name' => $post->get_asset()->get_name(),
+		);
+		$post = parent::update( $post, $params );
+		error_log(d($post));
+		return $post;
 	}
 }

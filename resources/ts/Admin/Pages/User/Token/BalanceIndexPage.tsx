@@ -14,12 +14,8 @@ import {
 	PanelHeader,
 } from '@wordpress/components';
 
-interface BalanceIndexPageData {
-	//
-}
-
 interface BalanceIndexPageProps {
-	pageData: BalanceIndexPageData;
+	//
 }
 
 export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
@@ -73,7 +69,7 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 					</PanelRow>
 				{ ( !loadingBalance && balance ) &&
 					<PanelRow>
-						<BalanceList balance={ balance } />
+						<BalanceList balance={ balance } username={ user?.name } />
 					</PanelRow>
 				}
 				</PanelBody>

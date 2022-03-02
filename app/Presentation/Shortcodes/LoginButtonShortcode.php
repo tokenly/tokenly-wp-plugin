@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Components\LoginButtonComponentModelInterface;
 
 class LoginButtonShortcode extends Shortcode implements LoginButtonShortcodeInterface {
-	protected $login_button_component_model;
+	protected LoginButtonComponentModelInterface $login_button_component_model;
 
 	public function __construct(
 		LoginButtonComponentModelInterface $login_button_component_model
@@ -15,7 +15,10 @@ class LoginButtonShortcode extends Shortcode implements LoginButtonShortcodeInte
 		$this->login_button_component_model = $login_button_component_model;
 	}
 
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
 		$data = $this->login_button_component_model->prepare( $atts );
 		return array(
 			'template' => 'shortcodes/LoginButtonShortcode.twig',

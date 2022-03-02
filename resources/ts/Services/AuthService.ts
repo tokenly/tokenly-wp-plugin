@@ -1,71 +1,46 @@
-import { injectable } from 'inversify';
-import { AuthData } from './../Interfaces';
 import AuthServiceInterface from './../Interfaces/Services/AuthServiceInterface';
-declare const wpApiSettings: any;
+
+import { injectable, inject } from 'inversify';
+import { TYPES } from './../Types';
+import { ApiServiceInterface } from './../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class AuthService implements AuthServiceInterface {
-	namespace = '/wp-json/tokenly/v1/';
-	
-	constructor() {
-		//
+	protected ApiService: ApiServiceInterface;
+
+	constructor(
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
+	) {
+		this.ApiService = ApiService;
 	}
 	
-	get headers() {
-		return {
-			'Content-type': 'application/json; charset=UTF-8',
-			'X-WP-Nonce': wpApiSettings.nonce,
-		}
-	}
-	
-	getStatus(): Promise<AuthData> {
-		return new Promise<AuthData>( ( resolve, reject ) => {
-			const params = {
-				method: 'GET',
-				headers: this.headers,
-			}
-			const url = this.namespace + 'authorize';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( ( data: AuthData ) => {
-					resolve( data );
-				} )
-				.catch( err => reject( err ) );
+	public getStatus(): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.authGetStatus().then( ( result: any ) => {
+				resolve( result );
+			} ).catch( ( error: any ) => {
+				reject( error );
+			} );
 		} );
 	}
 	
-	connect(): Promise<any> {
+	public connect(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			const params = {
-				method: 'POST',
-				headers: this.headers,
-			}
-			const url = this.namespace + 'authorize';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( data => {
-					const redirectUrl = data.url ?? null;
-					if ( redirectUrl ) {
-						window.location = redirectUrl;
-					}
-				} )
-				.catch( err => reject( err ) );
+			this.ApiService.authConnect().then( ( result: any ) => {
+				resolve( result );
+			} ).catch( ( error: any ) => {
+				reject( error );
+			} );
 		} );
 	}
 	
-	disconnect(): Promise<any> {
+	public disconnect(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			const params = {
-				method: 'DELETE',
-				headers: this.headers,
-			}
-			const url = this.namespace + 'authorize';
-			fetch( url, params )
-				.then( response => response.json() )
-				.then( data => {
-					window.location.reload();
-				} )
-				.catch( err => reject( err ) );
-		});
+			this.ApiService.authDisconnect().then( ( result: any ) => {
+				resolve( result );
+			} ).catch( ( error: any ) => {
+				reject( error );
+			} );
+		} );
 	}
 }

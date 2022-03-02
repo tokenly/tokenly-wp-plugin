@@ -1,6 +1,6 @@
-<script type="text/javascript">
-	let tokenpassData = {}
-	tokenpassData.props = {{ props|json_encode|raw }};
-	window.tokenpassData = tokenpassData;
-</script>
-<div id="tokenpass-admin-page-{{ props.view ?? 'dashboard' }}" class="tokenpass-admin-page"></div>
+<div
+	id="{{namespace}}-admin-page"
+	class="{{namespace}}-admin-page"
+	data-view="{{view}}"
+	data-props='{{props|raw}}'
+></div>

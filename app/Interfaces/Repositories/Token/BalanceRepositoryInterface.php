@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Repositories\Token;
 
-interface BalanceRepositoryInterface {
+use Tokenly\Wp\Interfaces\Repositories\RepositoryInterface;
+
+interface BalanceRepositoryInterface extends RepositoryInterface {
 	public function index( array $params = array() );
 }

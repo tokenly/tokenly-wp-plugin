@@ -14,13 +14,6 @@ interface TransactionCardProps {
 }
 
 export default function TransactionCard( props: TransactionCardProps ) {
-	function dateFormatted( date: Date ) {
-		if ( date ) {
-			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
-		}
-		return;
-	}
-
 	return (
 		<Card size="extraSmall" style={ { width: '100%' } }>
 			<CardHeader>

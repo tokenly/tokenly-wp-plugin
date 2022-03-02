@@ -8,7 +8,7 @@ import {
 interface PreloaderProps {
 	loading: boolean;
 	href?: string;
-	children: any;
+	children?: any;
 }
 
 export default function Preloader( props: PreloaderProps ) {

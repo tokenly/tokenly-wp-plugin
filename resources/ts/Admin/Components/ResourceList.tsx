@@ -8,6 +8,7 @@ interface ResourceListProps {
 	items: Array<any>;
 	component: any;
 	itemProp: string;
+	props?: any;
 	notFoundLabel?: string;
 }
 
@@ -19,7 +20,7 @@ export default function ResourceList( props: ResourceListProps ) {
 				[props.itemProp]: item,
 			}
 			return (
-				<props.component {...cardProps} />
+				<props.component {...cardProps} { ...props.props ?? {} } />
 			);
 		} );
 	}

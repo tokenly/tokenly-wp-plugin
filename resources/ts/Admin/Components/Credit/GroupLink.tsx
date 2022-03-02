@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
+
+import { 
+	Button,
+} from '@wordpress/components';
 
 interface GroupLinkProps {
 	uuid: string,
@@ -13,14 +17,19 @@ export default function GroupLink( props: GroupLinkProps ) {
 	const namespace = useInjection( TYPES.Variables.namespace );
 
 	const title = props?.name ?? props.uuid;
-	const url = `${ adminPageUrl }${ namespace }-credit-group-show&group=${ props.uuid }`;
+	const url = `${ adminPageUrl }${ namespace }-credit-group-show&id=${ props.uuid }`;
 	if ( props.text ) {
 		return (
 			<b><span>{ title }</span></b>
 		)
 	}
 	return (
-		<b><a href={ url }>{ title }</a></b>
+		<Button
+			isLink	
+			href={ url }
+		>
+			{ title }
+		</Button>
 	);
 }
  

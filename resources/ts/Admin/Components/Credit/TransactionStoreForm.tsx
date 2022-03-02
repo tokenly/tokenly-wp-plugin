@@ -89,27 +89,21 @@ export default function TransactionStoreForm( props: TransactionStoreFormProps )
 					required: true,
 				} }
 			/>
-			<div>
-				<label>Account *
-					<div style={ { opacity:0.8, marginBottom: '12px' } }>WordPress username.</div>
-					<UserSearchField
-						user={ props.storeData?.account }
-						onChange={ onAccountFieldChange }
-						inputProps={ {
-							required: true,
-						} }
-					/>
-				</label>
-			</div>
-			<div>
-				<label>{ getSourceLabel() }
-					<div style={ { opacity: 0.8, marginBottom: '12px' } }>WordPress username.</div>
-					<UserSearchField
-						user={ props.storeData?.source }
-						onChange={ onSourceFieldChange }
-					/>
-				</label>
-			</div>
+			<UserSearchField
+				label="Account *"
+				help="WordPress / Tokenpass name / Tokenpass UUID."
+				user={ props.storeData?.account }
+				onChange={ onAccountFieldChange }
+				inputProps={ {
+					required: true,
+				} }
+			/>
+			<UserSearchField
+				label={ getSourceLabel() }
+				help="WordPress / Tokenpass name / Tokenpass UUID."
+				user={ props.storeData?.source }
+				onChange={ onSourceFieldChange }
+			/>
 			<TextControl
 				label="Amount *"
 				// @ts-ignore

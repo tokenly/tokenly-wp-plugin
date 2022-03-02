@@ -4,9 +4,9 @@ import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import WhitelistEditor from '../../Components/Token/WhitelistEditor';
 import { WhitelistData, WhitelistItem } from '../../../Interfaces';
-import WhitelistSettingsRepositoryInterface from '../../../Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
+import WhitelistRepositoryInterface from '../../../Interfaces/Repositories/Token/WhitelistRepositoryInterface';
 import ResourceEditActions from '../../Components/ResourceEditActions';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import eventBus from "../../../EventBus";
 import { 
 	Panel,
@@ -15,23 +15,19 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
-interface WhitelistPageData {
+interface WhitelistEditPageProps {
 	whitelist: WhitelistData;
-}
-
-interface WhitelistPageProps {
-	pageData: WhitelistPageData; 
 }
 
 declare const window: any;
 
-export default function WhitelistPage( props: WhitelistPageProps ) {
+export default function WhitelistEditPage( props: WhitelistEditPageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const whitelistSettingsRepository: WhitelistSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface );
+	const whitelistSettingsRepository: WhitelistRepositoryInterface = useInjection( TYPES.Repositories.Token.WhitelistRepositoryInterface );
 	
-	const enabled = props.pageData?.whitelist?.enabled ?? false;
-	let items = Object.assign( [], props.pageData?.whitelist?.items ) as any;
+	const enabled = props.whitelist?.enabled ?? false;
+	let items = Object.assign( [], props.whitelist?.items ) as any;
 	if ( items && Array.isArray( items ) ) {
 		items = items.filter( function ( item: any ) {
 			return item != null;
@@ -49,7 +45,7 @@ export default function WhitelistPage( props: WhitelistPageProps ) {
 		setSaving( true );
 		whitelistSettingsRepository.update( editData ).then( ( result: any ) => {
 			setSaving( false );
-			eventBus.dispatch( 'snackbarShow', result?.status );
+			goBack();
 		} ).catch( ( error: any ) => {
 			console.log( error );
 		} );

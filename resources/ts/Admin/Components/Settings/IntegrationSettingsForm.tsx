@@ -1,5 +1,6 @@
 import * as React from 'react';
 import StatusIndicator from '../../Components/StatusIndicator';
+import FormTable from '../FormTable';
 
 import { 
 	Flex,
@@ -29,18 +30,32 @@ export default function IntegrationSettingsForm( props: IntegrationSettingsFormP
 		<Flex
 			//@ts-ignore
 			direction="column"
-			style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+			style={ { flex: '1', marginTop: '12px' } }
 		> 
 			<StatusIndicator status={ props.status ?? false }/>
-			<TextControl
-				label="Client ID"
-				value={ props.settings.client_id ?? '' }
-				onChange={ onClientIdFieldChange }
-			/>
-			<TextControl
-				label="Client Secret"
-				value={ props.settings.client_secret ?? '' }
-				onChange={ onClientSecretFieldChange }
+			<FormTable
+				rows={
+					[
+						{
+							label: 'Client ID',
+							component:
+								<TextControl
+									placeholder="Client ID"
+									value={ props.settings.client_id ?? '' }
+									onChange={ onClientIdFieldChange }
+								/>
+						},
+						{
+							label: 'Client Secret',
+							component:
+								<TextControl
+									placeholder="Client Secret"
+									value={ props.settings.client_secret ?? '' }
+									onChange={ onClientSecretFieldChange }
+								/>
+						},
+					]
+				}
 			/>
 		</Flex>
 	);

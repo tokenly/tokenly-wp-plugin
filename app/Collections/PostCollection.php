@@ -6,10 +6,14 @@
 
 namespace Tokenly\Wp\Collections;
 
-use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Collections\Collection;
+use Tokenly\Wp\Interfaces\Collections\PostCollectionInterface;
+use Tokenly\Wp\Interfaces\Traits\ProtectableInterface;
 
-class PostCollection extends Collection implements PostCollectionInterface {
-	protected $item_type = PostInterface::class;
+use Tokenly\Wp\Models\Post;
+use Tokenly\Wp\Traits\ProtectableCollectionTrait;
+
+class PostCollection extends Collection implements PostCollectionInterface, ProtectableInterface {
+	use ProtectableCollectionTrait;
+	protected string $item_type = Post::class;
 }

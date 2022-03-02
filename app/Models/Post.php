@@ -4,15 +4,10 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
-use Tokenly\Wp\Interfaces\Models\ProtectableInterface;
+use Tokenly\Wp\Interfaces\Traits\ProtectableInterface;
 use Tokenly\Wp\Traits\ProtectableTrait;
 
 use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
-use Tokenly\Wp\Interfaces\Models\Tca\AccessVerdictInterface;
-use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Repositories\PostRepositoryInterface;
-use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 
 /**
  * WP_Post decorator
@@ -20,111 +15,77 @@ use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
 class Post extends Model implements PostInterface, ProtectableInterface {
 	use ProtectableTrait;
 
-	public $term;
-	protected $post = null;
-	protected $tca_settings;
-	protected $term_service;
-	protected $fillable = array(
-		'post',
-		'tca_rules',
-	);
-
-	public function __construct(
-		PostRepositoryInterface $domain_repository,
-		TcaSettingsInterface $tca_settings,
-		TermServiceInterface $term_service,
-		array $data = array()
-	) {
-		$this->domain_repository = $domain_repository;
-		$this->tca_settings = $tca_settings;
-		$this->term_service = $term_service;
-		parent::__construct( $data );
-	}
+	protected ?TermCollectionInterface $term = null;
+	protected ?\WP_Post $post = null;
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->post, $method ), $args );
+		return call_user_func_array( array( $this->get_post(), $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->post->$key;
+		return $this->get_post()->$key;
 	}
 
-	public function __set( $key, $val ) {
-		return $this->post->$key = $val;
+	public function __set( $key, $value ) {
+		return $this->get_post()->$key = $value;
 	}
 
-	/* Protectable trait */
+	public function get_term(): ?TermCollectionInterface {
+		return $this->term ?? null;
+	}
+
+	public function set_term( ?TermCollectionInterface $value ): void {
+		$this->term = $value;
+	}
+
+	public function get_post(): ?\WP_Post {
+		return $this->post ?? null;
+	}
+
+	public function set_post( ?\WP_Post $value ): void {
+		$this->post = $value;
+	}
 
 	/**
-	 * Gets the TCA rules associated with the relations
-	 * @return array
+	 * @inheritDoc
 	 */
-	protected function get_tca_rules_relation() {
-		$rules = array();
-		$this->load( array( 'term' ) );
-		if ( isset( $this->term ) && $this->term instanceof TermCollectionInterface ) {
-			$term_rules = $this->term->get_tca_rules();
-			if (
-				$term_rules &&
-				is_array( $term_rules ) &&
-				count( $term_rules ) > 0
-			) {
-				$rules = array_merge( $rules, $term_rules );
-			}
+	public function from_array( array $data = array() ): self {
+		$data = $this->protectable_from_array( $data );
+		return parent::from_array( $data );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function to_array(): array {
+		$array = array(
+			'id'          => $this->get_post()->ID,
+			'name'        => $this->get_post()->post_title,
+			'description' => $this->get_post()->post_excerpt,
+			'image'       => wp_get_attachment_url( get_post_thumbnail_id( $this->get_post()->ID ), 'full' ),
+		);
+		if ( $this->get_term() ) {
+			$array['term'] = $this->get_term()->to_array();
+		}
+		$array_protectable = $this->protectable_to_array();
+		$array = array_merge( $array, $array_protectable );
+		return $array;
+	}
+
+	public function get_tca_rules_relation() {
+		$rules = null;
+		if ( $this->get_term() ) {
+			$rules = $this->get_term()->get_tca_rules();
 		}
 		return $rules;
 	}
 
 	/**
-	 * Checks if TCA is enabled for the post type
-	 * @return bool
+	 * @inheritDoc
 	 */
-	protected function check_tca_enabled() {
-		return $this->tca_settings->is_enabled_for_post_type( $this->post_type ) ?? false;
-	}
-
-	/**
-	 * Checks if any relations are protected
-	 * @return bool
-	 */
-	protected function check_relations_protected() {
-		$terms_protected = false;
-		$this->load( array( 'term' ) );
-		if ( isset( $this->term ) && $this->term instanceof TermCollectionInterface ) {
-			$terms_protected = $this->term->is_protected();
-		}
-		if ( $terms_protected === true ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Test if the specified user is allowed to access the relations
-	 * @param UserInterface $user User to test
-	 * @return AccessVerdictInterface
-	 */
-	protected function test_access_relations( UserInterface $user ) {
-		$this->load( array( 'term' ) );
-		$verdict = null;
-		if ( $this->term && $this->term instanceof TermCollectionInterface ) {
-			$verdict = $this->term->can_access( $user );
-		}
-		return $verdict;
-	}
-
-	/* Relations */
-
-	/**
-	 * Loads the term relation
-	 * @param string[] $relations Further relations
-	 * @return TermCollectionInterface
-	 */
-	protected function load_term( array $relations = array() ) {
-		$term = $this->term_service->index( array(
-			'id' => $this->ID,
+	protected function get_fillable(): array {
+		return array_merge( parent::get_fillable(), $this->protectable_get_fillable(), array(
+			'post',
 		) );
-		return $term;
 	}
 }

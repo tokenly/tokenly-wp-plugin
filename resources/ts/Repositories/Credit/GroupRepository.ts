@@ -1,21 +1,31 @@
-import { injectable, inject } from 'inversify';
 import GroupRepositoryInterface from '../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
-import AdminApiServiceInterface from '../../Interfaces/Services/AdminApiServiceInterface';
+
+import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
+
+import {
+	ApiServiceInterface,
+	CreditGroupAccountIndexParamsInterface,
+	CreditGroupIndexParamsInterface,
+	CreditGroupShowParamsInterface,
+	CreditGroupStoreParamsInterface,
+	CreditGroupUpdateParamsInterface,
+	CreditGroupWhitelistUpdateParamsInterface,
+} from './../../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class GroupRepository implements GroupRepositoryInterface {
-	adminApiService;
+	protected ApiService: ApiServiceInterface;
 	
 	constructor(
-		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
 	) {
-		this.adminApiService = adminApiService;
+		this.ApiService = ApiService;
 	}
 
-	index( params: any = {} ): Promise<Array<any>> {
+	public index( params?: CreditGroupIndexParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditGroupIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.creditGroupIndex( params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -23,9 +33,9 @@ export default class GroupRepository implements GroupRepositoryInterface {
 		} );
 	}
 
-	show( uuid: string, params?: any ): Promise<Array<any>> {
+	public show( uuid: string, params?: CreditGroupShowParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditGroupShow( uuid, params ).then( ( result: Array<any> ) => {
+			this.ApiService.creditGroupShow( uuid, params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -33,9 +43,9 @@ export default class GroupRepository implements GroupRepositoryInterface {
 		} );
 	}
 
-	store( params: any ): Promise<any> {
+	public store( params: CreditGroupStoreParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditGroupStore( params ).then( result => {
+			this.ApiService.creditGroupStore( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -43,9 +53,29 @@ export default class GroupRepository implements GroupRepositoryInterface {
 		} );
 	}
 
-	update( uuid: string, params: any ): Promise<any> {
+	public update( uuid: string, params: CreditGroupUpdateParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditGroupUpdate( uuid, params ).then( result => {
+			this.ApiService.creditGroupUpdate( uuid, params ).then( result => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public accountIndex( uuid: string, params?: CreditGroupAccountIndexParamsInterface ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.creditGroupAccountIndex( uuid, params ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public whitelistUpdate( params: CreditGroupWhitelistUpdateParamsInterface ): Promise<any> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.creditGroupWhitelistUpdate( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { Attribute } from '../../Interfaces';
+import Fieldset from '../Components/Fieldset';
 
 import { 
 	Button,
+	Card,
+	CardHeader,
+	CardBody,
+	CardFooter,
 	Flex,
 	TextControl,
 } from '@wordpress/components';
@@ -49,24 +54,26 @@ export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 	const listItems = props.attributes.map( ( attribute: Attribute, i: number ) => {
 		if ( !attribute ) { return }
 		return (
-			<Flex justify="flex-start" align="flex-end">
+			<Flex justify="flex-start" align="center">
 				<TextControl
-					label="Key"
+					placeholder="Key"
 					value={ attribute.key }
 					onChange={ ( value: string ) => {
 						onKeyFieldChange( i, value );
 					} }
 				/>
 				<TextControl
-					label="Value"
+					placeholder="Value"
 					value={ attribute.value }
 					onChange={ ( value: string ) => {
 						onValueFieldChange( i, value );
 					} }
 				/>
 				<Button
+					isSmall
 					isTertiary
 					icon="no"
+					style={ { marginBottom: '8px' } }
 					onClick={ () => {
 						onRemove( i );
 					} }
@@ -75,33 +82,34 @@ export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 		);
 	} );
 	return ( 
-		<Flex
-			//@ts-ignore
-			direction="column"
-			style={ { display: 'inline-block' } }
-		>
-			<label>{ props.label }
+		<Fieldset label={ props.label } help={ props.help }>
+			<Flex
+				//@ts-ignore
+				direction="column"
+				style={ { display: 'inline-block' } }
+			>
 				<Flex
 					//@ts-ignore
 					direction="column"
 				>
-					<div style={ { opacity: 0.8 } }>{ props.help }</div>
 					<Flex
 						//@ts-ignore
 						direction="column"
 					>
-						{ listItems }
+						{ ( listItems.filter( Boolean ).length > 0 )
+							?	<ul>{ listItems }</ul>
+							:	<div style={ { opacity: 0.5 } }>There are no attributes.</div>
+						}
 					</Flex>
 				</Flex>
-			</label>
-			<Button
-				isSecondary
-				isLarge
-				onClick={ onAdd }
-				style={ { marginTop: '18px' } }
-			>
-				Add Attribute
-			</Button>
-		</Flex>
+				<Button
+					isSecondary
+					isLarge
+					onClick={ onAdd }
+				>
+					Add Attribute
+				</Button>
+			</Flex>
+		</Fieldset>
 	);
 }

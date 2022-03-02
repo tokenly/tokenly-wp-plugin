@@ -5,7 +5,7 @@ namespace Tokenly\Wp\Controllers;
 use Tokenly\Wp\Interfaces\Controllers\ControllerInterface;
 
 class Controller implements ControllerInterface {
-	protected $defaults = array(
+	protected array $defaults = array(
 		'service'                   => null,
 		'query_parameter'           => null,
 		'single_service_parameter'  => null,
@@ -19,23 +19,23 @@ class Controller implements ControllerInterface {
 	 * Gets model binding parameters
 	 * @return array Binding parameters
 	 */
-	protected function get_bind_params() {
+	protected function get_bind_params(): array {
 		return array();
 	}
 
 	/**
 	 * Remaps request parameters for use with the domain service
 	 * @param array $params Request parameters
-	 * @return array
+	 * @return array|null
 	 */
-	protected function remap_parameters( array $params ) {
+	protected function remap_parameters( array $params = array() ): ?array {
 		return $params;
 	}
 	
 	/**
 	 * Calls the controller method
 	 * @param \WP_REST_Request $request Request data
-	 * @return array Controller response
+	 * @return mixed Controller response
 	 */
 	public function call( \WP_REST_Request $request, string $method ) {
 		$service;

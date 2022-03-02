@@ -4,5 +4,5 @@ import TcaSettingsRepositoryInterface from '../../Interfaces/Repositories/Settin
 
 @injectable()
 export default class TcaSettingsRepository extends SettingsRepository implements TcaSettingsRepositoryInterface {
-	settingsType: string = 'tca';
+	protected settingsType: string = 'tca';
 }

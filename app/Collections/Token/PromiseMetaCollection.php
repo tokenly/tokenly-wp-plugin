@@ -6,30 +6,21 @@
 
 namespace Tokenly\Wp\Collections\Token;
 
-use Tokenly\Wp\Collections\Collection;
+use Tokenly\Wp\Collections\PostCollection;
 use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface;
 
-use Tokenly\Wp\Interfaces\Models\Token\PromiseMetaInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
+use Tokenly\Wp\Models\Token\PromiseMeta;
 
-class PromiseMetaCollection extends Collection implements PromiseMetaCollectionInterface {
-	protected $item_type = PromiseMetaInterface::class;
-	protected $meta_repository;
+class PromiseMetaCollection extends PostCollection implements PromiseMetaCollectionInterface {
+	protected string $item_type = PromiseMeta::class;
 
-	public function __construct(
-		array $items,
-		PostMetaRepositoryInterface $meta_repository
-	) {
-		parent::__construct( $items );
-		$this->meta_repository = $meta_repository;
-	}
-	
-	public function key_by_promise_id() {
-		$keyed = array();
-		foreach ( (array) $this as $promise ) {
-			$promise_id = $this->meta_repository->show( $promise->ID, 'promise_id' );
-			$keyed[ $promise_id ] = $promise;
-		}
-		$this->exchangeArray( $keyed );
+	public function get_users(): array {
+		$users = array();
+		$items = clone $this;
+		$source_users = $items->extract( 'source_user_id' );
+		$items = clone $this;
+		$destination_users = $items->extract( 'destination_user_id' );
+		$users = array_merge( $users, $source_users, $destination_users );
+		return $users;
 	}
 }

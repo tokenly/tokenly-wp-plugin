@@ -5,28 +5,39 @@ namespace Tokenly\Wp\Controllers\Api\Credit;
 use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\GroupControllerInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\AccountRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\GroupRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\GroupWhitelistRepositoryInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\GroupCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface;
+use Tokenly\Wp\Interfaces\Models\Credit\GroupWhitelistInterface;
 
 /**
  * Defines promise-related endpoints
  */
 class GroupController extends Controller implements GroupControllerInterface {
-	protected $group_service;
+	protected AccountRepositoryInterface $account_repository;
+	protected GroupRepositoryInterface $group_repository;
+	protected GroupWhitelistRepositoryInterface $group_whitelist_repository;
+	protected GroupWhitelistInterface $group_whitelist;
 
 	public function __construct(
-		GroupServiceInterface $group_service
+		AccountRepositoryInterface $account_repository,
+		GroupRepositoryInterface $group_repository,
+		GroupWhitelistRepositoryInterface $group_whitelist_repository
 	) {
-		$this->group_service = $group_service;
+		$this->account_repository = $account_repository;
+		$this->group_repository = $group_repository;
+		$this->group_whitelist_repository = $group_whitelist_repository;
+		$this->group_whitelist = $this->group_whitelist_repository->show();
 	}
 	
 	/**
 	 * Get a collection of groups
 	 * @param \WP_REST_Request $request Request data
-	 * @return GroupCollectionInterface
+	 * @return array
 	 */
-	public function index( GroupCollectionInterface $groups, \WP_REST_Request $request ) {
+	public function index( GroupCollectionInterface $groups, \WP_REST_Request $request ): array {
 		$groups = $groups->to_array();
 		return $groups;
 	}
@@ -34,10 +45,12 @@ class GroupController extends Controller implements GroupControllerInterface {
 	/**
 	 * Get a single of group
 	 * @param \WP_REST_Request $request Request data
-	 * @return GroupInterface
+	 * @return array|null
 	 */
-	public function show( GroupInterface $group, \WP_REST_Request $request ) {
-		$group = $group->to_array();
+	public function show( GroupInterface $group = null, \WP_REST_Request $request ): ?array {
+		if ( $group ) {
+			$group = $group->to_array();
+		}
 		return $group;
 	}
 
@@ -46,12 +59,18 @@ class GroupController extends Controller implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function store( \WP_REST_Request $request ) {
+	public function store( \WP_REST_Request $request ): array {
 		$params = $request->get_params();
-		$group = $this->group_service->store( $params );
+		$group = $this->group_repository->store( $params );
+		if ( $group ) {
+			return array(
+				'credit_group' => $group,
+				'status'       => 'Successfully created the group!',
+			);
+		}
 		return array(
-			'credit_group' => $group,
-			'status'  => 'Group created successfully',
+			'credit_group' => null,
+			'status'       => 'Failed to create the group!',
 		);
 	}
 
@@ -60,11 +79,16 @@ class GroupController extends Controller implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function update( GroupInterface $group, \WP_REST_Request $request ) {
-		$params = $request->get_params();
-		$group->update( $params );
+	public function update( GroupInterface $group = null, \WP_REST_Request $request ): array {
+		if ( $group ) {
+			$params = $request->get_params();
+			$this->group_repository->update( $group, $params );
+			return array(
+				'status' => 'Successfully updated the group!',
+			);
+		}
 		return array(
-			'status' => 'Group successfully updated!',
+			'status' => 'Failed to update the group!',
 		);
 	}
 
@@ -73,14 +97,46 @@ class GroupController extends Controller implements GroupControllerInterface {
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function destroy( GroupInterface $group, \WP_REST_Request $request ) {
-		$group->destroy();
+	public function destroy( GroupInterface $group = null, \WP_REST_Request $request ): array {
+		if ( $group ) {
+			$this->group_repository->destroy( $group );
+			return array(
+				'status' => "Successfully deleted the group!",
+			);
+		}
 		return array(
-			'status' => "Group successfully cancelled!",
+			'status' => "Failed to delete the group!",
 		);
 	}
 
-	protected function remap_parameters( array $params = array() ) {
+	/**
+	 * Get a collection of group accounts
+	 * @param \WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function account_index( \WP_REST_Request $request ): array {
+		$group = $request->get_param( 'group' );
+		$account = $this->account_repository->index( array(
+			'group_uuid' => $group,
+		) );
+		$account = $account->to_array();
+		return $account;
+	}
+
+	/**
+	 * Updates an existing group
+	 * @param \WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function group_whitelist_update( \WP_REST_Request $request ): array {
+		$whitelist = $request->get_param( 'whitelist' );
+		$this->group_whitelist_repository->update( $whitelist );
+		return array(
+			'status' => 'Successfully updated the group whitelist!',
+		);
+	}
+
+	protected function remap_parameters( array $params = array() ): array {
 		if ( isset( $params['group'] ) ) {
 			$params['group_uuid'] = $params['group'];
 			unset( $params['group'] );
@@ -92,9 +148,9 @@ class GroupController extends Controller implements GroupControllerInterface {
 	 * Gets model binding parameters
 	 * @return array
 	 */
-	protected function get_bind_params() {
+	protected function get_bind_params(): array {
 		return array(
-			'service'                   => $this->group_service,
+			'service'                   => $this->group_repository,
 			'single_service_method'     => 'show',
 			'single_methods'            => array( 'show', 'update', 'destroy' ),
 			'collection_methods'        => array( 'index' ),

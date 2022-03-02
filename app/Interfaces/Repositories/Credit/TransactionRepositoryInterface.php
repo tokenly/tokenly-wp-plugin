@@ -2,7 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Repositories\Credit;
 
-interface TransactionRepositoryInterface {
+use Tokenly\Wp\Interfaces\Repositories\RepositoryInterface;
+
+interface TransactionRepositoryInterface extends RepositoryInterface {
 	public function index( array $params = array() );
-	public function store( array $params = array() );
 }

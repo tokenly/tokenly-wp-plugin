@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
-import { 
+import {
+	Button,
 	Flex,
 } from '@wordpress/components';
 
 interface AddressInfoProps {
 	address: any;
+	verbose?: boolean;
 }
 
 export default function AddressInfo( props: AddressInfoProps ) {
@@ -33,13 +35,20 @@ export default function AddressInfo( props: AddressInfoProps ) {
 					<b>Address: </b>
 					<span>{ props.address?.address ?? '-' }</span>
 				</div>
+				{ props.verbose &&
 				<div>
 					<b>Assets: </b>
 					{ props.address
-						?	<a href={ `${ adminPageUrl }${ namespace }-token-address-balance-index&id=${ props.address.address }` } >View Balance</a>
+						?	<Button
+								href={ `${ adminPageUrl }${ namespace }-token-address-balance-index&id=${ props.address.address }` }
+								isLink
+							>
+								View Balance
+							</Button>
 						:	<span>-</span>
 					}
 				</div>
+				}
 			</Flex>
 		</Flex>
 	);

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
-import { 
+import {
+	Button,
 	Flex,
 } from '@wordpress/components';
 
@@ -24,15 +25,17 @@ export default function SourceInfo( props: SourceInfoProps ) {
 				<div>
 					<span>Address: </span>
 					<b>
-						<a 
-							href={ `${adminPageUrl}${namespace}-token-address-show&id=${props.source?.address_id}` }>
+						<Button 
+							isLink
+							disabled={ ( !props.source.address ) }
+							href={ `${adminPageUrl}${namespace}-token-address-show&address=${props.source?.address_id}` }>
 								{ props.source?.address?.label ?? props.source?.address_id }
-						</a>
+						</Button>
 					</b>
 				</div>
 				<div>
 					<span>Assets (whitelisted): </span>
-					<b>{ props.source?.assets ?? 'all' }</b>
+					<b>{ props.source?.assets.length > 0 ? props.source?.assets : 'all' }</b>
 				</div>
 			</div>
 		</Flex>

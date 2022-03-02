@@ -1,0 +1,43 @@
+{% macro item_card_component( image, name, description, balance, asset, extra, style = "masonry", meta_slug = '' ) %}
+	<div class="tokenly-component component-card-token-item style-{{ style }} {% if masonry == true %}grid-style-masonry{% endif %}" data-asset="{{ asset }}">
+		<div class="item-content">
+			{% if meta_slug %}
+				<a class="meta-slug" href="{{ meta_slug }}"></a>
+			{% endif %}
+			{% if style == "grid" or style == "masonry" %}
+				<div class="image-container">
+					<div class="image">
+						<img src="{{image ?? '/wp-content/plugins/tokenly-wp-plugin/resources/images/placeholder.png'}}">
+					</div>
+				</div>
+			{% endif %}
+			{% if style != "masonry" %}
+			<div class="info-container">
+				<div class="name" title="{{ asset }}">{{ name }}</div>
+				<div class="description">
+					{{ description }}
+					{% if not description %}
+						<span style="opacity: 0.8">No token description.</span>
+					{% endif %}
+				</div>
+				<div class="balance-container">
+					<span class="label">Total: </span>
+					<span class="amount">{{ balance }}</span>
+				</div>
+			</div>
+			{% elseif style == "list" %}
+			<div class="name" title="{{ asset }}">{{ name }}</div>
+			<div class="description">
+				{{ description }}
+				{% if not description %}
+					<span style="opacity: 0.8">No token description.</span>
+				{% endif %}
+			</div>
+			<div class="balance-container">
+				<span class="label">Total: </span>
+				<span class="amount">{{ balance }}</span>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+{% endmacro %}

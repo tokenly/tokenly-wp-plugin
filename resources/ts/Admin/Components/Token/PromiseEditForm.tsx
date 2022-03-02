@@ -14,7 +14,7 @@ interface PromiseEditFormProps {
 export default function PromiseEditForm( props: PromiseEditFormProps ) {
 	function onQuantityFieldChange( value: any ) {
 		const state = Object.assign( {}, props.editData );
-		state.quantity = value;
+		state.quantity.value_sat = value;
 		props.onChange( state );
 	}
 
@@ -52,7 +52,7 @@ export default function PromiseEditForm( props: PromiseEditFormProps ) {
 				label="Quantity *"
 				help="Amount, in satoshis."
 				type="number"
-				value={ props.editData?.quantity }
+				value={ props.editData?.quantity?.value_sat }
 				onChange={ onQuantityFieldChange }
 				required
 			/>

@@ -1,90 +1,86 @@
 import 'reflect-metadata';
 import { Container, interfaces } from 'inversify';
 import { TYPES } from './Types';
-import { Component } from './Interfaces';
-// Implementations
-import AdminRouter from './Routes/AdminRouter';
 // Implementations - Services
 import AuthService from './Services/AuthService';
-import AdminApiService from './Services/AdminApiService';
+import ApiService from './Services/ApiService';
+import CreditVendorService from './Services/Application/Credit/VendorService';
+import TokenVendorService from './Services/Application/Token/VendorService';
 // Implementations - Repositories
 import CreditGroupRepository from './Repositories/Credit/GroupRepository';
 import CreditTransactionRepository from './Repositories/Credit/TransactionRepository';
 import TokenAddressRepository from './Repositories/Token/AddressRepository';
-import TokenBalanceRepository from './Repositories/Token/BalanceRepository';
 import TokenPromiseRepository from './Repositories/Token/PromiseRepository';
 import TokenSourceRepository from './Repositories/Token/SourceRepository';
-import TokenMetaRepository from './Repositories/Token/MetaRepository';
+import TokenWhitelistRepository from './Repositories/Token/WhitelistRepository';
 import UserRepository from './Repositories/UserRepository';
 // Implementations - Repositories - Settings
 import IntegrationSettingsRepository from './Repositories/Settings/IntegrationSettingsRepository';
 import TcaSettingsRepository from './Repositories/Settings/TcaSettingsRepository';
 import OauthSettingsRepository from './Repositories/Settings/OauthSettingsRepository';
-import WhitelistSettingsRepository from './Repositories/Settings/WhitelistSettingsRepository';
-// Implementations - Service providers
-import ComponentServiceProvider from './Providers/ComponentServiceProvider';
-// Implementations - Components
-import LoginButtonComponent from './Components/LoginButtonComponent';
-import TokenItemCardComponent from './Components/TokenItemCardComponent';
-// Interfaces
-import AdminRouterInterface from './Interfaces/Routes/AdminRouterInterface';
+import CreditWhitelistSettingsRepository from './Repositories/Settings/CreditWhitelistSettingsRepository';
 // Interfaces - Services
 import AuthServiceInterface from './Interfaces/Services/AuthServiceInterface';
-import AdminApiServiceInterface from './Interfaces/Services/AdminApiServiceInterface';
+import { ApiServiceInterface } from './Interfaces/Services/ApiServiceInterface';
+import CreditVendorServiceInterface from './Interfaces/Services/Application/Credit/VendorServiceInterface';
+import TokenVendorServiceInterface from './Interfaces/Services/Application/Token/VendorServiceInterface';
 // Interfaces - Repositories
 import CreditGroupRepositoryInterface from './Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import CreditTransactionRepositoryInterface from './Interfaces/Repositories/Credit/TransactionRepositoryInterface';
 import TokenAddressRepositoryInterface from './Interfaces/Repositories/Token/AddressRepositoryInterface';
-import TokenBalanceRepositoryInterface from './Interfaces/Repositories/Token/BalanceRepositoryInterface';
 import TokenPromiseRepositoryInterface from './Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import TokenSourceRepositoryInterface from './Interfaces/Repositories/Token/SourceRepositoryInterface';
-import TokenMetaRepositoryInterface from './Interfaces/Repositories/Token/MetaRepositoryInterface';
+import TokenWhitelistRepositoryInterface from './Interfaces/Repositories/Token/WhitelistRepositoryInterface';
 import UserRepositoryInterface from './Interfaces/Repositories/UserRepositoryInterface';
 // Interfaces - Repositories - Settings
 import IntegrationSettingsRepositoryInterface from './Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
 import TcaSettingsRepositoryInterface from './Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
 import OauthSettingsRepositoryInterface from './Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
-import WhitelistSettingsRepositoryInterface from './Interfaces/Repositories/Settings/WhitelistSettingsRepositoryInterface';
-// Interfaces - Components
-import ComponentServiceProviderInterface from './Interfaces/Providers/ComponentServiceProviderInterface';
-import LoginButtonComponentInterface from './Interfaces/Components/LoginButtonComponentInterface';
-import TokenItemCardComponentInterface from './Interfaces/Components/TokenItemCardComponentInterface';
+import CreditWhitelistSettingsRepositoryInterface from './Interfaces/Repositories/Settings/CreditWhitelistSettingsRepositoryInterface';
 
-const container = new Container();
+declare const window: any;
 
-container.bind<AdminRouterInterface>( TYPES.Routes.AdminRouterInterface ).to( AdminRouter );
-// Services - Application
-container.bind<AuthServiceInterface>( TYPES.Services.AuthServiceInterface ).to( AuthService );
-container.bind<AdminApiServiceInterface>( TYPES.Services.AdminApiServiceInterface ).to( AdminApiService );
-// Repositories
-container.bind<CreditGroupRepositoryInterface>( TYPES.Repositories.Credit.GroupRepositoryInterface ).to( CreditGroupRepository );
-container.bind<CreditTransactionRepositoryInterface>( TYPES.Repositories.Credit.TransactionRepositoryInterface ).to( CreditTransactionRepository );
-container.bind<TokenAddressRepositoryInterface>( TYPES.Repositories.Token.AddressRepositoryInterface ).to( TokenAddressRepository );
-container.bind<TokenBalanceRepositoryInterface>( TYPES.Repositories.Token.BalanceRepositoryInterface ).to( TokenBalanceRepository );
-container.bind<TokenPromiseRepositoryInterface>( TYPES.Repositories.Token.PromiseRepositoryInterface ).to( TokenPromiseRepository );
-container.bind<TokenSourceRepositoryInterface>( TYPES.Repositories.Token.SourceRepositoryInterface ).to( TokenSourceRepository );
-container.bind<TokenMetaRepositoryInterface>( TYPES.Repositories.Token.MetaRepositoryInterface ).to( TokenMetaRepository );
-container.bind<UserRepositoryInterface>( TYPES.Repositories.UserRepositoryInterface ).to( UserRepository );
-// Repositories - Settings
-container.bind<WhitelistSettingsRepositoryInterface>( TYPES.Repositories.Settings.WhitelistSettingsRepositoryInterface ).to( WhitelistSettingsRepository );
-container.bind<IntegrationSettingsRepositoryInterface>( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface ).to( IntegrationSettingsRepository );
-container.bind<OauthSettingsRepositoryInterface>( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface ).to( OauthSettingsRepository );
-container.bind<TcaSettingsRepositoryInterface>( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface ).to( TcaSettingsRepository );
-// Providers
-container.bind<ComponentServiceProviderInterface>( TYPES.Providers.ComponentServiceProviderInterface ).to( ComponentServiceProvider );
-// Components
-container.bind<LoginButtonComponentInterface>( TYPES.Components.LoginButtonComponentInterface ).to( LoginButtonComponent );
-container.bind<TokenItemCardComponentInterface>( TYPES.Components.TokenItemCardComponentInterface ).to( TokenItemCardComponent );
+export default function bind( container: Container ) {
+	// Services - Application
+	container.bind<AuthServiceInterface>( TYPES.Services.AuthServiceInterface ).to( AuthService );
+	container.bind<ApiServiceInterface>( TYPES.Services.ApiServiceInterface ).to( ApiService );
+	container.bind<CreditVendorServiceInterface>( TYPES.Services.Application.Credit.VendorServiceInterface ).to( CreditVendorService );
+	container.bind<TokenVendorServiceInterface>( TYPES.Services.Application.Token.VendorServiceInterface ).to( TokenVendorService );
+	// Repositories
+	container.bind<CreditGroupRepositoryInterface>( TYPES.Repositories.Credit.GroupRepositoryInterface ).to( CreditGroupRepository );
+	container.bind<CreditTransactionRepositoryInterface>( TYPES.Repositories.Credit.TransactionRepositoryInterface ).to( CreditTransactionRepository );
+	container.bind<TokenAddressRepositoryInterface>( TYPES.Repositories.Token.AddressRepositoryInterface ).to( TokenAddressRepository );
+	container.bind<TokenPromiseRepositoryInterface>( TYPES.Repositories.Token.PromiseRepositoryInterface ).to( TokenPromiseRepository );
+	container.bind<TokenSourceRepositoryInterface>( TYPES.Repositories.Token.SourceRepositoryInterface ).to( TokenSourceRepository );
+	container.bind<TokenWhitelistRepositoryInterface>( TYPES.Repositories.Token.WhitelistRepositoryInterface ).to( TokenWhitelistRepository );
+	container.bind<UserRepositoryInterface>( TYPES.Repositories.UserRepositoryInterface ).to( UserRepository );
+	// Repositories - Settings
+	container.bind<CreditWhitelistSettingsRepositoryInterface>( TYPES.Repositories.Settings.CreditWhitelistSettingsRepositoryInterface ).to( CreditWhitelistSettingsRepository );;
+	container.bind<IntegrationSettingsRepositoryInterface>( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface ).to( IntegrationSettingsRepository );
+	container.bind<OauthSettingsRepositoryInterface>( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface ).to( OauthSettingsRepository );
+	container.bind<TcaSettingsRepositoryInterface>( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface ).to( TcaSettingsRepository );
 
-container.bind<Component>( 'Component' ).to( LoginButtonComponent ).whenTargetNamed( 'loginButtonComponent' );
-container.bind<Component>( 'Component' ).to( TokenItemCardComponent ).whenTargetNamed( 'tokenItemCardComponent' );
-container.bind<interfaces.AutoNamedFactory<Component>>( 'Factory<Component>' )
-		.toAutoNamedFactory<Component>( 'Component' );
+	container.bind<string>( TYPES.Variables.adminUrl ).toConstantValue( '/wp-admin/' );
+	container.bind<string>( TYPES.Variables.adminPageUrl ).toConstantValue( '/wp-admin/admin.php?page=' );
+	container.bind<string>( TYPES.Variables.brand ).toConstantValue( 'Tokenly' );
+	container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
+	container.bind<string>( TYPES.Variables.apiHost ).toConstantValue( 'https://tokenpass.tokenly.com' );
+	container.bind<string>( TYPES.Variables.pluginUrl ).toConstantValue( '/wp-content/plugins/tokenly-wp-plugin' );
+	if ( window.tokenpassData?.shared.nonce ) {
+		const shared = window.tokenpassData.shared;
+		if ( shared?.nonce ) {
+			container.bind<string>( TYPES.Variables.nonce ).toConstantValue( shared.nonce );
+		}
+		if ( shared?.routes ) {
+			container.bind<string>( TYPES.Variables.routes ).toConstantValue( shared.routes );
+		}
+		if ( shared?.fallback_image ) {
+			container.bind<string>( TYPES.Variables.fallbackImage ).toConstantValue( shared.fallback_image );
+		}
+	}
+	return container;
+}
 
-container.bind<string>( TYPES.Variables.adminUrl ).toConstantValue( '/wp-admin/' );
-container.bind<string>( TYPES.Variables.adminPageUrl ).toConstantValue( '/wp-admin/admin.php?page=' );
-container.bind<string>( TYPES.Variables.brand ).toConstantValue( 'Tokenly' );
-container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
-container.bind<string>( TYPES.Variables.apiHost ).toConstantValue( 'https://tokenpass.tokenly.com' );
 
-export { container };
+
+

@@ -1,35 +1,41 @@
-import { injectable, inject } from 'inversify';
 import TransactionRepositoryInterface from '../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
-import AdminApiServiceInterface from '../../Interfaces/Services/AdminApiServiceInterface';
+
+import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
+
+import {
+	ApiServiceInterface,
+	CreditTransactionIndexParamsInterface,
+	CreditTransactionStoreParamsInterface,
+} from './../../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class TransactionRepository implements TransactionRepositoryInterface {
-	adminApiService;
+	protected ApiService: ApiServiceInterface;
 	
 	constructor(
-		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
 	) {
-		this.adminApiService = adminApiService;
+		this.ApiService = ApiService;
 	}
 
-	index( params: any ): Promise<Array<any>> {
+	public index( params?: CreditTransactionIndexParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditTransactionIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.creditTransactionIndex( params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 
-	store( params: any ): Promise<any> {
+	public store( params: CreditTransactionStoreParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.creditTransactionStore( params ).then( result => {
+			this.ApiService.creditTransactionStore( params ).then( result => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
 			} );
-		});
+		} );
 	}
 }

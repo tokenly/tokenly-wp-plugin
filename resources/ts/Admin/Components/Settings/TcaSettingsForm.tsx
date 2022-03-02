@@ -1,4 +1,5 @@
 import * as React from 'react';
+import FormTable from '../FormTable';
 
 import { 
 	Flex,
@@ -82,58 +83,76 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 		});
 	}
 	return (
-		<Flex
-			//@ts-ignore
-			direction="column"
-		>
-			<fieldset>
-				<Flex
-					//@ts-ignore
-					direction="column"
-				>	
-					<legend style={ { marginBottom: '8px' } }>
-						<b>Filtering Options</b>
-						<div>Filtering the content can slow down page loading speed. <br />
-							The following options allow fine-grained control over what gets filtered.</div>
-					</legend>
-					<ToggleControl
-						label="Filter Menu Items"
-						help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
-						checked={ props.settings.filter_menu_items }
-						onChange={ onFilterMenuItemsFieldChange }
-					/>
-					<ToggleControl
-						label="Filter Post Results"
-						help="Filters the post listings which are not controlable by the menu editor, like recent post list."
-						checked={ props.settings.filter_post_results }
-						onChange={ onFilterPostResultsFieldChange }
-					/>
-				</Flex>
-			</fieldset>
-			<hr />
+		<div>
 			<div>
-				<b>Post Types</b>
-				<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
+				<legend style={ { marginBottom: '8px' } }>
+					<b>Filtering Options</b>
+					<div>Filtering the content can slow down page loading speed. <br />
+						The following options allow fine-grained control over what gets filtered.</div>
+				</legend>
 			</div>
-			<Flex
-				//@ts-ignore
-				direction="column"
-				style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
-			>
-				{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
-			</Flex>
-			<div style={{marginTop: '12px'}}>
-				<b>Taxonomies</b>
-				<div>The selected taxonomies will be able to use the TCA functions. <br/> The rule editor will be available at the taxonomy term editing screen.</div>
-			</div>
-			<Flex
-				//@ts-ignore
-				direction="column"
-				style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
-			>
-				{ taxonomies.length > 0 ? taxonomies : <div style={{opacity: 0.6}}>No taxonomies found</div>}
-			</Flex>
-		</Flex>
+			<FormTable
+				rows={
+					[
+						{
+							label: 'Menu Items',
+							component:
+								<ToggleControl
+									label="Filter Menu Items"
+									help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
+									checked={ props.settings.filter_menu_items }
+									onChange={ onFilterMenuItemsFieldChange }
+								/>
+						},
+						{
+							label: 'Post Results',
+							component:
+								<ToggleControl
+									label="Filter Post Results"
+									help="Filters the post listings which are not controlable by the menu editor, like recent post list."
+									checked={ props.settings.filter_post_results }
+									onChange={ onFilterPostResultsFieldChange }
+								/>
+						},
+					]
+				}
+			/>
+			<hr />
+			<FormTable
+				rows={
+					[
+						{
+							label: 'Post Types',
+							component:
+								<div>
+									<div>The selected post types will be able to use the TCA functions. <br/> The rule editor will be available at the post editing screen.</div>
+									<Flex
+										//@ts-ignore
+										direction="column"
+										style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+									>
+										{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
+									</Flex>
+								</div>
+						},
+						{
+							label: 'Taxonomies',
+							component:
+								<div>
+									<div>The selected taxonomies will be able to use the TCA functions. <br/> The rule editor will be available at the taxonomy term editing screen.</div>
+									<Flex
+										//@ts-ignore
+										direction="column"
+										style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
+									>
+										{ taxonomies.length > 0 ? taxonomies : <div style={{opacity: 0.6}}>No taxonomies found</div>}
+									</Flex>
+								</div>
+						},
+					]
+				}
+			/>
+		</div>
 	);
 }
  

@@ -4,7 +4,7 @@ import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import Preloader from '../../Components/Preloader';
 import PromiseInfo from '../../Components/Token/PromiseInfo';
 import { 
@@ -16,12 +16,8 @@ import {
 	Flex,
 } from '@wordpress/components';
 
-interface PromiseShowPageData {
-	//
-}
-
 interface PromiseShowPageProps {
-	pageData: PromiseShowPageData;
+	//
 }
 
 export default function PromiseShowPage( props: PromiseShowPageProps ) {

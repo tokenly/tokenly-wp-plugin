@@ -4,19 +4,8 @@ namespace Tokenly\Wp\Models;
 
 use Tokenly\Wp\Interfaces\Models\ModelInterface;
 
-use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
-use Tokenly\Wp\Traits\RelatableTrait;
-
 class Model implements ModelInterface {
-	use RelatableTrait;
-
-	protected $fillable = array();
-	protected $casts = array();
-	protected $domain_repository;
-
-	public function __construct(
-		array $data = array()
-	) {
+	public function __construct( array $data = array() ) {
 		$this->fill( $data );
 	}
 
@@ -25,100 +14,32 @@ class Model implements ModelInterface {
 	 * @param array $data New data
 	 * @return object
 	 */
-	public function fill( array $data = array() ) {
+	public function fill( array $data = array() ): self {
 		foreach( $data as $key => $value ) {
-			if ( !in_array( $key, $this->fillable ) ) {
+			if ( !in_array( $key, $this->get_fillable() ) ) {
 				continue;
 			}
-			if ( array_key_exists( $key, $this->casts ) ) {
-				settype( $value, $this->casts[ $key ] );
+			if ( method_exists( $this, "set_{$key}" ) ) {
+				call_user_func( array( $this, "set_{$key}" ), $value );
 			}
-			$this->{$key} = $value;
 		}
 		return $this;
 	}
 
-	/**
-	 * Returns public properties of the model as array
-	 * @return array
-	 */
-	public function to_array() {
-		$array = array();
-		foreach( (array) $this as $key => $property ) {
-			if ( !in_array( $key, $this->fillable ) ) {
-				continue;
-			} 
-			if ( is_object( $property ) ) {
-				if ( $property instanceof ModelInterface || $property instanceof CollectionInterface ) {
-					$array[ $key ] = $property->to_array();
-					continue;
-				} else {
-					continue;
-				}
-			}
-			$array[ $key ] = $property;
-		}
-		return $array;
-	}
-
-	/**
-	 * Updates the model
-	 * @param array $data New data
-	 * @return object
-	 */
-	public function update( array $data = array() ) {
+	public function from_array( array $data = array() ): self {
 		$this->fill( $data );
-		return $this->save();
-	}
-
-	/**
-	 * Saves the model
-	 * @return object
-	 */
-	public function save() {
-		$save_data = $this->to_array();
-		foreach ( $save_data as $key => $save_data_item ) {
-			if ( !in_array( $key, $this->fillable ) ) {
-				unset( $save_data[ $key ] );
-			}
-		}
-		return $this->domain_repository->update( $this, $save_data );
-	}
-	
-	/**
-	 * Deletes the model
-	 * @return object
-	 */
-	public function destroy() {
-		return $this->domain_repository->destroy( $this );
-	}
-
-	/**
-	 * Loads the specified relations
-	 * @param string[] $relations List of relations to load
-	 * @return self
-	 */
-	public function load( array $relations = array() ) {
-		foreach ( $relations as $key => $relation ) {
-			if ( !$relation ) {
-				continue;
-			}
-			$relation_formatted = $this->format_relation( $relation );
-			if ( !isset( $relation_formatted['root'] ) ) {
-				continue;
-			}
-			$relation = $relation_formatted['root'];
-			$relations_nested = $relation_formatted['relations'] ?? null;
-			if ( isset( $this->{$relation} ) && is_object( $this->{$relation} ) ) {
-				$this->{$relation}->load( array( $relations_nested ) );
-				continue;
-			} else {
-				$method = "load_{$relation}";
-				if ( method_exists( $this, $method ) ) {
-					$this->{$relation} = call_user_func( array( $this, $method ), array( $relations_nested ) );
-				}
-			}
-		}
 		return $this;
+	}
+
+	public function to_array(): array {
+		return array();
+	}
+
+	/**
+	 * Gets a list of fillable properties
+	 * @return string[]
+	 */
+	protected function get_fillable(): array {
+		return array();
 	}
 }

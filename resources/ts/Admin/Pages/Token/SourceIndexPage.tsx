@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import { SourceItem } from '../../../Interfaces';
 import Page from './../Page';
 import SourceList from '../../Components/Token/SourceList';
@@ -16,12 +16,8 @@ import {
 	Flex,
 } from '@wordpress/components';
 
-interface SourceIndexPageData {
-	//
-}
-
 interface SourceIndexPageProps {
-	pageData: SourceIndexPageData;
+	//
 }
 
 export default function SourceIndexPage( props: SourceIndexPageProps ) {

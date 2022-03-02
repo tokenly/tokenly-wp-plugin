@@ -6,72 +6,58 @@ use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Credit\TransactionControllerInterface;
 
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Credit\TransactionServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\TransactionRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Defines transaction endpoints
  */
 class TransactionController extends Controller implements TransactionControllerInterface {
-	protected $transaction_service;
-	protected $user_service;
+	protected TransactionRepositoryInterface $transaction_repository;
+	protected UserRepositoryInterface $user_repository;
 
 	public function __construct(
-		TransactionServiceInterface $transaction_service,
-		UserServiceInterface $user_service
+		TransactionRepositoryInterface $transaction_repository,
+		UserRepositoryInterface $user_repository
 	) {
-		$this->transaction_service = $transaction_service;
-		$this->user_service = $user_service;
+		$this->transaction_repository = $transaction_repository;
+		$this->user_repository = $user_repository;
 	}
 	
 	/**
 	 * Gets a collection of transactions
 	 * @param \WP_REST_Request $request Request data
-	 * @return TransactionCollectionInterface
+	 * @return array
 	 */
-	public function index( TransactionCollectionInterface $transactions, \WP_REST_Request $request ) {
+	public function index( TransactionCollectionInterface $transactions, \WP_REST_Request $request ): array {
+		$users = clone $transactions;
+		$users->extract( 'account_uuid' );
+		$users = $this->user_repository->index( array(
+			'uuids' => $users,
+		) );
+		$users = clone $users;
+		$users->key_by_field('uuid');
+		$users = $users->to_array();
 		$transactions = $transactions->to_array();
+		foreach ( $transactions as &$transaction ) {
+			$uuid = $transaction['account'];
+			$user = $users[ $uuid ] ?? null;
+			$transaction['user'] = $user;
+		}
 		return $transactions;
 	}
 
 	/**
 	 * Makes a new transaction
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return array|null
 	 */
-	public function store( \WP_REST_Request $request ) {
+	public function store( \WP_REST_Request $request ): ?array {
 		$params = $request->get_params();
-		if (
-			!isset( $params['type'] ) ||
-			!isset( $params['account'] ) ||
-			!isset( $params['group_uuid'] )
-		)
-		$user = null;
-		$user = $this->user_service->show( array(
-			'id'   => $params['account'],
-			'with' => array( 'oauth_user' ),
-		) );
-		if ( !$user ) {
-			return false;
-		}
-		if ( !$user->oauth_user ) {
-			return false;
-		}
-		$type = $params['type'];
-		switch ( $type ) {
-			case 'debit':
-				$transactions = $user->oauth_user->debit_app_credits( $params );
-				break;
-			case 'credit':
-				$transactions = $user->oauth_user->credit_app_credits( $params );
-				break;
-		}
-		return array(
-			'transactions' => $transactions,
-		);
+		$this->transaction_repository->store( $params );
 	}
 
-	protected function remap_parameters( array $params = array() ) {
+	protected function remap_parameters( array $params = array() ): array {
 		if ( isset( $params['group'] ) ) {
 			$params['group_uuid'] = $params['group'];
 			unset( $params['group'] );
@@ -83,9 +69,9 @@ class TransactionController extends Controller implements TransactionControllerI
 	 * Gets model binding parameters
 	 * @return array
 	 */
-	protected function get_bind_params() {
+	protected function get_bind_params(): array {
 		return array(
-			'service'                   => $this->transaction_service,
+			'service'                   => $this->transaction_repository,
 			'collection_methods'        => array( 'index' ),
 			'collection_service_method' => 'index',
 		);

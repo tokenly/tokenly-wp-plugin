@@ -3,9 +3,9 @@ import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
 import Page from './../Page';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
-import TransactionRepositoryInterface from '../../../Interfaces/Repositories/Credit/TransactionRepositoryInterface';
+import VendorServiceInterface from '../../../Interfaces/Services/Application/Credit/VendorServiceInterface';
 import TransactionStoreForm from '../../Components/Credit/TransactionStoreForm';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
 import Preloader from '../../Components/Preloader';
 
@@ -18,40 +18,44 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-
-interface TransactionStorePageData {
-	//
-}
-
 interface TransactionStorePageProps {
-	pageData: TransactionStorePageData;
+	//
 }
 
 export default function TransactionStorePage( props: TransactionStorePageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
-	const transactionRepository: TransactionRepositoryInterface = useInjection( TYPES.Repositories.Credit.TransactionRepositoryInterface );
-	
+	const vendorService: VendorServiceInterface = useInjection( TYPES.Services.Application.Credit.VendorServiceInterface );
 	const [ storing, setStoring ] = useState<boolean>( false );
 	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
 	const [ groups, setGroups ] = useState<any>( null );
 	const [ storeData, setStoreData ] = useState<any>( {
-		quantity: 0,
 		type: 'credit',
+		quantity: 0,
 	} );
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
+		window.location = `${adminPageUrl}${namespace}-credit-group-index`;
 	}
 
 	function onStoreSubmit( event: any ) {
 		event.preventDefault();
 		setStoring( true );
-		transactionRepository.store( storeData ).then( ( result: any ) => {
-			setStoring( false );
-			goBack();
-		});
+		switch ( storeData.type ) {
+			case 'credit':
+				vendorService.credit( storeData ).then( ( result: any ) => {
+					setStoring( false );
+					goBack();
+				} );
+				break;
+			case 'debit':
+				vendorService.debit( storeData ).then( ( result: any ) => {
+					setStoring( false );
+					goBack();
+				} );
+				break;
+		}
 	}
 
 	function onCancel() {
@@ -68,21 +72,21 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 			setLoadingGroups( false );
 			setGroups( groupsFound );
 		} )
-		.then( () => {
-			const urlParams = new URLSearchParams( window.location.search );
-			const group = urlParams.get( 'group' );
-			if ( group ) {
-				const newStoreData = Object.assign( {}, storeData );
-				newStoreData.group_uuid = group;
-				setStoreData( newStoreData );
-			}
-			const type = urlParams.get( 'type' );
-			if ( type ) {
-				const newStoreData = Object.assign( {}, storeData );
-				newStoreData.type = type;
-				setStoreData( newStoreData );
-			}
-		} );
+		const newStoreData = Object.assign( {}, storeData );
+		const urlParams = new URLSearchParams( window.location.search );
+		const group = urlParams.get( 'group' );
+		if ( group ) {
+			newStoreData.group_uuid = group;
+		}
+		const type = urlParams.get( 'type' );
+		if ( type ) {
+			newStoreData.type = type;
+		}
+		const account = urlParams.get( 'account' );
+		if ( account ) {
+			newStoreData.account = account;
+		}
+		setStoreData( newStoreData );
 	 }, [] );
 	
 	return (

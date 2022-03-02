@@ -6,19 +6,25 @@ use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupStoreViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\IntegrationSettingsRepositoryInterface;
 
 class GroupStoreViewModel extends DynamicViewModel implements GroupStoreViewModelInterface {
-	protected $integration_settings;
+	protected IntegrationSettingsInterface $integration_settings;
+	protected IntegrationSettingsRepositoryInterface $integration_settings_repository;
 	
 	public function __construct(
-		IntegrationSettingsInterface $integration_settings
+		IntegrationSettingsRepositoryInterface $integration_settings_repository
 	) {
-		$this->integration_settings = $integration_settings;
+		$this->integration_settings_repository = $integration_settings_repository;
+		$this->integration_settings = $this->integration_settings_repository->show();
 	}
 	
-	protected function get_view_props( array $data = array() ) {
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_view_props( array $data = array() ): array {
 		return array(
-			'client_id' => $this->integration_settings->client_id,
+			'client_id' => $this->integration_settings->get_client_id(),
 		);
 	}
 }

@@ -9,8 +9,8 @@ namespace Tokenly\Wp\Collections\Credit;
 use Tokenly\Wp\Collections\Collection;
 use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface;
 
-use Tokenly\Wp\Interfaces\Models\Credit\AccountInterface;
+use Tokenly\Wp\Models\Credit\Account;
 
 class AccountCollection extends Collection implements AccountCollectionInterface {
-	protected $item_type = AccountInterface::class;
+	protected string $item_type = Account::class;
 }

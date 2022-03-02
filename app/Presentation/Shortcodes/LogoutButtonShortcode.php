@@ -7,7 +7,7 @@ use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LogoutButtonShortcodeInterface
 use Tokenly\Wp\Interfaces\Presentation\Components\LogoutButtonComponentModelInterface;
 
 class LogoutButtonShortcode extends Shortcode implements LogoutButtonShortcodeInterface {
-	protected $logout_button_component_model;
+	protected LogoutButtonComponentModelInterface $logout_button_component_model;
 
 	public function __construct(
 		LogoutButtonComponentModelInterface $logout_button_component_model
@@ -15,7 +15,10 @@ class LogoutButtonShortcode extends Shortcode implements LogoutButtonShortcodeIn
 		$this->logout_button_component_model = $logout_button_component_model;
 	}
 
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
 		$data = $this->logout_button_component_model->prepare();
 		return array(
 			'template' => 'shortcodes/LogoutButtonShortcode.twig',

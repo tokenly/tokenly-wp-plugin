@@ -1,58 +1,67 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { TokenMetaData } from '../../../Interfaces';
+import { useState, useEffect } from 'react';
 import MetaEditForm from '../../Components/Token/MetaEditForm';
-import eventBus from './../../../EventBus';
+import PostEditPage from '../../Pages/PostEditPage';
+import { PostEditPageProps } from '../../Pages/PostEditPage';
 
-import { 
-	PanelRow,
-} from '@wordpress/components';
-
-import { 
-	Fragment,
-} from '@wordpress/element';
-
-interface MetaEditPageData {
-	meta: TokenMetaData;
-	extra: any;
-}
-
-interface MetaEditPageProps {
-	pageData: MetaEditPageData;
+export interface MetaEditPageProps extends PostEditPageProps {
+	post: any;
 }
 
 export default function MetaEditPage( props: MetaEditPageProps ) {
-	const asset = props.pageData.meta?.asset ?? '';
-	let extra = Object.assign( [], props.pageData.meta?.extra );
-	if ( extra && Array.isArray( extra ) ) {
-		extra = extra.filter( function ( item: any ) {
+	const meta = Object.assign( {}, props.post );
+	const index = meta.index ?? null;
+	const asset = meta.asset ?? {
+		address: '',
+		index: '',
+	};
+	let blockchain = meta.blockchain;
+	if ( !blockchain ) {
+		blockchain = 'bitcoin';
+	}
+	const protocol = meta.protocol ?? null;
+	let attributes = Object.assign( [], props.post?.attributes );
+	if ( attributes && Array.isArray( attributes ) ) {
+		attributes = attributes.filter( function ( item: any ) {
 			return item != null;
 		} );
 	} else {
-		extra = [];
+		attributes = [];
 	}
-
+	const media = Object.assign( [], props.post?.media );
 	const [ editData, setEditData ] = useState<any>( {
 		asset: asset,
-		extra: extra,
+		index: index,
+		attributes: attributes,
+		media: media,
+		blockchain: blockchain,
+		protocol: protocol,
 	} );
-
 	function onEditDataChange( newData: any ) {
-		newData.extra = newData.extra.filter( function ( item: any ) {
-			return item != null;
-		} );
 		setEditData( newData );
-		eventBus.dispatch( 'postDataUpdated', newData );
+		props.onPostDataChange( newData );
 	}
-	
+
+	function onMetaChange( newData: any ) {
+		let state = Object.assign( {}, editData );
+		state = Object.assign( state, newData );
+		onEditDataChange( state );
+	}
+
+	useEffect( () => {
+		props.onPostDataChange( editData );
+	}, [] );
+
 	return (
-		<Fragment>
-			<PanelRow>
-				<MetaEditForm
-					editData={ editData }
-					onChange={ onEditDataChange }
-				/>
-			</PanelRow>
-		</Fragment>
+		<PostEditPage
+			onPostDataChange= { props.onPostDataChange }
+			tca_enabled={ props.tca_enabled }
+			tca_rules={ props.tca_rules }
+		>
+			<MetaEditForm
+				onChange={ onMetaChange }
+				editData={ editData }
+			/>
+		</PostEditPage>
 	);
 }

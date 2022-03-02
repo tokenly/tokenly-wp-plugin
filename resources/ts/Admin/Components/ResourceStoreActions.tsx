@@ -11,6 +11,7 @@ interface ResourceEditActionsProps {
 	onStore?: any;
 	onCancel: any;
 	name: string;
+	children?: any;
 }
 
 export default function ResourceEditActions( props: ResourceEditActionsProps ) {
@@ -22,7 +23,7 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 				onClick={ props.onStore }
 				type="submit"
 			>
-				{ `Create ${props.name}` }
+				{ `Submit` }
 			</Button>
 			<Button
 				isTertiary
@@ -30,6 +31,7 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 			>
 				Cancel
 			</Button>
+			{ props.children }
 		</Flex>
 	);
 }

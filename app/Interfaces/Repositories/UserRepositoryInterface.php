@@ -2,10 +2,12 @@
 
 namespace Tokenly\Wp\Interfaces\Repositories;
 
+use Tokenly\Wp\Interfaces\Repositories\RepositoryInterface;
+
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
-interface UserRepositoryInterface {
+interface UserRepositoryInterface extends RepositoryInterface {
 	public function index( array $params );
 	public function show( array $params );
-	public function store( string $username, string $password, string $email );
+	public function store( OauthUserInterface $oauth_user );
 }

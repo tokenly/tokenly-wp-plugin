@@ -1,2 +1,2 @@
 {% from 'components/UserInfoComponent.twig' import user_info_component %}
-{{ user_info_component( user.name ) }}
+{{ user_info_component( user.id, user.name, user.description, user.avatar ) }}

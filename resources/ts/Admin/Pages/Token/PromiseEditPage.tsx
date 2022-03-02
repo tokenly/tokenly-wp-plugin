@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import Page from './../Page';
 import PromiseLink from '../../Components/Token/PromiseLink';
 import PromiseEditForm from '../../Components/Token/PromiseEditForm';
@@ -20,12 +20,8 @@ import {
 
 declare const window: any;
 
-interface PromiseEditPageData {
-	//
-}
-
 interface PromiseEditPageProps {
-	pageData: PromiseEditPageData;
+	//
 }
 
 export default function PromiseEditPage( props: PromiseEditPageProps ) {
@@ -43,7 +39,7 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 	const [ editData, setEditData ] = useState<any>( {} );
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-vendor`;
+		window.location = `${adminPageUrl}${namespace}-token-promise-index`;
 	}
 
 	function onSaveSubmit( event: any ) {
@@ -94,7 +90,7 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 		setLoading( true );
 		promiseRepository.show( id ).then( ( promiseFound: any ) => {
 			const newEditData = {
-				quantity: promiseFound?.quantity?.value_sat,
+				quantity: Object.assign( {}, promiseFound?.quantity ),
 				expiration: null,
 				txid: null,
 				fingerprint: null,

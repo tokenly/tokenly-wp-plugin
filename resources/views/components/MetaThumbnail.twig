@@ -1,0 +1,11 @@
+<div class="token-meta-list-featured-image">
+	{% if thumb_url %}
+	<a href="{{link}}" >
+		<img data-id="{{thumb_id}}" src="{{thumb_url}}" />
+	</a>
+	{% else %}
+	<a href="{{link}}" >
+		<img data-id="-1" src="{{placeholder_url}}" />
+	</a>
+	{% endif %}
+</div>

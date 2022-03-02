@@ -1,0 +1,7 @@
+{% extends "Index.twig" %}
+{% from 'components/SectionComponent.twig' import section_component %}
+{% block content %}
+	<div class="tokenly-component spacer lg"></div>
+	{{ section_component( do_shortcode( "[tokenly_token_meta id='#{props.post.id}']" ) ) }}
+	<div class="tokenly-component spacer lg"></div>
+{% endblock %}

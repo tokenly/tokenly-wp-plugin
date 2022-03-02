@@ -1,21 +1,31 @@
-import { injectable, inject } from 'inversify';
 import AddressRepositoryInterface from '../../Interfaces/Repositories/Token/AddressRepositoryInterface';
-import AdminApiServiceInterface from '../../Interfaces/Services/AdminApiServiceInterface';
+
+import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
+
+import {
+	ApiServiceInterface,
+	TokenAddressIndexParamsInterface,
+	TokenAddressBalanceIndexParamsInterface,
+	TokenAddressShowParamsInterface,
+	TokenAddressStoreParamsInterface,
+	TokenAddressUpdateParamsInterface,
+	TokenAddressVerifyParamsInterface,
+} from './../../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class AddressRepository implements AddressRepositoryInterface {
-	adminApiService;
+	protected ApiService: ApiServiceInterface;
 	
 	constructor(
-		@inject( TYPES.Services.AdminApiServiceInterface ) adminApiService: AdminApiServiceInterface
+		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
 	) {
-		this.adminApiService = adminApiService;
+		this.ApiService = ApiService;
 	}
 
-	index( params?: any ): Promise<Array<any>> {
+	public index( params?: TokenAddressIndexParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenAddressIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenAddressIndex( params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -23,9 +33,9 @@ export default class AddressRepository implements AddressRepositoryInterface {
 		} );
 	}
 
-	show( id: string, params: any = {} ): Promise<Array<any>> {
+	public show( id: string, params?: TokenAddressShowParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenAddressShow( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenAddressShow( id, params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -33,9 +43,49 @@ export default class AddressRepository implements AddressRepositoryInterface {
 		} );
 	}
 
-	balanceIndex( id: string, params: any = {} ): Promise<Array<any>> {
+	public store( params: TokenAddressStoreParamsInterface ): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.adminApiService.tokenAddressBalanceIndex( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenAddressStore( params ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public update( id: string, params: TokenAddressUpdateParamsInterface ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.tokenAddressUpdate( id, params ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public destroy( id: string ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.tokenAddressDestroy( id ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public verify( id: string, params: TokenAddressVerifyParamsInterface ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.tokenAddressVerify( id, params ).then( ( result: Array<any> ) => {
+				resolve( result );
+			} ).catch( error => {
+				reject( error );
+			} );
+		} );
+	}
+
+	public balanceIndex( id: string, params?: TokenAddressBalanceIndexParamsInterface ): Promise<Array<any>> {
+		return new Promise( ( resolve, reject ) => {
+			this.ApiService.tokenAddressBalanceIndex( id, params ).then( ( result: Array<any> ) => {
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

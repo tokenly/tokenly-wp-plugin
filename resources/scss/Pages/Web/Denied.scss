@@ -15,6 +15,7 @@
 		display: grid;
 		/* autoprefixer: ignore next */
 		grid-auto-flow: row;
+		grid-template-columns: 100%;
 		grid-row-gap: 14px;
 		.rule-group {
 			box-shadow: 0px 7px 8px 7px rgb(0 0 0 / 4%);
@@ -24,21 +25,19 @@
 				margin: 4px !important;
 			}
 			.rules {
-				display: grid;
-				/* autoprefixer: ignore next */
-				grid-auto-flow: row;
 				.rule {
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
 					.attributes {
-						display: grid;
-						/* autoprefixer: ignore next */
-						grid-auto-flow: row;
-						width: 100%;
 						.group-operator {
 							font-size: 0.75rem;
 							text-align: center;
+						}
+						.asset {
+							white-space: nowrap;
+							word-wrap: break-word;
+							overflow: hidden;
+							width: 100%;
+							text-overflow: ellipsis;
+							display: inline-block;
 						}
 					}
 				}

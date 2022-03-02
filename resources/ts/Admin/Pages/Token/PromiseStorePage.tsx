@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
+import VendorServiceInterface from '../../../Interfaces/Services/Application/Token/VendorServiceInterface';
 import PromiseStoreForm from '../../Components/Token/PromiseStoreForm';
 import Preloader from '../../Components/Preloader';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
 declare const window: any;
 
@@ -18,18 +18,14 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface PromiseStorePageData {
-	//
-}
-
 interface PromiseStorePageProps {
-	pageData: PromiseStorePageData;
+	//
 }
 
 export default function PromiseStorePage( props: PromiseStorePageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const promiseRepository: PromiseRepositoryInterface = useInjection( TYPES.Repositories.Token.PromiseRepositoryInterface );
+	const vendorService: VendorServiceInterface = useInjection( TYPES.Services.Application.Token.VendorServiceInterface );
 	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
 	
 	const [ storeData, setStoreData ] = useState<any>( {} );
@@ -38,13 +34,13 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 	const [ storing, setStoring ] = useState<boolean>( false );
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-vendor`;
+		window.location = `${adminPageUrl}${namespace}-token-promise-index`;
 	}
 
 	function onStoreSubmit( event: any ) {
 		event.preventDefault();
 		setStoring( true );
-		promiseRepository.store( storeData ).then( ( result: any ) => {
+		vendorService.promise( storeData ).then( ( result: any ) => {
 			setStoring( false );
 			goBack();
 		} );
@@ -67,9 +63,18 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 			setSources( sourcesFound );
 		} )
 		.then( () => {
-			const newStoreData = {
+			const newStoreData: any = {
 				quantity: 0,
 				pseudo: false,
+			}
+			const urlParams = new URLSearchParams( window.location.search );
+			const asset = urlParams.get( 'asset' );
+			if ( asset ) {
+				newStoreData.asset = asset;
+			}
+			const destination = urlParams.get( 'destination' );
+			if ( destination ) {
+				newStoreData.destination = destination;
 			}
 			setStoreData( newStoreData );
 		} );

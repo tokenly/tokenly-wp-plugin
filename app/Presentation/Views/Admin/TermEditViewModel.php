@@ -6,35 +6,36 @@ use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\TermEditViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\TermServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
+use Tokenly\Wp\Interfaces\Models\TermInterface;
 
 class TermEditViewModel extends DynamicViewModel implements TermEditViewModelInterface {
-	protected $tca_settings;
-	protected $term_service;
+	protected TcaSettingsInterface $tca_settings;
+	protected TcaSettingsRepositoryInterface $tca_settings_repository;
+	protected TermRepositoryInterface $term_repository;
 	
 	public function __construct(
-		TcaSettingsInterface $tca_settings,
-		TermServiceInterface $term_service
+		TcaSettingsRepositoryInterface $tca_settings_repository,
+		TermRepositoryInterface $term_repository
 	) {
-		$this->tca_settings = $tca_settings;
-		$this->term_service = $term_service;
+		$this->tca_settings_repository = $tca_settings_repository;
+		$this->tca_settings = $this->tca_settings_repository->show();
+		$this->term_repository = $term_repository;
 	}
-	
-	protected function get_view_props( array $data = array() ) {
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_view_props( array $data = array() ): array {
 		if ( !isset( $data['term'] ) ) {
-			return;
+			return array();
 		}
 		$term = $data['term'];
-		$taxonomy = $term->taxonomy;
-		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $taxonomy );
-		$term_id = $term->term_id;
-		$term = $this->term_service->show( array(
-			'taxonomy' => $taxonomy,
-			'include'  => $term_id,
-		) );
+		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $term->taxonomy );
 		$tca_rules = array();
-		if ( $term && isset( $term->tca_rules ) && is_object( $term->tca_rules ) ) {
-			$tca_rules = $term->tca_rules->to_array();
+		if ( $term && $term->get_tca_rules() ) {
+			$tca_rules = $term->get_tca_rules()->to_array();
 		}
 		return array(
 			'tca_enabled' => $tca_enabled,

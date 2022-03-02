@@ -4,6 +4,7 @@ import ResourceList from '../../Components/ResourceList';
 
 interface BalanceListProps {
 	balance: Array<any>;
+	username?: string;
 }
 
 export default function BalanceList( props: BalanceListProps ) {
@@ -12,6 +13,9 @@ export default function BalanceList( props: BalanceListProps ) {
 			items={ props.balance }
 			component={ BalanceCard }
 			itemProp="balance"
+			props={ {
+				username: props.username,
+			} }
 			notFoundLabel="balances"
 		/>
 	);

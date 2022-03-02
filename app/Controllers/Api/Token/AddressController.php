@@ -5,21 +5,25 @@ namespace Tokenly\Wp\Controllers\Api\Token;
 use Tokenly\Wp\Controllers\Controller;
 use Tokenly\Wp\Interfaces\Controllers\Api\Token\AddressControllerInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Token\AddressInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Defines address endpoints
  */
 class AddressController extends Controller implements AddressControllerInterface {
-	protected $address_service;
+	protected AddressRepositoryInterface $address_repository;
+	protected UserRepositoryInterface $user_repository;
 
 	public function __construct(
-		AddressServiceInterface $address_service
+		AddressRepositoryInterface $address_repository,
+		UserRepositoryInterface $user_repository
 	) {
-		$this->address_service = $address_service;
+		$this->address_repository = $address_repository;
+		$this->user_repository = $user_repository;
 	}
 	
 	/**
@@ -28,7 +32,7 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function index( AddressCollectionInterface $addresses, \WP_REST_Request $request ) {
+	public function index( AddressCollectionInterface $addresses, \WP_REST_Request $request ): array {
 		$addresses = $addresses->to_array();
 		return $addresses;
 	}
@@ -37,29 +41,118 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * Gets a single addresse
 	 * @param AddressInterface $address Bound address
 	 * @param \WP_REST_Request $request Request data
+	 * @return array|null
+	 */
+	public function show( AddressInterface $address = null, \WP_REST_Request $request ): ?array {
+		if ( $address ) {
+			$address = $address->to_array();
+		}
+		return $address;
+	}
+
+	/**
+	 * Makes a new address
+	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function show( AddressInterface $address, \WP_REST_Request $request ) {
-		$address = $address->to_array();
-		return $address;
+	public function store( \WP_REST_Request $request ): array {
+		$params = $request->get_params();
+		$params = $this->remap_parameters( $params );
+		$address = $this->address_repository->store( $params );
+		if ( $address ) {
+			return array(
+				'address' => $address,
+				'status'  => 'Successfully registered the address!',
+			);
+		}
+		return array(
+			'address' => null,
+			'status'  => 'Failed to register the address!',
+		);
+	}
+
+	/**
+	 * Updates an existing address
+	 * @param AddressInterface|null $address Address to update
+	 * @param WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function update( AddressInterface $address = null, \WP_REST_Request $request ) {
+		if ( $address ) {
+			$params = $request->get_params();
+			$params = $this->remap_parameters( $params );
+			$this->address_repository->update( $address, $params );
+			return array(
+				'status' => 'Successfully updated the address!',
+			);
+		}
+		return array(
+			'status' => 'Failed to update the address!',
+		);
+	}
+
+	/**
+	 * Verifies an existing address
+	 * @param AddressInterface|null $address Address to verify
+	 * @param WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function verify( AddressInterface $address = null, \WP_REST_Request $request ) {
+		if ( $address ) {
+			$params = $request->get_params();
+			$params = $this->remap_parameters( $params );
+			$this->address_repository->verify( $address, $params );
+			return array(
+				'status' => 'Successfully verified the address!',
+			);
+		}
+		return array(
+			'status' => 'Failed to verify the address!',
+		);
+	}
+
+	/**
+	 * Deletes a address
+	 * @param AddressInterface|null $address Bound address
+	 * @param WP_REST_Request $request Request data
+	 * @return array
+	 */
+	public function destroy( AddressInterface $address = null, \WP_REST_Request $request ) {
+		if ( $address ) {
+			$params = $request->get_params();
+			$params = $this->remap_parameters( $params );
+			$this->address_repository->destroy( $address, $params );
+			return array(
+				'status' => 'Successfully deleted the address!',
+			);
+		}
+		return array(
+			'status' => 'Failed to delete the address!',
+		);
 	}
 
 	/**
 	 * Gets a collection of balance
 	 * @param AddressInterface $user Bound address
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return array|null
 	 */
-	public function balance_index( AddressInterface $address, \WP_REST_Request $request ) {
-		$address->load( array( 'balance.meta' ) );
-		if ( !isset( $address->balance ) || $address->balance instanceof BalanceCollectionInterface === false ) {
-			return array();
+	public function balance_index( AddressInterface $address = null, \WP_REST_Request $request ): ?array {
+		$balance = null;
+		if ( $address ) {
+			$this->address_repository->load( $address, array( 'balance.meta' ) );
+			if ( $address->get_balance() ) {
+				$balance = $address->get_balance()->to_array();
+			}
 		}
-		$balance = $address->balance->to_array();
 		return $balance;
 	}
 
-	protected function remap_parameters( array $params = array() ) {
+	protected function remap_parameters( array $params = array() ): array {
+		$user = $this->user_repository->show_current();
+		if ( $user ) {
+			$params['oauth_token'] = $user->get_oauth_token();
+		}
 		if ( isset( $params['id'] ) ) {
 			$params['address'] = $params['id'];
 			unset( $params['id'] );
@@ -71,10 +164,10 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * Gets model binding parameters
 	 * @return array
 	 */
-	protected function get_bind_params() {
+	protected function get_bind_params(): array {
 		return array(
-			'service'                   => $this->address_service,
-			'single_methods'            => array( 'show', 'balance_index' ),
+			'service'                   => $this->address_repository,
+			'single_methods'            => array( 'show', 'update', 'destroy', 'verify', 'balance_index' ),
 			'single_service_method'     => 'show',
 			'collection_methods'        => array( 'index' ),
 			'collection_service_method' => 'index',

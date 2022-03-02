@@ -5,7 +5,7 @@ import Page from './../Page';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupStoreForm from '../../Components/Credit/GroupStoreForm';
 import ResourceStoreActions from '../../Components/ResourceStoreActions';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 
 declare const window: any;
 
@@ -15,12 +15,8 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface GroupStorePageData {
-	client_id: string;
-}
-
 interface GroupStorePageProps {
-	pageData: GroupStorePageData;
+	client_id: string;
 }
 
 export default function GroupStorePage( props: GroupStorePageProps ) {
@@ -31,11 +27,11 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 	const [ storing, setStoring ] = useState<boolean>( false );
 	const [ storeData, setStoreData ] = useState<any>( {
 		name: 'New Group',
-		app_whitelist: props.pageData?.client_id,
+		app_whitelist: props.client_id,
 	} );
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
+		window.location = `${adminPageUrl}${namespace}-credit-group-index`;
 	}
 	
 	function onStoreSubmit( event: any ) {

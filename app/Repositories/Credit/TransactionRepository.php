@@ -2,35 +2,40 @@
 
 namespace Tokenly\Wp\Repositories\Credit;
 
+use Tokenly\Wp\Repositories\Repository;
 use Tokenly\Wp\Interfaces\Repositories\Credit\TransactionRepositoryInterface;
 
+use Tokenly\Wp\Collections\Credit\TransactionCollection;
+use Tokenly\Wp\Models\Credit\Transaction;
 use Tokenly\Wp\Interfaces\Models\Credit\TransactionInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Credit\TransactionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Credit\TransactionCollectionFactoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class TransactionRepository implements TransactionRepositoryInterface {
-	protected $client;
-	protected $transaction_factory;
-	protected $transaction_collection_factory;
+class TransactionRepository extends Repository implements TransactionRepositoryInterface {
+	protected TokenpassAPIInterface $client;
 	
 	public function __construct(
-		TokenpassAPIInterface $client,
-		TransactionFactoryInterface $transaction_factory,
-		TransactionCollectionFactoryInterface $transaction_collection_factory
+		TokenpassAPIInterface $client
 	) {
 		$this->client = $client;
-		$this->transaction_factory = $transaction_factory;
-		$this->transaction_collection_factory = $transaction_collection_factory;
 	}
 
 	/**
-	 * Gets a collection of credit transactions
+	 * Gets a collection of transactions
 	 * @param array $params Search parameters
-	 * @return TransactionCollectionInterface
+	 * @return TransactionCollectionInterface Transactions found
 	 */
-	public function index( array $params = array() ) {
+	public function index( array $params = array() ): TransactionCollectionInterface {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return TransactionCollectionInterface Transactions found
+	 */
+	protected function index_cacheable( array $params = array() ): TransactionCollectionInterface {
 		$transactions = array();
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
@@ -42,61 +47,11 @@ class TransactionRepository implements TransactionRepositoryInterface {
 				$transactions = $history['transactions'];
 			}
 		}
-		$transactions = $this->transaction_collection_factory->create( $transactions );
-		return $transactions;	
-	}
-
-	/**
-	 * Creates a new app credits transaction
-	 * @param array $params Transaction data
-	 * @return array
-	 */
-	public function store( array $params = array() ) {
-		if (
-			!isset( $params['type'] ) ||
-			!isset( $params['group_uuid'] ) ||
-			!isset( $params['account'] )
-		) {
-			return;
-		}
-		$group_uuid = $params['group_uuid'];
-		$account_user = $params['account'];
-		$amount = intval( $params['amount'] );
-		$account = array(
-			'account' => $account_user->username,
-			'amount'  => $amount,
-			'ref'     => $params['ref'] ?? '',
-		);
-		$type = $params['type'];
-		$source = null;
-		if ( isset( $params['source'] ) ) {
-			$source = $params['source']->id;
-		}
-		$accounts = array( $account );
-		$transactions = null;
-		switch( $type ) {
-			case 'debit':
-				$transactions = $this->client->takeAppCredit( $group_uuid, $account_user->id, $amount, null, $source );
-				break;
-			case 'credit':
-				$transactions = $this->client->giveAppCredit( $group_uuid, $account_user->id, $amount, null, $source );
-				break;
-		}
-		if ( !$transactions ) {
-			return;
-		}
-		if ( isset( $transactions['debit'] ) ) {
-			$transactions_debit = $transactions['debit'];
-			$transactions['debit'] = $this->transaction_collection_factory->create( $transactions_debit );
-		}
-		if ( isset( $transactions['credit'] ) ) {
-			$transactions_credit = $transactions['credit'];
-			$transactions['credit'] = $this->transaction_collection_factory->create( $transactions_credit );
-		}
+		$transactions = ( new TransactionCollection() )->from_array( $transactions );
 		return $transactions;
 	}
 
-	protected function remap_fields( array $transaction ) {
+	protected function remap_fields( array $transaction ): array {
 		if ( isset( $transaction['tokenpass_user'] ) ) {
 			$transaction['oauth_user_id'] = $transaction['tokenpass_user'];
 			unset( $transaction['tokenpass_user'] );

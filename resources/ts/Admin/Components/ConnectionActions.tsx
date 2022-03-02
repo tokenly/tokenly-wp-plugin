@@ -33,19 +33,19 @@ export default function ConnectionActions( props: ConnectionActionsProps ) {
 	return (
 		<Flex justify='flex-start'>
 			<Button
-				isPrimary
+				isSecondary
 				isBusy={ connecting }
 				disabled={ ( props.status || props.disabled ) }
-				href={ `/${namespace}/oauth/connect?${namespace}_success_url=${adminPageUrl}${namespace}-connection` }
+				href={ `/${namespace}/oauth/connect?${namespace}_success_url=/wp-admin/profile.php#${namespace}` }
 				onClick={ onConnectButtonClick }
 			>
 				{ `Connect to ${brand}` }
 			</Button>
 			<Button
-				isPrimary
+				isDestructive
 				isBusy={ disconnecting }
 				disabled={ ( !props.status || props.disabled ) }
-				href={ `/${namespace}/oauth/disconnect?${namespace}_success_url=${adminPageUrl}${namespace}-connection` }
+				href={ `/${namespace}/oauth/disconnect?${namespace}_success_url=/wp-admin/profile.php#${namespace}` }
 				onClick={ onDisconnectButtonClick }
 			>
 				{ `Disconnect from ${brand}` }

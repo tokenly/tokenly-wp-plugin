@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Providers;
 
-interface RouteServiceProviderInterface {
+use Tokenly\Wp\Interfaces\Providers\ServiceProviderInterface;
+
+interface RouteServiceProviderInterface extends ServiceProviderInterface {
 	//
 }

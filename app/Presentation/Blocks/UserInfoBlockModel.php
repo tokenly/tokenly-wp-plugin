@@ -5,34 +5,38 @@ namespace Tokenly\Wp\Presentation\Blocks;
 use Tokenly\Wp\Presentation\Blocks\BlockModel;
 use Tokenly\Wp\Interfaces\Presentation\Blocks\UserInfoBlockModelInterface;
 
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 class UserInfoBlockModel extends BlockModel implements UserInfoBlockModelInterface {
+	protected UserRepositoryInterface $user_repository;
+
 	public function __construct(
-		UserServiceInterface $user_service
+		UserRepositoryInterface $user_repository
 	) {
-		$this->user_service = $user_service;
+		$this->user_repository = $user_repository;
 	}
 
-	public function prepare( array $data = array() ) {
+	/**
+	 * @inheritDoc
+	 */
+	public function prepare( array $data = array() ): ?array {
 		$user_id = 'me';
 		if ( isset( $data['user_id'] ) ) {
 			$user_id = $data['user_id'];
 		}
-		$user = $this->user_service->show( array(
+		$user = $this->user_repository->show( array(
 			'id' => $user_id,
 		) );
 		if ( !$user ) {
-			return;
-		}
-		$user->load( array( 'oauth_user' ) );
-		if ( !isset( $user->oauth_user ) ) {
-			return;
+			return null;
 		}
 		$user = $user->to_array();
 		return array(
 			'user' => array(
-				'name' => $user['name'],
+				'id'          => $user['id'],
+				'name'        => $user['name_display'],
+				'description' => $user['description'],
+				'avatar'      => $user['avatar'],
 			),
 		);
 	}

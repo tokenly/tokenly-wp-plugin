@@ -1,0 +1,20 @@
+{% macro meta_attributes_component( attributes ) %}
+	<div class="token-meta-attributes">
+		<h2>Attributes</h2>
+		<div class="tokenly-component spacer md"></div>
+		{% if attributes|length > 0 %}
+		<table>
+			<tr>
+				<th>Attribute</th>
+				<th>Value</th>
+			</tr>
+			{% for attribute in attributes %}
+				<th>{{attribute.key}}</th>
+				<th>{{attribute.value}}</th>
+			{% endfor %}
+		</table>
+		{% else %}
+		<div class="empty">No extra attributes.</div>
+		{% endif %}
+	</div>
+{% endmacro %}

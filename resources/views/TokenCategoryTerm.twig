@@ -1,0 +1,29 @@
+{% extends "Index.twig" %}
+{% from 'components/SectionComponent.twig' import section_component %}
+{% from 'components/Token/MetaAttributesComponent.twig' import meta_attributes_component %}
+{% from 'components/Token/MetaMediaComponent.twig' import meta_media_component %}
+{% block content %}
+	<div class="tokenly-component spacer lg"></div>
+	<div class="tokenly-block">
+		<div class="row">
+			<div class="token-meta-info">
+				<div class="grid-container">
+					<div class="image-container">
+						<img src="{{props.term.image.url ?? props.fallback_image}}" />
+					</div>
+					<div class="info-container">
+						<div class="name"><h1>{{props.term.name}}</h1></div>
+						<div class="tokenly-component spacer sm"></div>
+						<div class="description">{{props.term.description}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="tokenly-component spacer md"></div>
+			{{ meta_attributes_component( props.meta.attributes ) }}
+			<div class="tokenly-component spacer md"></div>
+			{{ meta_media_component( props.meta.media ) }}
+			<div class="tokenly-component spacer md"></div>
+		</div>
+	</div>
+	<div class="tokenly-component spacer lg"></div>
+{% endblock %}

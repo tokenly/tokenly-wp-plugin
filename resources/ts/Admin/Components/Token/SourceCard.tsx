@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SourceItem } from '../../../Interfaces';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import CardActions from './../CardActions';
 
 import { 
@@ -21,12 +21,17 @@ export default function SourceCard( props: SourceCardProps ) {
 	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace = useInjection( TYPES.Variables.namespace );
 	
-	function getAssets() {
-		let assets = 'all';
-		if ( props.source?.assets?.length ) {
-			assets = props.source?.assets?.join( ', ' );
+	function getAssets(): string {
+		let listing = 'all';
+		const assets = props.source?.assets?.filter(Boolean);
+		if ( assets.length > 0 ) {
+			listing = assets.join( ', ' );
 		}
-		return assets;
+		return listing;
+	}
+
+	function isDisabled(): boolean {
+		return ( !props.source?.address );
 	}
 
 	return (
@@ -34,11 +39,15 @@ export default function SourceCard( props: SourceCardProps ) {
 			<CardHeader>
 				<div title={ props.source.address_id }>
 					<b>
-						<a 
+						<Button
+							isLink 
 							href={ `${adminPageUrl}${namespace}-token-source-show&source=${ props.source.address_id }` }
 						>
-							{ props.source.address?.label }
-						</a>
+							{ props.source.address?.label ? props.source.address.label : `${props.source.address_id}` }
+						</Button>
+						{ !props.source?.address &&
+							<span> [!]</span>
+						}
 					</b>
 				</div>
 			</CardHeader>
@@ -54,15 +63,11 @@ export default function SourceCard( props: SourceCardProps ) {
 					[
 						{
 							title: 'View Details',
-							url: `${ adminPageUrl }${ namespace }-token-source-show&source=${ props.source.address_id }`,
-						},
-						{
-							title: 'View Balance',
-							url: `${ adminPageUrl }${ namespace }-token-address-balance-index&id=${ props.source.address_id }`,
+							href: `${ adminPageUrl }${ namespace }-token-source-show&source=${ props.source.address_id }`,
 						},
 						{
 							title: 'Edit Source',
-							url: `${ adminPageUrl }${ namespace }-token-source-edit&source=${ props.source.address_id }`,
+							href: `${ adminPageUrl }${ namespace }-token-source-edit&source=${ props.source.address_id }`,
 						}
 					]
 				}

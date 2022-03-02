@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Fragment } from 'react';
+import AssetField from './AssetField';
 
 import { 
 	Button,
@@ -14,7 +16,10 @@ interface WhitelistEditorProps {
 export default function WhitelistEditor( props: WhitelistEditorProps ) {
 	function onAdd() {
 		const newState = Object.assign( [], props.items );
-		newState.push( { key: '', value: '' } );
+		newState.push( { asset: {
+			index: '',
+			address: '',
+		} } );
 		props.onChange( newState );
 	}
 	
@@ -25,15 +30,9 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 		props.onChange( newState );
 	}
 	
-	function onAddressFieldChange( key: any, value: any ) {
+	function onAssetFieldChange( key: any, value: any ) {
 		const newState = Object.assign( [], props.items );
-		newState[ key ].address = value;
-		props.onChange( newState );
-	}
-
-	function onIndexFieldChange( key: any, value: any ) {
-		const newState = Object.assign( [], props.items );
-		newState[ key ].index = value;
+		newState[ key ].asset = value;
 		props.onChange( newState );
 	}
 
@@ -46,20 +45,12 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 	const listItems = props.items.map( ( item: any, i: number ) => {
 		if ( !item ) { return }
 		return (
-			<Flex align="flex-end">
+			<Flex align="center">
 				<Flex>
-					<TextControl
-						label="Contract Address"
-						value={ item.address }
-						onChange={ ( value: string ) => {
-							onAddressFieldChange( i, value );
-						} }
-					/>
-					<TextControl
-						label="Token Index"
-						value={ item.index }
-						onChange={ ( value: string ) => {
-							onIndexFieldChange( i, value );
+					<AssetField
+						asset={ item.asset }
+						onChange={ ( value: any ) => {
+							onAssetFieldChange( i, value );	
 						} }
 					/>
 				</Flex>
@@ -85,7 +76,12 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 					//@ts-ignore
 					direction="column"
 					style={ { marginTop: '8px' } }
-				>{ listItems }</Flex>
+				>
+					{ listItems.length > 0
+						? <Fragment>{ listItems }</Fragment>
+						: <div style={ { opacity: 0.5 } }>There are not whitelisted tokens.</div>
+					}
+				</Flex>
 			</label>
 			<div>
 				<Button

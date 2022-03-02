@@ -7,11 +7,22 @@ use Tokenly\Wp\Presentation\Shortcodes\Shortcode;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\ShortcodeInterface;
 
 class Shortcode extends Service implements ShortcodeInterface {
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ) {
-		//
+	/**
+	 * Prepares the shortcode template data for rendering
+	 * @param array $atts Shortcode parameters
+	 * @param string $content
+	 * @param string $tag
+	 * @return array
+	 */
+	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+		return array();
 	}
 
-	public function register() {
+	/**
+	 * Registers the shortcode
+	 * @return void
+	 */
+	public function register(): void {
 		//
 	}
 }

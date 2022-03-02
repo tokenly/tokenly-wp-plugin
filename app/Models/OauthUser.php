@@ -5,254 +5,155 @@ namespace Tokenly\Wp\Models;
 use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
-use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Tca\RuleCollectionInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\Credit\AccountCollectionFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\Tca\RuleCheckResultFactoryInterface;
-use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface;
-use Tokenly\Wp\Interfaces\Models\Tca\AccessReportInterface;
-use Tokenly\Wp\Interfaces\Models\Tca\RuleCheckResultInterface;
+use Tokenly\Wp\Collections\Credit\AccountCollection as CreditAccountCollection;
+use Tokenly\Wp\Collections\Token\AddressCollection as TokenAddressCollection;
+use Tokenly\Wp\Collections\Token\BalanceCollection as TokenBalanceCollection;
+use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface as CreditAccountCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface as TokenAddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface as TokenBalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
-use Tokenly\Wp\Interfaces\Repositories\Credit\TransactionRepositoryInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Credit\AccountServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\BalanceServiceInterface;
-use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
-	public $id;
-	public $username;
-	public $email;
-	public $name;
-	public $email_is_confirmed;
-	public $oauth_token;
-	public $balance;
+	protected ?string $id = null;
+	protected ?string $username = null;
+	protected ?string $email = null;
+	protected ?string $name = null;
+	protected ?bool $email_is_confirmed = false;
+	protected ?string $oauth_token = null;
+	protected ?TokenBalanceCollectionInterface $balance = null;
 	/**
 	 * Collection of blockchain addresses assigned to this account
-	 * @var AddressCollectionInterface $address
+	 * @var TokenAddressCollectionInterface|null $address
 	 */
-	public $address;
-	public $credit_account;
-	protected $address_service;
-	protected $balance_service;
-	protected $oauth_user_service;
-	protected $credit_group_service;
-	protected $credit_account_service;
-	protected $credit_transaction_repository;
-	protected $credit_account_collection_factory;
-	protected $oauth_settings;
-	protected $client;
-	protected $tca_rule_check_result_factory;
-	protected $fillable = array(
-		'id',
-		'username',
-		'email',
-		'name',
-		'email_is_confirmed',
-		'oauth_token',
-		'balance',
-		'address',
-		'credit_group',
-		'credit_account',
-	);
+	protected ?TokenAddressCollectionInterface $address = null;
+	protected ?CreditAccountCollectionInterface $credit_account = null;
 
-	public function __construct(
-		AddressServiceInterface $address_service,
-		BalanceServiceInterface $balance_service,
-		GroupServiceInterface $credit_group_service,
-		TransactionRepositoryInterface $credit_transaction_repository,
-		UserServiceInterface $user_service,
-		AccountCollectionFactoryInterface $credit_account_collection_factory,
-		AccountServiceInterface $credit_account_service,
-		TokenpassAPIInterface $client,
-		OauthSettingsInterface $oauth_settings,
-		RuleCheckResultFactoryInterface $tca_rule_check_result_factory,
-		array $data = array()
-	) {
-		$this->address_service = $address_service;
-		$this->balance_service = $balance_service;
-		$this->oauth_settings = $oauth_settings;
-		$this->user_service = $user_service;
-		$this->credit_transaction_repository = $credit_transaction_repository;
-		$this->credit_account_collection_factory = $credit_account_collection_factory;
-		$this->credit_group_service = $credit_group_service;
-		$this->credit_account_service = $credit_account_service;
-		$this->client = $client;
-		$this->tca_rule_check_result_factory = $tca_rule_check_result_factory;
-		parent::__construct( $data );
+	public function get_id(): ?string {
+		return $this->id ?? null;
+	}
+
+	public function set_id( ?string $value ): void {
+		$this->id = $value;
+	}
+
+	public function get_username(): ?string {
+		return $this->username ?? null;
+	}
+
+	public function set_username( ?string $value ): void {
+		$this->username = $value;
+	}
+
+	public function get_email(): ?string {
+		return $this->email ?? null;
+	}
+
+	public function set_email( ?string $value ): void {
+		$this->email = $value;
+	}
+
+	public function get_name(): ?string {
+		return $this->name ?? null;
+	}
+
+	public function set_name( ?string $value ): void {
+		$this->name = $value;
+	}
+
+	public function get_email_is_confirmed(): ?bool {
+		return $this->email_is_confirmed ?? null;
+	}
+
+	public function set_email_is_confirmed( ?bool $value ): void {
+		$this->email_is_confirmed = $value;
+	}
+
+	public function get_oauth_token(): ?string {
+		return $this->oauth_token ?? null;
+	}
+
+	public function set_oauth_token( ?string $value ): void {
+		$this->oauth_token = $value;
+	}
+
+	public function get_balance(): ?TokenBalanceCollectionInterface {
+		return $this->balance ?? null;
+	}
+
+	public function set_balance( ?TokenBalanceCollectionInterface $value ): void {
+		$this->balance = $value;
+	}
+
+	public function get_address(): ?TokenAddressCollectionInterface {
+		return $this->address ?? null;
+	}
+
+	public function set_address( ?TokenAddressCollectionInterface $value ): void {
+		$this->address = $value;
+	}
+
+	public function get_credit_account(): ?CreditAccountCollectionInterface {
+		return $this->account ?? null;
+	}
+
+	public function set_credit_account( ?CreditAccountCollectionInterface $value ): void {
+		$this->account = $value;
 	}
 
 	/**
 	 * Check if the user is allowed to proceed with login
 	 * @return bool
 	 */
-	public function can_social_login() {
-		$email = $this->email ?? null;
-		$email_is_confirmed = $this->email_is_confirmed ?? false;
-		if ( !$email && $this->oauth_settings->allow_no_email == false ) {
+	public function can_social_login( OauthSettingsInterface $oauth_settings ): bool {
+		$email = $this->get_email();
+		$email_is_confirmed = $this->get_email_is_confirmed() ?? false;
+		if ( !$email && $oauth_settings->get_allow_no_email() == false ) {
 			return false;
 		}
-		if ( $email_is_confirmed == false && $this->oauth_settings->allow_unconfirmed_email == false ) {
+		if ( $email_is_confirmed == false && $oauth_settings->get_allow_unconfirmed_email() == false ) {
 			return false;	
 		}
 		return true;
 	}
 
 	/**
-	 * Makes a credit transaction (app credits) for the user
-	 * @param array $parameters Transaction parameters
-	 * @return array
+	 * @inheritDoc
 	 */
-	public function credit_app_credits( array $parameters = array() ) {
-		$transactions = $this->make_transaction( 'credit', $parameters );
-		return $transactions;
+	public function from_array( array $data = array() ): self {
+		return parent::from_array( $data );
 	}
 
 	/**
-	 * Makes a debit transaction (app credits) for the user
-	 * @param array $parameters Transaction parameters
-	 * @return array
+	 * @inheritDoc
 	 */
-	public function debit_app_credits( array $parameters = array() ) {
-		$transactions = $this->make_transaction( 'debit', $parameters );
-		return $transactions;
-	}
-
-	/**
-	 * Checks if the user can pass TCA check with
-	 * the specified rules
-	 * @param RuleCollectionInterface $rules Rules to use
-	 * @return RuleCheckResultInterface
-	 */
-	public function check_token_access( RuleCollectionInterface $rules ) {
-		if ( !isset( $this->username ) || !isset( $this->oauth_token ) ) {
-			return;
+	public function to_array(): array {
+		$array = array(
+			'id'       => $this->get_id(),
+			'username' => $this->get_username(),
+		);
+		if ( $this->get_address() ) {
+			$array['address'] = $this->get_address()->to_array();
 		}
-		$username = $this->username;
-		$oauth_token = $this->oauth_token;
-		$rules_formatted = $rules->format_rules();
-		$status = boolval( $this->client->checkTokenAccess( $username, $rules_formatted, $oauth_token ) ) ?? false;
-		$report = $this->tca_rule_check_result_factory->create( array(
-			'hash'   => $rules->to_hash(),
-			'status' => $status,
+		if ( $this->get_credit_account() ) {
+			$array['credit_account'] = $this->get_credit_account()->to_array();
+		}
+		if ( $this->get_balance() ) {
+			$array['balance'] = $this->get_balance()->to_array();
+		}
+		return $array;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_fillable(): array {
+		return array_merge( parent::get_fillable(), array(
+			'id',
+			'username',
+			'email',
+			'name',
+			'email_is_confirmed',
+			'oauth_token',
 		) );
-		return $report;
-	}
-
-	/**
-	 * Makes a transaction of the specified type
-	 * @param string $type Transaction type
-	 * @param array $parameters Transaction parameters
-	 * @return array
-	 */
-	protected function make_transaction( string $type, array $parameters = array() ) {
-		$parameters['type'] = $type;
-		$parameters['account'] = $this;
-		$group_uuid = $parameters['group_uuid'];
-		if ( isset( $parameters['source'] ) ) {
-			$source = $parameters['source'];
-			$parameters['source'] = $this->get_transaction_source( $source, $group_uuid );
-		}
-		$this->ensure_credit_account_exists( $group_uuid );
-		$transactions = $this->credit_transaction_repository->store( $parameters );
-		return $transactions;
-	}
-
-	/**
-	 * Gets the source user of the transaction
-	 * @param string $source Source address
-	 * @param string $group_uuid Group UUID
-	 * @return OauthUserInterface Source user
-	 */
-	protected function get_transaction_source( string $source, string $group_uuid ) {
-		$user = null;
-		$user = $this->user_service->show( array(
-			'id'   => $source,
-			'with' => array( 'oauth_user' ),
-		) );
-		if ( !$user ) {
-			return;
-		}
-		if ( !isset( $user->oauth_user ) ) {
-			return;
-		}
-		$user->oauth_user->ensure_credit_account_exists( $group_uuid );
-		return $user->oauth_user;
-	}
-
-	/**
-	 * Checks if the user has an existing credit account and if not creates a new one
-	 * for the specified credit group
-	 * @param string $group_id Index of the token group
-	 * @return void
-	 */
-	protected function ensure_credit_account_exists( string $group_uuid ) {
-		$account = $this->credit_account_service->show( array(
-			'account_uuid' => $this->id,
-			'group_uuid'   => $group_uuid,
-		) );
-		if( !$account ){
-			$account = $this->credit_account_service->store( array(
-				'account_uuid' => $this->id,
-				'group_uuid'   => $group_uuid,
-			) );
-		}
-		return $this;
-	}
-
-	/**
-	 * Loads the balance relation
-	 * @param string[] $relations Further relations
-	 * @return BalanceCollectionInterface
-	 */
-	protected function load_balance( array $relations = array() ) {
-		$balance = $this->balance_service->index( array(
-			'oauth_token'  => $this->oauth_token,
-			'with'         => $relations,
-		) );
-		return $balance;
-	}
-
-	/**
-	 * Loads the address relation
-	 * @param string[] $relations Further relations
-	 * @return AddressCollectionInterface
-	 */
-	protected function load_address( array $relations = array() ) {
-		$address = $this->address_service->index( array(
-			'username' => $this->username,
-			'with'     => $relations,
-		) );
-		return $address;
-	}
-	
-	/**
-	 * Loads the credit_account relation
-	 * @param string[] $relations Further relations
-	 * @return AccountCollectionInterface
-	 */
-	protected function load_credit_account( array $relations = array() ) {
-		$credit_groups = $this->credit_group_service->index();
-		$group_uuids = array_map( function( GroupInterface $credit_group ) {
-			return $credit_group->uuid;
-		}, ( array ) $credit_groups );
-		$credit_account = array();;
-		foreach ( $group_uuids as $group_uuid ) {
-			$account = $this->credit_account_service->show( array(
-				'group_uuid'   => $group_uuid,
-				'account_uuid' => $this->id,
-			) );
-			if ( !$account ) {
-				continue;
-			}
-			$account->group_id = $group_uuid;
-			$credit_account[ $group_uuid ] = $account;
-		}
-		$credit_account = $this->credit_account_collection_factory->create( $credit_account );
-		return $credit_account;
 	}
 }

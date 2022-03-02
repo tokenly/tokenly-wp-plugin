@@ -1,9 +1,8 @@
-{% macro login_button_component( logo, label, url ) %}
-	<div class="tokenpass-login-container">
-		<a href="{{ url }}" class="tokenly-component-button with-icon with-loader tokenpass-login">
-			<div class="tokenly-loader-container">
-				<div class="tokenly-loader">Loading...</div>
-			</div>
+{% macro login_button_component( logo, label, url, namespace ) %}
+	{% from 'components/LoaderComponent.twig' import loader_component %}
+	<div class="{{ namespace }}-login login-container">
+		<a href="{{ url }}" class="{{ namespace }}-component-button with-icon with-loader">
+			{{ loader_component( namespace, "medium", "light" ) }}
 			<span class='icon'>{{ logo | raw }}</span>
 			<span class='title'>{{ label }}</span>
 		</a>

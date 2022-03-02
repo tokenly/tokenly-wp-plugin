@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Interfaces\Repositories\General;
 
 interface OptionRepositoryInterface {
-	public function index( $keys );
-	public function show( $key );
-	public function update( $payload );
+	public function index( array $keys );
+	public function show( string $key );
+	public function update( array $payload );
 }

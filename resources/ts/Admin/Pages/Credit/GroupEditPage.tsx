@@ -5,9 +5,10 @@ import Page from './../Page';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupEditForm from '../../Components/Credit/GroupEditForm';
 import ResourceEditActions from '../../Components/ResourceEditActions';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import Preloader from '../../Components/Preloader';
 import GroupLink from '../../Components/Credit/GroupLink';
+import eventBus from "../../../EventBus";
 
 import { 
 	Panel,
@@ -18,12 +19,8 @@ import {
 
 declare const window: any;
 
-interface GroupEditPageData {
-	//
-}
-
 interface GroupEditPageProps {
-	pageData: GroupEditPageData;
+	//
 }
 
 export default function GroupEditPage( props: GroupEditPageProps ) {
@@ -32,14 +29,15 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 	
 	const urlParams = new URLSearchParams( window.location.search );
-	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'group' ) );
+	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'id' ) );
 	const [ group, setGroup ] = useState<any>( null );
 	const [ saving, setSaving ] = useState<boolean>( false );
+	const [ deleting, setDeleting ] = useState<boolean>( false );
 	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( false );
 	const [ editData, setEditData ] = useState<any>( {} );
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-credit-vendor`;
+		window.location = `${adminPageUrl}${namespace}-credit-group-index`;
 	}
 
 	function onSaveSubmit( event: any ) {
@@ -62,12 +60,35 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 		goBack();
 	}
 
+	function onDelete() {
+		eventBus.dispatch( 'confirmModalShow', {
+			key: 'groupDelete',
+			title: 'Deleting Group',
+			subtitle: 'Are you sure you want to delete the group?',
+		} );
+	}
+
+	function onConfirmModalChoice( payload: any ) {
+		switch( payload.key ) {
+			case 'groupDelete':
+				if ( payload.choice == 'accept' ){
+					deleteGroup();
+				}
+				break;
+		}
+	}
+
+	function deleteGroup() {
+		setDeleting( true );
+		window.location = `https://tokenpass.tokenly.com/auth/apps/credits/${uuid}/delete`;
+	}
+
 	function onEditDataChange( newData: any ) {
-		console.log(newData);
 		setEditData( newData );
 	}
 
 	useEffect( () => {
+		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
 		setLoadingGroup( true );
 		groupRepository.show( uuid ).then( ( groupFound: any ) => {
 			const editDataNew = {
@@ -82,6 +103,9 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 			setGroup( groupFound );
 			setEditData( editDataNew );
 		} );
+		return () => {
+			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
+		}
 	 }, [] );
 
 	return (
@@ -116,7 +140,7 @@ export default function GroupEditPage( props: GroupEditPageProps ) {
 								name="Group"
 								saving={ saving }
 								onCancel={ onCancel }
-								noDelete
+								onDelete={ onDelete }
 							/>
 						</PanelRow>
 					</PanelBody>

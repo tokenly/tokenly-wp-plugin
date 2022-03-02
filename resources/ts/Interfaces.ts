@@ -1,3 +1,7 @@
+export interface AddressEditData {
+	
+}
+
 export interface Redirect {
 	from: string;
 	to: string;

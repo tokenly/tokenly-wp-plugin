@@ -4,65 +4,68 @@ namespace Tokenly\Wp\Providers;
 
 use Tokenly\Wp\Providers\ServiceProvider;
 use Tokenly\Wp\Interfaces\Providers\AppServiceProviderInterface;
-use Tokenly\Wp\Interfaces\Services\AuthServiceInterface;
-use Tokenly\Wp\Interfaces\Services\LifecycleServiceInterface;
-use Tokenly\Wp\Interfaces\Services\ResourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\QueryServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\OauthUserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\UserServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Credit\GroupServiceInterface as CreditGroupServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Credit\TransactionServiceInterface as CreditTransactionServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\AddressServiceInterface as TokenAddressServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\BalanceServiceInterface as TokenBalanceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseMetaServiceInterface as TokenPromiseMetaServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\PromiseServiceInterface as TokenPromiseServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\SourceServiceInterface as TokenSourceServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\Token\MetaServiceInterface as TokenMetaServiceInterface;
+
+use Tokenly\Wp\Interfaces\Services\Application\AuthServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\LifecycleServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ResourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\QueryServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\MenuItemFilterServiceInterface as TokenAccessMenuItemFilterServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostResultsFilterServiceInterface as TokenAccessPostResultsFilterServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostGuardServiceInterface as TokenAccessPostGuardServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\TermGuardServiceInterface as TokenAccessTermGuardServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Registers general plugin modules
  */
 class AppServiceProvider extends ServiceProvider implements AppServiceProviderInterface {
-	protected $services;
+	protected string $namespace;
+	protected UserRepositoryInterface $user_repository;
 
 	public function __construct(
-		//Application
+		string $namespace,
 		AuthServiceInterface $auth_service,
 		LifecycleServiceInterface $lifecycle_service,
 		ResourceServiceInterface $resource_service,
 		QueryServiceInterface $query_service,
-		//Domain
-		CreditGroupServiceInterface $credit_group_service,
-		CreditTransactionServiceInterface $credit_transaction_service,
-		OauthUserServiceInterface $oauth_user_service,
-		PostServiceInterface $post_service,
-		TokenAddressServiceInterface $token_address_service,
-		TokenBalanceServiceInterface $token_balance_service,
-		TokenPromiseMetaServiceInterface $token_promise_meta_service,
-		TokenPromiseServiceInterface $token_promise_service,
-		TokenSourceServiceInterface $token_source_service,
-		TokenMetaServiceInterface $token_meta_service,
-		UserServiceInterface $user_service
+		TokenAccessMenuItemFilterServiceInterface $token_access_menu_item_filter_service,
+		TokenAccessPostResultsFilterServiceInterface $token_access_post_results_filter_service,
+		TokenAccessPostGuardServiceInterface $token_access_post_guard_service,
+		TokenAccessTermGuardServiceInterface $token_access_term_guard_service,
+		UserRepositoryInterface $user_repository
 	) {
+		$this->namespace = $namespace;
+		$this->user_repository = $user_repository;
 		$this->services = array(
-			//Application
-			'auth'                  => $auth_service,
-			'lifecycle'             => $lifecycle_service,
-			'resource'              => $resource_service,
-			'query'                 => $query_service,
-			//Domain
-			'credit_group'          => $credit_group_service,
-			'credit_transaction'    => $credit_transaction_service,
-			'oauth_user'            => $oauth_user_service,
-			'post'                  => $post_service,
-			'token_address'         => $token_address_service,
-			'token_balance'         => $token_balance_service,
-			'token_promise_meta'    => $token_promise_meta_service,
-			'token_promise'         => $token_promise_service,
-			'token_source'          => $token_source_service,
-			'token_meta'            => $token_meta_service,
-			'user'                  => $user_service,
+			'auth'                             => $auth_service,
+			'lifecycle'                        => $lifecycle_service,
+			'resource'                         => $resource_service,
+			'query'                            => $query_service,
+			'token_access_menu_item_filter'    => $token_access_menu_item_filter_service,
+			'token_access_post_results_filter' => $token_access_post_results_filter_service,
+			'token_access_post_guard'          => $token_access_post_guard_service,
+			'token_access_term_guard'          => $token_access_term_guard_service,
 		);
+		$this->register_hooks();
+	}
+
+	protected function register_hooks() {
+		$this->register_show_user_profile_hook();
+		$this->register_user_row_actions_hook();
+	}
+
+	protected function register_show_user_profile_hook(): void {
+		add_action( 'show_user_profile', function( \WP_User $user ) {
+			$user = $this->user_repository->complete( $user );
+			do_action( "{$this->namespace}_show_user_profile", $user );
+		}, 10, 1 );
+	}
+
+	protected function register_user_row_actions_hook(): void {
+		add_filter( "user_row_actions", function( array $actions, \WP_User $user ) {
+			$user = $this->user_repository->complete( $user );
+			$actions = apply_filters( "{$this->namespace}_user_row_actions", $actions, $user );
+			return $actions;
+		}, 10, 2 );
 	}
 }

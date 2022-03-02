@@ -10,15 +10,17 @@ use Tokenly\Wp\Interfaces\Services\ServiceInterface;
 class Service implements ServiceInterface {
 	/**
 	 * Registers the service
+	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		//
 	}
 
 	/**
 	 * Called when all services are registered
+	 * @return void
 	 */
-	public function boot() {
+	public function boot(): void {
 		//
 	}
 }

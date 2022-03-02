@@ -1,0 +1,5 @@
+{% macro loader_component( namespace, size = "large", color = "dark" ) %}
+	<span class="{{ namespace }}-loader">
+		<span class="loader size-{{ size }} color-{{ color }}"></span>
+	</span>
+{% endmacro %}

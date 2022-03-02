@@ -2,106 +2,184 @@
 
 namespace Tokenly\Wp\Repositories;
 
-use Tokenly\TokenpassClient\TokenpassAPIInterface;
+use Tokenly\Wp\Repositories\Repository;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Models\UserFactoryInterface;
-use Tokenly\Wp\Interfaces\Factories\Collections\UserCollectionFactoryInterface;
+
+use Tokenly\Wp\Collections\UserCollection;
+use Tokenly\Wp\Models\User;
+use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
+use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**
  * Manages users
  */
-class UserRepository implements UserRepositoryInterface {
-	protected $client;
-	protected $user_meta_repository;
-	protected $user_factory;
-	protected $user_collection_factory;
-	protected $namespace;
-	protected $meta;
+class UserRepository extends Repository implements UserRepositoryInterface {
+	protected TokenpassAPIInterface $client;
+	protected UserMetaRepositoryInterface $user_meta_repository;
+	protected OauthUserRepositoryInterface $oauth_user_repository;
+	protected string $namespace;
+	protected array $meta;
 	
 	public function __construct(
 		TokenpassAPIInterface $client,
 		UserMetaRepositoryInterface $user_meta_repository,
-		UserFactoryInterface $user_factory,
-		UserCollectionFactoryInterface $user_collection_factory,
+		OauthUserRepositoryInterface $oauth_user_repository,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
 		$this->client = $client;
 		$this->user_meta_repository = $user_meta_repository;
-		$this->user_factory = $user_factory;
-		$this->user_collection_factory = $user_collection_factory;
+		$this->oauth_user_repository = $oauth_user_repository;
 		$this->meta = $this->get_meta_fields();
 	}
 
 	/**
-	 * Retrieves a collection of users
-	 * @param array $params Search paramters
-	 * @return UserCollectionInterface
+	 * Gets a collection of users
+	 * @param array $params Search parameters
+	 * @return UserCollectionInterface Users found
 	 */
-	public function index( array $params = array() ) {
-		$args = $this->get_query_args( $params );
-		$users = $this->query( $args );
-		$users = $this->append_meta_collection( $users );
-		$users = $this->user_collection_factory->create( $users );
-		return $users;
+	public function index( array $params = array() ): UserCollectionInterface {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
 	/**
-	 * Retrieves a single user
-	 * @param integer $params User search params
-	 * @return object
+	 * Gets a single user
+	 * @param array $params Search parameters
+	 * @return UserInterface|null User found
 	 */
-	public function show( array $params = array() ) {
-		$params['number'] = 1;
-		$args = $this->get_query_args( $params );
-		$users = $this->query( $args );
-		if ( !isset( $users[0] ) ) {
-			return;
+	public function show( array $params = array() ): ?UserInterface {
+		return $this->handle_method( __FUNCTION__, func_get_args() );
+	}
+
+	/**
+	 * Gets the current user
+	 * @param array $params Additional parameters
+	 * @return UserInterface|null Current user
+	 */
+	public function show_current( array $params = array() ): ?UserInterface {
+		$id = get_current_user_id();
+		if ( $id == 0 ) {
+			return null;
 		}
-		$user = $users[0];
-		$user = $this->append_meta( $user );
-		$user = $this->user_factory->create( $user );
+		$params['id'] = $id;
+		$user = $this->show( $params );
 		return $user;
 	}
 
 	/**
-	 * Creates a new WordPress user
-	 * @param string $username New user name
-	 * @param string $password New user password
-	 * @param string $email New user email
-	 * @return UserInterface New user
+	 * Makes a new WordPress user using OAuth user data
+	 * @param OauthUserInterface $oauth_user Reference user
+	 * @return UserInterface|null New user
 	 */
-	public function store( string $username, string $password, string $email ) {
+	public function store( OauthUserInterface $oauth_user ): ?UserInterface {
+		$username = $oauth_user->get_username();
+		$password = wp_generate_password( 12, false );
+		$email = $oauth_user->get_email() ?? null;
 		$user_id = wp_create_user( $username, $password, $email );
 		if ( is_numeric( $user_id ) === false ) {
-			return false;
+			return null;
 		}
 		$user = $this->show( array(
 			'id' => $user_id,
 		) );
 		return $user;
 	}
-	
-	/**
-	 * Updates the specific user
-	 * @param object $user Target user
-	 * @param array $params Update parameters
-	 * @return object
-	 */
+
 	public function update( UserInterface $user, array $params ) {
 		$params = $this->filter_meta_params( $params );
 		$this->user_meta_repository->update( $user->ID, $params );
 	}
 
 	/**
+	 * Decorates a single User
+	 * @param \WP_User $user User to decorate
+	 * @return UserInterface|null
+	 */
+	public function complete( \WP_User $user ): ?UserInterface {
+		$user = $this->append_meta( $user );
+		$user = ( new User() )->from_array( $user );
+		return $user;
+	}
+
+	/**
+	 * Decorates a collection of Users
+	 * @param \WP_User[] $users Users to decorate
+	 * @return UserCollectionInterface
+	 */
+	public function complete_collection( array $users = array() ): TermCollectionInterface {
+		$users = $this->append_meta_collection( $users );
+		$users = ( new UserCollection() )->from_array( $users );
+		return $users;
+	}
+
+	public function get_promise_users( $promises ): UserCollectionInterface {
+		$promises = $this->promise_repository->load( $promises, array( 'promise_meta' ) );
+		$promise_meta = clone $promises;
+		$promise_meta = $promises->extract( 'promise_meta' );
+		$promise_meta = new PromiseMetaCollection( $promise_meta );
+		$source_users = clone $promise_meta;
+		$source_users = $source_users->extract( 'source_user_id' );
+		$destination_users = clone $promise_meta;
+		$destination_users = $destination_users->extract( 'destination_user_id' );
+		$users = array_merge( $source_users, $destination_users );
+		return $this->index( array(
+			'uuids' => $users,
+		) );
+	}
+
+	/**
+	 * Implementation of the "index" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return UserCollectionInterface
+	 */
+	protected function index_cacheable( array $params = array() ): UserCollectionInterface {
+		$users = array();
+		$args = $this->get_query_args( $params );
+		if ( $args && is_array( $args ) ) {
+			$users_found = $this->query( $args );
+			if ( $users_found && is_array( $users_found ) ) {
+				$users = $this->append_meta_collection( $users_found );
+			}
+		}
+		$users = ( new UserCollection() )->from_array( $users );
+		return $users;
+	}
+
+	/**
+	 * Implementation of the "show" method. Will only
+	 * run if no cached instance was found.
+	 * @param array $params Search parameters
+	 * @return UserInterface|null
+	 */
+	protected function show_cacheable( array $params = array() ): ?UserInterface {
+		if ( isset( $params['id'] ) && $params['id'] == 'me' ) {
+			unset( $params['id'] );
+			$user = $this->show_current( $params );
+		} else {
+			$params['number'] = 1;
+			$args = $this->get_query_args( $params );
+			$users = $this->query( $args );
+			if ( !isset( $users[0] ) ) {
+				return null;
+			}
+			$user = $users[0];
+			$user = $this->append_meta( $user );
+			$user = ( new User() )->from_array( $user );
+		}
+		return $user;
+	}
+
+	/**
 	 * Gets meta fields which are allowed to be persisted and retrieved
 	 * @return array
 	 */
-	protected function get_meta_fields() {
+	protected function get_meta_fields(): array {
 		return array(
 			'uuid',
 			'oauth_token',
@@ -114,7 +192,7 @@ class UserRepository implements UserRepositoryInterface {
 	 * @param array $params Array to filter
 	 * @return array
 	 */
-	protected function filter_meta_params( array $params = array() ) {
+	protected function filter_meta_params( array $params = array() ): array {
 		foreach ( $params as $key => $param ) {
 			if ( !in_array( $key, $this->meta ) ) {
 				unset( $params[ $key ] );
@@ -128,7 +206,7 @@ class UserRepository implements UserRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return array
 	 */
-	protected function get_query_args( array $params = array() ) {
+	protected function get_query_args( array $params = array() ): array {
 		$args = array(
 			'orderby'    => 'ID',
 			'order'      => 'ASC',
@@ -181,7 +259,7 @@ class UserRepository implements UserRepositoryInterface {
 	 * @param array $params Store parameters
 	 * @return array $args
 	 */
-	protected function get_store_args( array $params = array() ) {
+	protected function get_store_args( array $params = array() ): array {
 		$args = array(
 			'post_type'  => $this->post_type,
 		);
@@ -189,33 +267,11 @@ class UserRepository implements UserRepositoryInterface {
 	}
 
 	/**
-	 * Searches for users using the specified arguments
-	 * @param array $args Search arguments
-	 * @return array
-	 */
-	protected function query( array $args = array() ) {
-		$query = new \WP_User_Query( $args );
-		$users = $query->get_results();
-		return $users;
-	}
-
-	/**
-	 * Gets the meta fields associated with the user
-	 * after retrieving the user
-	 * @param \WP_User $user User to target
-	 * @return array
-	 */
-	protected function load_meta( \WP_User $user ) {
-		$meta = $this->user_meta_repository->index( $user->ID, ...$this->meta );
-		return $meta;
-	}
-
-	/**
 	 * Loads the meta and appends it to array
 	 * @param \WP_User $user User to target
 	 * @return array
 	 */
-	protected function append_meta( \WP_User $user ) {
+	protected function append_meta( \WP_User $user ): array {
 		$meta = $this->load_meta( $user );
 		$user = array_merge( array(
 			'user' => $user,
@@ -228,10 +284,48 @@ class UserRepository implements UserRepositoryInterface {
 	 * @param array $users Users to target
 	 * @return array
 	 */
-	protected function append_meta_collection( array $users ) {
+	protected function append_meta_collection( array $users ): array {
 		foreach ( $users as &$user ) {
 			$user = $this->append_meta( $user );
 		}
 		return $users;
+	}
+
+	/**
+	 * Searches for users using the specified arguments
+	 * @param array $args Search arguments
+	 * @return array
+	 */
+	protected function query( array $args = array() ): array {
+		$query = new \WP_User_Query( $args );
+		$users = $query->get_results();
+		return $users;
+	}
+
+	/**
+	 * Gets the meta fields associated with the user
+	 * after retrieving the user
+	 * @param \WP_User $user User to target
+	 * @return array
+	 */
+	protected function load_meta( \WP_User $user ): array {
+		$meta = $this->user_meta_repository->index( $user->ID, ...$this->meta );
+		return $meta;
+	}
+
+	/**
+	 * Loads the oauth_user relation
+	 * @param UserInterface $user Target User
+	 * @param string[] $relations Further relations
+	 * @return OauthUserInterface|null
+	 */
+	protected function load_oauth_user( UserInterface $user, array $relations = array() ): ?OauthUserInterface {
+		$oauth_user = $this->oauth_user_repository->show(
+			array(
+				'id'   => $user->ID,
+				'with' => $relations,
+			)
+		);
+		return $oauth_user;
 	}
 }

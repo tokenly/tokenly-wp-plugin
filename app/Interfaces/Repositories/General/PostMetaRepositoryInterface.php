@@ -3,7 +3,7 @@
 namespace Tokenly\Wp\Interfaces\Repositories\General;
 
 interface PostMetaRepositoryInterface {
-	public function index( $post_id, $keys );
-	public function show( $post_id, $key );
-	public function update( $post_id, $payload );
+	public function index( int $post_id, array $keys );
+	public function show( int $post_id, string $key );
+	public function update( int $post_id, array $payload );
 }

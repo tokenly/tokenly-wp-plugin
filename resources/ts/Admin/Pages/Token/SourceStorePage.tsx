@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import Page from './../Page';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface';
 import SourceStoreForm from '../../Components/Token/SourceStoreForm';
@@ -18,12 +18,8 @@ import {
 	PanelRow,
 } from '@wordpress/components';
 
-interface SourceStorePageData {
-	//
-}
-
 interface SourceStorePageProps {
-	pageData: SourceStorePageData;
+	//
 }
 
 export default function SourceStorePage ( props: SourceStorePageProps ) {

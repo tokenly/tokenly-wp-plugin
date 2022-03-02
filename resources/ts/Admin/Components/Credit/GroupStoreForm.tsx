@@ -21,11 +21,11 @@ export default function GroupStoreForm( props: GroupStoreFormProps ) {
 		props.onChange( state );
 	}
 
-	function onWhitelistFieldChange( value: string ) {
-		const state = Object.assign( {}, props.storeData );
-		state.app_whitelist = value;
-		props.onChange( state );
-	}
+	// function onWhitelistFieldChange( value: string ) {
+	// 	const state = Object.assign( {}, props.storeData );
+	// 	state.app_whitelist = value;
+	// 	props.onChange( state );
+	// }
 
 	return (
 		<div style={ { width: '100%', maxWidth: "400px" } }>
@@ -39,13 +39,13 @@ export default function GroupStoreForm( props: GroupStoreFormProps ) {
 					onChange={ onNameFieldChange }
 					required
 				/>
-				<TextareaControl
+				{/* <TextareaControl
 					label="App Whitelist *"
 					value={ props.storeData?.app_whitelist }
 					help="Comma-separated list."
 					onChange={ onWhitelistFieldChange }
 					required
-				/>
+				/> */}
 			</Flex>
 		</div>
 	);

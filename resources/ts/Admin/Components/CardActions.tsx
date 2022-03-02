@@ -15,12 +15,12 @@ export default function CardActions( props: CardActionsProps ) {
 			<Button
 				isSecondary
 				isSmall
-				href={ action.url }
+				{ ...action }
 			>
 				{ action.title }
 			</Button>
 		)
-	} )
+	} );
 	return (
 		<Flex justify="flex-start">{ listItems }</Flex>
 	);

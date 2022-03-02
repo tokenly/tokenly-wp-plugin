@@ -41,7 +41,11 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 		}
 		balance = Object.values( balance );
 		balance = balance.filter( ( balance: any ) => {
-			return balance.asset === props.storeData?.asset;
+			let assetName = balance.asset.address;
+			if ( balance.asset.index ) {
+				assetName = `${assetName}:${balance.asset.index}`;
+			}
+			return assetName === props.storeData?.asset;
 		} );
 		if ( balance.length == 0 ) {
 			return null;
@@ -64,6 +68,14 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 			return true;
 		}
 		return false;
+	}
+
+	function getAssetName( asset: any ) {
+		let assetName = asset.address;
+		if ( asset.index ) {
+			assetName = `${assetName}:${asset.index}`;
+		}
+		return assetName;
 	}
 
 	function onDestinationFieldChange( value: any ) {
@@ -144,12 +156,10 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 				<div>
 					<CheckboxControl
 						label="Pseudo Promise *"
-						help="Pseudo promises allow arbitrary asset names."
 						checked={ props.storeData.pseudo }
 						onChange={ onPseudoFieldChange }
 					/>
 				</div>
-			{ props.storeData.source_id &&
 				<div>
 					<label>
 						<div>Asset *</div>
@@ -157,25 +167,17 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 							<div>Name of the asset that will be promised.</div>
 							<div>Note: Only the whitelisted assets are searchable.</div>
 						</div>
-						{ ( !props.storeData?.pseudo || props.storeData?.pseudo == false )
-							?	<AssetSearchField
-									assets={ getBalance() }
-									asset={ props.storeData?.asset }
-									onChange={ onAssetFieldChange }
-									inputProps={ {
-										required: true,
-									} }
-								/>
-							:	<TextControl
-									value={ props.storeData.asset }
-									onChange={ onAssetFieldChange }
-									required
-								/>
-						}
+						<AssetSearchField
+							assets={ getBalance() }
+							disabled={ !props.storeData.source_id }
+							asset={ props.storeData?.asset }
+							onChange={ onAssetFieldChange }
+							inputProps={ {
+								required: true,
+							} }
+						/>
 					</label>
 				</div>
-			}
-			{ isAssetValid() &&
 				<Flex
 					//@ts-ignore
 					direction="column"
@@ -183,7 +185,6 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 					<QuantityField
 						quantity={ props.storeData?.quantity }
 						onChange={ onQuantityFieldChange }
-						max={ getMaxCount() }
 						inputProps={ {
 							required: true,
 						} }
@@ -201,7 +202,6 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 						onChange={ onNoteFieldChange }
 					/>
 				</Flex>
-			}
 			</Flex>
 		: 	<div style={ { opacity: 0.8 } }>No sources registered.</div>
 		}

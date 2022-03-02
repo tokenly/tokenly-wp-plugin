@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import { PromiseData } from './../../../Interfaces';
 import PromiseLink from './PromiseLink';
 import PromiseInfo from './PromiseInfo';
@@ -45,11 +45,11 @@ export default function PromiseCard( props: PromiseCardProps ) {
 					[
 						{
 							title: 'View Details',
-							url: `${ adminPageUrl }${ namespace }-token-promise-show&promise=${props.promise.promise_id}`,
+							href: `${ adminPageUrl }${ namespace }-token-promise-show&promise=${props.promise.promise_id}`,
 						},
 						{
 							title: 'Edit Promise',
-							url: `${ adminPageUrl }${ namespace }-token-promise-edit&promise=${ props.promise.promise_id }`,
+							href: `${ adminPageUrl }${ namespace }-token-promise-edit&promise=${ props.promise.promise_id }`,
 						}
 					]
 				}

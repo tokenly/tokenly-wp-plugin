@@ -1,12 +1,17 @@
 import {
-	UserIndexParams,
-	UserShowParams,
-} from '../../Interfaces';
+	UserIndexParamsInterface,
+	UserShowParamsInterface,
+	UserCreditBalanceIndexParamsInterface,
+	UserTokenBalanceIndexParamsInterface,
+	UserTokenAddressIndexParamsInterface,
+} from './../../Interfaces/Services/ApiServiceInterface';
 
 export default interface UserRepositoryInterface {
-	index( params: UserIndexParams ): Promise<any>;
-	show( id: string, params?: any ): Promise<any>;
-	creditBalanceIndex( id: string, params?: any ): Promise<any>;
-	tokenAddressIndex( id: string, params?: any ): Promise<any>;
-	tokenBalanceIndex( id: string, params?: any ): Promise<any>;
+	index( params: UserIndexParamsInterface ): Promise<any>;
+	show( id: string, params?: UserShowParamsInterface ): Promise<any>;
+	creditBalanceIndex( id: string, params?: UserCreditBalanceIndexParamsInterface ): Promise<any>;
+	creditBalanceShow( id: string, group: string ): Promise<any>;
+	tokenAddressIndex( id: string, params?: UserTokenAddressIndexParamsInterface ): Promise<any>;
+	tokenBalanceIndex( id: string, params?: UserTokenBalanceIndexParamsInterface ): Promise<any>;
+	tokenBalanceShow( id: string, asset: string ): Promise<any>;
 }

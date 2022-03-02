@@ -1,0 +1,5 @@
+{% from 'components/LoaderComponent.twig' import loader_component %}
+<span class="{{ namespace }}-token-balance" data-asset="{{ asset }}" data-user="{{ user }}" >
+	<span class="value">{{ balance }}</span>
+	{{ loader_component( namespace, true ) }}
+</span>

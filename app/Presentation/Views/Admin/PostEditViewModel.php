@@ -6,37 +6,38 @@ use Tokenly\Wp\Presentation\Views\DynamicViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Admin\PostEditViewModelInterface;
 
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
-use Tokenly\Wp\Interfaces\Services\Domain\PostServiceInterface;
+use Tokenly\Wp\Interfaces\Repositories\PostRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
 
 class PostEditViewModel extends DynamicViewModel implements PostEditViewModelInterface {
-	protected $tca_settings;
-	protected $post_service;
+	protected TcaSettingsInterface $tca_settings;
+	protected TcaSettingsRepositoryInterface $tca_settings_repository;
+	protected PostRepositoryInterface $post_repository;
 	
 	public function __construct(
-		TcaSettingsInterface $tca_settings,
-		PostServiceInterface $post_service
+		TcaSettingsRepositoryInterface $tca_settings_repository,
+		PostRepositoryInterface $post_repository
 	) {
-		$this->tca_settings = $tca_settings;
-		$this->post_service = $post_service;
+		$this->tca_settings_repository = $tca_settings_repository;
+		$this->tca_settings = $this->tca_settings_repository->show();
+		$this->post_repository = $post_repository;
 	}
 	
-	protected function get_view_props( array $data = array() ) {
-		$post_type = get_post_type();
-		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post_type );
-		$post_id = get_the_ID();
-		if ( !$post_id || $post_id == 0 ) {
-			return;
-		}
-		$post = $this->post_service->show( array(
-			'id' => $post_id,
-		) );
+	/**
+	 * @inheritDoc
+	 */
+	protected function get_view_props( array $data = array() ): array {
+		$post = $data['post'];
+		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post->post_type );
 		$tca_rules = array();
-		if ( $post && isset( $post->tca_rules ) && is_object( $post->tca_rules ) ) {
-			$tca_rules = $post->tca_rules->to_array();
+		if ( $post->get_tca_rules() ) {
+			$tca_rules = $post->get_tca_rules()->to_array();
 		}
-		return array(
+		$props = array(
 			'tca_enabled' => $tca_enabled,
 			'tca_rules'   => $tca_rules,
+			'post'        => $post->to_array(),
 		);
+		return $props;
 	}
 }

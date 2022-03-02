@@ -2,6 +2,8 @@
 
 namespace Tokenly\Wp\Interfaces\Providers;
 
-interface ShortcodeServiceProviderInterface {
+use Tokenly\Wp\Interfaces\Providers\ServiceProviderInterface;
+
+interface ShortcodeServiceProviderInterface extends ServiceProviderInterface {
 	//
 }

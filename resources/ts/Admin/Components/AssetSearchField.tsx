@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { Fragment } from 'react';
 import { useState } from 'react';
 
 import { 
 	// @ts-ignore
-	ComboboxControl,
+	TextControl,
 } from '@wordpress/components';
+import Autocomplete from './Autocomplete';
 
 interface AssetSearchFieldProps {
 	onChange: any;
@@ -13,18 +15,26 @@ interface AssetSearchFieldProps {
 	label?: string;
 	help?: string;
 	inputProps?: any;
+	disabled?: boolean;
 }
 
 export default function AssetSearchField( props: AssetSearchFieldProps ) {
 	const [ keywords, setKeywords ] = useState( '' );
 	const [ options, setOptions ] = useState( [] );
-	
+	const [ focused, setFocused ] = useState<boolean>( false );
+
 	function onKeywordsChange( newKeywords: string ) {
-		if ( newKeywords == '' && props.asset ) {
-			newKeywords = props.asset;
-		}
+		props.onChange( newKeywords );
 		setKeywords( newKeywords );
 		setOptions( getAssetOptions() );
+	}
+
+	function getAssetName( asset: any ) {
+		let assetName = asset.asset.address;
+		if ( asset.asset.index ) {
+			assetName = `${assetName}:${asset.asset.index}`;
+		}
+		return assetName;
 	}
 
 	function getAssetOptions() {
@@ -33,14 +43,16 @@ export default function AssetSearchField( props: AssetSearchFieldProps ) {
 		}
 		const keywordsFormatted = keywords.toLowerCase();
 		const assetsFiltered = props.assets.filter( ( asset: any ) => {
-			return asset.asset.toLowerCase().indexOf( keywordsFormatted ) >= 0;
+			let assetName = getAssetName( asset );
+			return assetName.toLowerCase().indexOf( keywordsFormatted ) >= 0;
 		} );
 		const optionsFiltered = assetsFiltered.map( ( asset ) => {
+			const name = getAssetName( asset );
 			return {
-				label: asset.asset,
-				value: asset.asset,
+				label: name,
+				value: name,
 			}
-		} )
+		} );
 		if ( optionsFiltered.length > 1 ) {
 			optionsFiltered.length = 1;
 		}
@@ -48,15 +60,22 @@ export default function AssetSearchField( props: AssetSearchFieldProps ) {
 	}
 
 	return (
-		<div style={ { height: '50px' } }>
+		<div className="tokenly-search">
 			<input type="text" { ...props.inputProps } style={ { height: '0px', minHeight: '0px', opacity: 0 } } value={ props.asset } />
-			<ComboboxControl
+			<TextControl
 				label={ props.label }
 				value={ props.asset }
-				onChange={ props.onChange }
-				options={ options }
-				onFilterValueChange={ onKeywordsChange }
+				onChange={ onKeywordsChange }
+				onFocus={ () => {
+					setFocused( true );
+				} }
+				onBlur={ ( event: any ) => {
+					setFocused( false );
+				} }
 			/>
+		{ ( focused && options.length > 0 ) &&
+			<Autocomplete options={ options } onChange={ onKeywordsChange } />
+		}
 		</div>
 	)
 }

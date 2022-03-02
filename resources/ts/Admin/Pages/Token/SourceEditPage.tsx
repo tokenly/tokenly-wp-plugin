@@ -5,7 +5,7 @@ import Page from './../Page';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceEditForm from '../../Components/Token/SourceEditForm';
 import eventBus from "../../../EventBus";
-import { TYPES } from '../../../Types';
+import { TYPES } from '../../Types';
 import Preloader from '../../Components/Preloader';
 import SourceLink from '../../Components/Token/SourceLink';
 import ResourceEditActions from '../../Components/ResourceEditActions';
@@ -19,12 +19,8 @@ import {
 
 declare const window: any;
 
-interface SourceEditPageData {
-	//
-}
-
 interface SourceEditPageProps {
-	pageData: SourceEditPageData;
+	//
 }
 
 export default function SourceEditPage( props: SourceEditPageProps ) {
@@ -62,14 +58,6 @@ export default function SourceEditPage( props: SourceEditPageProps ) {
 		} );
 	}
 
-	function deleteSource() {
-		setDeleting( true );
-		sourceRepository.destroy( id ).then( ( result: any ) => {
-			setDeleting( false );
-			goBack();
-		} );
-	}
-
 	function onConfirmModalChoice( payload: any ) {
 		switch( payload.key ) {
 			case 'sourceDelete':
@@ -78,6 +66,14 @@ export default function SourceEditPage( props: SourceEditPageProps ) {
 				}
 				break;
 		}
+	}
+
+	function deleteSource() {
+		setDeleting( true );
+		sourceRepository.destroy( id ).then( ( result: any ) => {
+			setDeleting( false );
+			goBack();
+		} );
 	}
 
 	useEffect( () => {
