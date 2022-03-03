@@ -102,7 +102,7 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 	 * @param array $params Update parameters
 	 * @return void
 	 */
-	public function update( GroupInterface $group, array $params = array() ): void {
+	public function update( GroupInterface $group, array $params = array() ): ?GroupInterface {
 		$update_params = array();
 		if ( isset( $params['name'] ) ) {
 			$update_params['name'] = $params['name'];
@@ -110,7 +110,8 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 		if ( isset( $params['app_whitelist'] ) ) {
 			$update_params['app_whitelist'] = $params['app_whitelist'];
 		}
-		$this->client->updateAppCreditGroup( $group->get_uuid(), $update_params );
+		$group = $this->client->updateAppCreditGroup( $group->get_uuid(), $update_params );
+		$group = ( new Group() )->from_array( $credit_group_data );
 	}
 
 	/**

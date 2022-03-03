@@ -14,6 +14,7 @@ use Tokenly\Wp\Interfaces\Models\Token\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\WhitelistRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\AssetNameFormatterServiceInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\CategoryTermCollectionInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**

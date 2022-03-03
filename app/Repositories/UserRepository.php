@@ -6,13 +6,16 @@ use Tokenly\Wp\Repositories\Repository;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 use Tokenly\Wp\Collections\UserCollection;
-use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
+use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**
@@ -22,6 +25,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	protected TokenpassAPIInterface $client;
 	protected UserMetaRepositoryInterface $user_meta_repository;
 	protected OauthUserRepositoryInterface $oauth_user_repository;
+	protected BalanceRepositoryInterface $balance_repository;
+	protected CategoryTermRepositoryInterface $category_term_repository;
 	protected string $namespace;
 	protected array $meta;
 	
@@ -29,6 +34,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		TokenpassAPIInterface $client,
 		UserMetaRepositoryInterface $user_meta_repository,
 		OauthUserRepositoryInterface $oauth_user_repository,
+		BalanceRepositoryInterface $balance_repository,
+		CategoryTermRepositoryInterface $category_term_repository,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -36,6 +43,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		$this->user_meta_repository = $user_meta_repository;
 		$this->oauth_user_repository = $oauth_user_repository;
 		$this->meta = $this->get_meta_fields();
+		$this->balance_repository = $balance_repository;
+		$this->category_term_repository = $category_term_repository;
 	}
 
 	/**
@@ -130,6 +139,32 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		return $this->index( array(
 			'uuids' => $users,
 		) );
+	}
+
+	public function token_balance_index( UserInterface $user ): ?BalanceCollectionInterface {
+		$categories = $this->category_term_repository->index();
+		$balance = $this->balance_repository->index( array(
+			'oauth_token' => $user->get_oauth_token(),
+			'with'        => array( 'meta' ),
+		) );
+		foreach ( (array) $balance as $item ) {
+			if ( $item->get_meta() ) {
+				$item->get_meta()->append_fallback( "{$this->namespace}_token_category", $categories );
+			}
+		}
+		return $balance;
+	}
+
+	public function token_balance_show( UserInterface $user, string $asset ): ?BalanceInterface {
+		$balance = $this->token_balance_index( $user );
+		$balance = clone $balance;
+		$balance->key_by_asset_name();
+		if ( isset( $balance[ $asset ] ) ) {
+			$balance = $balance[ $asset ];
+		} else {
+			$balance = null;
+		}
+		return $balance;
 	}
 
 	/**

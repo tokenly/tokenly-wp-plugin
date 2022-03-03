@@ -43,7 +43,7 @@ export default function AddressEditPage( props: AddressEditPageProps ) {
 		setSaving( true );
 		addressRepository.update( id, editData ).then( ( result: any ) => {
 			setSaving( false );
-			//goBack();
+			goBack();
 		} );
 	}
 

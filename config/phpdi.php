@@ -386,7 +386,8 @@ return array(
 	TokenSourceApiControllerInterface::class          => \DI\autowire( TokenSourceApiController::class ),
 	TokenVendorApiControllerInterface::class          => \DI\autowire( TokenVendorApiController::class ),
 	SettingsApiControllerInterface::class             => \DI\autowire( SettingsApiController::class ),
-	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class ),
+	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Controllers - Admin
 	CreditGroupAdminControllerInterface::class        => \DI\autowire( CreditGroupAdminController::class ),
 	CreditTransactionAdminControllerInterface::class  => \DI\autowire( CreditTransactionAdminController::class ),
@@ -474,7 +475,8 @@ return array(
 	TokenSourceRepositoryInterface::class          => \DI\autowire( TokenSourceRepository::class ),
 	TokenAddressRepositoryInterface::class         => \DI\autowire( TokenAddressRepository::class ),
 	TokenBalanceRepositoryInterface::class         => \DI\autowire( TokenBalanceRepository::class ),
-	TokenCategoryTermRepositoryInterface::class    => \DI\autowire( TokenCategoryTermRepository::class ),
+	TokenCategoryTermRepositoryInterface::class    => \DI\autowire( TokenCategoryTermRepository::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	TokenWhitelistRepositoryInterface::class       => \DI\autowire( TokenWhitelistRepository::class ),
 	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
 	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class )

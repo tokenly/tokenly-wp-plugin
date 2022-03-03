@@ -27,9 +27,10 @@ class TransactionController extends Controller implements TransactionControllerI
 	/**
 	 * Gets a collection of transactions
 	 * @param \WP_REST_Request $request Request data
+	 * @param TransactionCollectionInterface $transactions Bound transactions
 	 * @return array
 	 */
-	public function index( TransactionCollectionInterface $transactions, \WP_REST_Request $request ): array {
+	public function index( \WP_REST_Request $request, TransactionCollectionInterface $transactions ): array {
 		$users = clone $transactions;
 		$users->extract( 'account_uuid' );
 		$users = $this->user_repository->index( array(

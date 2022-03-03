@@ -35,9 +35,10 @@ class GroupController extends Controller implements GroupControllerInterface {
 	/**
 	 * Get a collection of groups
 	 * @param \WP_REST_Request $request Request data
+	 * @param GroupCollectionInterface $groups Bound groups
 	 * @return array
 	 */
-	public function index( GroupCollectionInterface $groups, \WP_REST_Request $request ): array {
+	public function index( \WP_REST_Request $request, GroupCollectionInterface $groups ): array {
 		$groups = $groups->to_array();
 		return $groups;
 	}
@@ -45,9 +46,10 @@ class GroupController extends Controller implements GroupControllerInterface {
 	/**
 	 * Get a single of group
 	 * @param \WP_REST_Request $request Request data
+	 * @param GroupInterface $group Bound group
 	 * @return array|null
 	 */
-	public function show( GroupInterface $group = null, \WP_REST_Request $request ): ?array {
+	public function show( \WP_REST_Request $request, GroupInterface $group = null ): ?array {
 		if ( $group ) {
 			$group = $group->to_array();
 		}
@@ -63,50 +65,40 @@ class GroupController extends Controller implements GroupControllerInterface {
 		$params = $request->get_params();
 		$group = $this->group_repository->store( $params );
 		if ( $group ) {
-			return array(
-				'credit_group' => $group,
-				'status'       => 'Successfully created the group!',
-			);
+			$group = $group->to_array();
 		}
-		return array(
-			'credit_group' => null,
-			'status'       => 'Failed to create the group!',
+		return array (
+			'status' => 'The group was successfully created!',
+			'group'  => $group,
 		);
 	}
 
 	/**
 	 * Updates an existing group
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @param GroupInterface $group Bound group
+	 * @return array|null
 	 */
-	public function update( GroupInterface $group = null, \WP_REST_Request $request ): array {
+	public function update( \WP_REST_Request $request, GroupInterface $group = null ): void {
 		if ( $group ) {
 			$params = $request->get_params();
-			$this->group_repository->update( $group, $params );
-			return array(
-				'status' => 'Successfully updated the group!',
-			);
+			$group = $this->group_repository->update( $group, $params );
+			if ( $group ) {
+				$group = $group->to_array();
+			}
 		}
-		return array(
-			'status' => 'Failed to update the group!',
-		);
 	}
 
 	/**
 	 * Destroys an existing group
 	 * @param \WP_REST_Request $request Request data
+	 * @param GroupInterface $group Bound group
 	 * @return array
 	 */
-	public function destroy( GroupInterface $group = null, \WP_REST_Request $request ): array {
+	public function destroy( \WP_REST_Request $request, GroupInterface $group = null ): void {
 		if ( $group ) {
 			$this->group_repository->destroy( $group );
-			return array(
-				'status' => "Successfully deleted the group!",
-			);
 		}
-		return array(
-			'status' => "Failed to delete the group!",
-		);
 	}
 
 	/**

@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Models\Token\AddressInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 
 interface AddressControllerInterface extends ControllerInterface {
-	public function index( AddressCollectionInterface $addresses, \WP_REST_Request $request );
-	public function balance_index( AddressInterface $address, \WP_REST_Request $request );
+	public function index( \WP_REST_Request $request, AddressCollectionInterface $addresses ): \WP_REST_Response;
+	public function show( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response;
+	public function balance_index( \WP_REST_Request $request, AddressInterface $address ): ?array;
 }

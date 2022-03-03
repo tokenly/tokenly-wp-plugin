@@ -46,6 +46,10 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 		$this->post = $value;
 	}
 
+	public function get_image(): ?string {
+		return wp_get_attachment_url( get_post_thumbnail_id( $this->get_post()->ID ), 'full' );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -62,7 +66,7 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 			'id'          => $this->get_post()->ID,
 			'name'        => $this->get_post()->post_title,
 			'description' => $this->get_post()->post_excerpt,
-			'image'       => wp_get_attachment_url( get_post_thumbnail_id( $this->get_post()->ID ), 'full' ),
+			'image'       => $this->get_image(),
 		);
 		if ( $this->get_term() ) {
 			$array['term'] = $this->get_term()->to_array();

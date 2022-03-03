@@ -13,10 +13,8 @@ interface PreloaderProps {
 
 export default function Preloader( props: PreloaderProps ) {
 	return (
-		<Flex justify="flex-start" align="center" style={ { minHeight: '30px' } }>
-			<b>
-				{ props.children }
-			</b>
+		<Flex justify="flex-start" align="center" style={ { fontWeight: 700, minHeight: '30px' } }>
+			<span>{ props.children }</span>
 		{ props.loading &&
 			<Spinner />
 		}

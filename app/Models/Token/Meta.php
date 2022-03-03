@@ -7,6 +7,7 @@ use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
 
 use Tokenly\Wp\Models\Token\Asset;
 use Tokenly\Wp\Interfaces\Models\Token\AssetInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\CategoryTermCollectionInterface;
 
 class Meta extends Post implements MetaInterface {
 	protected ?AssetInterface $asset = null;
@@ -15,6 +16,7 @@ class Meta extends Post implements MetaInterface {
 	protected ?array $media = null;
 	protected ?string $blockchain = null;
 	protected ?string $protocol = null;
+	protected ?string $image = null;
 
 	public function get_asset(): ?AssetInterface {
 		return $this->asset ?? null;
@@ -72,6 +74,14 @@ class Meta extends Post implements MetaInterface {
 		$this->protocol = $value;
 	}
 
+	public function get_image(): ?string {
+		return $this->image ?? parent::get_image();
+	}
+
+	public function set_image( ?string $value ): void {
+		$this->image = $value;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -80,6 +90,23 @@ class Meta extends Post implements MetaInterface {
 			$data['asset'] = ( new Asset() )->from_array( $data['asset'] );
 		}
 		return parent::from_array( $data );
+	}
+
+	public function append_fallback( string $taxonomy, CategoryTermCollectionInterface $categories ): self {
+		$categories = clone $categories;
+		$categories->key_by_field( 'term_id' );
+		
+		$terms = wp_get_post_terms( $this->ID, $taxonomy );
+		foreach ( $terms as $term ) {
+			$id = $term->term_id;
+			if ( isset( $categories[ $id ] ) ) {
+				$category = $categories[ $id ];
+				if ( $category->get_image() && !$this->get_image() ) {
+					$this->set_image( $category->get_image()['url'] );
+				}
+			}
+		}
+		return $this;
 	}
 
 	/**

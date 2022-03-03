@@ -56,7 +56,7 @@ class Controller implements ControllerInterface {
 		}
 		if ( isset( $service ) && isset( $service_method ) ) {
 			$model = call_user_func( array( $service, $service_method ), $params );
-			return call_user_func( array( $this, $method ), $model, $request );
+			return call_user_func( array( $this, $method ), $request, $model );
 		} else {
 			return call_user_func( array( $this, $method ), $request );
 		}

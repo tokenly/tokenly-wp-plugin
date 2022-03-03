@@ -28,11 +28,11 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	
 	/**
 	 * Gets a collection of promises
-	 * @param PromiseCollectionInterface $promises Bound promises
 	 * @param \WP_REST_Request $request Request data
+	 * @param PromiseCollectionInterface $promises Bound promises
 	 * @return array
 	 */
-	public function index( PromiseCollectionInterface $promises, \WP_REST_Request $request ): array {
+	public function index( \WP_REST_Request $request, PromiseCollectionInterface $promises ): array {
 		$promises = $this->promise_repository->load( $promises, array( 'promise_meta' ) );
 		$users = $promises->get_users();
 		$users = $this->user_repository->index( array(
@@ -46,11 +46,11 @@ class PromiseController extends Controller implements PromiseControllerInterface
 
 	/**
 	 * Gets a single promise
-	 * @param PromiseInterface|null $promise Bound model
 	 * @param \WP_REST_Request $request Request data
+	 * @param PromiseInterface|null $promise Bound model
 	 * @return array|null
 	 */
-	public function show( PromiseInterface $promise = null, \WP_REST_Request $request ): ?array {
+	public function show( \WP_REST_Request $request, PromiseInterface $promise = null ): ?array {
 		if ( $promise ) {
 			$promise = $promise->to_array();
 		}
@@ -62,7 +62,7 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	 * @param \WP_REST_Request $request Request data
 	 * @return array
 	 */
-	public function store( \WP_REST_Request $request ): array {
+	public function store( \WP_REST_Request $request ): ?array {
 		$params = $request->get_params();
 		$promise = $this->promise_repository->store( $params );
 		if ( $promise ) {
@@ -79,39 +79,27 @@ class PromiseController extends Controller implements PromiseControllerInterface
 
 	/**
 	 * Updates an existing promise
-	 * @param PromiseInterface|null $promise Promise to update
 	 * @param WP_REST_Request $request Request data
+	 * @param PromiseInterface|null $promise Promise to update
 	 * @return array
 	 */
-	public function update( PromiseInterface $promise = null, \WP_REST_Request $request ) {
+	public function update( \WP_REST_Request $request, PromiseInterface $promise = null ): void {
 		if ( $promise ) {
 			$params = $request->get_params();
 			$this->promise_repository->update( $promise, $params );
-			return array(
-				'status' => 'Successfully updated the promise!',
-			);
 		}
-		return array(
-			'status' => 'Failed to update the promise!',
-		);
 	}
 
 	/**
 	 * Deletes a promise
-	 * @param PromiseInterface|null $promise Bound promise
 	 * @param WP_REST_Request $request Request data
+	 * @param PromiseInterface|null $promise Bound promise
 	 * @return array
 	 */
-	public function destroy( PromiseInterface $promise = null, \WP_REST_Request $request ) {
+	public function destroy( \WP_REST_Request $request, PromiseInterface $promise = null ): void {
 		if ( $promise ) {
 			$this->promise_repository->destroy( $promise );
-			return array(
-				'status' => 'Successfully deleted the promise!',
-			);
 		}
-		return array(
-			'status' => 'Failed to delete the promise!',
-		);
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

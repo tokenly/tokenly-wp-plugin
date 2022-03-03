@@ -3,6 +3,7 @@ import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
 import AddressLink from './AddressLink';
 import AddressInfo from './AddressInfo';
+import AddressStatus from './AddressStatus';
 import CardActions from './../CardActions';
 
 import { 
@@ -33,13 +34,6 @@ export default function AddressCard( props: AddressCardProps ) {
 				href: `${ adminPageUrl }${ namespace }-token-address-edit&address=${ props.address.address }`,
 			}
 		];
-		if ( !props.address.verified ) {
-			cardActions.push( {
-				title: 'Verify Address',
-				href: `${ adminPageUrl }${ namespace }-token-address-verify&address=${props.address.address}`,
-				isPrimary: true,
-			} );
-		}
 		return cardActions;
 	}
 
@@ -50,17 +44,8 @@ export default function AddressCard( props: AddressCardProps ) {
 					align="flex-end"
 					justify="flex-start"
 				>
-				<AddressLink id={ props.address.address } label={ props.address.label } />
-				{ !props?.address?.verified &&
-					<span title="Not Verified" style={{display: 'inline-flex', alignItems: 'center'}}>
-						<Dashicon style={ { width: '16px', height: '16px', fontSize: '16px' } } icon="warning" />
-					</span>
-				}
-				{ props?.address?.isSource == true &&
-					<span title="Is Source" style={{display: 'inline-flex', alignItems: 'center'}}>
-						<Dashicon style={ { width: '16px', height: '16px', fontSize: '16px' } } icon="yes-alt" />
-					</span>
-				}
+				<AddressLink style=id={ props.address.address } label={ props.address.label } />
+				<AddressStatus address={ props.address } />
 				</Flex>
 			</CardHeader>
 			<CardBody style={ { width: '100%' } }>

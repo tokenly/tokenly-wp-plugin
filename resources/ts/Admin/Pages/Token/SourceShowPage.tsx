@@ -7,8 +7,9 @@ import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/So
 import Page from './../Page';
 import Preloader from '../../Components/Preloader';
 import SourceInfo from '../../Components/Token/SourceInfo';
+import eventBus from "../../../EventBus";
 
-import { 
+import {
 	Button,
 	Panel,
 	PanelBody,
@@ -16,6 +17,8 @@ import {
 	Flex,
 	PanelHeader,
 } from '@wordpress/components';
+
+declare const window: any;
 
 interface SourceShowPageProps {
 	//
@@ -33,16 +36,48 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 	const [ source, setSource ] = useState<any>( null );
 	const [ loadingSource, setLoadingSource ] = useState<boolean>( false );
 	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
+	const [ deleting, setDeleting ] = useState<boolean>( false );
 
 	function isDisabled(): boolean {
 		return ( !source?.address );
 	}
 
-	function isSourceValid() {
+	function isSourceValid(): boolean {
 		return ( source && typeof source === 'object' );
 	}
 
+	function onDelete(): void {
+		eventBus.dispatch( 'confirmModalShow', {
+			key: 'sourceDelete',
+			title: 'Deleting Source',
+			subtitle: 'Are you sure you want to delete the source?',
+		} );
+	}
+
+	function onConfirmModalChoice( payload: any ): void {
+		switch( payload.key ) {
+			case 'sourceDelete':
+				if ( payload.choice == 'accept' ){
+					deleteSource();
+				}
+				break;
+		}
+	}
+
+	function goBack(): void {
+		window.location = `${adminPageUrl}${namespace}-token-source-index`;
+	}
+
+	function deleteSource(): void {
+		setDeleting( true );
+		sourceRepository.destroy( id ).then( ( result: any ) => {
+			setDeleting( false );
+			goBack();
+		} );
+	}
+
 	useEffect( () => {
+		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
 		setLoadingSource( true );
 		setLoadingAddress( true );
 		sourceRepository.show( id ).then( ( sourceFound: any ) => {
@@ -56,7 +91,10 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 				setSource( sourceFound );
 				setLoadingAddress( false );
 			} )
-		} )
+		} );
+		return () => {
+			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
+		}
 	}, [] );
 	
 	return (
@@ -96,6 +134,14 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 								href={ `${adminPageUrl}${namespace}-token-address-balance-index&id=${id}` }
 							>
 								View Balance
+							</Button>
+							<Button
+								isDestructive
+								isLarge
+								isBusy={ deleting }
+								onClick={ onDelete }
+							>
+								Delete Source
 							</Button>
 						</Flex>
 					</PanelRow>

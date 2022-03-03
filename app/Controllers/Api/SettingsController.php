@@ -37,50 +37,47 @@ class SettingsController implements SettingsControllerInterface {
 	);
 
 	public function show_integration( \WP_REST_Request $request ): array {
-		return $this->show( 'integration', $request );
+		return $this->show( $request, 'integration' );
 	}
 
 	public function show_oauth( \WP_REST_Request $request ): array {
-		return $this->show( 'oauth', $request );
+		return $this->show( $request, 'oauth' );
 	}
 
 	public function show_tca( \WP_REST_Request $request ): array {
-		return $this->show( 'tca', $request );
+		return $this->show( $request, 'tca' );
 	}
 
 	public function show_whitelist( \WP_REST_Request $request ): array {
-		return $this->show( 'token_whitelist', $request );
+		return $this->show( $request, 'token_whitelist' );
 	}
 
-	public function update_integration( \WP_REST_Request $request ): array {
-		return $this->update( 'integration', $request );
+	public function update_integration( \WP_REST_Request $request ): void {
+		$this->update( $request, 'integration' );
 	}
 
-	public function update_oauth( \WP_REST_Request $request ): array {
-		return $this->update( 'oauth', $request );
+	public function update_oauth( \WP_REST_Request $request ): void {
+		$this->update( $request, 'oauth' );
 	}
 
-	public function update_tca( \WP_REST_Request $request ): array {
-		return $this->update( 'tca', $request );
+	public function update_tca( \WP_REST_Request $request ): void {
+		$this->update( $request, 'tca' );
 	}
 
-	public function update_token_whitelist( \WP_REST_Request $request ): array {
-		return $this->update( 'token_whitelist', $request );
+	public function update_token_whitelist( \WP_REST_Request $request ): void {
+		$this->update( $request, 'token_whitelist' );
 	}
 
-	protected function show( string $type, \WP_REST_Request $request ): array {
+	protected function show( \WP_REST_Request $request, string $type ): array {
 		return $this->settings[ $type ]->to_array(); 
 	}
 
-	protected function update( string $type, \WP_REST_Request $request ): array {
+	protected function update( \WP_REST_Request $request, string $type ): void {
 		$params = $request->get_params();
 		if ( $type == 'integration' ) {
 			$params['settings_updated'] = true;
 		}
 		$this->settings[ $type ]->update( $params );
 		$name = $this->names[ $type ];
-		return array(
-			'status' => "{$name} settings were successfully updated!",
-		);
 	}
 }

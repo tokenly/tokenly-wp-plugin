@@ -27,11 +27,11 @@ class SourceController extends Controller implements SourceControllerInterface {
 	
 	/**
 	 * Responds with registered sources
-	 * @param SourceCollectionInterface $sources Bound sources
 	 * @param \WP_REST_Request $request Request data
+	 * @param SourceCollectionInterface $sources Bound sources
 	 * @return array
 	 */
-	public function index( SourceCollectionInterface $sources, \WP_REST_Request $request ): array {
+	public function index( \WP_REST_Request $request, SourceCollectionInterface $sources ): array {
 		$sources = clone $sources;
 		$sources->key_by_field( 'address_id' );
 		$sources = $sources->to_array();
@@ -40,11 +40,11 @@ class SourceController extends Controller implements SourceControllerInterface {
 
 	/**
 	 * Gets a single source
-	 * @param SourceInterface|null $source Bound source
 	 * @param \WP_REST_Request $request Request data
+	 * @param SourceInterface|null $source Bound source
 	 * @return array
 	 */
-	public function show( SourceInterface $source = null, \WP_REST_Request $request ): array {
+	public function show( \WP_REST_Request $request, SourceInterface $source = null ): array {
 		if ( $source ) {
 			$source = $source->to_array();
 		}
@@ -54,58 +54,36 @@ class SourceController extends Controller implements SourceControllerInterface {
 	/**
 	 * Creates a new source
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return void
 	 */
-	public function store( \WP_REST_Request $request ): array {
+	public function store( \WP_REST_Request $request ): void {
 		$params = $request->get_params();
 		$source = $this->source_repository->store( $params );
-		if ( $source ) {
-			return array(
-				'source' => $source,
-				'status' => 'Successfully created a source!',
-			);
-		}
-		return array(
-			'source' => null,
-			'status' => 'Failed to create a source!',
-		);
 	}
 
 	/**
 	 * Updates the source
-	 * @param SourceInterface|null $source Bound source
 	 * @param \WP_REST_Request $request Request data
-	 * @return array 
+	 * @param SourceInterface|null $source Bound source
+	 * @return void 
 	 */
-	public function update( SourceInterface $source = null, \WP_REST_Request $request ): array {
+	public function update( \WP_REST_Request $request, SourceInterface $source = null ): void {
 		if ( $source ) {
 			$params = $request->get_params();
 			$this->source_repository->update( $source, $params );
-			return array(
-				'status' => 'Successfully updated the source!',
-			);
 		}
-		return array(
-			'status' => 'Failed to update the source!',
-		);
 	}
 
 	/**
 	 * Deletes the source
-	 * @param SourceInterface|null $source Bound source
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @param SourceInterface|null $source Bound source
+	 * @return void
 	 */
-	public function destroy( SourceInterface $source = null, \WP_REST_Request $request ): array {
+	public function destroy( \WP_REST_Request $request, SourceInterface $source = null ): void {
 		if ( $source ) {
 			$this->source_repository->destroy( $source );
-			return array(
-				'status' => 'Successfully deleted the source!',
-			);
 		}
-		return array(
-			'status' => 'Failed to delete the source!',
-		);
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

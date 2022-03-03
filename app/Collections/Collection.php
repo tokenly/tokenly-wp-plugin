@@ -72,7 +72,12 @@ class Collection extends \ArrayObject implements CollectionInterface {
 		$this->keyed = true;
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
-			$keyed[ $item->{"get_{$field}"}() ] = $item;
+			$method = "get_{$field}";
+			if ( method_exists( $item, $method ) ) {
+				$keyed[ $item->{$method}() ] = $item;
+			} else {
+				$keyed[ $item->$field ] = $item;
+			}
 		}
 		$this->exchangeArray( $keyed );
 		return $this;

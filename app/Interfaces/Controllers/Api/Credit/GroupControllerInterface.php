@@ -8,9 +8,9 @@ use Tokenly\Wp\Interfaces\Collections\Credit\GroupCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Credit\GroupInterface;
 
 interface GroupControllerInterface extends ControllerInterface {
-	public function index( GroupCollectionInterface $groups, \WP_REST_Request $request );
-	public function show( GroupInterface $group, \WP_REST_Request $request );
-	public function store( \WP_REST_Request $request );
-	public function update( GroupInterface $group, \WP_REST_Request $request );
-	public function destroy( GroupInterface $group, \WP_REST_Request $request );
+	public function index( \WP_REST_Request $request, GroupCollectionInterface $groups ): array;
+	public function show( \WP_REST_Request $request, GroupInterface $group ): ?array;
+	public function store( \WP_REST_Request $request ): ?array;
+	public function update( \WP_REST_Request $request, ?GroupInterface $group = null ): void;
+	public function destroy( \WP_REST_Request $request, ?GroupInterface $group = null ): void;
 }

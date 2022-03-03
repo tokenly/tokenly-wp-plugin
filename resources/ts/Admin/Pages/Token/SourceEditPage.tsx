@@ -4,7 +4,6 @@ import { useInjection } from 'inversify-react';
 import Page from './../Page';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceEditForm from '../../Components/Token/SourceEditForm';
-import eventBus from "../../../EventBus";
 import { TYPES } from '../../Types';
 import Preloader from '../../Components/Preloader';
 import SourceLink from '../../Components/Token/SourceLink';
@@ -35,7 +34,6 @@ export default function SourceEditPage( props: SourceEditPageProps ) {
 	const [ editData, setEditData ] = useState<any>( {} );
 	const [ loading, setLoading ] = useState<boolean>( false );
 	const [ saving, setSaving ] = useState<boolean>( false );
-	const [ deleting, setDeleting ] = useState<boolean>( false );
 
 	function goBack() {
 		window.location = `${adminPageUrl}${namespace}-token-source-index`;
@@ -50,34 +48,7 @@ export default function SourceEditPage( props: SourceEditPageProps ) {
 		} );
 	}
 
-	function onDelete() {
-		eventBus.dispatch( 'confirmModalShow', {
-			key: 'sourceDelete',
-			title: 'Deleting Source',
-			subtitle: 'Are you sure you want to delete the source?',
-		} );
-	}
-
-	function onConfirmModalChoice( payload: any ) {
-		switch( payload.key ) {
-			case 'sourceDelete':
-				if ( payload.choice == 'accept' ){
-					deleteSource();
-				}
-				break;
-		}
-	}
-
-	function deleteSource() {
-		setDeleting( true );
-		sourceRepository.destroy( id ).then( ( result: any ) => {
-			setDeleting( false );
-			goBack();
-		} );
-	}
-
 	useEffect( () => {
-		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
 		setLoading( true );
 		const params = {
 			with: ['address'],
@@ -92,9 +63,6 @@ export default function SourceEditPage( props: SourceEditPageProps ) {
 			setSource( sourceFound );
 			setEditData( newEditData );
 		} );
-		return () => {
-			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
-		}
 	}, [] );
 
 	function onEditDataChange( newData: any ) {
@@ -135,9 +103,8 @@ export default function SourceEditPage( props: SourceEditPageProps ) {
 						<ResourceEditActions
 							name="Source"
 							saving={ saving }
-							deleting={ deleting }
 							onSave={ onSave }
-							onDelete={ onDelete }
+							noDelete
 							onCancel={ () => {
 								goBack();
 							} }

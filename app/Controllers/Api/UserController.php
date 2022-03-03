@@ -14,25 +14,36 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
 
 class UserController extends Controller implements UserControllerInterface {
+	protected string $namespace;
+	protected UserRepositoryInterface $user_repository;
+	protected OauthUserRepositoryInterface $oauth_user_repository;
+	protected SourceRepositoryInterface $source_repository;
+	protected BalanceRepositoryInterface $balance_repository;
+
 	public function __construct(
+		string $namespace,
 		UserRepositoryInterface $user_repository,
 		OauthUserRepositoryInterface $oauth_user_repository,
-		SourceRepositoryInterface $source_repository
+		SourceRepositoryInterface $source_repository,
+		BalanceRepositoryInterface $balance_repository
 	) {
+		$this->namespace = $namespace;
 		$this->user_repository = $user_repository;
 		$this->source_repository = $source_repository;
 		$this->oauth_user_repository = $oauth_user_repository;
+		$this->balance_repository = $balance_repository;
 	}
 	
 	/**
 	 * Gets a collection of users
-	 * @param UserCollectionInterface $users Bound users
 	 * @param \WP_REST_Request $request Request
+	 * @param UserCollectionInterface $users Bound users
 	 * @return array
 	 */
-	public function index( UserCollectionInterface $users, \WP_REST_Request $request ): array {
+	public function index( \WP_REST_Request $request, UserCollectionInterface $users ): array {
 		if ( $request->get_param( 'suggestions' ) ) {
 			$users->to_suggestions();
 		}
@@ -42,11 +53,11 @@ class UserController extends Controller implements UserControllerInterface {
 
 	/**
 	 * Gets a single user
-	 * @param UserInterface|null $user Bound user
 	 * @param \WP_REST_Request $request Request
+	 * @param UserInterface|null $user Bound user
 	 * @return array|null
 	 */
-	public function show( UserInterface $user = null, \WP_REST_Request $request ): ?array {
+	public function show( \WP_REST_Request $request, UserInterface $user = null ): ?array {
 		if ( $user ) {
 			$user = $user->to_array();
 		}
@@ -55,11 +66,11 @@ class UserController extends Controller implements UserControllerInterface {
 
 	/**
 	 * Gets a collection credit of balance
-	 * @param UserInterface|null $user Bound user
 	 * @param \WP_REST_Request $request Request data
+	 * @param UserInterface|null $user Bound user
 	 * @return array
 	 */
-	public function credit_balance_index( UserInterface $user = null, \WP_REST_Request $request ): array {
+	public function credit_balance_index( \WP_REST_Request $request, UserInterface $user = null ): array {
 		$account = array();
 		if ( $user ) {
 			$this->user_repository->load( $user, array( 'oauth_user.credit_account' ) );
@@ -75,11 +86,11 @@ class UserController extends Controller implements UserControllerInterface {
 
 	/**
 	 * Gets a single credit balance
-	 * @param UserInterface|null $user Bound user
 	 * @param \WP_REST_Request $request Request data
+	 * @param UserInterface|null $user Bound user
 	 * @return float
 	 */
-	public function credit_balance_show( UserInterface $user = null, \WP_REST_Request $request ): float {
+	public function credit_balance_show( \WP_REST_Request $request, UserInterface $user = null ): float {
 		$balance = 0;
 		if ( $user ) {
 			$this->user_repository->load( $user, array( 'oauth_user' ) );
@@ -96,60 +107,39 @@ class UserController extends Controller implements UserControllerInterface {
 
 	/**
 	 * Gets a collection of token balance
-	 * @param UserInterface|null $user Bound user
 	 * @param \WP_REST_Request $request Request data
+	 * @param UserInterface|null $user Bound user
 	 * @return array
 	 */
-	public function token_balance_index( UserInterface $user = null, \WP_REST_Request $request ): array {
-		$balance = array();
-		if ( $user ) {
-			$this->user_repository->load( $user, array( 'oauth_user.balance.meta' ) );
-			if ( !$user->get_oauth_user() || $user->get_oauth_user() instanceof OauthUserInterface === false ) {
-				return array();
-			}
-			if ( !$user->get_oauth_user()->get_balance() || $user->get_oauth_user()->get_balance() instanceof BalanceCollectionInterface === false ) {
-				return array();
-			}
-			$balance = $user->get_oauth_user()->get_balance()->to_array();
-		}
-
+	public function token_balance_index( \WP_REST_Request $request, UserInterface $user = null ): array {
+		$balance = $this->user_repository->token_balance_index( $user );
+		$balance = $balance->to_array();
 		return $balance;
 	}
 
 	/**
 	 * Gets a single balance
-	 * @param UserInterface|null $user Bound user
 	 * @param \WP_REST_Request $request Request data
+	 * @param UserInterface|null $user Bound user
 	 * @return array
 	 */
-	public function token_balance_show( UserInterface $user = null, \WP_REST_Request $request ): array {
-		$balance = array();
-		if ( $user ) {
-			$this->user_repository->load( $user, array( 'oauth_user.balance' ) );
-			if ( !$user->get_oauth_user() || $user->get_oauth_user() instanceof OauthUserInterface === false ) {
-				return array();
-			}
-			if ( !$user->get_oauth_user()->get_balance() || $user->get_oauth_user()->get_balance() instanceof BalanceCollectionInterface === false ) {
-				return array();
-			}
-			$balance_collection = clone $user->get_oauth_user()->get_balance();
-			$balance_collection->key_by_asset_name();
-			$asset = $request->get_param( 'asset' );
-			if ( isset( $balance_collection[ $asset ] ) ) {
-				$balance = $balance_collection[ $asset ];
-				$balance = $balance->to_array();
-			}
+	public function token_balance_show( \WP_REST_Request $request, UserInterface $user = null ): array {
+		$asset = $request->get_param( 'asset' );
+		if ( $asset && $user ) {
+			
 		}
+		$balance = $this->user_repository->token_balance_show( $user );
+		$balance = $balance->to_array();
 		return $balance;
 	}
 
 	/**
 	 * Gets a collection of addresses
-	 * @param UserInterface|null $user Bound user
 	 * @param \WP_REST_Request $request Request data
+	 * @param UserInterface|null $user Bound user
 	 * @return array
 	 */
-	public function token_address_index( UserInterface $user = null, \WP_REST_Request $request ): array {
+	public function token_address_index( \WP_REST_Request $request, UserInterface $user = null ): array {
 		$address = array();
 		if ( $user ) {
 			$this->user_repository->load( $user, array( 'oauth_user.address' ) );

@@ -72,6 +72,13 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 			} );
 			setLoadingAddresses( false );
 			setAddresses( addressesKeyed );
+			const urlParams = new URLSearchParams( window.location.search );
+			const address = urlParams.get( 'address' );
+			if ( address ) {
+				const newStoreData = Object.assign( {}, storeData );
+				newStoreData.address = address;
+				setStoreData( newStoreData );
+			}
 		} );
 	}, [] );
 	

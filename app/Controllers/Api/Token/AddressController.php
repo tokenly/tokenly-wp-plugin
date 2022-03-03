@@ -28,26 +28,26 @@ class AddressController extends Controller implements AddressControllerInterface
 	
 	/**
 	 * Gets a collection of addresses
-	 * @param AddressCollectionInterface $addresses Bound addresses
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @param AddressCollectionInterface $addresses Bound addresses
+	 * @return \WP_REST_Response
 	 */
-	public function index( AddressCollectionInterface $addresses, \WP_REST_Request $request ): array {
+	public function index( \WP_REST_Request $request, AddressCollectionInterface $addresses ): \WP_REST_Response {
 		$addresses = $addresses->to_array();
-		return $addresses;
+		return new \WP_REST_Response( $addresses );
 	}
 
 	/**
 	 * Gets a single addresse
-	 * @param AddressInterface $address Bound address
 	 * @param \WP_REST_Request $request Request data
-	 * @return array|null
+	 * @param AddressInterface $address Bound address
+	 * @return \WP_REST_Response
 	 */
-	public function show( AddressInterface $address = null, \WP_REST_Request $request ): ?array {
+	public function show( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
 		if ( $address ) {
 			$address = $address->to_array();
 		}
-		return $address;
+		return new \WP_REST_Response( $address );
 	}
 
 	/**
@@ -73,11 +73,11 @@ class AddressController extends Controller implements AddressControllerInterface
 
 	/**
 	 * Updates an existing address
-	 * @param AddressInterface|null $address Address to update
 	 * @param WP_REST_Request $request Request data
+	 * @param AddressInterface|null $address Address to update
 	 * @return array
 	 */
-	public function update( AddressInterface $address = null, \WP_REST_Request $request ) {
+	public function update( \WP_REST_Request $request, AddressInterface $address = null ) {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
@@ -93,11 +93,11 @@ class AddressController extends Controller implements AddressControllerInterface
 
 	/**
 	 * Verifies an existing address
-	 * @param AddressInterface|null $address Address to verify
 	 * @param WP_REST_Request $request Request data
+	 * @param AddressInterface|null $address Address to verify
 	 * @return array
 	 */
-	public function verify( AddressInterface $address = null, \WP_REST_Request $request ) {
+	public function verify( \WP_REST_Request $request, AddressInterface $address = null ) {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
@@ -113,11 +113,11 @@ class AddressController extends Controller implements AddressControllerInterface
 
 	/**
 	 * Deletes a address
-	 * @param AddressInterface|null $address Bound address
 	 * @param WP_REST_Request $request Request data
+	 * @param AddressInterface|null $address Bound address
 	 * @return array
 	 */
-	public function destroy( AddressInterface $address = null, \WP_REST_Request $request ) {
+	public function destroy( \WP_REST_Request $request, AddressInterface $address = null ) {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
@@ -133,11 +133,11 @@ class AddressController extends Controller implements AddressControllerInterface
 
 	/**
 	 * Gets a collection of balance
-	 * @param AddressInterface $user Bound address
 	 * @param \WP_REST_Request $request Request data
+	 * @param AddressInterface $user Bound address
 	 * @return array|null
 	 */
-	public function balance_index( AddressInterface $address = null, \WP_REST_Request $request ): ?array {
+	public function balance_index( \WP_REST_Request $request, AddressInterface $address = null ): ?array {
 		$balance = null;
 		if ( $address ) {
 			$this->address_repository->load( $address, array( 'balance.meta' ) );
