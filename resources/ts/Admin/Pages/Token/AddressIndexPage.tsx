@@ -48,7 +48,6 @@ export default function AddressIndexPage( props: AddressIndexPageProps ) {
 				} ).then( ( addressesFound ) => {
 					addressesFound = Object.assign( [], addressesFound );
 					sourceRepository.index().then( ( sourcesFound: any ) => {
-						console.log(addresses);
 						setLoadingSources( false );
 						setSources( sourcesFound );
 						addressesFound.forEach( ( address: any ) => {

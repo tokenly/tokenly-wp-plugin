@@ -8,14 +8,17 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Collections\UserCollection;
 use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
 use Tokenly\Wp\Models\User;
-use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
-use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
+use Tokenly\Wp\Interfaces\Models\UserInterface;
+use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**
@@ -27,6 +30,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	protected OauthUserRepositoryInterface $oauth_user_repository;
 	protected BalanceRepositoryInterface $balance_repository;
 	protected CategoryTermRepositoryInterface $category_term_repository;
+	protected SourceRepositoryInterface $source_repository;
+	protected AddressRepositoryInterface $address_repository;
 	protected string $namespace;
 	protected array $meta;
 	
@@ -36,6 +41,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		OauthUserRepositoryInterface $oauth_user_repository,
 		BalanceRepositoryInterface $balance_repository,
 		CategoryTermRepositoryInterface $category_term_repository,
+		SourceRepositoryInterface $source_repository,
+		AddressRepositoryInterface $address_repository,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -45,6 +52,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		$this->meta = $this->get_meta_fields();
 		$this->balance_repository = $balance_repository;
 		$this->category_term_repository = $category_term_repository;
+		$this->source_repository = $source_repository;
+		$this->address_repository = $address_repository;
 	}
 
 	/**
@@ -141,6 +150,20 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		) );
 	}
 
+	public function credit_balance_show( ?UserInterface $user = null, array $params ): float {
+		$balance;
+		if ( $user ) {
+			$this->user_repository->load( $user, array( 'oauth_user' ) );
+			if ( $user->get_oauth_user() ) {
+				$group = $request->get_param( 'group' );
+				$account = $this->oauth_user_repository->credit_balance_show( $user->get_oauth_user(), $group );
+				if ( $account ) {
+					$balance = $account->get_balance();
+				}
+			}
+		}
+	}
+
 	public function token_balance_index( UserInterface $user ): ?BalanceCollectionInterface {
 		$categories = $this->category_term_repository->index();
 		$balance = $this->balance_repository->index( array(
@@ -155,7 +178,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		return $balance;
 	}
 
-	public function token_balance_show( UserInterface $user, string $asset ): ?BalanceInterface {
+	public function token_balance_show( UserInterface $user, array $params ): ?BalanceInterface {
+		$asset = $params['asset'];
 		$balance = $this->token_balance_index( $user );
 		$balance = clone $balance;
 		$balance->key_by_asset_name();
@@ -165,6 +189,18 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 			$balance = null;
 		}
 		return $balance;
+	}
+
+	public function token_address_index( UserInterface $user, array $params ): AddressCollectionInterface {
+		$addresses = $this->address_repository->index( array(
+			'oauth_token' => $user->get_oauth_token(),
+		) );
+		if ( isset( $params['registered'] ) ) {
+			$sources = $this->source_repository->index();
+			$addresses = clone $addresses;
+			$addresses->filter_registered( $sources );
+		}
+		return $addresses;
 	}
 
 	/**

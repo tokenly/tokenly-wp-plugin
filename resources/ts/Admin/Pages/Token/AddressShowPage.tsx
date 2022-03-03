@@ -45,15 +45,18 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 		setLoadingSources( true );
 		addressRepository.show( id )
 			.then( ( addressFound: any ) => {
-				console.log(addressFound);
 				setLoading( false );
 				setAddress( addressFound );
+				return addressFound;
 			} )
-			.then( () => {
+			.then( ( addressFound ) => {
 				sourceRepository.index()
 			.then( ( result: any ) => {
 				setLoadingSources( false );
 				setSources( result );
+				addressFound = Object.assign( {}, addressFound );
+				addressFound.isSource = ( id in result );
+				setAddress( addressFound );
 			} ) } );
 		return () => {
 			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
@@ -104,7 +107,7 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 						<Preloader loading={ ( loading || loadingSources ) }>
 							<Flex justify="flex-start">
 								<span style={ { flexShrink: 0 } }>Address Info</span>
-								{ ( !loading && !loadingSources ) && <AddressStatus address={ address } sources={ sources } /> }
+								{ ( !loading && !loadingSources ) && <AddressStatus address={ address } /> }
 							</Flex>
 						</Preloader>
 					</Flex>

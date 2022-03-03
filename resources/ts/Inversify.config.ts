@@ -66,18 +66,14 @@ export default function bind( container: Container ) {
 	container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
 	container.bind<string>( TYPES.Variables.apiHost ).toConstantValue( 'https://tokenpass.tokenly.com' );
 	container.bind<string>( TYPES.Variables.pluginUrl ).toConstantValue( '/wp-content/plugins/tokenly-wp-plugin' );
-	if ( window.tokenpassData?.shared.nonce ) {
-		const shared = window.tokenpassData.shared;
-		if ( shared?.nonce ) {
-			container.bind<string>( TYPES.Variables.nonce ).toConstantValue( shared.nonce );
-		}
-		if ( shared?.routes ) {
-			container.bind<string>( TYPES.Variables.routes ).toConstantValue( shared.routes );
-		}
-		if ( shared?.fallback_image ) {
-			container.bind<string>( TYPES.Variables.fallbackImage ).toConstantValue( shared.fallback_image );
-		}
-	}
+
+	console.log(window.tokenpassData);
+	const shared = window?.tokenpassData?.shared;
+	container.bind<string>( TYPES.Variables.nonce ).toConstantValue( shared?.nonce ?? null );
+	container.bind<string>( TYPES.Variables.routes ).toConstantValue( shared?.routes ?? null );
+	container.bind<string>( TYPES.Variables.fallbackImage ).toConstantValue( shared?.fallback_image ?? null );
+	container.bind<string>( TYPES.Variables.isUserConnected ).toConstantValue( shared?.user_can_connect ?? false );
+	container.bind<string>( TYPES.Variables.isIntegrationConnected ).toConstantValue( shared?.integration_can_connect ?? false );
 	return container;
 }
 

@@ -44,7 +44,7 @@ export default function AddressCard( props: AddressCardProps ) {
 					align="flex-end"
 					justify="flex-start"
 				>
-				<AddressLink style=id={ props.address.address } label={ props.address.label } />
+				<AddressLink id={ props.address.address } label={ props.address.label } />
 				<AddressStatus address={ props.address } />
 				</Flex>
 			</CardHeader>

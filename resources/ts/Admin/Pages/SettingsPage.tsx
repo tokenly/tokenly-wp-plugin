@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useInjection } from 'inversify-react';
+import { TYPES } from '../../Types';
 import Page from './Page';
 import SavePanel from '../Components/SavePanel';
 import IntegrationSettingsForm from '../Components/Settings/IntegrationSettingsForm';
@@ -11,7 +12,6 @@ import { IntegrationSettings, TcaSettings, OauthSettings } from '../../Interface
 import IntegrationSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
 import TcaSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
 import OauthSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
-import { TYPES } from '../../Types';
 import eventBus from "../../EventBus";
 
 import { 
@@ -30,6 +30,7 @@ interface SettingsPageProps {
 
 export default function SettingsPage( props: SettingsPageProps ) {
 	const brand: string = useInjection( TYPES.Variables.brand );
+	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const integrationSettingsRepository: IntegrationSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface );
 	const tcaSettingsRepository: TcaSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface );
 	const oauthSettingsRepository: OauthSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface );
@@ -62,6 +63,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	const [ savingOauthSettings, setSavingOauthSettings ] = useState<boolean>( false );
 	
 	function onIntegrationSettingsSave() {
+		localStorage.removeItem( `${namespace}-integration-not-connected-notice-dismissed` );
 		setSavingIntegrationSettings( true );
 		integrationSettingsRepository.update( integrationSettings ).then( ( result: any ) => {
 			eventBus.dispatch( 'snackbarShow', result?.status );
@@ -73,7 +75,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	}
 
 	function onIntegrationSettingsChange( newSettings: any ) {
-	setIntegrationSettings( newSettings );
+		setIntegrationSettings( newSettings );
 	}
 
 	function onTcaSettingsSave() {

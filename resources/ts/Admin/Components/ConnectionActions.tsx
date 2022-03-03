@@ -16,17 +16,22 @@ interface ConnectionActionsProps {
 
 export default function ConnectionActions( props: ConnectionActionsProps ) {
 	const brand = useInjection( TYPES.Variables.brand );
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace = useInjection( TYPES.Variables.namespace );
 
 	const [ connecting, setConnecting ] = useState( false );
 	const [ disconnecting, setDisconnecting ] = useState( false );
 
+	function resetStorage(): void {
+		localStorage.removeItem( `${namespace}-user-not-connected-notice-dismissed` );
+	}
+
 	function onConnectButtonClick() {
+		resetStorage();
 		setConnecting( true );
 	}
 
 	function onDisconnectButtonClick() {
+		resetStorage();
 		setDisconnecting( true );
 	}
 

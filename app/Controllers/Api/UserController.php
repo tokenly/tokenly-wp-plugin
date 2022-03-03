@@ -41,36 +41,36 @@ class UserController extends Controller implements UserControllerInterface {
 	 * Gets a collection of users
 	 * @param \WP_REST_Request $request Request
 	 * @param UserCollectionInterface $users Bound users
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, UserCollectionInterface $users ): array {
+	public function index( \WP_REST_Request $request, UserCollectionInterface $users ): \WP_REST_Response {
 		if ( $request->get_param( 'suggestions' ) ) {
 			$users->to_suggestions();
 		}
 		$users = $users->to_array();
-		return $users;
+		return new \WP_REST_Response( $users );
 	}
 
 	/**
 	 * Gets a single user
 	 * @param \WP_REST_Request $request Request
 	 * @param UserInterface|null $user Bound user
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, UserInterface $user = null ): ?array {
+	public function show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		if ( $user ) {
 			$user = $user->to_array();
 		}
-		return $user;
+		return new \WP_REST_Response( $user );
 	}
 
 	/**
 	 * Gets a collection credit of balance
 	 * @param \WP_REST_Request $request Request data
 	 * @param UserInterface|null $user Bound user
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function credit_balance_index( \WP_REST_Request $request, UserInterface $user = null ): array {
+	public function credit_balance_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		$account = array();
 		if ( $user ) {
 			$this->user_repository->load( $user, array( 'oauth_user.credit_account' ) );
@@ -81,16 +81,16 @@ class UserController extends Controller implements UserControllerInterface {
 				$account = $user->get_oauth_user()->get_credit_account()->to_array();
 			}
 		}
-		return $account;
+		return new \WP_REST_Response( $account );
 	}
 
 	/**
 	 * Gets a single credit balance
 	 * @param \WP_REST_Request $request Request data
 	 * @param UserInterface|null $user Bound user
-	 * @return float
+	 * @return \WP_REST_Response
 	 */
-	public function credit_balance_show( \WP_REST_Request $request, UserInterface $user = null ): float {
+	public function credit_balance_show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		$balance = 0;
 		if ( $user ) {
 			$this->user_repository->load( $user, array( 'oauth_user' ) );
@@ -102,61 +102,60 @@ class UserController extends Controller implements UserControllerInterface {
 				}
 			}
 		}
-		return $balance;
+		return new \WP_REST_Response( $balance );
 	}
 
 	/**
 	 * Gets a collection of token balance
 	 * @param \WP_REST_Request $request Request data
 	 * @param UserInterface|null $user Bound user
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function token_balance_index( \WP_REST_Request $request, UserInterface $user = null ): array {
+	public function token_balance_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		$balance = $this->user_repository->token_balance_index( $user );
 		$balance = $balance->to_array();
-		return $balance;
+		return new \WP_REST_Response( $balance );
 	}
 
 	/**
 	 * Gets a single balance
 	 * @param \WP_REST_Request $request Request data
 	 * @param UserInterface|null $user Bound user
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function token_balance_show( \WP_REST_Request $request, UserInterface $user = null ): array {
+	public function token_balance_show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		$asset = $request->get_param( 'asset' );
+		$balance;
 		if ( $asset && $user ) {
-			
+			$balance = $this->user_repository->token_balance_show( $user, array(
+				'asset' => $asset,
+			) );
+			$balance = $balance->to_array();
+		} else {
+			$balance = null;
 		}
-		$balance = $this->user_repository->token_balance_show( $user );
-		$balance = $balance->to_array();
-		return $balance;
+		return new \WP_REST_Response( $balance );
 	}
 
 	/**
 	 * Gets a collection of addresses
 	 * @param \WP_REST_Request $request Request data
 	 * @param UserInterface|null $user Bound user
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function token_address_index( \WP_REST_Request $request, UserInterface $user = null ): array {
-		$address = array();
+	public function token_address_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+		$registered = $request->get_param( 'registered' );
+		$params = array(
+			'registered' => $registered,
+		);
+		$addresses;
 		if ( $user ) {
-			$this->user_repository->load( $user, array( 'oauth_user.address' ) );
-			if (
-				$user->get_oauth_user() &&
-				$user->get_oauth_user()->get_address()
-			) {
-				$address = clone $user->get_oauth_user()->get_address();
-				$registered = $request->get_param( 'registered' );
-				if ( $registered ) {
-					$sources = $this->source_repository->index();
-					$address->filter_registered( $sources );
-				}
-				$address = $address->to_array();
-			}
+			$addresses = $this->user_repository->token_address_index( $user, $params );
+			$addresses = $addresses->to_array();
+		} else {
+			$addresses = null;
 		}
-		return $address;
+		return new \WP_REST_Response( $addresses );
 	}
 
 	/**

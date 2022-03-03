@@ -92,11 +92,16 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @return TokenBalanceCollectionInterface
 	 */
 	public function token_balance_index( OauthUserInterface $oauth_user, \WP_REST_Request $request ): TokenBalanceCollectionInterface {
-		$this->load( $oauth_user, array( 'balance.meta' ) );
-		if ( !$oauth_user->get_balance() ) {
-			return new TokenBalanceCollection( array() );
+		$categories = $this->category_term_repository->index();
+		$balance = $this->balance_repository->index( array(
+			'oauth_token' => $oauth_user->get_oauth_token(),
+			'with'        => array( 'meta' ),
+		) );
+		foreach ( (array) $balance as $item ) {
+			if ( $item->get_meta() ) {
+				$item->get_meta()->append_fallback( "{$this->namespace}_token_category", $categories );
+			}
 		}
-		$balance = clone $oauth_user->get_balance();
 		return $balance;
 	}
 
@@ -120,16 +125,19 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	/**
 	 * Gets a collection of addresses
 	 * @param OauthUserInterface $oauth_user Target OAuth User
-	 * @param bool $registered Get only registered addresses
+	 * @param array $params Search parameters
 	 * @return TokenAddressCollectionInterface
 	 */
-	public function token_address_index( OauthUserInterface $oauth_user, bool $registered = false ): TokenAddressCollectionInterface {
-		$this->load( $oauth_user, array( 'address' ) );
-		$address = clone $oauth_user->get_address();
-		if ( $registered === true ) {
-			$address->filter_registered();
+	public function token_address_index( OauthUserInterface $oauth_user, array $params ): TokenAddressCollectionInterface {
+		$addresses = $this->address_repository->index( array(
+			'oauth_token' => $oauth_user->get_oauth_token(),
+		) );
+		if ( isset( $params['registered'] ) ) {
+			$sources = $this->source_repository->index();
+			$addresses = clone $addresses;
+			$addresses->filter_registered( $sources );
 		}
-		return $address;
+		return $addresses;
 	}
 
 	/**
