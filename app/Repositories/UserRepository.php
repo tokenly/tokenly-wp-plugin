@@ -9,6 +9,7 @@ use Tokenly\Wp\Collections\UserCollection;
 use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface as CreditAccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;

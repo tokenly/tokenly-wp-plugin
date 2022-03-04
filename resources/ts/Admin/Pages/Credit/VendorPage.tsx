@@ -2,36 +2,16 @@ import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import Page from '../Page';
 import { TYPES } from './../../Types';
-
-import { 
-	Card,
-	CardBody,
-	CardHeader,
-	CardFooter,
-	Button,
-	Dashicon,
-	Flex,
-} from '@wordpress/components';
-
-interface DashboardCardItem {
-	title: string;
-	description: string;
-	icon: string;
-	url: string;
-	admin: boolean;
-}
+import GridMenu from '../../Components/GridMenu';
 
 interface VendorPageProps {
-	is_admin: boolean;
-	integration_can_connect: boolean;
-	user_can_connect: boolean;
+	//
 }
 
-export default function VendorPage( props: VendorPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
+export default function VendorPage( props: VendorPageProps ) {;
 	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const routes: any = useInjection( TYPES.Variables.routes );
-	const cardData = {
+	const menuItems = {
 		promises: {
 			title: 'Groups and Transactions',
 			description: `View and manage credit groups and their transactions.`,
@@ -46,35 +26,9 @@ export default function VendorPage( props: VendorPageProps ) {
 		},
 	} as any;
 
-	function canView( key: string ): boolean {
-		return ( cardData[ key ]?.route?.access ?? false );
-	}
-
-	let cards = [] as any;
-	cards = Object.keys( cardData ).map( ( key: string, index ) => {
-		const cardItem = cardData[ key ];
-		if ( canView( key ) ) {
-			return (
-				<Card>
-					<CardHeader>
-						<Flex justify="flex-start">
-							<Dashicon icon={ cardItem.icon as any } />
-							<h3>{ cardItem.title }</h3>
-						</Flex>
-					</CardHeader>
-					<CardBody size="large">{ cardItem.description }</CardBody>
-					<CardFooter>
-						<Button isPrimary href={ cardItem?.route?.url }>Visit Page</Button>
-					</CardFooter>
-				</Card>
-			);
-		}
-	} );
 	return (
 		<Page title="Token Vendor">
-			<div className="dashboard-card-grid">
-				{ cards }
-			</div>
+			<GridMenu items={ menuItems } />
 		</Page>
 	);
 }

@@ -48,7 +48,7 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 		setStoring( true );
 		sourceRepository.store( newStoreData ).then( ( result: any ) => {
 			setStoring( false );
-			goBack();
+			window.location = `${adminPageUrl}${namespace}-token-source-show&source=${newStoreData.address}`;
 		} );
 	}
 	

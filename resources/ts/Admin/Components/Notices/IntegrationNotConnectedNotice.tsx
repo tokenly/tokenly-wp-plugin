@@ -13,7 +13,7 @@ export default function IntegrationNotConnectedNotice() {
 	const isIntegrationConnected: string = useInjection( TYPES.Variables.isIntegrationConnected );
     const localStorageKey: string = `${namespace}-integration-not-connected-notice-dismissed`;
 
-    const [ dismissed, setDismissed ] = useState<boolean>( false );
+    const [ dismissed, setDismissed ] = useState<boolean>( true );
 
     useEffect( () => {
         let dismissedStored: string = localStorage.getItem( localStorageKey );

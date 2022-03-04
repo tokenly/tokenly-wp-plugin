@@ -13,7 +13,7 @@ export default function UserNotConnectedNotice() {
 	const isUserConnected: string = useInjection( TYPES.Variables.isUserConnected );
     const localStorageKey: string = `${namespace}-user-not-connected-notice-dismissed`;
 
-    const [ dismissed, setDismissed ] = useState<boolean>( false );
+    const [ dismissed, setDismissed ] = useState<boolean>( true );
 
     useEffect( () => {
         let dismissedStored: string = localStorage.getItem( localStorageKey );

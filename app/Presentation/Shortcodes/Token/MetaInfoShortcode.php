@@ -35,6 +35,7 @@ class MetaInfoShortcode extends Shortcode implements MetaInfoShortcodeInterface 
 			$post = $this->meta_repository->show( array(
 				'id' => $atts['id'],
 			) );
+			$post = $this->category_term_repository->apply_meta_fallback_single( $post );
 			if ( $post ) {
 				$post = $post->to_array();
 				if ( !$post['image'] || $post['image'] == false ) {
