@@ -72,7 +72,7 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 		setDeleting( true );
 		sourceRepository.destroy( id ).then( ( result: any ) => {
 			setDeleting( false );
-			goBack();
+			history.back();
 		} );
 	}
 

@@ -36,50 +36,50 @@ class GroupController extends Controller implements GroupControllerInterface {
 	 * Get a collection of groups
 	 * @param \WP_REST_Request $request Request data
 	 * @param GroupCollectionInterface $groups Bound groups
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, GroupCollectionInterface $groups ): array {
+	public function index( \WP_REST_Request $request, GroupCollectionInterface $groups ): \WP_REST_Response {
 		$groups = $groups->to_array();
-		return $groups;
+		return new \WP_REST_Response( $groups );
 	}
 
 	/**
 	 * Get a single of group
 	 * @param \WP_REST_Request $request Request data
 	 * @param GroupInterface $group Bound group
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, GroupInterface $group = null ): ?array {
+	public function show( \WP_REST_Request $request, GroupInterface $group = null ): \WP_REST_Response {
 		if ( $group ) {
 			$group = $group->to_array();
 		}
-		return $group;
+		return new \WP_REST_Response ( $group );
 	}
 
 	/**
 	 * Makes a new group
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function store( \WP_REST_Request $request ): array {
+	public function store( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$group = $this->group_repository->store( $params );
 		if ( $group ) {
 			$group = $group->to_array();
 		}
-		return array (
+		return new \WP_REST_Response( array (
 			'status' => 'The group was successfully created!',
 			'group'  => $group,
-		);
+		) );
 	}
 
 	/**
 	 * Updates an existing group
 	 * @param \WP_REST_Request $request Request data
 	 * @param GroupInterface $group Bound group
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function update( \WP_REST_Request $request, GroupInterface $group = null ): void {
+	public function update( \WP_REST_Request $request, GroupInterface $group = null ): \WP_REST_Response {
 		if ( $group ) {
 			$params = $request->get_params();
 			$group = $this->group_repository->update( $group, $params );
@@ -87,45 +87,47 @@ class GroupController extends Controller implements GroupControllerInterface {
 				$group = $group->to_array();
 			}
 		}
+		return new \WP_REST_Response();
 	}
 
 	/**
 	 * Destroys an existing group
 	 * @param \WP_REST_Request $request Request data
 	 * @param GroupInterface $group Bound group
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function destroy( \WP_REST_Request $request, GroupInterface $group = null ): void {
+	public function destroy( \WP_REST_Request $request, GroupInterface $group = null ): \WP_REST_Response {
 		if ( $group ) {
 			$this->group_repository->destroy( $group );
 		}
+		return new \WP_REST_Response();
 	}
 
 	/**
 	 * Get a collection of group accounts
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function account_index( \WP_REST_Request $request ): array {
+	public function account_index( \WP_REST_Request $request ): \WP_REST_Response {
 		$group = $request->get_param( 'group' );
 		$account = $this->account_repository->index( array(
 			'group_uuid' => $group,
 		) );
 		$account = $account->to_array();
-		return $account;
+		return new \WP_REST_Response( $account );
 	}
 
 	/**
 	 * Updates an existing group
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function group_whitelist_update( \WP_REST_Request $request ): array {
+	public function group_whitelist_update( \WP_REST_Request $request ): \WP_REST_Response {
 		$whitelist = $request->get_param( 'whitelist' );
 		$this->group_whitelist_repository->update( $whitelist );
-		return array(
+		return new \WP_REST_Response( array(
 			'status' => 'Successfully updated the group whitelist!',
-		);
+		) );
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

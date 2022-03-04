@@ -53,99 +53,100 @@ class AddressController extends Controller implements AddressControllerInterface
 	/**
 	 * Makes a new address
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function store( \WP_REST_Request $request ): array {
+	public function store( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$params = $this->remap_parameters( $params );
 		$address = $this->address_repository->store( $params );
+		$status;
 		if ( $address ) {
-			return array(
-				'address' => $address,
-				'status'  => 'Successfully registered the address!',
-			);
+			$status = 'Successfully registered the address!';
+		} else {
+			$status = 'Failed to register the address!';
 		}
-		return array(
+		return new \WP_REST_Response( array(
 			'address' => null,
-			'status'  => 'Failed to register the address!',
-		);
+			'status'  => $status,
+		) );
 	}
 
 	/**
 	 * Updates an existing address
 	 * @param WP_REST_Request $request Request data
 	 * @param AddressInterface|null $address Address to update
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function update( \WP_REST_Request $request, AddressInterface $address = null ) {
+	public function update( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+		$status;
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
 			$this->address_repository->update( $address, $params );
-			return array(
-				'status' => 'Successfully updated the address!',
-			);
+			$status = 'Successfully updated the address!';
+		} else {
+			$status = 'Failed to update the address!';
 		}
-		return array(
-			'status' => 'Failed to update the address!',
-		);
+		return new \WP_REST_Response( array(
+			'status' => $status,
+		) );
 	}
 
 	/**
 	 * Verifies an existing address
 	 * @param WP_REST_Request $request Request data
 	 * @param AddressInterface|null $address Address to verify
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function verify( \WP_REST_Request $request, AddressInterface $address = null ) {
+	public function verify( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
 			$this->address_repository->verify( $address, $params );
-			return array(
-				'status' => 'Successfully verified the address!',
-			);
+			$status = 'Successfully verified the address!';
+		} else {
+			$status = 'Failed to verify the address!';
 		}
-		return array(
-			'status' => 'Failed to verify the address!',
-		);
+		return new \WP_REST_Response( array(
+			'status' => $status,
+		) );
 	}
 
 	/**
 	 * Deletes a address
 	 * @param WP_REST_Request $request Request data
 	 * @param AddressInterface|null $address Bound address
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function destroy( \WP_REST_Request $request, AddressInterface $address = null ) {
+	public function destroy( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
 			$this->address_repository->destroy( $address, $params );
-			return array(
-				'status' => 'Successfully deleted the address!',
-			);
+			$status = 'Successfully deleted the address!';
+		} else {
+			$status = 'Failed to delete the address!';
 		}
-		return array(
-			'status' => 'Failed to delete the address!',
-		);
+		return new \WP_REST_Response( array(
+			'status' => $status,
+		) );
 	}
 
 	/**
 	 * Gets a collection of balance
 	 * @param \WP_REST_Request $request Request data
 	 * @param AddressInterface $user Bound address
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function balance_index( \WP_REST_Request $request, AddressInterface $address = null ): ?array {
-		$balance = null;
+	public function balance_index( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+		$balance = array();
 		if ( $address ) {
 			$this->address_repository->load( $address, array( 'balance.meta' ) );
 			if ( $address->get_balance() ) {
 				$balance = $address->get_balance()->to_array();
 			}
 		}
-		return $balance;
+		return new \WP_REST_Response( $balance );
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

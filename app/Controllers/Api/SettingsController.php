@@ -36,48 +36,49 @@ class SettingsController implements SettingsControllerInterface {
 		'token_whitelist' => 'Token Whitelist',
 	);
 
-	public function show_integration( \WP_REST_Request $request ): array {
+	public function show_integration( \WP_REST_Request $request ): \WP_REST_Response {
 		return $this->show( $request, 'integration' );
 	}
 
-	public function show_oauth( \WP_REST_Request $request ): array {
+	public function show_oauth( \WP_REST_Request $request ): \WP_REST_Response {
 		return $this->show( $request, 'oauth' );
 	}
 
-	public function show_tca( \WP_REST_Request $request ): array {
+	public function show_tca( \WP_REST_Request $request ): \WP_REST_Response {
 		return $this->show( $request, 'tca' );
 	}
 
-	public function show_whitelist( \WP_REST_Request $request ): array {
+	public function show_whitelist( \WP_REST_Request $request ): \WP_REST_Response {
 		return $this->show( $request, 'token_whitelist' );
 	}
 
-	public function update_integration( \WP_REST_Request $request ): void {
-		$this->update( $request, 'integration' );
+	public function update_integration( \WP_REST_Request $request ): \WP_REST_Response {
+		return $this->update( $request, 'integration' );
 	}
 
-	public function update_oauth( \WP_REST_Request $request ): void {
-		$this->update( $request, 'oauth' );
+	public function update_oauth( \WP_REST_Request $request ): \WP_REST_Response {
+		return $this->update( $request, 'oauth' );
 	}
 
-	public function update_tca( \WP_REST_Request $request ): void {
-		$this->update( $request, 'tca' );
+	public function update_tca( \WP_REST_Request $request ): \WP_REST_Response {
+		return $this->update( $request, 'tca' );
 	}
 
-	public function update_token_whitelist( \WP_REST_Request $request ): void {
-		$this->update( $request, 'token_whitelist' );
+	public function update_token_whitelist( \WP_REST_Request $request ): \WP_REST_Response {
+		return $this->update( $request, 'token_whitelist' );
 	}
 
-	protected function show( \WP_REST_Request $request, string $type ): array {
-		return $this->settings[ $type ]->to_array(); 
+	protected function show( \WP_REST_Request $request, string $type ): \WP_REST_Response {
+		return new \WP_REST_Response( $this->settings[ $type ]->to_array() ); 
 	}
 
-	protected function update( \WP_REST_Request $request, string $type ): void {
+	protected function update( \WP_REST_Request $request, string $type ): \WP_REST_Response {
 		$params = $request->get_params();
 		if ( $type == 'integration' ) {
 			$params['settings_updated'] = true;
 		}
 		$this->settings[ $type ]->update( $params );
 		$name = $this->names[ $type ];
+		return new \WP_REST_Response();
 	}
 }

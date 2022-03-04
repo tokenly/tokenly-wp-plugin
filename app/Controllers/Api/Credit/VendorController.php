@@ -25,9 +25,9 @@ class VendorController extends Controller implements VendorControllerInterface {
 	/**
 	 * Makes a new debit transaction
 	 * @param \WP_REST_Request $request Request data
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function debit( \WP_REST_Request $request ): ?array {
+	public function debit( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$group = null;
 		if ( isset( $params['group_uuid'] ) ) {
@@ -53,15 +53,15 @@ class VendorController extends Controller implements VendorControllerInterface {
 		if ( $transactions ) {
 			$transactions = $transactions->to_array();
 		}
-		return $transactions;
+		return new \WP_REST_Response( $transactions );
 	}
 
 	/**
 	 * Makes a new credit transaction
 	 * @param \WP_REST_Request $request Request data
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function credit( \WP_REST_Request $request ): ?array {
+	public function credit( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$group = null;
 		if ( isset( $params['group_uuid'] ) ) {
@@ -87,7 +87,7 @@ class VendorController extends Controller implements VendorControllerInterface {
 		if ( $transactions ) {
 			$transactions = $transactions->to_array();
 		}
-		return $transactions;
+		return new \WP_REST_Response( $transactions );
 	}
 
 	protected function get_account_by_username( string $account ): ?string {

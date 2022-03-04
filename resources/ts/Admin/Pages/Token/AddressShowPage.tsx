@@ -75,7 +75,7 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 		setDeleting( true );
 		addressRepository.destroy( id ).then( ( result: any ) => {
 			setDeleting( false );
-			goBack();
+			history.back();
 		} );
 	}
 

@@ -7,6 +7,7 @@ import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/P
 import { TYPES } from '../../Types';
 import Preloader from '../../Components/Preloader';
 import PromiseInfo from '../../Components/Token/PromiseInfo';
+import eventBus from "../../../EventBus";
 import { 
 	Button,
 	Panel,
@@ -20,6 +21,8 @@ interface PromiseShowPageProps {
 	//
 }
 
+declare const window: any;
+
 export default function PromiseShowPage( props: PromiseShowPageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace: string = useInjection( TYPES.Variables.namespace );
@@ -31,8 +34,10 @@ export default function PromiseShowPage( props: PromiseShowPageProps ) {
 	const [ promise, setPromise ] = useState<any>( null );
 	const [ loadingPromise, setLoadingPromise ] = useState<boolean>( false );
 	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
+	const [ deleting, setDeleting ] = useState<boolean>( false );
 
 	useEffect( () => {
+		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
 		setLoadingPromise( true );
 		setLoadingAddress( true );
 		const params = {
@@ -53,7 +58,40 @@ export default function PromiseShowPage( props: PromiseShowPageProps ) {
 				setPromise( promiseFound );
 			} );
 		} );
+		return () => {
+			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
+		}
 	}, [] );
+
+	function onDelete() {
+		eventBus.dispatch( 'confirmModalShow', {
+			key: 'promiseDelete',
+			title: 'Deleting Promise',
+			subtitle: 'Are you sure you want to delete the promise?',
+		} );
+	}
+
+	function deletePromise() {
+		setDeleting( true );
+		promiseRepository.destroy( id ).then( ( result: any ) => {
+			setDeleting( false );
+			history.back();
+		} );
+	}
+
+	function onConfirmModalChoice( payload: any ) {
+		switch( payload.key ) {
+			case 'promiseDelete':
+				if ( payload.choice == 'accept' ){
+					deletePromise();
+				}
+				break;
+		}
+	}
+
+	function goBack() {
+		window.location = `${adminPageUrl}${namespace}-token-promise-index`;
+	}
 	
 	return (
 		<Page title="Promise Display">
@@ -74,13 +112,20 @@ export default function PromiseShowPage( props: PromiseShowPageProps ) {
 			<Panel>
 				<PanelBody>
 					<PanelRow>
-						<Flex>
+						<Flex justify="flex-start">
 							<Button
 								isSecondary
 								isLarge
 								href={ `${adminPageUrl}${namespace}-token-promise-edit&promise=${ id }` }
 							>
-								Manage Promise
+								Edit Promise
+							</Button>
+							<Button
+								isDestructive
+								onClick={ onDelete }
+								isLarge
+							>
+								Delete Promise
 							</Button>
 						</Flex>
 					</PanelRow>

@@ -27,6 +27,7 @@ export default function GroupShowActions( props: GroupShowActionsProps ) {
 			<Button
 				isSecondary
 				isLarge
+				disabled
 				href={ `${ adminPageUrl }${ namespace }-credit-group-account-index&id=${ props.group }` }
 			>
 				View Accounts
@@ -36,7 +37,7 @@ export default function GroupShowActions( props: GroupShowActionsProps ) {
 				isLarge
 				href={ `${adminPageUrl}${namespace}-credit-group-edit&id=${ props.group }` }
 			>
-				Manage Group
+				Edit Group
 			</Button>
 		</Flex>
 	);

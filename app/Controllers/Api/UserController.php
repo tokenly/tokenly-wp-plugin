@@ -15,6 +15,7 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface as TokenCategoryTermRepositoryInterface;
 
 class UserController extends Controller implements UserControllerInterface {
 	protected string $namespace;
@@ -22,19 +23,22 @@ class UserController extends Controller implements UserControllerInterface {
 	protected OauthUserRepositoryInterface $oauth_user_repository;
 	protected SourceRepositoryInterface $source_repository;
 	protected BalanceRepositoryInterface $balance_repository;
+	protected TokenCategoryTermRepositoryInterface $token_category_term_repository;
 
 	public function __construct(
 		string $namespace,
 		UserRepositoryInterface $user_repository,
 		OauthUserRepositoryInterface $oauth_user_repository,
 		SourceRepositoryInterface $source_repository,
-		BalanceRepositoryInterface $balance_repository
+		BalanceRepositoryInterface $balance_repository,
+		TokenCategoryTermRepositoryInterface $token_category_term_repository
 	) {
 		$this->namespace = $namespace;
 		$this->user_repository = $user_repository;
 		$this->source_repository = $source_repository;
 		$this->oauth_user_repository = $oauth_user_repository;
 		$this->balance_repository = $balance_repository;
+		$this->token_category_term_repository = $token_category_term_repository;
 	}
 	
 	/**
@@ -73,12 +77,9 @@ class UserController extends Controller implements UserControllerInterface {
 	public function credit_balance_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		$account = array();
 		if ( $user ) {
-			$this->user_repository->load( $user, array( 'oauth_user.credit_account' ) );
-			if (
-				$user->get_oauth_user() &&
-				$user->get_oauth_user()->get_credit_account()
-			) {
-				$account = $user->get_oauth_user()->get_credit_account()->to_array();
+			$account = $this->user_repository->credit_balance_index( $user );
+			if ( $account ) {
+				$account = $account->to_array();
 			}
 		}
 		return new \WP_REST_Response( $account );
@@ -92,15 +93,9 @@ class UserController extends Controller implements UserControllerInterface {
 	 */
 	public function credit_balance_show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
 		$balance = 0;
+		$group = $request->get_param( 'group' );
 		if ( $user ) {
-			$this->user_repository->load( $user, array( 'oauth_user' ) );
-			if ( $user->get_oauth_user() ) {
-				$group = $request->get_param( 'group' );
-				$account = $this->oauth_user_repository->credit_balance_show( $user->get_oauth_user(), $group );
-				if ( $account ) {
-					$balance = $account->get_balance();
-				}
-			}
+			$balance = $this->user_repository->credit_balance_show( $user, $group );
 		}
 		return new \WP_REST_Response( $balance );
 	}
@@ -112,7 +107,15 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @return \WP_REST_Response
 	 */
 	public function token_balance_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
-		$balance = $this->user_repository->token_balance_index( $user );
+		$params = array(
+			'with' => array( 'meta' ),
+		);
+		$balance = $this->user_repository->token_balance_index( $user, $params );
+		foreach ( $balance as &$item ) {
+			if ( $item->get_meta() ) {
+				$this->token_category_term_repository->apply_meta_fallback_single( $item->get_meta() );
+			}
+		}
 		$balance = $balance->to_array();
 		return new \WP_REST_Response( $balance );
 	}
@@ -127,9 +130,7 @@ class UserController extends Controller implements UserControllerInterface {
 		$asset = $request->get_param( 'asset' );
 		$balance;
 		if ( $asset && $user ) {
-			$balance = $this->user_repository->token_balance_show( $user, array(
-				'asset' => $asset,
-			) );
+			$balance = $this->user_repository->token_balance_show( $user, $asset );
 			$balance = $balance->to_array();
 		} else {
 			$balance = null;

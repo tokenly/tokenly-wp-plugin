@@ -8,7 +8,9 @@ use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface;
 use Tokenly\Wp\Collections\Token\CategoryTermCollection;
 use Tokenly\Wp\Models\Token\CategoryTerm;
 use Tokenly\Wp\Interfaces\Collections\Token\CategoryTermCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\CategoryTermInterface;
+use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\TermMetaRepositoryInterface;
 
 /**
@@ -25,6 +27,24 @@ class CategoryTermRepository extends TermRepository implements CategoryTermRepos
 	) {
 		parent::__construct( $term_meta_repository );
 		$this->namespace = $namespace;
+	}
+
+	public function apply_meta_fallback_collection( MetaCollectionInterface $meta ): MetaCollectionInterface {
+		foreach ( ( array ) $meta as &$item ) {
+			$terms = $this->index( array(
+				'id' => $item->ID,
+			) );
+			$meta->append_fallback( "{$this->namespace}_token_category", $terms );
+		}
+		return $meta;
+	}
+
+	public function apply_meta_fallback_single( MetaInterface $meta ): MetaInterface {
+		$terms = $this->index( array(
+			'id' => $meta->ID,
+		) );
+		$meta->append_fallback( "{$this->namespace}_token_category", $terms );
+		return $meta;
 	}
 
 	/**

@@ -7,8 +7,6 @@ import PromiseLink from '../../Components/Token/PromiseLink';
 import PromiseEditForm from '../../Components/Token/PromiseEditForm';
 import Preloader from '../../Components/Preloader';
 import ResourceEditActions from '../../Components/ResourceEditActions';
-import { PromiseData, PromiseUpdateParams } from '../../../Interfaces';
-import eventBus from "../../../EventBus";
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 
 import { 
@@ -32,7 +30,6 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 	const urlParams = new URLSearchParams( window.location.search );
 
 	const [ saving, setSaving ] = useState<boolean>( false );
-	const [ deleting, setDeleting ] = useState<boolean>( false );
 	const [ loading, setLoading ] = useState<boolean>( false );
 	const [ promise, setPromise ] = useState<any>( null );
 	const [ id, setId ] = useState<number>( parseInt( urlParams.get( 'promise' ) ) );
@@ -51,32 +48,6 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 		});
 	}
 
-	function onDelete() {
-		eventBus.dispatch( 'confirmModalShow', {
-			key: 'promiseDelete',
-			title: 'Deleting Promise',
-			subtitle: 'Are you sure you want to delete the promise?',
-		} );
-	}
-
-	function deletePromise() {
-		setDeleting( true );
-		promiseRepository.destroy( id ).then( ( result: any ) => {
-			setDeleting( false );
-			goBack();
-		} );
-	}
-
-	function onConfirmModalChoice( payload: any ) {
-		switch( payload.key ) {
-			case 'promiseDelete':
-				if ( payload.choice == 'accept' ){
-					deletePromise();
-				}
-				break;
-		}
-	}
-
 	function onCancel() {
 		goBack();
 	}
@@ -86,7 +57,7 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 	}
 
 	useEffect( () => {
-		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
+
 		setLoading( true );
 		promiseRepository.show( id ).then( ( promiseFound: any ) => {
 			const newEditData = {
@@ -101,9 +72,6 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 			setPromise( promiseFound );
 			setEditData( newEditData );
 		} );
-		return () => {
-			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
-		}
 	}, [] );
 	
 	return (
@@ -132,8 +100,7 @@ export default function PromiseEditPage( props: PromiseEditPageProps ) {
 							<ResourceEditActions
 								name="Promise"
 								saving={ saving }
-								deleting={ deleting }
-								onDelete={ onDelete }
+								noDelete
 								onCancel={ onCancel }
 							/>
 						</PanelRow>

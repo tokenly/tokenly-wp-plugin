@@ -25,11 +25,11 @@ class BalanceController extends Controller implements BalanceControllerInterface
 	 * Gets a collection of balance
 	 * @param \WP_REST_Request $request Request data
 	 * @param BalanceCollectionInterface $balance Bound balance
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, BalanceCollectionInterface $balance ): array {
+	public function index( \WP_REST_Request $request, BalanceCollectionInterface $balance ): \WP_REST_Response {
 		$balance = $balance->to_array();
-		return $balance;
+		return new \WP_REST_Response( $balance );
 	}
 
 	/**

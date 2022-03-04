@@ -22,15 +22,15 @@ class VendorController extends Controller implements VendorControllerInterface {
 	/**
 	 * Makes a new promise
 	 * @param \WP_REST_Request $request Request data
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function promise( \WP_REST_Request $request ): ?array {
+	public function promise( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$promise = $this->vendor_service->promise( $params );
 		if ( $promise ) {
 			$promise = $promise->to_array();
 		}
-		return $promise;
+		return new \WP_REST_Response( $promise );
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

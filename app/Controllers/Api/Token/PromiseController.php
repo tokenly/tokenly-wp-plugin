@@ -30,76 +30,93 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	 * Gets a collection of promises
 	 * @param \WP_REST_Request $request Request data
 	 * @param PromiseCollectionInterface $promises Bound promises
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, PromiseCollectionInterface $promises ): array {
+	public function index( \WP_REST_Request $request, PromiseCollectionInterface $promises ): \WP_REST_Response {
 		$promises = $this->promise_repository->load( $promises, array( 'promise_meta' ) );
 		$users = $promises->get_users();
 		$users = $this->user_repository->index( array(
 			'uuids' => $users,
 		) );
 		$promises = $promises->embed_users( $users );
-		return array(
+		return new \WP_REST_Response( array(
 			'promises' => $promises,
-		);
+		) );
 	}
 
 	/**
 	 * Gets a single promise
 	 * @param \WP_REST_Request $request Request data
 	 * @param PromiseInterface|null $promise Bound model
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, PromiseInterface $promise = null ): ?array {
+	public function show( \WP_REST_Request $request, ?PromiseInterface $promise = null ): \WP_REST_Response {
 		if ( $promise ) {
+			$this->promise_repository->load( $promise, array( 'promise_meta' ) );
 			$promise = $promise->to_array();
+			if ( !isset( $promise['promise_meta'] ) ) {
+				return $promise;
+			}
+			$meta = $promise['promise_meta'];
+			$destination = $meta['destination_user_id'];
+			$source = $meta['source_user_id'];
+			$users = $this->user_repository->index( array(
+				'ids' => array( $source, $destination ),
+			) );
+			$users = clone $users;
+			$users->key_by_field( 'uuid' );
+			$users = $users->to_array();
+			$meta['destination_user'] = $users[ $destination ] ?? null;
+			$meta['source_user'] = $users[ $source ] ?? null;
+			$promise['promise_meta'] = $meta;
 		}
-		return $promise;
+		return new \WP_REST_Response( $promise );
 	}
 
 	/**
 	 * Makes a new promise
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function store( \WP_REST_Request $request ): ?array {
+	public function store( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$promise = $this->promise_repository->store( $params );
 		if ( $promise ) {
-			return array(
-				'promise' => $promise,
-				'status'  => 'Successfully created a promise!',
-			);
+			$status = 'Successfully created a promise!';
+		} else {
+			$status = 'Failed to create a promise!';
 		}
-		return array(
-			'promise' => null,
-			'status'  => 'Failed to create a promise!',
-		);
+		return new \WP_REST_Response( array(
+			'promise' => $promise,
+			'status'  => $status,
+		) );
 	}
 
 	/**
 	 * Updates an existing promise
 	 * @param WP_REST_Request $request Request data
 	 * @param PromiseInterface|null $promise Promise to update
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function update( \WP_REST_Request $request, PromiseInterface $promise = null ): void {
+	public function update( \WP_REST_Request $request, PromiseInterface $promise = null ): \WP_REST_Response {
 		if ( $promise ) {
 			$params = $request->get_params();
 			$this->promise_repository->update( $promise, $params );
 		}
+		return new \WP_REST_Response( $promise );
 	}
 
 	/**
 	 * Deletes a promise
 	 * @param WP_REST_Request $request Request data
 	 * @param PromiseInterface|null $promise Bound promise
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function destroy( \WP_REST_Request $request, PromiseInterface $promise = null ): void {
+	public function destroy( \WP_REST_Request $request, PromiseInterface $promise = null ): \WP_REST_Response {
 		if ( $promise ) {
 			$this->promise_repository->destroy( $promise );
 		}
+		return new \WP_REST_Response();
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

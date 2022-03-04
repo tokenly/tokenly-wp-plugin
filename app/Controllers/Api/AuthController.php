@@ -24,17 +24,16 @@ class AuthController implements AuthControllerInterface {
 	/**
 	 * Gets the OAuth connection status
 	 * @param \WP_REST_Request $request Request data
-	 * @return array
+	 * @return \WP_REST_Response
 	*/
-	public function show( \WP_REST_Request $request ): array {
+	public function show( \WP_REST_Request $request ): \WP_REST_Response {
 		if ( !isset( $this->current_user ) || $this->current_user instanceof UserInterface === false ) {
-			return array(
-				'status' => false,
-			);
+			$status = false;
+		} else {
+			$status = $this->current_user->get_can_connect();
 		}
-		$status = $this->current_user->get_can_connect();
-		return array(
-			'status' => $connected,
-		);
+		return new \WP_REST_Response( array(
+			'status' => $status,
+		) );
 	}
 }

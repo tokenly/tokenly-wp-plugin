@@ -38,7 +38,9 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 		}
 			<Button
 				isTertiary
-				onClick={ props.onCancel }
+				onClick={ () => {
+					history.back();
+				} }
 			>
 				Cancel
 			</Button>

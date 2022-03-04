@@ -28,9 +28,9 @@ class TransactionController extends Controller implements TransactionControllerI
 	 * Gets a collection of transactions
 	 * @param \WP_REST_Request $request Request data
 	 * @param TransactionCollectionInterface $transactions Bound transactions
-	 * @return array
+	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, TransactionCollectionInterface $transactions ): array {
+	public function index( \WP_REST_Request $request, TransactionCollectionInterface $transactions ): \WP_REST_Response {
 		$users = clone $transactions;
 		$users->extract( 'account_uuid' );
 		$users = $this->user_repository->index( array(
@@ -45,17 +45,18 @@ class TransactionController extends Controller implements TransactionControllerI
 			$user = $users[ $uuid ] ?? null;
 			$transaction['user'] = $user;
 		}
-		return $transactions;
+		return new \WP_REST_Response( $transactions );
 	}
 
 	/**
 	 * Makes a new transaction
 	 * @param \WP_REST_Request $request Request data
-	 * @return array|null
+	 * @return \WP_REST_Response
 	 */
-	public function store( \WP_REST_Request $request ): ?array {
+	public function store( \WP_REST_Request $request ): \WP_REST_Response {
 		$params = $request->get_params();
 		$this->transaction_repository->store( $params );
+		return new \WP_REST_Response();
 	}
 
 	protected function remap_parameters( array $params = array() ): array {

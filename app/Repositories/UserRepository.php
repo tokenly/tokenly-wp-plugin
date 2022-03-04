@@ -10,14 +10,16 @@ use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
 use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface as CreditAccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface;
+use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface as TokenBalanceInterface;
+use Tokenly\Wp\Interfaces\Models\Credit\AccountInterface as CreditAccountInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\AccountRepositoryInterface as CreditAccountRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
@@ -29,9 +31,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	protected UserMetaRepositoryInterface $user_meta_repository;
 	protected OauthUserRepositoryInterface $oauth_user_repository;
 	protected BalanceRepositoryInterface $balance_repository;
-	protected CategoryTermRepositoryInterface $category_term_repository;
 	protected SourceRepositoryInterface $source_repository;
 	protected AddressRepositoryInterface $address_repository;
+	protected CreditAccountRepositoryInterface $credit_account_repository;
 	protected string $namespace;
 	protected array $meta;
 	
@@ -40,9 +42,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		UserMetaRepositoryInterface $user_meta_repository,
 		OauthUserRepositoryInterface $oauth_user_repository,
 		BalanceRepositoryInterface $balance_repository,
-		CategoryTermRepositoryInterface $category_term_repository,
 		SourceRepositoryInterface $source_repository,
 		AddressRepositoryInterface $address_repository,
+		CreditAccountRepositoryInterface $credit_account_repository,
 		string $namespace
 	) {
 		$this->namespace = $namespace;
@@ -51,9 +53,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		$this->oauth_user_repository = $oauth_user_repository;
 		$this->meta = $this->get_meta_fields();
 		$this->balance_repository = $balance_repository;
-		$this->category_term_repository = $category_term_repository;
 		$this->source_repository = $source_repository;
 		$this->address_repository = $address_repository;
+		$this->credit_account_repository = $credit_account_repository;
 	}
 
 	/**
@@ -150,36 +152,48 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		) );
 	}
 
-	public function credit_balance_show( ?UserInterface $user = null, array $params ): float {
-		$balance;
-		if ( $user ) {
-			$this->user_repository->load( $user, array( 'oauth_user' ) );
-			if ( $user->get_oauth_user() ) {
-				$group = $request->get_param( 'group' );
-				$account = $this->oauth_user_repository->credit_balance_show( $user->get_oauth_user(), $group );
-				if ( $account ) {
-					$balance = $account->get_balance();
-				}
-			}
+	public function credit_balance_index( UserInterface $user ): ?CreditAccountCollectionInterface {
+		$this->load( $user, array( 'oauth_user.credit_account' ) );
+		$account;
+		if (
+			$user->get_oauth_user() &&
+			$user->get_oauth_user()->get_credit_account()
+		) {
+			$account = $user->get_oauth_user()->get_credit_account();
+		} else {
+			$account = null;
 		}
+		return $account;
 	}
 
-	public function token_balance_index( UserInterface $user ): ?BalanceCollectionInterface {
-		$categories = $this->category_term_repository->index();
+	/**
+	 * Gets a single credit balance
+	 * @param UserInterface $user Target User
+	 * @param string $group_id Target group
+	 * @return CreditAccountInterface|null
+	 */
+	public function credit_balance_show( UserInterface $user, string $group_id ): ?CreditAccountInterface {
+		$account = $this->credit_account_repository->show( array(
+			'group_uuid'   => $group_id,
+			'account_uuid' => $user->get_uuid(),
+		) );
+		return $account;
+	}
+
+	public function token_balance_index( UserInterface $user, array $params = array() ): ?BalanceCollectionInterface {
 		$balance = $this->balance_repository->index( array(
 			'oauth_token' => $user->get_oauth_token(),
 			'with'        => array( 'meta' ),
 		) );
-		foreach ( (array) $balance as $item ) {
-			if ( $item->get_meta() ) {
-				$item->get_meta()->append_fallback( "{$this->namespace}_token_category", $categories );
-			}
-		}
 		return $balance;
 	}
 
-	public function token_balance_show( UserInterface $user, array $params ): ?BalanceInterface {
-		$asset = $params['asset'];
+	/**
+	 * Gets the balance for the specified token
+	 * @param string $asset Asset to get balance for
+	 * @return TokenBalanceInterface|null
+	 */
+	public function token_balance_show( UserInterface $user, string $asset ): ?TokenBalanceInterface {
 		$balance = $this->token_balance_index( $user );
 		$balance = clone $balance;
 		$balance->key_by_asset_name();
