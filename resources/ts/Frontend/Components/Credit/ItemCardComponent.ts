@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import Component from './../Component';
+import Component from '../Component';
 import ItemCardComponentInterface from '../../Interfaces/Components/Token/ItemCardComponentInterface';
 
 @injectable()

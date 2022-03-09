@@ -1,8 +1,8 @@
 import * as React from 'react';
-import UserSearchField from './../UserSearchField';
-import AssetSearchField from './../AssetSearchField';
-import SourceSelectField from './../Token/SourceSelectField';
-import QuantityField from './../Token/QuantityField';
+import UserSearchField from '../UserSearchField';
+import AssetSearchField from '../AssetSearchField';
+import SourceSelectField from '../Token/SourceSelectField';
+import QuantityField from '../Token/QuantityField';
 
 import { 
 	TextControl,

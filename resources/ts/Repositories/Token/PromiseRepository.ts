@@ -2,14 +2,15 @@ import PromiseRepositoryInterface from '../../Interfaces/Repositories/Token/Prom
 
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
-
 import {
 	ApiServiceInterface,
 	TokenPromiseIndexParamsInterface,
 	TokenPromiseShowParamsInterface,
 	TokenPromiseStoreParamsInterface,
 	TokenPromiseUpdateParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
+import TokenPromiseInterface from '../../Interfaces/Models/Token/PromiseInterface';
+import TokenPromise from '../../Models/Token/Promise';
 
 @injectable()
 export default class PromiseRepository implements PromiseRepositoryInterface {
@@ -21,9 +22,12 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		this.ApiService = ApiService;
 	}
 
-	public index( params?: TokenPromiseIndexParamsInterface ): Promise<Array<any>> {
+	public index( params?: TokenPromiseIndexParamsInterface ): Promise<Array<TokenPromiseInterface>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.tokenPromiseIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenPromiseIndex( params ).then( ( result: any ) => {
+				result = result.map( ( promise: any ) => {
+					return ( new TokenPromise() ).fromJson( promise );
+				} );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -31,9 +35,10 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 		} );
 	}
 	
-	public show( id: number, params?: TokenPromiseShowParamsInterface ): Promise<Array<any>> {
+	public show( id: number, params?: TokenPromiseShowParamsInterface ): Promise<TokenPromiseInterface> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.tokenPromiseShow( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenPromiseShow( id, params ).then( ( result: any ) => {
+				result = ( new TokenPromise() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

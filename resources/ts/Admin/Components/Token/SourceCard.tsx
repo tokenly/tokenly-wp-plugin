@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SourceItem } from '../../../Interfaces';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
-import CardActions from './../CardActions';
+import CardActions from '../CardActions';
 
 import { 
 	Button,

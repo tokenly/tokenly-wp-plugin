@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import ConfirmModal from '../../Admin/Components/App/ConfirmModal';
-import Snackbar from './../../Admin/Components/App/Snackbar';
+import Snackbar from '../../Admin/Components/App/Snackbar';
 import { ConfirmModalData } from '../../Interfaces';
 import eventBus from "../../EventBus";
 import { TYPES } from '../../Types';

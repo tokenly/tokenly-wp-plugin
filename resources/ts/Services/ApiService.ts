@@ -36,7 +36,9 @@ import {
 	UserTokenAddressShowParamsInterface,
 	UserTokenBalanceIndexParamsInterface,
 	SettingsUpdateParamsInterface
-} from './../Interfaces/Services/ApiServiceInterface';
+} from '../Interfaces/Services/ApiServiceInterface';
+
+import AddressInterface from '../Interfaces/Models/Token/AddressInterface';
 
 @injectable()
 export default class ApiService implements ApiServiceInterface {

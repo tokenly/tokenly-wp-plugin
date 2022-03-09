@@ -4,7 +4,7 @@ import { TYPES } from '../../Types';
 import AddressLink from './AddressLink';
 import AddressInfo from './AddressInfo';
 import AddressStatus from './AddressStatus';
-import CardActions from './../CardActions';
+import CardActions from '../CardActions';
 
 import { 
 	Card,

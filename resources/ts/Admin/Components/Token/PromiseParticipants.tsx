@@ -1,5 +1,5 @@
 import * as React from 'react';
-import UserLink from './../UserLink';
+import UserLink from '../UserLink';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
 

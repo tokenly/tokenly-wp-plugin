@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as dayjs from 'dayjs'
-import UserLink from './../UserLink';
+import UserLink from '../UserLink';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
 

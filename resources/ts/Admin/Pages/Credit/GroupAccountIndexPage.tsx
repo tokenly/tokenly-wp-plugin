@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
-import Page from './../Page';
+import Page from '../Page';
 import AccountList from '../../Components/Credit/AccountList';
 import Preloader from '../../Components/Preloader';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';

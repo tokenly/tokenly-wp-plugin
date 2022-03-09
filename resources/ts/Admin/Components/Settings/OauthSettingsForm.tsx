@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { OauthSettings } from '../../../Interfaces';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
 import FormTable from '../FormTable';
+import OauthSettings from '../../../Models/Settings/OauthSettings';
+import OauthSettingsInterface from '../../../Interfaces/Models/Settings/OauthSettingsInterface';
 
 import { 
 	TextControl,
@@ -10,7 +11,7 @@ import {
 } from '@wordpress/components';
 
 interface OauthSettingsFormProps {
-	settings: OauthSettings;
+	settings: OauthSettingsInterface;
 	onChange: any;
 }
 
@@ -19,26 +20,26 @@ export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
 	const namespace = useInjection( TYPES.Variables.namespace );
 
 	function onRedirectUrlFieldChange( value: any ) {
-		const newState = Object.assign( {}, props.settings );
-		newState.success_url = value;
+		const newState = Object.assign( new OauthSettings(), props.settings );
+		newState.successUrl = value;
 		props.onChange( newState );
 	}
 
 	function onSsoFieldChange( value: any ) {
-		const newState = Object.assign( {}, props.settings );
-		newState.use_single_sign_on = value;
+		const newState = Object.assign( new OauthSettings(), props.settings );
+		newState.useSingleSignOn = value;
 		props.onChange( newState );
 	}
 
 	function onAllowNoEmailFieldChange( value: any ) {
-		const newState = Object.assign( {}, props.settings );
-		newState.allow_no_email = value;
+		const newState = Object.assign( new OauthSettings(), props.settings );
+		newState.allowNoEmail = value;
 		props.onChange( newState );
 	}
 
 	function onAllowUnconfirmedEmailFieldChange( value: any ) {
-		const newState = Object.assign( {}, props.settings );
-		newState.allow_unconfirmed_email = value;
+		const newState = Object.assign( new OauthSettings(), props.settings );
+		newState.allowUnconfirmedEmail = value;
 		props.onChange( newState );
 	}
 
@@ -50,7 +51,7 @@ export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
 					label: 'Redirect URL',
 					component:
 						<TextControl
-							value={ props.settings.success_url }
+							value={ props.settings.successUrl }
 							help="Default redirect URL on success for the login shortcode and the main login form."
 							placeholder={ `/${ namespace }/user/me/` }
 							onChange={ onRedirectUrlFieldChange }
@@ -62,7 +63,7 @@ export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
 						<ToggleControl
 							label="Use Single Sign-On (SSO)"
 							help={ `Allows the existing users to login using their ${brand} account.` }
-							checked={ props.settings.use_single_sign_on }
+							checked={ props.settings.useSingleSignOn }
 							onChange={ onSsoFieldChange }
 						/>
 				},
@@ -72,7 +73,7 @@ export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
 						<ToggleControl
 							label="Allow Accounts Without Email"
 							help={ `Allows connecting ${brand} accounts which have no email accounts associated.` }
-							checked={ props.settings.allow_no_email }
+							checked={ props.settings.allowNoEmail }
 							onChange={ onAllowNoEmailFieldChange }
 						/>
 				},
@@ -82,7 +83,7 @@ export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
 						<ToggleControl
 							label="Allow Accounts Without a Confirmed Email"
 							help={ `Allows connecting ${brand} accounts which have an unconfirmed email account associated.` }
-							checked={ props.settings.allow_unconfirmed_email }
+							checked={ props.settings.allowUnconfirmedEmail }
 							onChange={ onAllowUnconfirmedEmailFieldChange }
 						/>
 				},

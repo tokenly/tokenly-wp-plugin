@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import Page from './../Page';
+import Page from '../Page';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import SourceEditForm from '../../Components/Token/SourceEditForm';
 import { TYPES } from '../../Types';

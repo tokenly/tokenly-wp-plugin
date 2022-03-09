@@ -1,5 +1,5 @@
 import * as React from 'react';
-import UserSearchField from './../UserSearchField';
+import UserSearchField from '../UserSearchField';
 import GroupSelectField from './GroupSelectField';
 import TransactionTypeField from './TransactionTypeField';
 

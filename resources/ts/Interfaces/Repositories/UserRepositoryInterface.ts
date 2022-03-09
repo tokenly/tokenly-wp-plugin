@@ -4,7 +4,7 @@ import {
 	UserCreditBalanceIndexParamsInterface,
 	UserTokenBalanceIndexParamsInterface,
 	UserTokenAddressIndexParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
 
 export default interface UserRepositoryInterface {
 	index( params: UserIndexParamsInterface ): Promise<any>;

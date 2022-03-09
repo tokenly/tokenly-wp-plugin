@@ -1,5 +1,7 @@
 import * as React from 'react';
 import FormTable from '../FormTable';
+import TcaSettings from '../../../Models/Settings/TcaSettings';
+import TcaSettingsInterface from '../../../Interfaces/Models/Settings/TcaSettingsInterface';
 
 import { 
 	Flex,
@@ -8,7 +10,7 @@ import {
 } from '@wordpress/components';
 
 interface TcaSettingsFormProps {
-	settings: any;
+	settings: TcaSettingsInterface;
 	data: any;
 	onChange: any;
 }
@@ -20,8 +22,8 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 
 	function isPostTypeChecked( key: string ) {
 		let checked = false;
-		if ( props.settings?.post_types && props.settings?.post_types[ key ] ) {
-			checked = props.settings.post_types[ key ]
+		if ( props.settings?.postTypes && props.settings?.postTypes[ key ] ) {
+			checked = props.settings.postTypes[ key ]
 		}
 		return checked;
 	}
@@ -35,14 +37,14 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 	}
 
 	function onFilterMenuItemsFieldChange( value: any ) {
-		let settings = Object.assign( {}, props.settings );
-		settings.filter_menu_items = value;
+		let settings = Object.assign( new TcaSettings(), props.settings );
+		settings.filterMenuItems = value;
 		onChange( settings );
 	}
  
 	function onFilterPostResultsFieldChange( value: any ) {
-		let settings = Object.assign( {}, props.settings );
-		settings.filter_post_results = value;
+		let settings = Object.assign( new TcaSettings(), props.settings );
+		settings.filterPostResults = value;
 		onChange( settings );
 	}
 
@@ -55,14 +57,14 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 					label={ label }
 					checked={ isPostTypeChecked( key ) }
 					onChange={ ( value: any ) => {
-						let settings = Object.assign( {}, props.settings );
-						settings.post_types[ key ] = value;
+						let settings = Object.assign( new TcaSettings(), props.settings );
+						settings.postTypes[ key ] = value;
 						onChange( settings );
 					} }
 				/>
 			);
 			postTypes.push( item );
-		});
+		} );
 	}
 	const taxonomies: any = [];
 	if ( props.data.taxonomies ) {
@@ -73,7 +75,7 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 					label={ label }
 					checked={ isTaxonomyChecked( key ) }
 					onChange={ ( value: any ) => {
-						let settings = Object.assign( {}, props.settings );
+						let settings = Object.assign( new TcaSettings(), props.settings );
 						settings.taxonomies[ key ] = value;
 						onChange( settings );
 					} }
@@ -100,7 +102,7 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 								<ToggleControl
 									label="Filter Menu Items"
 									help="Filters the menus made via Customizer. Note that the custom / external links will not be tested."
-									checked={ props.settings.filter_menu_items }
+									checked={ props.settings.filterMenuItems }
 									onChange={ onFilterMenuItemsFieldChange }
 								/>
 						},
@@ -110,7 +112,7 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 								<ToggleControl
 									label="Filter Post Results"
 									help="Filters the post listings which are not controlable by the menu editor, like recent post list."
-									checked={ props.settings.filter_post_results }
+									checked={ props.settings.filterPostResults }
 									onChange={ onFilterPostResultsFieldChange }
 								/>
 						},
@@ -131,7 +133,7 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 										direction="column"
 										style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
 									>
-										{ postTypes.length > 0 ? postTypes : <div style={{opacity: 0.6}}>No post types found</div>}
+										{ postTypes.length > 0 ? postTypes : <div style={ { opacity: 0.6 } }>No post types found</div>}
 									</Flex>
 								</div>
 						},
@@ -145,7 +147,7 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 										direction="column"
 										style={ { flex: '1', maxWidth: '468px', marginTop: '12px' } }
 									>
-										{ taxonomies.length > 0 ? taxonomies : <div style={{opacity: 0.6}}>No taxonomies found</div>}
+										{ taxonomies.length > 0 ? taxonomies : <div style={ { opacity: 0.6 } }>No taxonomies found</div>}
 									</Flex>
 								</div>
 						},

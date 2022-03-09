@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import Page from './../Page';
+import Page from '../Page';
 import { WhitelistData, WhitelistItem } from '../../../Interfaces';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import ResourceEditActions from '../../Components/ResourceEditActions';

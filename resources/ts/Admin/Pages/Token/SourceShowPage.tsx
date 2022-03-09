@@ -4,7 +4,7 @@ import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import Page from './../Page';
+import Page from '../Page';
 import Preloader from '../../Components/Preloader';
 import SourceInfo from '../../Components/Token/SourceInfo';
 import eventBus from "../../../EventBus";
@@ -64,10 +64,6 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 		}
 	}
 
-	function goBack(): void {
-		window.location = `${adminPageUrl}${namespace}-token-source-index`;
-	}
-
 	function deleteSource(): void {
 		setDeleting( true );
 		sourceRepository.destroy( id ).then( ( result: any ) => {
@@ -86,7 +82,7 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 			return sourceFound;
 		} )
 		.then( ( sourceFound: any ) => {
-			addressRepository.show( sourceFound.address_id ).then( ( addressFound: any ) => {
+			addressRepository.show( id ).then( ( addressFound: any ) => {
 				sourceFound.address = addressFound;
 				setSource( sourceFound );
 				setLoadingAddress( false );

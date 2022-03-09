@@ -1,7 +1,7 @@
 import * as React from 'react';
-import MediaPicker from './../MediaPicker';
-import MediaRepeater from './../MediaRepeater';
-import FormTable from './../FormTable';
+import MediaPicker from '../MediaPicker';
+import MediaRepeater from '../MediaRepeater';
+import FormTable from '../FormTable';
 
 import { 
 	Flex,

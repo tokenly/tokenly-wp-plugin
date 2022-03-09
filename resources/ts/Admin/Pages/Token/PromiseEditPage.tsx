@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
-import Page from './../Page';
+import Page from '../Page';
 import PromiseLink from '../../Components/Token/PromiseLink';
 import PromiseEditForm from '../../Components/Token/PromiseEditForm';
 import Preloader from '../../Components/Preloader';

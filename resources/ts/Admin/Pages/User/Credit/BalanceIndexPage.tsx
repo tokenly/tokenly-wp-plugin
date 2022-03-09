@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import Page from './../../Page';
+import Page from '../../Page';
 import Preloader from '../../../Components/Preloader';
 import BalanceList from '../../../Components/Credit/BalanceList';
 import UserRepositoryInterface from '../../../../Interfaces/Repositories/UserRepositoryInterface';

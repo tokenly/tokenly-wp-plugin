@@ -1,4 +1,4 @@
-import Component from './../Component';
+import Component from '../Component';
 import ItemCardComponentInterface from '../../Interfaces/Components/Token/ItemCardComponentInterface';
 
 import { injectable } from 'inversify';

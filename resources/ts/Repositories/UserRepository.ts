@@ -1,8 +1,7 @@
-import UserRepositoryInterface from './../Interfaces/Repositories/UserRepositoryInterface';
+import UserRepositoryInterface from '../Interfaces/Repositories/UserRepositoryInterface';
 
 import { injectable, inject } from 'inversify';
-import { TYPES } from './../Types';
-
+import { TYPES } from '../Types';
 import {
 	ApiServiceInterface,
 	UserIndexParamsInterface,
@@ -10,7 +9,9 @@ import {
 	UserCreditBalanceIndexParamsInterface,
 	UserTokenBalanceIndexParamsInterface,
 	UserTokenAddressIndexParamsInterface,
-} from './../Interfaces/Services/ApiServiceInterface';
+} from '../Interfaces/Services/ApiServiceInterface';
+import UserInterface from '../Interfaces/Models/UserInterface';
+import User from '../Models/User';
 
 @injectable()
 export default class UserRepository implements UserRepositoryInterface {
@@ -22,9 +23,12 @@ export default class UserRepository implements UserRepositoryInterface {
 		this.ApiService = ApiService;
 	}
 	
-	public index( params?: UserIndexParamsInterface ): Promise<any> {
+	public index( params?: UserIndexParamsInterface ): Promise<Array<UserInterface>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.userIndex( params ).then( result => {
+			this.ApiService.userIndex( params ).then( ( result: any ) => {
+				result = result.map( ( user: any ) => {
+					return ( new User() ).fromJson( user );
+				} )
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -32,9 +36,10 @@ export default class UserRepository implements UserRepositoryInterface {
 		} );
 	}
 
-	public show( id: string, params?: UserShowParamsInterface ): Promise<any> {
+	public show( id: string, params?: UserShowParamsInterface ): Promise<UserInterface> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.userShow( id, params ).then( result => {
+			this.ApiService.userShow( id, params ).then( ( result: any ) => {
+				result = ( new User() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

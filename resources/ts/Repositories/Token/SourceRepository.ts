@@ -2,14 +2,15 @@ import SourceRepositoryInterface from '../../Interfaces/Repositories/Token/Sourc
 
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
-
 import {
 	ApiServiceInterface,
 	TokenSourceIndexParamsInterface,
 	TokenSourceShowParamsInterface,
 	TokenSourceStoreParamsInterface,
 	TokenSourceUpdateParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
+import SourceInterface from '../../Interfaces/Models/Token/SourceInterface';
+import Source from '../../Models/Token/Source';
 
 @injectable()
 export default class SourceRepository implements SourceRepositoryInterface {
@@ -21,9 +22,12 @@ export default class SourceRepository implements SourceRepositoryInterface {
 		this.ApiService = ApiService;
 	}
 
-	public index( params?: TokenSourceIndexParamsInterface ): Promise<Array<any>> {
+	public index( params?: TokenSourceIndexParamsInterface ): Promise<Array<SourceInterface>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.tokenSourceIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenSourceIndex( params ).then( ( result: any ) => {
+				result = result.map( ( source: any ) => {
+					return ( new Source() ).fromJson( result );
+				} )
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -31,9 +35,10 @@ export default class SourceRepository implements SourceRepositoryInterface {
 		});
 	}
 
-	public show( id: string, params?: TokenSourceShowParamsInterface ): Promise<Array<any>> {
+	public show( id: string, params?: TokenSourceShowParamsInterface ): Promise<SourceInterface> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.tokenSourceShow( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenSourceShow( id, params ).then( ( result: any ) => {
+				result = ( new Source() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import Page from './../Page';
+import Page from '../Page';
 import VendorServiceInterface from '../../../Interfaces/Services/Application/Token/VendorServiceInterface';
 import PromiseStoreForm from '../../Components/Token/PromiseStoreForm';
 import Preloader from '../../Components/Preloader';

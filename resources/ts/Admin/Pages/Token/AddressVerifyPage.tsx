@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
-import Page from './../Page';
+import Page from '../Page';
 import AddressVerifyForm from '../../Components/Token/AddressVerifyForm';
 import Preloader from '../../Components/Preloader';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
@@ -67,7 +67,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 				return signer;
 			} )
 			.then( ( signer ) => {
-				signer.signMessage( 'TOKENPASS concert drill 58' ).then( ( signature: string ) => {
+				signer.signMessage( verifyData.verifyCode ).then( ( signature: string ) => {
 					const state = Object.assign( {}, verifyData );
 					state.signature = signature;
 					setVerifyData( state );
@@ -109,7 +109,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 								<TextControl
 									readOnly
 									label="Verification Code"
-									value={ address.verify_code }
+									value={ address.verifyCode }
 									onClick={ ( event: any ) => {
 										event.target.select();
 									} }

@@ -4,11 +4,12 @@ import { useInjection } from 'inversify-react';
 import { TYPES } from '../../../Types';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import Page from './../Page';
+import Page from '../Page';
 import Preloader from '../../Components/Preloader';
 import AddressInfo from '../../Components/Token/AddressInfo';
 import AddressStatus from '../../Components/Token/AddressStatus';
 import eventBus from "../../../EventBus";
+import Address from '../../../Models/Token/Address';
 
 declare const window: any;
 
@@ -54,7 +55,7 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 			.then( ( result: any ) => {
 				setLoadingSources( false );
 				setSources( result );
-				addressFound = Object.assign( {}, addressFound );
+				addressFound = Object.assign( new Address(), addressFound );
 				addressFound.isSource = ( id in result );
 				setAddress( addressFound );
 			} ) } );

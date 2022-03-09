@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
-import { PromiseData } from './../../../Interfaces';
+import { PromiseData } from '../../../Interfaces';
 import PromiseLink from './PromiseLink';
 import PromiseInfo from './PromiseInfo';
-import CardActions from './../CardActions';
+import CardActions from '../CardActions';
 
 import { 
 	Card,

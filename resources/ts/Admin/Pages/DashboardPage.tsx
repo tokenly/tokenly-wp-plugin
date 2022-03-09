@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import Page from './Page';
-import { TYPES } from './../../Types';
+import { TYPES } from '../../Types';
 import GridMenu from '../Components/GridMenu';
 
 interface DashboardPageProps {

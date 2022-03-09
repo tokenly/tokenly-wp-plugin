@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AssetField from './AssetField';
-import AttributeRepeater from './../AttributeRepeater';
-import MediaRepeater from './../MediaRepeater';
+import AttributeRepeater from '../AttributeRepeater';
+import MediaRepeater from '../MediaRepeater';
 
 import { 
 	TextControl,

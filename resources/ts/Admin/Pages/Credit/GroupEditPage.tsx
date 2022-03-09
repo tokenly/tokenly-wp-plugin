@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { useState, useEffect } from 'react';
-import Page from './../Page';
+import Page from '../Page';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import GroupEditForm from '../../Components/Credit/GroupEditForm';
 import ResourceEditActions from '../../Components/ResourceEditActions';

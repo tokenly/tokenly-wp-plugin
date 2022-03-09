@@ -5,7 +5,7 @@ import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/A
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface';
 import { TYPES } from '../../Types';
-import Page from './../Page';
+import Page from '../Page';
 import AddressList from '../../Components/Token/AddressList';
 import Preloader from '../../Components/Preloader';
 import { 

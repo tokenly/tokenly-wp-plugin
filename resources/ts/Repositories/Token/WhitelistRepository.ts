@@ -6,7 +6,7 @@ import { TYPES } from '../../Types';
 import {
 	ApiServiceInterface,
 	TokenWhitelistUpdateParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class WhitelistRepository implements WhitelistRepositoryInterface {

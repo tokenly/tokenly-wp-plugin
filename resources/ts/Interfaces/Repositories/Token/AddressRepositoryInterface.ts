@@ -5,11 +5,12 @@ import {
 	TokenAddressStoreParamsInterface,
 	TokenAddressUpdateParamsInterface,
 	TokenAddressVerifyParamsInterface,
-} from './../../../Interfaces/Services/ApiServiceInterface';
+} from '../../../Interfaces/Services/ApiServiceInterface';
+import AddressInterface from '../../Models/Token/AddressInterface';
 
 export default interface AddressRepositoryInterface {
-	index( params?: TokenAddressIndexParamsInterface ): Promise<Array<any>>
-	show( id: string, params?: TokenAddressShowParamsInterface ): Promise<Array<any>>
+	index( params?: TokenAddressIndexParamsInterface ): Promise<Array<AddressInterface>>
+	show( id: string, params?: TokenAddressShowParamsInterface ): Promise<AddressInterface>
 	store( params: TokenAddressStoreParamsInterface ): Promise<Array<any>>
 	update( id: string, params: TokenAddressUpdateParamsInterface ): Promise<Array<any>>
 	destroy( id: string ): Promise<Array<any>>

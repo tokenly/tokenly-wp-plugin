@@ -1,6 +1,6 @@
 import { injectable, inject, interfaces } from 'inversify';
 import ServiceProvider from '../../Providers/ServiceProvider';
-import ComponentServiceProviderInterface from './../Interfaces/Providers/ComponentServiceProviderInterface';
+import ComponentServiceProviderInterface from '../Interfaces/Providers/ComponentServiceProviderInterface';
 import { TYPES } from '../Types';
 import LoginButtonComponentInterface from '../Interfaces/Components/LoginButtonComponentInterface';
 // import SliderGalleryComponentFactoryInterface from '../Interfaces/Components/SliderGalleryComponentFactoryInterface';

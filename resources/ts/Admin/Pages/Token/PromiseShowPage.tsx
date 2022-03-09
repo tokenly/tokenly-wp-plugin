@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useInjection } from 'inversify-react';
-import Page from './../Page';
+import Page from '../Page';
 import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import { TYPES } from '../../Types';
@@ -16,6 +16,8 @@ import {
 	PanelRow,
 	Flex,
 } from '@wordpress/components';
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
+import PromiseInterface from '../../../Interfaces/Models/Token/PromiseInterface';
 
 interface PromiseShowPageProps {
 	//
@@ -46,12 +48,12 @@ export default function PromiseShowPage( props: PromiseShowPageProps ) {
 				'promise_meta.destination_user',
 			],
 		}
-		promiseRepository.show( id, params ).then( ( promiseFound: any ) => {
+		promiseRepository.show( id, params ).then( ( promiseFound: PromiseInterface ) => {
 			setLoadingPromise( false );
 			setPromise( promiseFound );
 			return promiseFound;
-		} ).then( ( promiseFound: any ) => {
-			addressRepository.show( promiseFound.source_id ).then( ( addressFound: any ) => {
+		} ).then( ( promiseFound: PromiseInterface ) => {
+			addressRepository.show( promiseFound.sourceId ).then( ( addressFound: AddressInterface ) => {
 				promiseFound.source = {};
 				promiseFound.source.address = addressFound;
 				setLoadingAddress( false );

@@ -1,4 +1,4 @@
-import { AuthData } from './../../Interfaces';
+import { AuthData } from '../../Interfaces';
 
 export default interface AuthServiceInterface {
 	getStatus(): Promise<AuthData>;

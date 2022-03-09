@@ -11,7 +11,9 @@ import {
 	CreditGroupStoreParamsInterface,
 	CreditGroupUpdateParamsInterface,
 	CreditGroupWhitelistUpdateParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
+import GroupInterface from '../../Interfaces/Models/Credit/GroupInterface';
+import Group from '../../Models/Credit/Group';
 
 @injectable()
 export default class GroupRepository implements GroupRepositoryInterface {
@@ -23,9 +25,12 @@ export default class GroupRepository implements GroupRepositoryInterface {
 		this.ApiService = ApiService;
 	}
 
-	public index( params?: CreditGroupIndexParamsInterface ): Promise<Array<any>> {
+	public index( params?: CreditGroupIndexParamsInterface ): Promise<Array<GroupInterface>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.creditGroupIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.creditGroupIndex( params ).then( ( result: any ) => {
+				result = result.map( ( group: any ) => {
+					return ( new Group() ).fromJson( group );
+				} )
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -33,9 +38,10 @@ export default class GroupRepository implements GroupRepositoryInterface {
 		} );
 	}
 
-	public show( uuid: string, params?: CreditGroupShowParamsInterface ): Promise<Array<any>> {
+	public show( uuid: string, params?: CreditGroupShowParamsInterface ): Promise<GroupInterface> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.creditGroupShow( uuid, params ).then( ( result: Array<any> ) => {
+			this.ApiService.creditGroupShow( uuid, params ).then( ( result: any ) => {
+				result = ( new Group() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

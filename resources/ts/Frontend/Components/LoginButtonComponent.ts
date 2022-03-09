@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import AuthServiceInterface from '../../Interfaces/Services/AuthServiceInterface';
 import LoginButtonComponentInterface from '../Interfaces/Components/LoginButtonComponentInterface';
-import { TYPES } from './../../Types';
+import { TYPES } from '../../Types';
 import Component from './Component';
 
 @injectable()

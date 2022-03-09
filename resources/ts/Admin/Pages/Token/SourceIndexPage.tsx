@@ -4,7 +4,7 @@ import { useInjection } from 'inversify-react';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
 import { TYPES } from '../../Types';
 import { SourceItem } from '../../../Interfaces';
-import Page from './../Page';
+import Page from '../Page';
 import SourceList from '../../Components/Token/SourceList';
 import Preloader from '../../Components/Preloader';
 import { 

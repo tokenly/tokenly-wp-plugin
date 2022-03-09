@@ -1,8 +1,8 @@
-import AuthServiceInterface from './../Interfaces/Services/AuthServiceInterface';
+import AuthServiceInterface from '../Interfaces/Services/AuthServiceInterface';
 
 import { injectable, inject } from 'inversify';
-import { TYPES } from './../Types';
-import { ApiServiceInterface } from './../Interfaces/Services/ApiServiceInterface';
+import { TYPES } from '../Types';
+import { ApiServiceInterface } from '../Interfaces/Services/ApiServiceInterface';
 
 @injectable()
 export default class AuthService implements AuthServiceInterface {

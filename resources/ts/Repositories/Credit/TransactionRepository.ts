@@ -2,12 +2,13 @@ import TransactionRepositoryInterface from '../../Interfaces/Repositories/Credit
 
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
-
 import {
 	ApiServiceInterface,
 	CreditTransactionIndexParamsInterface,
 	CreditTransactionStoreParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
+import TransactionInterface from '../../Interfaces/Models/Credit/TransactionInterface';
+import Transaction from '../../Models/Credit/Transaction';
 
 @injectable()
 export default class TransactionRepository implements TransactionRepositoryInterface {
@@ -19,9 +20,12 @@ export default class TransactionRepository implements TransactionRepositoryInter
 		this.ApiService = ApiService;
 	}
 
-	public index( params?: CreditTransactionIndexParamsInterface ): Promise<Array<any>> {
+	public index( params?: CreditTransactionIndexParamsInterface ): Promise<Array<TransactionInterface>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.creditTransactionIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.creditTransactionIndex( params ).then( ( result: any ) => {
+				result = result.map( ( transaction: any ) => {
+					return ( new Transaction() ).fromJson( transaction );
+				} )
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

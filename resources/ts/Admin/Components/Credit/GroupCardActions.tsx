@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '../../Types';
-import CardActions from './../CardActions';
+import CardActions from '../CardActions';
 
 interface GroupCardActionsProps {
 	group: string

@@ -8,11 +8,16 @@ import IntegrationSettingsForm from '../Components/Settings/IntegrationSettingsF
 import IntegrationSettingsHelp from '../Components/Settings/IntegrationSettingsHelp';
 import TcaSettingsForm from '../Components/Settings/TcaSettingsForm';
 import OauthSettingsForm from '../Components/Settings/OauthSettingsForm';
-import { IntegrationSettings, TcaSettings, OauthSettings } from '../../Interfaces';
 import IntegrationSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
 import TcaSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
 import OauthSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
 import eventBus from "../../EventBus";
+import IntegrationSettings from '../../Models/Settings/IntegrationSettings';
+import OauthSettings from '../../Models/Settings/OauthSettings';
+import TcaSettings from '../../Models/Settings/TcaSettings';
+import IntegrationSettingsInterface from '../../Interfaces/Models/Settings/IntegrationSettingsInterface';
+import OauthSettingsInterface from '../../Interfaces/Models/Settings/OauthSettingsInterface';
+import TcaSettingsInterface from '../../Interfaces/Models/Settings/TcaSettingsInterface';
 
 import { 
 	Panel,
@@ -21,10 +26,10 @@ import {
 } from '@wordpress/components';
 
 interface SettingsPageProps {
-	integration_settings: IntegrationSettings;
+	integration_settings: any;
 	integration_data: any;
-	tca_settings: TcaSettings;
-	oauth_settings: OauthSettings;
+	tca_settings: any;
+	oauth_settings: any;
 	tca_data: any;
 }
 
@@ -35,29 +40,10 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	const tcaSettingsRepository: TcaSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface );
 	const oauthSettingsRepository: OauthSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface );
 	
-	const [ integrationSettings, setIntegrationSettings ] = useState<any>( Object.assign( {
-		client_id: '',
-		client_secret: '',
-	}, props.integration_settings ) );
-	const tcaSettingsProp = Object.assign( {
-		post_types: {},
-		taxonomies: {},
-		filter_menu_items: false,
-		filter_post_results: false,
-	}, props.tca_settings );
-	if ( Array.isArray( tcaSettingsProp.post_types ) ) {
-		tcaSettingsProp.post_types = {};
-	}
-	if ( Array.isArray( tcaSettingsProp.taxonomies ) ) {
-		tcaSettingsProp.taxonomies = {};
-	}
-	const [ tcaSettings, setTcaSettings ] = useState<any>( tcaSettingsProp );
-	const [ oauthSettings, setOauthSettings ] = useState<any>( Object.assign( {
-		use_single_sign_on: false,
-		success_url: '',
-		allow_no_email: false,
-		allow_unconfirmed_email: false,
-	}, props.oauth_settings ) );
+	const [ integrationSettings, setIntegrationSettings ] = useState<IntegrationSettingsInterface>( ( new IntegrationSettings ).fromJson( props.integration_settings ) );
+	const [ oauthSettings, setOauthSettings ] = useState<OauthSettingsInterface>( ( new OauthSettings ).fromJson( props.oauth_settings ) );
+	const [ tcaSettings, setTcaSettings ] = useState<TcaSettingsInterface>( ( new TcaSettings ).fromJson( props.tca_settings ) );
+
 	const [ savingIntegrationSettings, setSavingIntegrationSettings ] = useState<boolean>( false );
 	const [ savingTcaSettings, setSavingTcaSettings ] = useState<boolean>( false );
 	const [ savingOauthSettings, setSavingOauthSettings ] = useState<boolean>( false );
@@ -65,7 +51,8 @@ export default function SettingsPage( props: SettingsPageProps ) {
 	function onIntegrationSettingsSave() {
 		localStorage.removeItem( `${namespace}-integration-not-connected-notice-dismissed` );
 		setSavingIntegrationSettings( true );
-		integrationSettingsRepository.update( integrationSettings ).then( ( result: any ) => {
+		const json = integrationSettings.toJson();
+		integrationSettingsRepository.update( json ).then( ( result: any ) => {
 			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingIntegrationSettings( false );
 			window.location.reload();
@@ -80,7 +67,8 @@ export default function SettingsPage( props: SettingsPageProps ) {
 
 	function onTcaSettingsSave() {
 		setSavingTcaSettings( true );
-		tcaSettingsRepository.update( tcaSettings ).then( ( result: any ) => {
+		const json = tcaSettings.toJson();
+		tcaSettingsRepository.update( json ).then( ( result: any ) => {
 			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingTcaSettings( false );
 		} ).catch( ( error: any ) => {
@@ -94,7 +82,8 @@ export default function SettingsPage( props: SettingsPageProps ) {
 
 	function onOauthSettingsSave() {
 		setSavingOauthSettings( true );
-		oauthSettingsRepository.update( oauthSettings ).then( ( result: any ) => {
+		const json = oauthSettings.toJson();
+		oauthSettingsRepository.update( json ).then( ( result: any ) => {
 			eventBus.dispatch( 'snackbarShow', result?.status );
 			setSavingOauthSettings( false );
 		} ).catch( ( error: any ) => {

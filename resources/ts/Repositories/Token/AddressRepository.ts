@@ -2,7 +2,6 @@ import AddressRepositoryInterface from '../../Interfaces/Repositories/Token/Addr
 
 import { injectable, inject } from 'inversify';
 import { TYPES } from '../../Types';
-
 import {
 	ApiServiceInterface,
 	TokenAddressIndexParamsInterface,
@@ -11,7 +10,9 @@ import {
 	TokenAddressStoreParamsInterface,
 	TokenAddressUpdateParamsInterface,
 	TokenAddressVerifyParamsInterface,
-} from './../../Interfaces/Services/ApiServiceInterface';
+} from '../../Interfaces/Services/ApiServiceInterface';
+import Address from '../../Models/Token/Address';
+import AddressInterface from '../../Interfaces/Models/Token/AddressInterface';
 
 @injectable()
 export default class AddressRepository implements AddressRepositoryInterface {
@@ -23,9 +24,13 @@ export default class AddressRepository implements AddressRepositoryInterface {
 		this.ApiService = ApiService;
 	}
 
-	public index( params?: TokenAddressIndexParamsInterface ): Promise<Array<any>> {
+	public index( params?: TokenAddressIndexParamsInterface ): Promise<Array<AddressInterface>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.tokenAddressIndex( params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenAddressIndex( params ).then( ( result: Array<AddressInterface> ) => {
+				result = result.map( ( address: any ) => {
+					return ( new Address() ).fromJson( address );
+				} )
+				console.log(result);
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -33,9 +38,10 @@ export default class AddressRepository implements AddressRepositoryInterface {
 		} );
 	}
 
-	public show( id: string, params?: TokenAddressShowParamsInterface ): Promise<Array<any>> {
+	public show( id: string, params?: TokenAddressShowParamsInterface ): Promise<AddressInterface> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.tokenAddressShow( id, params ).then( ( result: Array<any> ) => {
+			this.ApiService.tokenAddressShow( id, params ).then( ( result: any ) => {
+				result = ( new Address() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
