@@ -19,7 +19,6 @@ import {
 import UserInterface from '../../../Interfaces/Models/UserInterface';
 import AddressCollectionInterface from '../../../Interfaces/Collections/Token/AddressCollectionInterface';
 import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
-import AddressCollection from '../../../Collections/Token/AddressCollection';
 import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
 
 interface AddressIndexPageProps {
@@ -47,19 +46,17 @@ export default function AddressIndexPage( props: AddressIndexPageProps ) {
 			if ( !user || !user.oauthUser ) {
 				return;
 			}
-			console.log(1);
 			addressRepository.index().then( ( addressesFound: AddressCollectionInterface ) => {
 				setLoadingAddresses( false );
 				setAddresses( addressesFound );
-				console.log(2);
 				return addressesFound;
 			} ).then( ( addressesFound: AddressCollectionInterface ) => {
 				sourceRepository.index().then( ( sourcesFound: SourceCollectionInterface ) => {
-					console.log(3);
 					setLoadingSources( false );
 					setSources( sourcesFound );
+					addressesFound = addressesFound.clone();
 					addressesFound.forEach( ( address: AddressInterface ) => {
-						address.isSource = ( address.address in sourcesFound );
+						address.isSource = ( sourcesFound.has( address.address ) );
 					} );
 					setAddresses( addressesFound );
 				} );

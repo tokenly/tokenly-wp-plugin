@@ -4,6 +4,10 @@ import Model from '../Models/Model';
 export default class Collection extends Map implements CollectionInterface {
     protected class = Model;
 
+    constructor() {
+        super();
+    }
+
     public fromJson( data: any ): this {
         if ( Array.isArray( data ) ) {
             data.forEach( ( item, key ) => {
@@ -21,5 +25,13 @@ export default class Collection extends Map implements CollectionInterface {
 
     public toJson(): any {
         return {};
+    }
+
+    public clone(): CollectionInterface {
+        let clone: any = Object.assign( new ( <typeof Collection>this.constructor ), this );
+        this.forEach( ( item, key: string ) => {
+            clone.set( key, item.clone() );
+        } );
+        return clone;
     }
 }

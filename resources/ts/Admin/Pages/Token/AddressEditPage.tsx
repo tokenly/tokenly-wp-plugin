@@ -14,6 +14,7 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components';
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
 
 declare const window: any;
 
@@ -25,12 +26,10 @@ export default function AddressEditPage( props: AddressEditPageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
-	
 	const urlParams = new URLSearchParams( window.location.search );
-
 	const [ saving, setSaving ] = useState<boolean>( false );
 	const [ loading, setLoading ] = useState<boolean>( false );
-	const [ address, setAddress ] = useState<any>( null );
+	const [ address, setAddress ] = useState<AddressInterface>( null );
 	const [ id, setId ] = useState<string>( urlParams.get( 'address' ) );
 	const [ editData, setEditData ] = useState<any>( {} );
 
@@ -57,7 +56,7 @@ export default function AddressEditPage( props: AddressEditPageProps ) {
 
 	useEffect( () => {
 		setLoading( true );
-		addressRepository.show( id ).then( ( addressFound: any ) => {
+		addressRepository.show( id ).then( ( addressFound: AddressInterface ) => {
 			const newEditData = {
 				address: addressFound?.address,
 				label: addressFound?.label,

@@ -17,6 +17,7 @@ import {
 	Flex,
 	TextControl
 } from '@wordpress/components';
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
 
 declare const window: any;
 
@@ -33,7 +34,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 
 	const [ verifying, setVerifying ] = useState<boolean>( false );
 	const [ loading, setLoading ] = useState<boolean>( false );
-	const [ address, setAddress ] = useState<any>( null );
+	const [ address, setAddress ] = useState<AddressInterface>( null );
 	const [ id, setId ] = useState<string>( urlParams.get( 'address' ) );
 	const [ verifyData, setVerifyData ] = useState<any>( {} );
 
@@ -46,7 +47,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 		setVerifying( true );
 		addressRepository.verify( id, verifyData ).then( ( result: any ) => {
 			setVerifying( false );
-			//goBack();
+			goBack();
 		} );
 	}
 

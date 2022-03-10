@@ -25,6 +25,10 @@ export default class Model implements ModelInterface {
 		return this;
 	}
 
+	public clone(): ModelInterface {
+		return Object.assign( new ( <typeof Model>this.constructor ), this );
+	}
+
 	protected get fillable(): Array<string> {
 		return [];
 	}

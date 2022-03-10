@@ -9,7 +9,6 @@ import Preloader from '../../Components/Preloader';
 import AddressInfo from '../../Components/Token/AddressInfo';
 import AddressStatus from '../../Components/Token/AddressStatus';
 import eventBus from "../../../EventBus";
-import Address from '../../../Models/Token/Address';
 
 declare const window: any;
 
@@ -21,6 +20,8 @@ import {
 	Button,
 	Flex,
 } from '@wordpress/components';
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
 
 interface AddressShowPageProps {
 	//
@@ -31,7 +32,6 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 	const namespace: string = useInjection( TYPES.Variables.namespace );
 	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
 	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
-
 	const urlParams = new URLSearchParams( window.location.search );
 	const [ id, setId ] = useState<string>( urlParams.get( 'address' ) );
 	const [ address, setAddress ] = useState<any>( null );
@@ -44,21 +44,19 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
 		setLoading( true );
 		setLoadingSources( true );
-		addressRepository.show( id )
-			.then( ( addressFound: any ) => {
-				setLoading( false );
-				setAddress( addressFound );
-				return addressFound;
-			} )
-			.then( ( addressFound ) => {
-				sourceRepository.index()
-			.then( ( result: any ) => {
+		addressRepository.show( id ).then( ( addressFound: AddressInterface ) => {
+			setLoading( false );
+			setAddress( addressFound );
+			return addressFound;
+		} ).then( ( addressFound: AddressInterface ) => {
+			sourceRepository.index().then( ( result: SourceCollectionInterface ) => {
 				setLoadingSources( false );
 				setSources( result );
-				addressFound = Object.assign( new Address(), addressFound );
+				addressFound = addressFound.clone();
 				addressFound.isSource = ( id in result );
 				setAddress( addressFound );
-			} ) } );
+			} );
+		} );
 		return () => {
 			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
 		}
