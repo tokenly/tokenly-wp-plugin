@@ -4,10 +4,6 @@ import Fieldset from '../Components/Fieldset';
 
 import { 
 	Button,
-	Card,
-	CardHeader,
-	CardBody,
-	CardFooter,
 	Flex,
 	TextControl,
 } from '@wordpress/components';

@@ -17,6 +17,7 @@ import {
 	PanelBody,
 	PanelRow,
 } from '@wordpress/components';
+import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface';
 
 interface TransactionStorePageProps {
 	//
@@ -29,7 +30,7 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 	const vendorService: VendorServiceInterface = useInjection( TYPES.Services.Application.Credit.VendorServiceInterface );
 	const [ storing, setStoring ] = useState<boolean>( false );
 	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
-	const [ groups, setGroups ] = useState<any>( null );
+	const [ groups, setGroups ] = useState<GroupCollectionInterface>( null );
 	const [ storeData, setStoreData ] = useState<any>( {
 		type: 'credit',
 		quantity: 0,
@@ -68,7 +69,7 @@ export default function TransactionStorePage( props: TransactionStorePageProps )
 
 	useEffect( () => {
 		setLoadingGroups( true );
-		groupRepository.index().then( ( groupsFound: any ) => {
+		groupRepository.index().then( ( groupsFound: GroupCollectionInterface ) => {
 			setLoadingGroups( false );
 			setGroups( groupsFound );
 		} )

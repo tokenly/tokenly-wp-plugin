@@ -14,6 +14,10 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components';
+import GroupCollectionInterface from '../../../../Interfaces/Collections/Credit/GroupCollectionInterface';
+import AccountCollectionInterface from '../../../../Interfaces/Collections/Credit/AccountCollectionInterface';
+import UserInterface from '../../../../Interfaces/Models/UserInterface';
+import AccountInterface from '../../../../Interfaces/Models/Credit/AccountInterface';
 
 interface BalanceIndexPageProps {
 	//
@@ -33,16 +37,16 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 
 	useEffect( () => {
 		setLoading( true );
-		userRepository.creditBalanceIndex( id ).then( ( balancesFound: any ) => {
+		userRepository.creditBalanceIndex( id ).then( ( balancesFound: AccountCollectionInterface ) => {
 			setBalance( balancesFound );
 			return balancesFound;
 		} )
 		.then( ( balancesFound: any ) => {
-			groupRepository.index( id ).then( ( groupsFound: any ) => {
-				balancesFound = balancesFound.map( ( balanceFound: any ) => {
-					for ( let i = 0; i < groupsFound.length; ++i ) {
-						const groupFound = groupsFound[ i ];
-						if ( balanceFound.group_id === groupFound.uuid ) {
+			groupRepository.index( id ).then( ( groupsFound: GroupCollectionInterface ) => {
+				balancesFound = balancesFound.map( ( balanceFound: AccountInterface ) => {
+					for ( let i = 0; i < groupsFound.size; ++i ) {
+						const groupFound = groupsFound.get( i.toString() );
+						if ( balanceFound.groupId === groupFound.uuid ) {
 							balanceFound.group = groupFound;
 							break;
 						}
@@ -55,7 +59,7 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 		.then( () => {
 			userRepository.show( id, {
 				with: [ 'oauth_user' ],
-			} ).then( ( userFound: any ) => {
+			} ).then( ( userFound: UserInterface ) => {
 				setLoading( false );
 				setUser( userFound );
 			} );

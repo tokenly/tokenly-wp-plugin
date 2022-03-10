@@ -1,4 +1,5 @@
 import ModelInterface from '../ModelInterface';
+import GroupInterface from './GroupInterface';
 
 export default interface AccountInterface extends ModelInterface {
 	name?: string;
@@ -8,4 +9,5 @@ export default interface AccountInterface extends ModelInterface {
 	createdAt?: string;
 	updatedAt?: string;
 	groupId?: string;
+	group?: GroupInterface;
 }

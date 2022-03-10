@@ -66,8 +66,7 @@ export default function bind( container: Container ) {
 	container.bind<string>( TYPES.Variables.namespace ).toConstantValue( 'tokenly' );
 	container.bind<string>( TYPES.Variables.apiHost ).toConstantValue( 'https://tokenpass.tokenly.com' );
 	container.bind<string>( TYPES.Variables.pluginUrl ).toConstantValue( '/wp-content/plugins/tokenly-wp-plugin' );
-
-	console.log(window.tokenpassData);
+	
 	const shared = window?.tokenpassData?.shared;
 	container.bind<string>( TYPES.Variables.nonce ).toConstantValue( shared?.nonce ?? null );
 	container.bind<string>( TYPES.Variables.routes ).toConstantValue( shared?.routes ?? null );

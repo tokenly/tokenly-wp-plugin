@@ -2,16 +2,10 @@ import * as React from 'react';
 import eventBus from "../../../../EventBus";
 
 import {
-	Card,
-	CardHeader,
-	CardBody,
-	CardFooter,
 	Button,
 	Flex,
 	SelectControl,
 	TextControl,
-	// @ts-ignore
-	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 
 interface TcaRuleEditorProps {
@@ -21,7 +15,7 @@ interface TcaRuleEditorProps {
 
 export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 	function onAdd() {
-		const newRules = Object.assign( [], props.editData.tca_rules );
+		const newRules = Object.assign( [], props.editData.tcaRules );
 		newRules.push( {
 			asset: null,
 			quantity: 0,
@@ -38,37 +32,37 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 	}
 	
 	function onRemove( index: number ) {
-		let newRules = Object.assign( [], props.editData.tca_rules );
+		let newRules = Object.assign( [], props.editData.tcaRules );
 		delete newRules[ index ];
 		newRules = removeEmpty( newRules );
 		props.onChange( newRules );
 	}
 	
 	function onAssetFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tca_rules );
+		const newRules = Object.assign( [], props.editData.tcaRules );
 		newRules[ key ].asset = value;
 		props.onChange( newRules );
 	}
 
 	function onLogicFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tca_rules );
+		const newRules = Object.assign( [], props.editData.tcaRules );
 		newRules[ key ].op = value;
 		props.onChange( newRules );
 	}
 
 	function onQuantityFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tca_rules );
+		const newRules = Object.assign( [], props.editData.tcaRules );
 		newRules[ key ].quantity = value;
 		props.onChange( newRules );
 	}
 
 	function onGroupingFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tca_rules );
+		const newRules = Object.assign( [], props.editData.tcaRules );
 		newRules[ key ].stackOp = value;
 		props.onChange( newRules );
 	}
 
-	let rules = props.editData.tca_rules ?? [];
+	let rules = props.editData.tcaRules ?? [];
 	if ( typeof rules === 'object' ) {
 		rules = Object.values( rules );
 	}
@@ -137,15 +131,13 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 		);
 	} );
 	return ( 
-		<fieldset style={{border: '1px solid #dcdcde', padding: '12px'}}>
+		<fieldset style={ { border: '1px solid #dcdcde', padding: '12px' } }>
 		<legend>Rule Editor</legend>
 		<div style={ { opacity: 0.8, marginBottom: '12px' } }>The token inventory of the visitor will be checked against these rules. If not passed - access to the content will be prevented.</div>
 				{ ( listItems.filter( Boolean ).length > 0 )
 					?	<ul>{ listItems }</ul>
-					:	<div style={{ opacity: 0.5, margin: '8px 0' }}>There are no rules.</div>
+					:	<div style={ { opacity: 0.5, margin: '8px 0' } }>There are no rules.</div>
 				}
-			{/* </CardBody>
-			<CardFooter> */}
 				<Button
 					isSecondary
 					isLarge
@@ -153,8 +145,6 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 				>
 					Add Rule
 				</Button>
-			{/* </CardFooter>
-		</Card> */}
 		</fieldset>
 	);
 }

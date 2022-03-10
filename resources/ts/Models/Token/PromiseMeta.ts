@@ -2,11 +2,51 @@ import Post from '../Post';
 import PromiseMetaInterface from '../../Interfaces/Models/Token/PromiseMetaInterface';
 
 export default class PromiseMeta extends Post implements PromiseMetaInterface {
-	protected promiseId?: number = null;
-	protected sourceUserId?: number = null;
-	protected sourceUser?: object = null;
-	protected destinationUserId?: number = null;
-	protected destinationUser?: object = null;
+	protected _promiseId?: number = null;
+	protected _sourceUserId?: string = null;
+	protected _sourceUser?: object = null;
+	protected _destinationUserId?: string = null;
+	protected _destinationUser?: object = null;
+
+	public get promiseId(): number|null {
+		return this._promiseId ?? null;
+	}
+
+	public set promiseId( value: number ) {
+		this._promiseId = value;
+	}
+
+	public get sourceUserId(): string|null {
+		return this._sourceUserId ?? null;
+	}
+
+	public set sourceUserId( value: string ) {
+		this._sourceUserId = value;
+	}
+
+	public get sourceUser(): object|null {
+		return this._sourceUser ?? null;
+	}
+
+	public set sourceUser( value: object ) {
+		this._sourceUser = value;
+	}
+
+	public get destinationUserId(): string|null {
+		return this._destinationUserId ?? null;
+	}
+
+	public set destinationUserId( value: string ) {
+		this._destinationUserId = value;
+	}
+
+	public get destinationUser(): object|null {
+		return this._destinationUser ?? null;
+	}
+
+	public set destinationUser( value: object ) {
+		this._destinationUser = value;
+	}
 
 	public fromJson( data: any = {} ): this {
 		if ( data.promise_id ) {

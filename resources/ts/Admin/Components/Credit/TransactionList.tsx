@@ -1,9 +1,10 @@
 import * as React from 'react';
 import TransactionCard from './TransactionCard';
 import ResourceList from '../../Components/ResourceList';
+import TransactionCollectionInterface from '../../../Interfaces/Collections/Credit/TransactionCollectionInterface';
 
 interface TransactionList {
-	transactions: Array<any>;
+	transactions: TransactionCollectionInterface;
 }
 
 export default function PromiseList( props: TransactionList ) {

@@ -14,6 +14,7 @@ import {
 	PanelBody,
 	PanelRow,
 } from '@wordpress/components';
+import GroupInterface from '../../../Interfaces/Models/Credit/GroupInterface';
 
 interface GroupShowPageProps {
 	//
@@ -24,7 +25,7 @@ export default function GroupShowPage( props: GroupShowPageProps ) {
 	
 	const urlParams = new URLSearchParams( window.location.search );
 	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'id' ) );
-	const [ group, setGroup ] = useState<any>( null );
+	const [ group, setGroup ] = useState<GroupInterface>( null );
 	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( null );
 
 	useEffect( () => {

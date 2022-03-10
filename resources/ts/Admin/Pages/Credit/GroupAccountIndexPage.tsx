@@ -13,6 +13,7 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components';
+import AccountCollectionInterface from '../../../Interfaces/Collections/Credit/AccountCollectionInterface';
 
 interface GroupAccountIndexPageProps {
 	//
@@ -21,7 +22,7 @@ interface GroupAccountIndexPageProps {
 export default function GroupAccountIndexPage( props: GroupAccountIndexPageProps ) {
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 
-	const [ accounts, setAccounts ] = useState<any>( null );
+	const [ accounts, setAccounts ] = useState<AccountCollectionInterface>( null );
 	const [ loadingAccounts, setLoadingAccounts ] = useState<any>( false );
 
 	useEffect( () => {
@@ -32,7 +33,7 @@ export default function GroupAccountIndexPage( props: GroupAccountIndexPageProps
 			with: [ 'user' ],
 		}
 		setLoadingAccounts( true );
-		groupRepository.accountIndex( group, params ).then( ( accountsFound: any ) => {
+		groupRepository.accountIndex( group, params ).then( ( accountsFound: AccountCollectionInterface ) => {
 			setLoadingAccounts( false );
 			setAccounts( accountsFound );
 		} );

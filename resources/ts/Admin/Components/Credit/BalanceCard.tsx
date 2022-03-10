@@ -9,7 +9,6 @@ import {
 	CardHeader,
 	CardBody,
 	Flex,
-	Button,
 	CardFooter
 } from '@wordpress/components';
 
@@ -23,7 +22,7 @@ export default function BalanceCard( props: BalanceCardProps ) {
 	const namespace = useInjection( TYPES.Variables.namespace );
 
 	function getDebitLink(): string {
-		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.group_id }&type=debit`;
+		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.groupId }&type=debit`;
 		if ( props.username ) {
 			link = `${link}&account=${props.username}`;
 		}
@@ -31,7 +30,7 @@ export default function BalanceCard( props: BalanceCardProps ) {
 	}
 
 	function getCreditLink(): string {
-		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.group_id }&type=credit`;
+		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.groupId }&type=credit`;
 		if ( props.username ) {
 			link = `${link}&account=${props.username}`;
 		}
@@ -42,7 +41,7 @@ export default function BalanceCard( props: BalanceCardProps ) {
 		<Card size="extraSmall" style={ { width: '100%' } }>
 			<CardHeader>
 				<GroupLink 
-					uuid={ props.balance.group_id }
+					uuid={ props.balance.groupId }
 					name={ props.balance?.group?.name }
 					text={ ( !props.balance?.group ) }
 				/>
@@ -69,7 +68,7 @@ export default function BalanceCard( props: BalanceCardProps ) {
 							},
 							{
 								title: 'View Group',
-								href: `${ adminPageUrl }${ namespace }-credit-group-show&id=${ props.balance.group_id }`,
+								href: `${ adminPageUrl }${ namespace }-credit-group-show&id=${ props.balance.groupId }`,
 							},
 						]
 					}

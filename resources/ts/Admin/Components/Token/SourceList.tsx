@@ -1,9 +1,10 @@
 import * as React from 'react';
 import SourceCard from './SourceCard';
 import ResourceList from '../../Components/ResourceList';
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
 
 interface SourceListProps {
-	sources: Array<any>;
+	sources: SourceCollectionInterface;
 }
 
 export default function SourceList( props: SourceListProps ) {

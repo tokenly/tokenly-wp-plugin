@@ -12,6 +12,8 @@ import {
 } from '../Interfaces/Services/ApiServiceInterface';
 import UserInterface from '../Interfaces/Models/UserInterface';
 import User from '../Models/User';
+import UserCollection from '../Collections/UserCollection';
+import UserCollectionInterface from '../Interfaces/Collections/UserCollectionInterface';
 
 @injectable()
 export default class UserRepository implements UserRepositoryInterface {
@@ -23,12 +25,10 @@ export default class UserRepository implements UserRepositoryInterface {
 		this.ApiService = ApiService;
 	}
 	
-	public index( params?: UserIndexParamsInterface ): Promise<Array<UserInterface>> {
+	public index( params?: UserIndexParamsInterface ): Promise<UserCollectionInterface> {
 		return new Promise( ( resolve, reject ) => {
 			this.ApiService.userIndex( params ).then( ( result: any ) => {
-				result = result.map( ( user: any ) => {
-					return ( new User() ).fromJson( user );
-				} )
+				result = ( new UserCollection() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

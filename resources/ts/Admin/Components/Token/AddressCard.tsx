@@ -12,7 +12,6 @@ import {
 	CardBody,
 	CardFooter,
 	Flex,
-	Dashicon,
 } from '@wordpress/components';
 
 interface AddressCardProps {

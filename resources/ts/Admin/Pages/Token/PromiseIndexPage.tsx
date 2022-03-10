@@ -4,7 +4,6 @@ import { useInjection } from 'inversify-react';
 import Page from '../Page';
 import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface';
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import { PromiseData } from '../../../Interfaces';
 import PromiseList from '../../Components/Token/PromiseList';
 import Preloader from '../../Components/Preloader';
 import VendorActions from '../../Components/Token/VendorActions';
@@ -16,6 +15,7 @@ import {
 	PanelHeader,
 	PanelRow,
 } from '@wordpress/components';
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
 
 interface PromiseIndexPageProps {
 	//
@@ -26,7 +26,7 @@ export default function PromiseIndexPage( props: PromiseIndexPageProps ) {
 	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
 	
 	const [ promises, setPromises ] = useState<any>( null );
-	const [ sources, setSources ] = useState<any>( {} );
+	const [ sources, setSources ] = useState<SourceCollectionInterface>( null );
 	const [ loadingPromises, setLoadingPromises ] = useState<boolean>( false );
 	const [ loadingSources, setLoadingSources ] = useState<boolean>( false );
 
@@ -34,7 +34,11 @@ export default function PromiseIndexPage( props: PromiseIndexPageProps ) {
 		setLoadingPromises( true );
 		setLoadingSources( true );
 		promiseRepository.index( {
-			with: [ 'promise_meta.source_user', 'promise_meta.destination_user', 'token_meta' ],
+			with: [
+				'promise_meta.source_user',
+				'promise_meta.destination_user',
+				'token_meta',
+			],
 		} ).then( ( result: any ) => {
 			let promisesFound = result.promises;
 			if ( !Array.isArray( promisesFound ) ) {
@@ -48,9 +52,9 @@ export default function PromiseIndexPage( props: PromiseIndexPageProps ) {
 			}
 			sourceRepository.index( {
 				with: [ 'address' ],
-			} ).then( ( sourcesFound ) => {
+			} ).then( ( sourcesFound: SourceCollectionInterface ) => {
 				promisesFound = promisesFound.map( ( promiseFound: any ) => {
-					promiseFound.source = sourcesFound[ promiseFound.source_id ];
+					promiseFound.source = sourcesFound.get( promiseFound.sourceId );
 					return promiseFound;
 				} );
 				setLoadingSources( false );

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import GroupCard from './GroupCard';
 import ResourceList from '../../Components/ResourceList';
+import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface';
 
 interface GroupListProps {
-	groups: Array<any>;
+	groups: GroupCollectionInterface;
 }
 
 export default function GroupList( props: GroupListProps ) {

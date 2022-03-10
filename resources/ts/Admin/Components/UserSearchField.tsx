@@ -61,7 +61,7 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 
 	function search( keywords: string ) {
 		return new Promise( ( resolve, reject ) => {
-			userRepository.index({
+			userRepository.index( {
 				suggestions: true,
 				name: keywords,
 			} ).then( ( results: Array<any> ) => {

@@ -9,6 +9,8 @@ import {
 } from '../../Interfaces/Services/ApiServiceInterface';
 import TransactionInterface from '../../Interfaces/Models/Credit/TransactionInterface';
 import Transaction from '../../Models/Credit/Transaction';
+import TransactionCollectionInterface from '../../Interfaces/Collections/Credit/TransactionCollectionInterface';
+import TransactionCollection from '../../Collections/Credit/TransactionCollection';
 
 @injectable()
 export default class TransactionRepository implements TransactionRepositoryInterface {
@@ -20,12 +22,10 @@ export default class TransactionRepository implements TransactionRepositoryInter
 		this.ApiService = ApiService;
 	}
 
-	public index( params?: CreditTransactionIndexParamsInterface ): Promise<Array<TransactionInterface>> {
-		return new Promise( ( resolve, reject ) => {
+	public index( params?: CreditTransactionIndexParamsInterface ): Promise<TransactionCollectionInterface> {
+		return new Promise<TransactionCollectionInterface>( ( resolve, reject ) => {
 			this.ApiService.creditTransactionIndex( params ).then( ( result: any ) => {
-				result = result.map( ( transaction: any ) => {
-					return ( new Transaction() ).fromJson( transaction );
-				} )
+				result = ( new TransactionCollection() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );
@@ -33,9 +33,10 @@ export default class TransactionRepository implements TransactionRepositoryInter
 		} );
 	}
 
-	public store( params: CreditTransactionStoreParamsInterface ): Promise<any> {
-		return new Promise( ( resolve, reject ) => {
+	public store( params: CreditTransactionStoreParamsInterface ): Promise<TransactionInterface> {
+		return new Promise<TransactionInterface>( ( resolve, reject ) => {
 			this.ApiService.creditTransactionStore( params ).then( result => {
+				result = ( new Transaction() ).fromJson( result );
 				resolve( result );
 			} ).catch( error => {
 				reject( error );

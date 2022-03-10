@@ -9,4 +9,5 @@ export default interface AddressInterface extends ModelInterface {
 	verified?: boolean;
 	verifyCode?: string;
 	balance?: object;
+	isSource?: boolean;
 }

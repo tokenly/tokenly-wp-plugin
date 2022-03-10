@@ -1,6 +1,12 @@
 import Model from '../Model';
 import PromiseInterface from '../../Interfaces/Models/Token/PromiseInterface';
 
+import MetaInterface from '../../Interfaces/Models/Token/MetaInterface';
+import PromiseMetaInterface from '../../Interfaces/Models/Token/PromiseMetaInterface';
+import SourceInterface from '../../Interfaces/Models/Token/SourceInterface';
+import QuantityInterface from '../../Interfaces/Models/Token/QuantityInterface';
+import AssetInterface from '../../Interfaces/Models/Token/AssetInterface';
+
 export default class Promise extends Model implements PromiseInterface {
 	protected _sourceId?: string = null;
 	protected _destination?: string = null;
@@ -15,11 +21,11 @@ export default class Promise extends Model implements PromiseInterface {
 	protected _protocol?: string = null;
 	protected _chain?: string = null;
 	protected _promiseId?: number = null;
-	protected _asset?: object = null;
-	protected _source?: object = null;
-	protected _quantity?: object = null;
-	protected _promiseMeta?: object = null;
-	protected _tokenMeta?: object = null;
+	protected _asset?: AssetInterface = null;
+	protected _source?: SourceInterface = null;
+	protected _quantity?: QuantityInterface = null;
+	protected _promiseMeta?: PromiseMetaInterface = null;
+	protected _tokenMeta?: MetaInterface = null;
 
 	public get sourceId(): string|null {
 		return this._sourceId ?? null;
@@ -125,43 +131,43 @@ export default class Promise extends Model implements PromiseInterface {
 		this._promiseId = value;
 	}
 
-	public get asset(): object|null {
+	public get asset(): AssetInterface|null {
 		return this._asset ?? null;
 	}
 
-	public set asset( value: object ) {
+	public set asset( value: AssetInterface ) {
 		this._asset = value;
 	}
 
-	public get source(): object|null {
+	public get source(): SourceInterface|null {
 		return this._source ?? null;
 	}
 
-	public set source( value: object ) {
+	public set source( value: SourceInterface ) {
 		this._source = value;
 	}
 
-	public get quantity(): object|null {
+	public get quantity(): QuantityInterface|null {
 		return this._quantity ?? null;
 	}
 
-	public set quantity( value: object ) {
+	public set quantity( value: QuantityInterface ) {
 		this._quantity = value;
 	}
 
-	public get promiseMeta(): object|null {
+	public get promiseMeta(): PromiseMetaInterface|null {
 		return this._promiseMeta ?? null;
 	}
 
-	public set promiseMeta( value: object ) {
+	public set promiseMeta( value: PromiseMetaInterface ) {
 		this._promiseMeta = value;
 	}
 
-	public get tokenMeta(): object|null {
+	public get tokenMeta(): MetaInterface|null {
 		return this._tokenMeta ?? null;
 	}
 
-	public set tokenMeta( value: object ) {
+	public set tokenMeta( value: MetaInterface ) {
 		this._tokenMeta = value;
 	}
 

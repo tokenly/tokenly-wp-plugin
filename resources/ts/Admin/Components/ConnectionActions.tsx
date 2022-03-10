@@ -6,7 +6,6 @@ import { TYPES } from '../../Types';
 import { 
 	Flex,
 	Button,
-	Spinner,
 } from '@wordpress/components';
 
 interface ConnectionActionsProps {

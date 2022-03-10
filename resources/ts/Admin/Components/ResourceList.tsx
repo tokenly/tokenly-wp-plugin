@@ -3,9 +3,10 @@ import * as React from 'react';
 import { 
 	Flex,
 } from '@wordpress/components';
+import CollectionInterface from '../../Interfaces/Collections/CollectionInterface';
 
 interface ResourceListProps {
-	items: Array<any>;
+	items: CollectionInterface;
 	component: any;
 	itemProp: string;
 	props?: any;
@@ -13,20 +14,19 @@ interface ResourceListProps {
 }
 
 export default function ResourceList( props: ResourceListProps ) {
-	let listItems = [] as any;
-	if ( props.items && Array.isArray( props.items ) ) {
-		listItems = props?.items.map( ( item: any, i: number ) => {
+	let listItems:JSX.Element[] = [];
+	if ( props.items ) {
+		const values = Array.from( props?.items.values() );
+		listItems = values.map( ( item: any ) => {
 			const cardProps = {
-				[props.itemProp]: item,
+				[ props.itemProp ]: item,
 			}
-			return (
-				<props.component {...cardProps} { ...props.props ?? {} } />
-			);
+			return <props.component {...cardProps} { ...props.props ?? {} } />;
 		} );
 	}
 	return (
 		<div style={ { width: '100%' } }>
-			{ ( Array.isArray( props.items ) && props.items.length > 0 )
+			{ ( props.items.size )
 			?	<Flex
 					style={ { width: '100%' } }
 					// @ts-ignore

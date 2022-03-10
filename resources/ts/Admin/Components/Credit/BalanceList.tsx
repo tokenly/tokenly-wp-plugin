@@ -1,9 +1,10 @@
 import * as React from 'react';
 import BalanceCard from './BalanceCard';
 import ResourceList from '../../Components/ResourceList';
+import AccountCollectionInterface from '../../../Interfaces/Collections/Credit/AccountCollectionInterface';
 
 interface BalanceListProps {
-	balance: Array<any>;
+	balance: AccountCollectionInterface;
 	username?: string;
 }
 

@@ -31,7 +31,7 @@ export default function TransactionStoreForm( props: TransactionStoreFormProps )
 
 	function onGroupFieldChange( value: any ) {
 		const newState = Object.assign( {}, props.storeData );
-		newState.group_uuid = value;
+		newState.groupUuid = value;
 		props.onChange( newState );
 	}
 
@@ -74,7 +74,7 @@ export default function TransactionStoreForm( props: TransactionStoreFormProps )
 			<GroupSelectField
 				label="Group *"
 				onChange={ onGroupFieldChange }
-				group={ props.storeData?.group_uuid }
+				group={ props.storeData?.groupUuid }
 				groups={ props.groups }
 				loading={ props.loadingGroups }
 				inputProps={ {

@@ -14,6 +14,8 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components';
+import BalanceCollectionInterface from '../../../Interfaces/Collections/Token/BalanceCollectionInterface';
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
 
 interface BalanceIndexPageProps {
 	//
@@ -27,9 +29,9 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 	const urlParams = new URLSearchParams( window.location.search );
 	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
 	const [ loadingBalance, setLoadingBalance ] = useState<boolean>( false );
-	const [ balance, setBalance ] = useState<any>( null );
+	const [ balance, setBalance ] = useState<BalanceCollectionInterface>( null );
 	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
-	const [ address, setAddress ] = useState<any>( null );
+	const [ address, setAddress ] = useState<AddressInterface>( null );
 
 	useEffect( () => {
 		setLoadingBalance( true );
@@ -37,12 +39,12 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 		addressRepository.balanceIndex( id, {
 			with: [ 'balance.meta' ],
 		} )
-		.then( ( balanceFound: any ) => {
+		.then( ( balanceFound: BalanceCollectionInterface ) => {
 			setBalance( balanceFound );
 			return balanceFound;
 		} )
-		.then( ( balanceFound: any ) => {
-			addressRepository.show( id ).then( ( addressFound: any ) => {
+		.then( ( balanceFound: BalanceCollectionInterface ) => {
+			addressRepository.show( id ).then( ( addressFound: AddressInterface ) => {
 				setLoadingBalance( false );
 				setLoadingAddress( false );
 				setAddress( addressFound );

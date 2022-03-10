@@ -1,9 +1,10 @@
 import * as React from 'react';
 import TransactionCard from './TransactionCard';
 import ResourceList from '../../Components/ResourceList';
+import AccountCollectionInterface from '../../../Interfaces/Collections/Credit/AccountCollectionInterface';
 
 interface AccountList {
-	accounts: Array<any>;
+	accounts: AccountCollectionInterface;
 }
 
 export default function AccountList( props: AccountList ) {

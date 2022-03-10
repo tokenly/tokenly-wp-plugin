@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { 
 	TextControl,
-	TextareaControl,
 	Flex,
 } from '@wordpress/components';
 
@@ -20,12 +19,6 @@ export default function GroupEditForm( props: GroupEditFormProps ) {
 		props.onChange( state );
 	}
 
-	// function onWhitelistFieldChange( value: any ) {
-	// 	const state = Object.assign( {}, props.editData );
-	// 	state.app_whitelist = value;
-	// 	props.onChange( state );
-	// }
-
 	return (
 		<div style={ { maxWidth: "320px" } }>
 			<Flex
@@ -38,13 +31,6 @@ export default function GroupEditForm( props: GroupEditFormProps ) {
 					onChange={ onNameFieldChange }
 					required
 				/>
-				{/* <TextareaControl
-					label="App Whitelist"
-					help="Comma-separated values."
-					value={ props.editData.app_whitelist }
-					onChange={ onWhitelistFieldChange }
-					required
-				/> */}
 			</Flex>
 		</div>
 	);

@@ -5,10 +5,11 @@ import {
 	Spinner,
 	SelectControl,
 } from '@wordpress/components';
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
 
 interface SourceSelectFieldProps {
 	source: any;
-	sources: any;
+	sources: SourceCollectionInterface;
 	loading: boolean;
 	onChange: any;
 	label?: string;
@@ -24,9 +25,9 @@ export default function SourceSelectField( props: SourceSelectFieldProps ) {
 			}
 		];
 		if ( props.sources && typeof props.sources === 'object' ) {
-			Object.keys( props.sources ).forEach( ( key ) => {
+			props.sources.forEach( ( value, key ) => {
 				options.push( {
-					label: props.sources[ key ]?.address.label ?? key,
+					label: value?.address.label ?? key,
 					value: key,
 				} );
 			} );

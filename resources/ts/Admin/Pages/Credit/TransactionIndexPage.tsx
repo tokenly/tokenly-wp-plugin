@@ -13,6 +13,7 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components';
+import TransactionCollectionInterface from '../../../Interfaces/Collections/Credit/TransactionCollectionInterface';
 
 interface TransactionIndexPageProps {
 	//
@@ -21,7 +22,7 @@ interface TransactionIndexPageProps {
 export default function TransactionIndexPage( props: TransactionIndexPageProps ) {
 	const transactionRepository: TransactionRepositoryInterface = useInjection( TYPES.Repositories.Credit.TransactionRepositoryInterface );
 
-	const [ transactions, setTransactions ] = useState<any>( null );
+	const [ transactions, setTransactions ] = useState<TransactionCollectionInterface>( null );
 	const [ loadingTransactions, setLoadingTransactions ] = useState<any>( false );
 
 	useEffect( () => {
@@ -31,7 +32,7 @@ export default function TransactionIndexPage( props: TransactionIndexPageProps )
 			group: group,
 		}
 		setLoadingTransactions( true );
-		transactionRepository.index( params ).then( ( transactionsFound: any ) => {
+		transactionRepository.index( params ).then( ( transactionsFound: TransactionCollectionInterface ) => {
 			setLoadingTransactions( false );
 			setTransactions( transactionsFound );
 		} );

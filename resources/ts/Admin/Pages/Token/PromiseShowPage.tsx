@@ -7,7 +7,7 @@ import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/P
 import { TYPES } from '../../Types';
 import Preloader from '../../Components/Preloader';
 import PromiseInfo from '../../Components/Token/PromiseInfo';
-import eventBus from "../../../EventBus";
+import eventBus from '../../../EventBus';
 import { 
 	Button,
 	Panel,
@@ -18,6 +18,7 @@ import {
 } from '@wordpress/components';
 import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
 import PromiseInterface from '../../../Interfaces/Models/Token/PromiseInterface';
+import Source from '../../../Models/Token/Source';
 
 interface PromiseShowPageProps {
 	//
@@ -54,7 +55,7 @@ export default function PromiseShowPage( props: PromiseShowPageProps ) {
 			return promiseFound;
 		} ).then( ( promiseFound: PromiseInterface ) => {
 			addressRepository.show( promiseFound.sourceId ).then( ( addressFound: AddressInterface ) => {
-				promiseFound.source = {};
+				promiseFound.source = new Source();
 				promiseFound.source.address = addressFound;
 				setLoadingAddress( false );
 				setPromise( promiseFound );
@@ -89,10 +90,6 @@ export default function PromiseShowPage( props: PromiseShowPageProps ) {
 				}
 				break;
 		}
-	}
-
-	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-promise-index`;
 	}
 	
 	return (

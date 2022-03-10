@@ -33,15 +33,15 @@ export default function GroupInfo( props: GroupInfoProps ) {
 					</div>
 					<div>
 						<span>App Whitelist: </span>
-						<b>{ props?.group?.app_whitelist }</b>
+						<b>{ props?.group?.appWhitelist }</b>
 					</div>
 					<div>
 						<span>Created At: </span>
-						<b>{ dateFormatted( props?.group?.created_at ) }</b>
+						<b>{ dateFormatted( props?.group?.createdAt ) }</b>
 					</div>
 					<div>
 						<span>Updated At: </span>
-						<b>{ dateFormatted( props?.group?.updated_at ) }</b>
+						<b>{ dateFormatted( props?.group?.updatedAt ) }</b>
 					</div>
 				</div>
 			}

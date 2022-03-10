@@ -1,5 +1,6 @@
 import Model from '../Model';
 import AccountInterface from '../../Interfaces/Models/Credit/AccountInterface';
+import GroupInterface from '../../Interfaces/Models/Credit/GroupInterface';
 
 export default class Account extends Model implements AccountInterface {
 	protected _name?: string = null;
@@ -9,6 +10,7 @@ export default class Account extends Model implements AccountInterface {
 	protected _createdAt?: string = null;
 	protected _updatedAt?: string = null;
 	protected _groupId?: string = null;
+	protected _group?: GroupInterface;
 
 	public get name(): string|null {
 		return this._name ?? null;
@@ -64,6 +66,14 @@ export default class Account extends Model implements AccountInterface {
 
 	public set groupId( value: string ) {
 		this._groupId = value;
+	}
+
+	public get group(): GroupInterface|null {
+		return this._group ?? null;
+	}
+
+	public set group( value: GroupInterface ) {
+		this._group = value;
 	}
 
 	public fromJson( data: any = {} ): this {

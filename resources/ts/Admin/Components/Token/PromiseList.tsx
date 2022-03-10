@@ -1,9 +1,10 @@
 import * as React from 'react';
 import PromiseCard from './PromiseCard';
 import ResourceList from '../../Components/ResourceList';
+import PromiseCollectionInterface from '../../../Interfaces/Collections/Token/PromiseCollectionInterface';
 
 interface PromiseListProps {
-	promises: Array<any>;
+	promises: PromiseCollectionInterface;
 }
 
 export default function PromiseList( props: PromiseListProps ) {

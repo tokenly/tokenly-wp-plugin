@@ -51,11 +51,11 @@ export default function TransactionInfo( props: TransactionInfoProps ) {
 				</div>
 				<div>
 					<span>Created At: </span>
-					<b>{ dateFormatted( props.transaction?.created_at ) }</b>
+					<b>{ dateFormatted( props.transaction?.createdAt ) }</b>
 				</div>
 				<div>
 					<span>Updated At: </span>
-					<b>{ dateFormatted( props.transaction?.updated_at ) }</b>
+					<b>{ dateFormatted( props.transaction?.updatedAt ) }</b>
 				</div>
 			</div>
 		</Flex>

@@ -3,6 +3,7 @@ import UserSearchField from '../UserSearchField';
 import AssetSearchField from '../AssetSearchField';
 import SourceSelectField from '../Token/SourceSelectField';
 import QuantityField from '../Token/QuantityField';
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
 
 import { 
 	TextControl,
@@ -14,16 +15,16 @@ import {
 interface PromiseStoreFormProps {
 	loadingSources: boolean;
 	storeData: any;
-	sources: any;
+	sources: SourceCollectionInterface;
 	onChange: any;
 }
 
 export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 	function getBalance() {
-		if ( !props.storeData?.source_id ) {
+		if ( !props.storeData?.sourceId ) {
 			return [];
 		}
-		const balance = props.sources[ props.storeData?.source_id ]?.address?.balance;
+		const balance = props.sources.get( props.storeData?.sourceId )?.address?.balance;
 		return balance;
 	}
 
@@ -35,7 +36,7 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 		if ( asset == '' ) {
 			return null;
 		}
-		let balance = props.sources[ props.storeData?.source_id ]?.address?.balance;
+		let balance = props.sources.get( props.storeData?.sourceId )?.address?.balance;
 		if ( !balance ) {
 			return null;
 		}
@@ -133,7 +134,7 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 				<SourceSelectField
 					label="Source *"
 					onChange={ onSourceFieldChange }
-					source={ props.storeData?.source_id }
+					source={ props.storeData?.sourceId }
 					sources={ props.sources }
 					loading={ props.loadingSources }
 					inputProps={ {

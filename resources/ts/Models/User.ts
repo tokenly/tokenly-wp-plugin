@@ -1,6 +1,8 @@
 import Model from './Model';
 import UserInterface from '../Interfaces/Models/UserInterface';
 
+import OauthUserInterface from '../Interfaces/Models/OauthUserInterface';
+
 export default class User extends Model implements UserInterface {
 	protected _id?: number;
 	protected _name?: string;
@@ -8,7 +10,7 @@ export default class User extends Model implements UserInterface {
 	protected _description?: string;
 	protected _avatar?: string;
 	protected _canConnect?: boolean;
-	protected _oauthUser?: object;
+	protected _oauthUser?: OauthUserInterface;
 
 	public get id(): number|null {
 		return this._id ?? null;
@@ -58,11 +60,11 @@ export default class User extends Model implements UserInterface {
 		this._canConnect = value;
 	}
 
-	public get oauthUser(): object|null {
+	public get oauthUser(): OauthUserInterface|null {
 		return this._oauthUser ?? null;
 	}
 
-	public set oauthUser( value: object ) {
+	public set oauthUser( value: OauthUserInterface ) {
 		this._oauthUser = value;
 	}
 

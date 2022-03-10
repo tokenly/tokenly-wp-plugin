@@ -13,6 +13,8 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components';
+import BalanceCollectionInterface from '../../../../Interfaces/Collections/Token/BalanceCollectionInterface';
+import UserInterface from '../../../../Interfaces/Models/UserInterface';
 
 interface BalanceIndexPageProps {
 	//
@@ -27,8 +29,8 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
 	const [ loadingUser, setLoadingUser ] = useState<boolean>( false );
 	const [ loadingBalance, setLoadingBalance ] = useState<boolean>( false );
-	const [ balance, setBalance ] = useState<any>( null );
-	const [ user, setUser ] = useState<any>( null );
+	const [ balance, setBalance ] = useState<BalanceCollectionInterface>( null );
+	const [ user, setUser ] = useState<UserInterface>( null );
 
 
 	useEffect( () => {
@@ -37,14 +39,14 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 		userRepository.tokenBalanceIndex( id, {
 			with: [ 'meta' ],
 		} )
-		.then( ( balancesFound: any ) => {
+		.then( ( balancesFound: BalanceCollectionInterface ) => {
 			setBalance( balancesFound );
 			return balancesFound;
 		} )
-		.then( ( balancesFound: any ) => {
+		.then( ( balancesFound: BalanceCollectionInterface ) => {
 			userRepository.show( id, {
 				with: [ 'oauth_user' ],
-			} ).then( ( userFound: any ) => {
+			} ).then( ( userFound: UserInterface ) => {
 				setLoadingBalance( false );
 				setLoadingUser( false );
 				setUser( userFound );

@@ -27,7 +27,7 @@ export default function AddressLink( props: AddressLinkProps ) {
 		<Button
 			isLink	
 			href={ url }
-			style={{ flexShrink: 0 }}
+			style={ { flexShrink: 0 } }
 		>
 				{ title }
 		</Button>

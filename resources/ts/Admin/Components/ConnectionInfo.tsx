@@ -1,9 +1,10 @@
 import * as React from 'react';
 import StatusIndicator from '../Components/StatusIndicator';
+import UserInterface from '../../Interfaces/Models/UserInterface';
 
 interface ConnectionInfoProps {
 	status: boolean;
-	user: any;
+	user: UserInterface;
 }
 
 export default function ConnectionInfo( props: ConnectionInfoProps ) {
@@ -14,7 +15,7 @@ export default function ConnectionInfo( props: ConnectionInfoProps ) {
 				<div>
 					<span>Connected As: </span>
 					<span>
-						<b>{`${ props.user?.name } ( ${ props.user?.oauth_user?.username } )` }</b>
+						<b>{`${ props.user?.name } ( ${ props.user?.oauthUser?.username } )` }</b>
 					</span>
 				</div>
 			}

@@ -16,7 +16,6 @@ interface AddressInfoProps {
 export default function AddressInfo( props: AddressInfoProps ) {
 	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
 	const namespace = useInjection( TYPES.Variables.namespace );
-	console.log(props);
 	return (
 		<Flex
 			//@ts-ignore

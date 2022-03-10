@@ -16,6 +16,11 @@ import {
 	PanelRow,
 	Flex,
 } from '@wordpress/components';
+import UserInterface from '../../../Interfaces/Models/UserInterface';
+import AddressCollectionInterface from '../../../Interfaces/Collections/Token/AddressCollectionInterface';
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
+import AddressCollection from '../../../Collections/Token/AddressCollection';
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
 
 interface AddressIndexPageProps {
 	//
@@ -28,35 +33,37 @@ export default function AddressIndexPage( props: AddressIndexPageProps ) {
 	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
 	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
 
-	const [ addresses, setAddresses ] = useState<any>( null );
-	const [ sources, setSources ] = useState<any>( null );
+	const [ addresses, setAddresses ] = useState<AddressCollectionInterface>( null );
+	const [ sources, setSources ] = useState<SourceCollectionInterface>( null );
 	const [ loadingAddresses, setLoadingAddresses ] = useState<boolean>( false );
 	const [ loadingSources, setLoadingSources ] = useState<boolean>( false );
 
 	useEffect( () => {
 		setLoadingAddresses( true );
 		setLoadingSources( true );
-		userRepository.show('me', {
+		userRepository.show( 'me', {
 			with: [ 'oauth_user' ],
-		} ).then( ( user: any ) => {
-			if ( user && user.oauth_user ) {
-				addressRepository.index().then( ( addressesFound: any ) => {
-					addressesFound = Object.values( addressesFound );
-					setLoadingAddresses( false );
-					setAddresses( addressesFound );
-					return addressesFound;
-				} ).then( ( addressesFound ) => {
-					addressesFound = Object.assign( [], addressesFound );
-					sourceRepository.index().then( ( sourcesFound: any ) => {
-						setLoadingSources( false );
-						setSources( sourcesFound );
-						addressesFound.forEach( ( address: any ) => {
-							address.isSource = ( address.address in sourcesFound );
-						} );
-						setAddresses( addressesFound );
-					} );
-				} );
+		} ).then( ( user?: UserInterface ) => {
+			if ( !user || !user.oauthUser ) {
+				return;
 			}
+			console.log(1);
+			addressRepository.index().then( ( addressesFound: AddressCollectionInterface ) => {
+				setLoadingAddresses( false );
+				setAddresses( addressesFound );
+				console.log(2);
+				return addressesFound;
+			} ).then( ( addressesFound: AddressCollectionInterface ) => {
+				sourceRepository.index().then( ( sourcesFound: SourceCollectionInterface ) => {
+					console.log(3);
+					setLoadingSources( false );
+					setSources( sourcesFound );
+					addressesFound.forEach( ( address: AddressInterface ) => {
+						address.isSource = ( address.address in sourcesFound );
+					} );
+					setAddresses( addressesFound );
+				} );
+			} );
 		} );
 	}, [] );
 	

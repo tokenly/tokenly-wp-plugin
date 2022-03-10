@@ -14,6 +14,7 @@ import {
 	PanelHeader,
 } from '@wordpress/components';
 import Preloader from '../../Components/Preloader';
+import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface';
 
 interface GroupIndexPageProps {
 	//
@@ -23,11 +24,11 @@ export default function GroupIndexPage( props: GroupIndexPageProps ) {
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 
 	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
-	const [ groups, setGroups ] = useState<any>( null );
+	const [ groups, setGroups ] = useState<GroupCollectionInterface>( null );
 
 	useEffect( () => {
 		setLoadingGroups( true );
-		groupRepository.index().then( ( groupsFound: any ) => {
+		groupRepository.index().then( ( groupsFound: GroupCollectionInterface ) => {
 			setLoadingGroups( false );
 			setGroups( groupsFound );
 		} );

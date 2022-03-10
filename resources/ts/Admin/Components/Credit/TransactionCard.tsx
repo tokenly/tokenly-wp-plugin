@@ -17,7 +17,7 @@ export default function TransactionCard( props: TransactionCardProps ) {
 	return (
 		<Card size="extraSmall" style={ { width: '100%' } }>
 			<CardHeader>
-				<TransactionLink uuid={ props.transaction?.tx_uuid } />
+				<TransactionLink uuid={ props.transaction?.txUuid } />
 			</CardHeader>
 			<CardBody style={ { width: '100%' } }>
 				<TransactionInfo transaction={ props.transaction } />

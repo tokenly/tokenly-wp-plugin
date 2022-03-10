@@ -1,14 +1,14 @@
 import * as React from 'react';
 import ConnectionInfo from './ConnectionInfo';
 import ConnectionActions from './ConnectionActions';
-
+import UserInterface from '../../Interfaces/Models/UserInterface';
 
 import { 
 	Flex
 } from '@wordpress/components';
 
 interface ConnectionProps {
-	user: any;
+	user: UserInterface;
 }
 
 export default function Connection( props: ConnectionProps ) {
@@ -18,8 +18,8 @@ export default function Connection( props: ConnectionProps ) {
 			direction="column"
 			gap={4}
 		>
-			<ConnectionInfo status={ props?.user?.can_connect } user={ props?.user } />
-			<ConnectionActions disabled={ !props?.user } status={ props?.user?.can_connect } />
+			<ConnectionInfo status={ props?.user?.canConnect } user={ props?.user } />
+			<ConnectionActions disabled={ !props?.user } status={ props?.user?.canConnect } />
 		</Flex>
 	);
 }
