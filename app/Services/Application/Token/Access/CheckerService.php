@@ -370,8 +370,8 @@ class CheckerService extends Service implements CheckerServiceInterface {
 	): bool {
 		$tca_enabled = $this->check_tca_enabled( $target );
 		$rules_total = 0;
-		if ( $target->get_tca_rules() ) {
-			$rules_total = count( ( array ) $target->get_tca_rules() );
+		if ( $target->tca_rules ) {
+			$rules_total = count( ( array ) $target->tca_rules );
 		}
 		if ( $tca_enabled === true && $rules_total > 0 ) {
 			return true;

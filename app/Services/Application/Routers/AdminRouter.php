@@ -111,7 +111,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 			foreach ( ( array ) $subroutes as &$subroute ) {
 				$subroute = $this->process_subroute( $route, $subroute );
 			}
-			$route->set_subroutes( $subroutes );
+			$route->subroutes = $subroutes;
 		}
 		return $route;
 	}
@@ -128,7 +128,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	): RouteInterface {
 		$subroute = $this->process_route( $subroute );
 		$menu_slug = $this->get_subroute_slug( $route, $subroute );
-		$subroute->set_menu_slug( $menu_slug );
+		$subroute->menu_slug = $menu_slug;
 		return $subroute;
 	}
 

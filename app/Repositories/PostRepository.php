@@ -85,8 +85,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 		array $params = array()
 	): PostInterface {
 		$params = $this->filter_meta_params( $params );
+	
 		$this->meta_repository->update( $post->ID, $params );
-		$post = $this->complete( $post->get_post() );
+		$post = $this->complete( $post->post );
 		return $post;
 	}
 

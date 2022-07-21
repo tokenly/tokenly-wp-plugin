@@ -5,6 +5,7 @@ import RuleEditor from '../Components/Token/Access/RuleEditor';
 import { 
 	Flex,
 } from '@wordpress/components';
+import RuleCollection from '../../Collections/Token/RuleCollection';
 
 export interface PostEditPageProps {
 	tca_rules: any;
@@ -15,17 +16,21 @@ export interface PostEditPageProps {
 
 export default function PostEditPage( props: PostEditPageProps ) {
 	const [ editData, setEditData ] = useState<any>( {
-		tca_rules: props.tca_rules,
+		tcaRules: ( new RuleCollection() ).fromJson( props.tca_rules )
 	} );
 
 	function onEditDataChange( newData: any ) {
 		setEditData( newData );
-		props.onPostDataChange( newData );
+		const rules = newData.tcaRules.toJson()
+		console.log(rules)
+		props.onPostDataChange( {
+			tca_rules: rules
+		} );
 	}
 
 	function onRulesFieldChange( newRules: any ) {
 		let state = Object.assign( {}, editData );
-		state.tca_rules = newRules;
+		state.tcaRules = newRules;
 		onEditDataChange( state );
 	}
 

@@ -82,15 +82,13 @@ class ListingRouter extends Router implements ListingRouterInterface {
 	}
 
 	protected function get_column_render_callback(
-		$key,
-		ColumnInterface $column
+		$key, ColumnInterface $column
 	): callable {
 		return function(){};
 	}
 
 	protected function get_column_register_callback(
-		$key,
-		ColumnInterface $column
+		$key, ColumnInterface $column
 	): callable {
 		return function(){};
 	}

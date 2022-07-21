@@ -11,7 +11,9 @@ use Tokenly\Wp\Interfaces\Models\Credit\TransactionInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class TransactionRepository extends Repository implements TransactionRepositoryInterface {
+class TransactionRepository extends Repository
+	implements TransactionRepositoryInterface
+{
 	protected TokenpassAPIInterface $client;
 	
 	public function __construct(
@@ -25,7 +27,9 @@ class TransactionRepository extends Repository implements TransactionRepositoryI
 	 * @param array $params Search parameters
 	 * @return TransactionCollectionInterface Transactions found
 	 */
-	public function index( array $params = array() ): TransactionCollectionInterface {
+	public function index(
+		array $params = array()
+	): TransactionCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -35,7 +39,9 @@ class TransactionRepository extends Repository implements TransactionRepositoryI
 	 * @param array $params Search parameters
 	 * @return TransactionCollectionInterface Transactions found
 	 */
-	protected function index_cacheable( array $params = array() ): TransactionCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): TransactionCollectionInterface {
 		$transactions = array();
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
@@ -47,7 +53,8 @@ class TransactionRepository extends Repository implements TransactionRepositoryI
 				$transactions = $history['transactions'];
 			}
 		}
-		$transactions = ( new TransactionCollection() )->from_array( $transactions );
+		$transactions =
+			( new TransactionCollection() )->from_array( $transactions );
 		return $transactions;
 	}
 

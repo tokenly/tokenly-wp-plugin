@@ -16,7 +16,7 @@ export interface TermEditPageProps {
 
 export default function TermEditPage( props: TermEditPageProps ) {
 	const [ editData, setEditData ] = useState<any>( {
-		tca_rules: props.tca_rules,
+		tcaRules: props.tca_rules,
 	} );
 
 	function onEditDataChange( newData: any ) {
@@ -26,7 +26,7 @@ export default function TermEditPage( props: TermEditPageProps ) {
 
 	function onRulesFieldChange( newRules: any ) {
 		let state = Object.assign( {}, editData );
-		state.tca_rules = newRules;
+		state.tcaRules = newRules;
 		onEditDataChange( state );
 	}
 

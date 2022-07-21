@@ -1,5 +1,5 @@
 export interface AddressEditData {
-	
+	//
 }
 
 export interface Redirect {

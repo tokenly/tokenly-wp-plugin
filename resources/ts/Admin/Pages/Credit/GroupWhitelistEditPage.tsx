@@ -6,7 +6,6 @@ import { WhitelistData, WhitelistItem } from '../../../Interfaces';
 import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
 import ResourceEditActions from '../../Components/ResourceEditActions';
 import { TYPES } from '../../Types';
-import eventBus from "../../../EventBus";
 import Preloader from '../../Components/Preloader';
 import { 
 	Panel,
@@ -32,8 +31,8 @@ export default function GroupWhitelistEditPage( props: GroupWhitelistEditPagePro
 		whitelist: props.whitelist,
 	} );
 	const [ saving, setSaving ] = useState<any>( false );
-	const [ loadingGroups, setLoadingGroups ] = useState<any>( false );
-	const [ groups, setGroups ] = useState<any>( null );
+	const [ loadingGroups, setLoadingGroups ] = useState<any>( true );
+	const [ groups, setGroups ] = useState<any>( [] );
 	
 	function onSave() {
 		setSaving( true );
@@ -79,7 +78,8 @@ export default function GroupWhitelistEditPage( props: GroupWhitelistEditPagePro
 		window.location = `${ adminPageUrl }${ namespace }-credit-vendor`;
 	}
 
-	const groupItems = groups?.map( ( group: any, index: number ) => {
+
+	const groupItems = Array.from( groups.values() ).map( ( group: any, index: number ) => {
 		return (
 			<CheckboxControl
 				label={ group.name }
@@ -99,8 +99,7 @@ export default function GroupWhitelistEditPage( props: GroupWhitelistEditPagePro
 				</PanelHeader>
 			{	(
 					!loadingGroups &&
-					groups &&
-					Array.isArray( groups )
+					groupItems
 				) &&
 				<PanelBody>
 					<PanelRow>

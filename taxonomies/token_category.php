@@ -7,8 +7,12 @@ return function(
 	CategoryTermRepositoryInterface $repository
 ) {
 	$labels = array(
-		'name'              => _x( 'Token Category', 'taxonomy general name', $text_domain ),
-		'singular_name'     => _x( 'Category', 'taxonomy singular name', $text_domain ),
+		'name'              => _x(
+			'Token Category', 'taxonomy general name', $text_domain
+		),
+		'singular_name'     => _x(
+			'Category', 'taxonomy singular name', $text_domain
+		),
 		'search_items'      => __( 'Search Categories', $text_domain ),
 		'all_items'         => __( 'All Categories', $text_domain ),
 		'parent_item'       => __( 'Parent Category', $text_domain ),

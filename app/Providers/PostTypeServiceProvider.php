@@ -13,7 +13,9 @@ use Tokenly\Wp\Interfaces\Models\PostInterface;
 /**
  * Registers post types
  */
-class PostTypeServiceProvider extends ServiceProvider implements PostTypeServiceProviderInterface {
+class PostTypeServiceProvider extends ServiceProvider
+	implements PostTypeServiceProviderInterface
+{
 	protected string $root_dir;
 	protected string $namespace;
 	protected string $text_domain;
@@ -59,7 +61,10 @@ class PostTypeServiceProvider extends ServiceProvider implements PostTypeService
 		$this->register_hooks();
 	}
 
-	protected function register_post_type( string $key, array $post_type_definition ): void {
+	protected function register_post_type(
+		string $key,
+		array $post_type_definition
+	): void {
 		$data = $post_type_definition['data'];
 		$path = "{$this->root_dir}/post_types/{$key}.php";
 		$post_type = $this->invoker->call( include( $path ), $data );
@@ -80,7 +85,9 @@ class PostTypeServiceProvider extends ServiceProvider implements PostTypeService
 		return null;
 	}
 
-	protected function get_repository( string $post_type ): RepositoryInterface {
+	protected function get_repository(
+		string $post_type
+	): RepositoryInterface {
 		$repository = $this->post_repository;
 		if ( isset( $this->repositories[ $post_type ] ) ) {
 			$repository = $this->repositories[ $post_type ];
@@ -96,16 +103,24 @@ class PostTypeServiceProvider extends ServiceProvider implements PostTypeService
 		$this->register_add_meta_boxes_hook( $post_types );
 	}
 
-	protected function register_save_post_hook( array $post_types = array() ): void {
+	protected function register_save_post_hook(
+		array $post_types = array()
+	): void {
 		foreach ( $post_types as $post_type ) {
-			add_action( "save_post_{$post_type}", function( int $post_id, \WP_Post $post, bool $update ) use ( $post_type ) {
+			$callback = function(
+				int $post_id, \WP_Post $post, bool $update
+			) use ( $post_type ) {
+				$action = "{$this->namespace}_save_post_{$post->post_type}";
 				$post = $this->complete_post( $post );
-				do_action( "{$this->namespace}_save_post_{$post->post_type}", $post, $update );
-			}, 10, 3 );
+				do_action( $action, $post, $update );
+			};
+			add_action( "save_post_{$post_type}", $callback, 10, 3 );
 		}
 	}
 
-	protected function register_template_redirect_hook( array $post_types = array() ): void {
+	protected function register_template_redirect_hook(
+		array $post_types = array()
+	): void {
 		add_action( "template_redirect", function() {
 			$object = get_queried_object();
 			if ( $object instanceof \WP_Post === false ) {
@@ -116,7 +131,7 @@ class PostTypeServiceProvider extends ServiceProvider implements PostTypeService
 			do_action( "{$this->namespace}_template_redirect_post", $post );
 		}, 10, 0 );
 		foreach ( $post_types as $post_type ) {
-			add_action( "template_redirect", function() use ( $post_type ) {
+			$callback = function() use ( $post_type ) {
 				$object = get_queried_object();
 				if ( $object instanceof \WP_Post === false ) {
 					return;
@@ -126,25 +141,40 @@ class PostTypeServiceProvider extends ServiceProvider implements PostTypeService
 					return;
 				}
 				$post = $this->complete_post( $post );
-				do_action( "{$this->namespace}_template_redirect_post_{$post->post_type}", $post );
-			}, 10, 0 );
+				$post_type = $post->post_type;
+				$action = 
+					"{$this->namespace}_template_redirect_post_{$post_type}";
+				do_action( $action, $post );
+			};
+			add_action( "template_redirect", $callback, 10, 0 );
 		}
 	}
 
 	protected function register_posts_results_hook(): void {
-		add_filter( "posts_results", function( array $posts, \WP_Query $query ) {
+		add_filter( "posts_results", function(
+			array $posts, \WP_Query $query
+		) {
 			$posts = $this->post_repository->complete_collection( $posts );
-			$posts = apply_filters( "{$this->namespace}_posts_results", $posts, $query );
+			$posts = apply_filters(
+				"{$this->namespace}_posts_results", $posts, $query
+			);
 			return $posts;
 		}, 10, 2 );
 	}
 
-	protected function register_add_meta_boxes_hook( array $post_types ): void {
+	protected function register_add_meta_boxes_hook(
+		array $post_types
+	): void {
 		foreach ( $post_types as $post_type ) {
-			add_action( "add_meta_boxes_{$post_type}", function( \WP_Post $post ) {
+			$callback = function(
+				\WP_Post $post
+			) {
+				$action = 
+					"{$this->namespace}_add_meta_boxes_{$post->post_type}";
 				$post = $this->complete_post( $post );
-				do_action( "{$this->namespace}_add_meta_boxes_{$post->post_type}", $post );
-			}, 10, 1 );
+				do_action( $action, $post );
+			};
+			add_action( "add_meta_boxes_{$post_type}", $callback, 10, 1 );
 		}
 	}
 }

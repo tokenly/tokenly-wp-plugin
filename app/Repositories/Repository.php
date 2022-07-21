@@ -138,10 +138,10 @@ class Repository implements RepositoryInterface {
 				$relations_nested = $relation_formatted['relations'] ?? null;
 				if ( 
 					property_exists( $instance, $relation ) &&
-					is_object( $instance[ $relation ] )
+					is_object( $instance->$relation )
 				) {
 					$this->{"{$relation}_repository"}->load(
-						$instance[ $relation ],
+						$instance->$relation,
 						array( $relations_nested ), $params
 					);
 					continue;
@@ -156,7 +156,7 @@ class Repository implements RepositoryInterface {
 							array( $relations_nested ),
 							$params
 						);
-						$instance[ $relation ] = $relation_instance;
+						$instance->$relation = $relation_instance;
 					}
 				}
 			} elseif ( $instance instanceof CollectionInterface ) {

@@ -54,9 +54,12 @@ class AuthController implements AuthControllerInterface {
 	public function destroy() {
 		$success_url = get_query_var( "{$this->namespace}_success_url" );
 		if ( !$success_url ) {
-			$success_url = $this->oauth_settings->get_success_url();
+			$success_url = $this->oauth_settings->success_url;
 		}
-		if ( !$this->current_user || $this->current_user instanceof UserInterface === false ) {
+		if (
+			!$this->current_user ||
+			$this->current_user instanceof UserInterface === false
+		) {
 			return;
 		}
 		$this->auth_service->disconnect_user( $this->current_user );
@@ -73,6 +76,9 @@ class AuthController implements AuthControllerInterface {
 			wp_redirect( home_url() );
 			exit;
 		}
-		$this->auth_service->authorize_callback( $_GET['state'], $_GET['code'] );
+		$this->auth_service->authorize_callback(
+			$_GET['state'],
+			$_GET['code']
+		);
 	}
 }

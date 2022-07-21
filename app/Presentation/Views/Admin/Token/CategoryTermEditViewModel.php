@@ -8,7 +8,9 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\CategoryTermEditViewMod
 use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
 
-class CategoryTermEditViewModel extends TermEditViewModel implements CategoryTermEditViewModelInterface {
+class CategoryTermEditViewModel extends TermEditViewModel
+	implements CategoryTermEditViewModelInterface
+{
 	public function __construct(
 		TcaSettingsRepositoryInterface $tca_settings_repository,
 		CategoryTermRepositoryInterface $term_repository

@@ -30,7 +30,7 @@ class AuthController implements AuthControllerInterface {
 		if ( !isset( $this->current_user ) || $this->current_user instanceof UserInterface === false ) {
 			$status = false;
 		} else {
-			$status = $this->current_user->get_can_connect();
+			$status = $this->current_user->can_connect;
 		}
 		return new \WP_REST_Response( array(
 			'status' => $status,

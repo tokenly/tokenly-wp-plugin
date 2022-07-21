@@ -6,7 +6,9 @@ use Tokenly\Wp\Presentation\Components\ComponentModel;
 use Tokenly\Wp\Interfaces\Presentation\Components\Token\ItemCardComponentModelInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 
-class ItemCardComponentModel extends ComponentModel implements ItemCardComponentModelInterface {	
+class ItemCardComponentModel extends ComponentModel 
+	implements ItemCardComponentModelInterface
+{	
 	protected PostMetaRepositoryInterface $meta_repository;
 	protected string $fallback_image;
 

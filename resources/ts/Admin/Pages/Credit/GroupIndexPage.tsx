@@ -23,7 +23,7 @@ interface GroupIndexPageProps {
 export default function GroupIndexPage( props: GroupIndexPageProps ) {
 	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
 
-	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( false );
+	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( true );
 	const [ groups, setGroups ] = useState<GroupCollectionInterface>( null );
 
 	useEffect( () => {

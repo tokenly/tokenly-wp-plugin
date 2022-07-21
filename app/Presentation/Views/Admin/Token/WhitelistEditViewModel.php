@@ -8,7 +8,9 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\WhitelistEditViewModelI
 use Tokenly\Wp\Interfaces\Models\Token\WhitelistInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\WhitelistRepositoryInterface;
 
-class WhitelistEditViewModel extends DynamicViewModel implements WhitelistEditViewModelInterface {
+class WhitelistEditViewModel extends DynamicViewModel
+	implements WhitelistEditViewModelInterface
+{
 	protected WhitelistInterface $whitelist;
 	protected WhitelistRepositoryInterface $whitelist_repository;
 	

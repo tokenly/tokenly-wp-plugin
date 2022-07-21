@@ -21,7 +21,8 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
  * Manages token balance
  */
 class BalanceRepository extends Repository 
-	implements BalanceRepositoryInterface {
+	implements BalanceRepositoryInterface
+{
 	protected MetaRepositoryInterface $meta_repository;
 	protected WhitelistRepositoryInterface $whitelist_repository;
 	protected WhitelistInterface $whitelist;

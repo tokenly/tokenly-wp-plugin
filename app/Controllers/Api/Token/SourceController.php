@@ -13,7 +13,9 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 /**
  * Defines source endpoints
  */
-class SourceController extends Controller implements SourceControllerInterface {
+class SourceController extends Controller
+	implements SourceControllerInterface
+{
 	protected SourceRepositoryInterface $source_repository;
 	protected UserRepositoryInterface $user_repository;
 
@@ -31,7 +33,9 @@ class SourceController extends Controller implements SourceControllerInterface {
 	 * @param SourceCollectionInterface $sources Bound sources
 	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, SourceCollectionInterface $sources ): \WP_REST_Response {
+	public function index(
+		\WP_REST_Request $request, SourceCollectionInterface $sources
+	): \WP_REST_Response {
 		$sources = clone $sources;
 		$sources->key_by_field( 'address_id' );
 		$sources = $sources->to_array();
@@ -44,7 +48,9 @@ class SourceController extends Controller implements SourceControllerInterface {
 	 * @param SourceInterface|null $source Bound source
 	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, SourceInterface $source = null ): \WP_REST_Response {
+	public function show(
+		\WP_REST_Request $request, SourceInterface $source = null
+	): \WP_REST_Response {
 		if ( $source ) {
 			$source = $source->to_array();
 		}
@@ -68,7 +74,9 @@ class SourceController extends Controller implements SourceControllerInterface {
 	 * @param SourceInterface|null $source Bound source
 	 * @return \WP_REST_Response 
 	 */
-	public function update( \WP_REST_Request $request, SourceInterface $source = null ): \WP_REST_Response {
+	public function update(
+		\WP_REST_Request $request, SourceInterface $source = null
+	): \WP_REST_Response {
 		if ( $source ) {
 			$params = $request->get_params();
 			$this->source_repository->update( $source, $params );
@@ -82,7 +90,9 @@ class SourceController extends Controller implements SourceControllerInterface {
 	 * @param SourceInterface|null $source Bound source
 	 * @return \WP_REST_Response
 	 */
-	public function destroy( \WP_REST_Request $request, SourceInterface $source = null ): \WP_REST_Response {
+	public function destroy(
+		\WP_REST_Request $request, SourceInterface $source = null
+	): \WP_REST_Response {
 		if ( $source ) {
 			$this->source_repository->destroy( $source );
 		}
@@ -92,7 +102,7 @@ class SourceController extends Controller implements SourceControllerInterface {
 	protected function remap_parameters( array $params = array() ): array {
 		$user = $this->user_repository->show_current();
 		if ( $user ) {
-			$params['oauth_token'] = $user->get_oauth_token();
+			$params['oauth_token'] = $user->oauth_token;
 		}
 		if ( isset( $params['source'] ) ) {
 			$params['address'] = $params['source'];

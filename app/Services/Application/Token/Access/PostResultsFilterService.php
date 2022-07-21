@@ -75,7 +75,7 @@ class PostResultsFilterService extends Service implements PostResultsFilterServi
 				$post,
 				$this->current_user
 			);
-			if ( $verdict->get_status() === false ) {
+			if ( $verdict->status === false ) {
 				unset( $posts[ $key ] );
 			}
 		}

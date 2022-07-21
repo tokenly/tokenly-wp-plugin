@@ -8,7 +8,9 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Credit\GroupWhitelistEditView
 use Tokenly\Wp\Interfaces\Models\Credit\GroupWhitelistInterface;
 use Tokenly\Wp\Interfaces\Repositories\Credit\GroupWhitelistRepositoryInterface;
 
-class GroupWhitelistEditViewModel extends DynamicViewModel implements GroupWhitelistEditViewModelInterface {
+class GroupWhitelistEditViewModel extends DynamicViewModel
+	implements GroupWhitelistEditViewModelInterface
+{
 	protected GroupWhitelistInterface $whitelist;
 	protected GroupWhitelistRepositoryInterface $whitelist_repository;
 	

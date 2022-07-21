@@ -18,7 +18,9 @@ use Tokenly\Wp\Interfaces\Services\Domain\Token\AssetNameFormatterServiceInterfa
 use Tokenly\Wp\Interfaces\Services\Domain\Token\QuantityCalculatorServiceInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class PromiseRepository extends Repository implements PromiseRepositoryInterface {
+class PromiseRepository extends Repository
+	implements PromiseRepositoryInterface
+{
 	protected TokenpassAPIInterface $client;
 	protected MetaRepositoryInterface $meta_repository;
 	protected PromiseMetaRepositoryInterface $promise_meta_repository;
@@ -47,7 +49,9 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return PromiseCollectionInterface Promises found
 	 */
-	public function index( array $params = array() ): PromiseCollectionInterface {
+	public function index(
+		array $params = array()
+	): PromiseCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -97,7 +101,9 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return PromiseCollectionInterface Promises found
 	 */
-	protected function index_cacheable( array $params = array() ): PromiseCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): PromiseCollectionInterface {
 		$promises = $this->client->getPromisedTransactionList();
 		if ( $promises && is_array( $promises ) ) {
 			foreach ( $promises as &$promise ) {
@@ -116,7 +122,9 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param integer $promise_id Tokenpass promise index
 	 * @return PromiseInterface|null Promise found
 	 */
-	protected function show_cacheable( array $params = array() ): ?PromiseInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?PromiseInterface {
 		if ( !isset( $params['promise_id'] ) ) {
 			return null;
 		}
@@ -136,18 +144,28 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param array $params Update parameters
 	 * @return void
 	 */
-	public function update( PromiseInterface $promise, array $params = array() ): void {
+	public function update(
+		PromiseInterface $promise, array $params = array()
+	): void {
 		if ( isset( $params['destination'] ) ) {
 			unset( $params['destination'] );
 		}
-		if ( isset( $params['quantity'] ) && is_array( $params['quantity'] ) ) {
+		if (
+			isset( $params['quantity'] ) &&
+			is_array( $params['quantity'] )
+		) {
 			$params['quantity'] = $params['quantity']['value_sat'];
 		}
 		$expiration = $params['expiration'];
-		if ( ( !is_numeric( $expiration ) || ( int )$expiration != $expiration ) ) {
+		if ( (
+			!is_numeric( $expiration ) ||
+			( int )$expiration != $expiration )
+		) {
 			unset( $params['expiration'] );
 		}
-		$this->client->updatePromisedTransaction( $promise->promise_id, $params );
+		$this->client->updatePromisedTransaction(
+			$promise->promise_id, $params
+		);
 	}
 
 	/**
@@ -175,11 +193,20 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 		if ( isset( $item['precision'] ) ) {
 			$quantity_fields[ 'precision' ] = $item['precision'];
 		}
-		if ( isset( $quantity_fields['value_sat'] ) && isset( $quantity_fields['precision'] ) ) {
-			$quantity_fields['value'] = $this->quantity_calculator_service->from_sat( $quantity_fields['value_sat'], $quantity_fields['precision'] );
+		if (
+			isset( $quantity_fields['value_sat'] ) &&
+			isset( $quantity_fields['precision'] )
+		) {
+			$quantity_fields['value'] =
+				$this->quantity_calculator_service->from_sat(
+					$quantity_fields['value_sat'],
+					$quantity_fields['precision']
+				);
 		}
 		$item['quantity'] = $quantity_fields;
-		$item['asset'] = $this->asset_name_formatter_service->split( $item['asset'] );
+		$item['asset'] = $this->asset_name_formatter_service->split(
+			$item['asset']
+		);
 		$item['source_id'] = $item['source'];
 		unset( $item['source'] );
 		return $item;
@@ -191,10 +218,12 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param string[] $relations Further relations
 	 * @return MetaInterface|null
 	 */
-	protected function load_token_meta( PromiseInterface $promise, array $relations = array() ): ?MetaInterface {
+	protected function load_token_meta(
+		PromiseInterface $promise, array $relations = array()
+	): ?MetaInterface {
 		$token_meta = $this->meta_repository->show( array(
 			'with'        => $relations,
-			'assets' => array( $promise->get_asset()->get_name() ), 
+			'assets' => array( $promise->asset->name ), 
 		) );
 		return $token_meta;
 	}
@@ -205,10 +234,12 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param string[] $relations Further relations
 	 * @return PromiseMetaInterface|null
 	 */
-	protected function load_promise_meta( PromiseInterface $promise, array $relations = array() ): ?PromiseMetaInterface {
+	protected function load_promise_meta(
+		PromiseInterface $promise, array $relations = array()
+	): ?PromiseMetaInterface {
 		$promise_meta = $this->promise_meta_repository->show( array(
 			'with'        => $relations,
-			'promise_ids' => array( $promise->get_promise_id() ), 
+			'promise_ids' => array( $promise->promise_id ), 
 		) );
 		return $promise_meta;
 	}
@@ -219,9 +250,11 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 * @param string[] $relations Further relations
 	 * @return SourceInterface|null
 	 */
-	protected function load_source( PromiseInterface $promise, array $relations ): ?SourceInterface {
+	protected function load_source(
+		PromiseInterface $promise, array $relations
+	): ?SourceInterface {
 		$source = $this->source_repository->show( array(
-			'address' => $promise->get_source_id(),
+			'address' => $promise->source_id,
 			'with'    => $relations,
 		) );
 		return $source;

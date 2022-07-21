@@ -14,7 +14,9 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 /**
  * Defines promise endpoints
  */
-class PromiseController extends Controller implements PromiseControllerInterface {
+class PromiseController extends Controller
+	implements PromiseControllerInterface
+{
 	protected PromiseRepositoryInterface $promise_repository;
 	protected UserRepositoryInterface $user_repository;
 
@@ -35,7 +37,10 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	public function index(
 		\WP_REST_Request $request, PromiseCollectionInterface $promises
 	): \WP_REST_Response {
-		$promises = $this->promise_repository->load( $promises, array( 'promise_meta' ) );
+		$promises = $this->promise_repository->load(
+			$promises,
+			array( 'promise_meta' )
+		);
 		$users = $promises->users;
 		$users = $this->user_repository->index( array(
 			'uuids' => $users,
@@ -52,9 +57,14 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	 * @param PromiseInterface|null $promise Bound model
 	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, ?PromiseInterface $promise = null ): \WP_REST_Response {
+	public function show(
+		\WP_REST_Request $request, ?PromiseInterface $promise = null
+	): \WP_REST_Response {
 		if ( $promise ) {
-			$this->promise_repository->load( $promise, array( 'promise_meta' ) );
+			$this->promise_repository->load(
+				$promise,
+				array( 'promise_meta' )
+			);
 			$promise = $promise->to_array();
 			if ( !isset( $promise['promise_meta'] ) ) {
 				return $promise;
@@ -100,7 +110,9 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	 * @param PromiseInterface|null $promise Promise to update
 	 * @return \WP_REST_Response
 	 */
-	public function update( \WP_REST_Request $request, PromiseInterface $promise = null ): \WP_REST_Response {
+	public function update(
+		\WP_REST_Request $request, PromiseInterface $promise = null
+	): \WP_REST_Response {
 		if ( $promise ) {
 			$params = $request->get_params();
 			$this->promise_repository->update( $promise, $params );
@@ -114,7 +126,9 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	 * @param PromiseInterface|null $promise Bound promise
 	 * @return \WP_REST_Response
 	 */
-	public function destroy( \WP_REST_Request $request, PromiseInterface $promise = null ): \WP_REST_Response {
+	public function destroy(
+		\WP_REST_Request $request, PromiseInterface $promise = null
+	): \WP_REST_Response {
 		if ( $promise ) {
 			$this->promise_repository->destroy( $promise );
 		}
@@ -137,7 +151,9 @@ class PromiseController extends Controller implements PromiseControllerInterface
 		return array(
 			'service'                   => $this->promise_repository,
 			'single_service_method'     => 'show',
-			'single_methods'            => array( 'show', 'update', 'destroy' ),
+			'single_methods'            => array(
+				'show', 'update', 'destroy'
+			),
 			'collection_methods'        => array( 'index' ),
 			'collection_service_method' => 'index',
 		);

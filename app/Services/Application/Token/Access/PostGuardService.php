@@ -57,7 +57,7 @@ class PostGuardService extends Service implements PostGuardServiceInterface {
 			$this->current_user
 		);
 		$rules = $this->post_checker_service->get_tca_rules( $post );
-		if ( $verdict->get_status() === false ) {
+		if ( $verdict->status === false ) {
 			if ( is_admin() === true ) {
 				wp_die( 'Access Denied - Token Controlled Access.' );
 			} else {

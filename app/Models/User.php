@@ -12,11 +12,11 @@ use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 
 class User extends Model implements UserInterface {
-	public ?\WP_User $user;
-	public ?OauthUserInterface $oauth_user;
-	public ?string $oauth_token;
-	public ?string $uuid;
-	public ?bool $can_connect;
+	public ?\WP_User $user = null;
+	public ?OauthUserInterface $oauth_user = null;
+	public ?string $oauth_token = null;
+	public ?string $uuid = null;
+	public ?bool $can_connect = null;
 
 	/**
 	 * @inheritDoc

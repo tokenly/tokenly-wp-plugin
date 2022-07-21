@@ -55,7 +55,6 @@ export default function PromiseStorePage( props: PromiseStorePageProps ) {
 	}
 
 	useEffect( () => {
-		console.log('effect');
 		setLoadingSources( true );
 		sourceRepository.index( {
 			with: [ 'address.balance' ],

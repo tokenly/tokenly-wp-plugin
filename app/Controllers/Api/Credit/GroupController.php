@@ -156,14 +156,14 @@ class GroupController extends Controller implements GroupControllerInterface {
 	 */
 	protected function get_bind_params(): array {
 		return array(
-			'service'                   => $this->group_repository,
-			'single_service_method'     => 'show',
-			'single_methods'            => array(
+			'service' => $this->group_repository,
+			'single_service_method' => 'show',
+			'single_methods' => array(
 				'show',
 				'update',
 				'destroy'
 			),
-			'collection_methods'        => array( 'index' ),
+			'collection_methods' => array( 'index' ),
 			'collection_service_method' => 'index',
 		);
 	}

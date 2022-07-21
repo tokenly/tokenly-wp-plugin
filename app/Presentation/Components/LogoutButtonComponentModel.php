@@ -23,7 +23,8 @@ class LogoutButtonComponentModel extends ComponentModel implements LogoutButtonC
 	public function prepare( array $data = array() ): array {
 		$can_connect = $this->integration->can_connect();
 		$is_logged_in = is_user_logged_in();
-		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
+		$path = "{$this->root_dir}/resources/images/tokenly_logo.svg";
+		$logo = file_get_contents( $path );
 		return array(
 			'label' => 'Logout',
 			'logo'  => $logo,

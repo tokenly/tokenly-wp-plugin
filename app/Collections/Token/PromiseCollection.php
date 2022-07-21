@@ -30,7 +30,7 @@ class PromiseCollection extends Collection
 		$items = clone $this;
 		$items = $items->extract( 'promise_meta' );
 		$items = new PromiseMetaCollection( $items );
-		$users = $items->get_users();
+		$users = $items->users;
 		return $users;
 	}
 

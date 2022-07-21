@@ -102,7 +102,7 @@ class VendorController extends Controller
 			'with' => array( 'oauth_user' ),
 		) );
 		if ( $user ) {
-			return $user->get_uuid();
+			return $user->uuid;
 		}
 		return null;
 	}

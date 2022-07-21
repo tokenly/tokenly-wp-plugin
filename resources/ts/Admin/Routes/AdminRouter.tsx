@@ -77,7 +77,6 @@ export default class AdminRouter implements AdminRouterInterface {
 		} );
 		this.registerRedirects();
 		this.highlightMenu();
-		console.log( window?.tokenpassData );
 	}
 
 	/**

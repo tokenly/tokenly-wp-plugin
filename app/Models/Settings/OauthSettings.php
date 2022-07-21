@@ -7,9 +7,9 @@ use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 
 class OauthSettings extends Settings implements OauthSettingsInterface {
 	public ?bool $use_single_sign_on = false;
-	public ?string $success_url = '/tokenly/user/me/';
 	public ?bool $allow_no_email = false;
 	public ?bool $allow_unconfirmed_email = false;
+	public ?string $success_url = '/tokenly/user/me/';
 
 	/**
 	 * @inheritDoc

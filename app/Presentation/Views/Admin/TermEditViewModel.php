@@ -10,7 +10,9 @@ use Tokenly\Wp\Interfaces\Repositories\TermRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
 
-class TermEditViewModel extends DynamicViewModel implements TermEditViewModelInterface {
+class TermEditViewModel extends DynamicViewModel
+	implements TermEditViewModelInterface
+{
 	protected TcaSettingsInterface $tca_settings;
 	protected TcaSettingsRepositoryInterface $tca_settings_repository;
 	protected TermRepositoryInterface $term_repository;
@@ -32,7 +34,9 @@ class TermEditViewModel extends DynamicViewModel implements TermEditViewModelInt
 			return array();
 		}
 		$term = $data['term'];
-		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $term->taxonomy );
+		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy(
+			$term->taxonomy
+		);
 		$tca_rules = array();
 		if ( $term && $term->tca_rules ) {
 			$tca_rules = $term->tca_rules->to_array();

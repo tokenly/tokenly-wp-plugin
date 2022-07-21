@@ -68,7 +68,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return UserCollectionInterface Users found
 	 */
-	public function index( array $params = array() ): UserCollectionInterface {
+	public function index(
+		array $params = array()
+	): UserCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -102,9 +104,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @return UserInterface|null New user
 	 */
 	public function store( OauthUserInterface $oauth_user ): ?UserInterface {
-		$username = $oauth_user->get_username();
+		$username = $oauth_user->username;
 		$password = wp_generate_password( 12, false );
-		$email = $oauth_user->get_email() ?? null;
+		$email = $oauth_user->email ?? null;
 		$user_id = wp_create_user( $username, $password, $email );
 		if ( is_numeric( $user_id ) === false ) {
 			return null;
@@ -153,7 +155,8 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		$source_users = clone $promise_meta;
 		$source_users = $source_users->extract( 'source_user_id' );
 		$destination_users = clone $promise_meta;
-		$destination_users = $destination_users->extract( 'destination_user_id' );
+		$destination_users = 
+			$destination_users->extract( 'destination_user_id' );
 		$users = array_merge( $source_users, $destination_users );
 		return $this->index( array(
 			'uuids' => $users,
@@ -418,7 +421,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @return array
 	 */
 	protected function load_meta( \WP_User $user ): array {
-		$meta = $this->user_meta_repository->index( $user->ID, ...$this->meta );
+		$meta = $this->user_meta_repository->index(
+			$user->ID, ...$this->meta
+		);
 		return $meta;
 	}
 
@@ -428,7 +433,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @param string[] $relations Further relations
 	 * @return OauthUserInterface|null
 	 */
-	protected function load_oauth_user( UserInterface $user, array $relations = array() ): ?OauthUserInterface {
+	protected function load_oauth_user(
+		UserInterface $user, array $relations = array()
+	): ?OauthUserInterface {
 		$oauth_user = $this->oauth_user_repository->show(
 			array(
 				'id'   => $user->ID,

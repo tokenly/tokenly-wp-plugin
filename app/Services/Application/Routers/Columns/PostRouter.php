@@ -47,10 +47,14 @@ class PostRouter extends ListingRouter implements PostRouterInterface {
 		$key,
 		ColumnInterface $column
 	): callable {
-		return function( string $column_name, int $post_id ) use ( $key, $column ) {
+		return function(
+			string $column_name, int $post_id
+		) use ( $key, $column ) {
 			$view_data = call_user_func( $column->callback, $post_id );
-			$id = $column->get_id();
-			$callback_render = function() use ( $column, $view_data, $key, $id ) {
+			$id = $column->id;
+			$callback_render = function() use (
+				$column, $view_data, $key, $id
+			) {
 				return array(
 					'template' => 'Dynamic.twig',
 					'view'     => "column-{$this->namespace}-{$key}-{$id}",

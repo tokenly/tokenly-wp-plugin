@@ -53,10 +53,14 @@ class TaxonomyServiceProvider extends ServiceProvider implements TaxonomyService
 		$this->register_hooks();
 	}
 
-	protected function register_taxonomy( string $key, array $taxonomy_definition ): void {
+	protected function register_taxonomy(
+		string $key,
+		array $taxonomy_definition
+	): void {
 		$data = $taxonomy_definition['data'];
 		$types = $taxonomy_definition['types'];
-		$taxonomy = $this->invoker->call( include( "{$this->root_dir}/taxonomies/{$key}.php" ), $data );
+		$path = "{$this->root_dir}/taxonomies/{$key}.php";
+		$taxonomy = $this->invoker->call( include( $path ), $data );
 		$name = "{$this->namespace}_{$key}";
 		if ( isset( $taxonomy['repository'] ) ) {
 			$this->repositories[ $name ] = $taxonomy['repository'];
@@ -65,7 +69,9 @@ class TaxonomyServiceProvider extends ServiceProvider implements TaxonomyService
 		$this->taxonomies[ $name ] = $taxonomy;
 	}
 
-	protected function get_repository( string $taxonomy ): RepositoryInterface {
+	protected function get_repository(
+		string $taxonomy
+	): RepositoryInterface {
 		$repository = $this->term_repository;
 		if ( isset( $this->repositories[ $taxonomy ] ) ) {
 			$repository = $this->repositories[ $taxonomy ];
@@ -91,24 +97,32 @@ class TaxonomyServiceProvider extends ServiceProvider implements TaxonomyService
 
 	protected function register_saved_hook( array $taxonomies ): void {
 		foreach ( $taxonomies as $taxonomy ) {
-			add_action( "saved_{$taxonomy}", function( int $term_id, int $tt_id, bool $update ) use ( $taxonomy ) {
+			$callback = function(
+				int $term_id, int $tt_id, bool $update
+			) use ( $taxonomy ) {
 				$term = get_term( $term_id, $taxonomy );
 				$term = $this->complete_term( $term );
-				do_action( "{$this->namespace}_saved_{$term->taxonomy}", $term, $update );
-			}, 10, 3 );
+				$action = "{$this->namespace}_saved_{$term->taxonomy}";
+				do_action( $action, $term, $update );
+			};
+			add_action( "saved_{$taxonomy}", $callback, 10, 3 );
 		}
 	}
 
 	protected function register_edit_form_hook( array $taxonomies ): void {
 		foreach ( $taxonomies as $taxonomy ) {
-			add_action( "{$taxonomy}_edit_form", function( \WP_Term $term, string $taxonomy ) {
+			$callback = function( \WP_Term $term, string $taxonomy ) {
+				$action = "{$this->namespace}_{$term->taxonomy}_edit_form";
 				$term = $this->complete_term( $term );
-				do_action( "{$this->namespace}_{$term->taxonomy}_edit_form", $term, $taxonomy );
-			} , 10, 2 );
+				do_action( $action, $term, $taxonomy );
+			};
+			add_action( "{$taxonomy}_edit_form", $callback, 10, 2 );
 		}
 	}
 
-	protected function register_template_redirect_hook( array $taxonomies = array() ): void {
+	protected function register_template_redirect_hook(
+		array $taxonomies = array()
+	): void {
 		add_action( "template_redirect", function() {
 			$object = get_queried_object();
 			if ( $object instanceof \WP_Term === false ) {
@@ -119,18 +133,22 @@ class TaxonomyServiceProvider extends ServiceProvider implements TaxonomyService
 			do_action( "{$this->namespace}_template_redirect_term", $term );
 		}, 10, 0 );
 		foreach ( $taxonomies as $taxonomy ) {
-			add_action( "template_redirect", function() use ( $taxonomy ) {
+			$callback = function() use ( $taxonomy ) {
 				$object = get_queried_object();
 				if ( $object instanceof \WP_Term === false ) {
 					return;
 				}
 				$term = $object;
-				if ( $term->taxonomy != $taxonomy ) {
+				$term_taxonomy = $term->taxonomy;
+				if ( $term_taxonomy != $taxonomy ) {
 					return;
 				}
+				$action =
+					"{$this->namespace}_template_redirect_term_{$term_taxonomy}";
 				$term = $this->complete_term( $term );
-				do_action( "{$this->namespace}_template_redirect_term_{$term->taxonomy}", $term );
-			}, 10, 0 );
+				do_action( $action, $term );
+			};
+			add_action( "template_redirect", $callback, 10, 0 );
 		}
 	}
 }

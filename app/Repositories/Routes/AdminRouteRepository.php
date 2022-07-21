@@ -7,7 +7,9 @@ use Tokenly\Wp\Interfaces\Repositories\Routes\AdminRouteRepositoryInterface;
 
 use Tokenly\Wp\Collections\Routes\AdminRouteCollection;
 
-class AdminRouteRepository extends RouteRepository implements AdminRouteRepositoryInterface {
+class AdminRouteRepository extends RouteRepository
+	implements AdminRouteRepositoryInterface
+{
 	protected string $collection_class = AdminRouteCollection::class; 
 
 	public function index_formatted(): array {
@@ -26,9 +28,10 @@ class AdminRouteRepository extends RouteRepository implements AdminRouteReposito
 			foreach ( $route->subroutes as $subroute_key => $subroute ) {
 				$can_register = $this->get_can_register( $subroute );
 				$subroute_menu_slug = $subroute->menu_slug;
+				$url = "/wp-admin/admin.php?page={$subroute_menu_slug}";
 				$formatted[ "{$route_key}_{$subroute_key}" ] = array(
-					'name' => $subroute->menu_title,
-					'url'  => "/wp-admin/admin.php?page={$subroute_menu_slug}",
+					'name'   => $subroute->menu_title,
+					'url'    => $url,
 					'access' => $can_register,
 				);
 			}

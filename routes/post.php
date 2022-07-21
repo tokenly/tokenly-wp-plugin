@@ -1,9 +1,11 @@
 <?php
 
 use Tokenly\Wp\Interfaces\Controllers\Admin\PostControllerInterface;
-use Tokenly\Wp\Interfaces\Controllers\Admin\Token\MetaControllerInterface as TokenMetaControllerInterface;
+use Tokenly\Wp\Interfaces\Controllers\Admin\Token\MetaControllerInterface
+	as TokenMetaControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\PostRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface as TokenMetaRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface
+	as TokenMetaRepositoryInterface;
 
 return function(
 		PostControllerInterface $post_controller,

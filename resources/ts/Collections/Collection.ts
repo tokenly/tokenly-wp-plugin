@@ -24,7 +24,12 @@ export default class Collection extends Map implements CollectionInterface {
     }
 
     public toJson(): any {
-        return {};
+        const copy = this.clone()
+        copy.forEach( ( item, key: string ) => {
+            copy.set( key, item.toJson() )
+        } );
+        const object = Object.fromEntries(copy);
+        return object
     }
 
     public clone(): CollectionInterface {

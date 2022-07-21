@@ -12,7 +12,7 @@ class Asset extends Model implements AssetInterface {
     public function __get( $name ) {
 		switch ( $name ) {
 			case "name":
-				$this->get_name();
+				return $this->get_name();
 				break;
 		}
     }

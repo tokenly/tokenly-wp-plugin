@@ -34,30 +34,45 @@ interface SettingsPageProps {
 }
 
 export default function SettingsPage( props: SettingsPageProps ) {
-	const brand: string = useInjection( TYPES.Variables.brand );
+	const brand: string = useInjection( TYPES.Variables.brand )
 	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const integrationSettingsRepository: IntegrationSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface );
-	const tcaSettingsRepository: TcaSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface );
-	const oauthSettingsRepository: OauthSettingsRepositoryInterface = useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface );
+	const integrationSettingsRepository: IntegrationSettingsRepositoryInterface =
+		useInjection( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface )
+	const tcaSettingsRepository: TcaSettingsRepositoryInterface =
+		useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
+	const oauthSettingsRepository: OauthSettingsRepositoryInterface =
+		useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface )
 	
-	const [ integrationSettings, setIntegrationSettings ] = useState<IntegrationSettingsInterface>( ( new IntegrationSettings ).fromJson( props.integration_settings ) );
-	const [ oauthSettings, setOauthSettings ] = useState<OauthSettingsInterface>( ( new OauthSettings ).fromJson( props.oauth_settings ) );
-	const [ tcaSettings, setTcaSettings ] = useState<TcaSettingsInterface>( ( new TcaSettings ).fromJson( props.tca_settings ) );
-
-	const [ savingIntegrationSettings, setSavingIntegrationSettings ] = useState<boolean>( false );
-	const [ savingTcaSettings, setSavingTcaSettings ] = useState<boolean>( false );
-	const [ savingOauthSettings, setSavingOauthSettings ] = useState<boolean>( false );
+	const [ integrationSettings, setIntegrationSettings ] = 
+		useState<IntegrationSettingsInterface>(
+			( new IntegrationSettings ).fromJson( props.integration_settings )
+		);
+	const [ oauthSettings, setOauthSettings ] =
+		useState<OauthSettingsInterface>(
+			( new OauthSettings ).fromJson( props.oauth_settings )
+		)
+	const [ tcaSettings, setTcaSettings ] = useState<TcaSettingsInterface>(
+		( new TcaSettings ).fromJson( props.tca_settings )
+	)
+	const [ savingIntegrationSettings, setSavingIntegrationSettings ] =
+		useState<boolean>( false )
+	const [ savingTcaSettings, setSavingTcaSettings ] =
+		useState<boolean>( false )
+	const [ savingOauthSettings, setSavingOauthSettings ] =
+		useState<boolean>( false )
 	
 	function onIntegrationSettingsSave() {
-		localStorage.removeItem( `${namespace}-integration-not-connected-notice-dismissed` );
-		setSavingIntegrationSettings( true );
-		const json = integrationSettings.toJson();
+		const storageKey = 
+			`${namespace}-integration-not-connected-notice-dismissed`
+		localStorage.removeItem( storageKey )
+		setSavingIntegrationSettings( true )
+		const json = integrationSettings.toJson()
 		integrationSettingsRepository.update( json ).then( ( result: any ) => {
-			eventBus.dispatch( 'snackbarShow', result?.status );
-			setSavingIntegrationSettings( false );
-			window.location.reload();
+			eventBus.dispatch( 'snackbarShow', result?.status )
+			setSavingIntegrationSettings( false )
+			window.location.reload()
 		} ).catch( ( error: any ) => {
-			console.log( error );
+			console.log( error )
 		} );
 	}
 

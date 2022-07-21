@@ -17,48 +17,27 @@ class Verdict extends Model implements VerdictInterface {
 	 * Access status. Allowed or not.
 	 * @var bool
 	 */
-	protected ?bool $status = false;
+	public ?bool $status = false;
 	/**
 	 * Comment for the status.
 	 * @var string
 	 */
-	protected ?string $note = '';
+	public ?string $note = '';
 	/**
 	 * Reports the decision was based on if any.
 	 * @var RuleCheckResultCollectionInterface
 	 */
-	protected ?RuleCheckResultCollectionInterface $reports;
-
-	public function get_status(): ?bool {
-		return $this->status ?? null;
-	}
-
-	public function set_status( ?bool $value ): void {
-		$this->status = $value;
-	}
-
-	public function get_note(): ?string {
-		return $this->note ?? null;
-	}
-
-	public function set_note( ?string $value ): void {
-		$this->note = $value;
-	}
-
-	public function get_reports(): ?RuleCheckResultCollectionInterface {
-		return $this->reports ?? null;
-	}
-
-	public function set_reports( ?RuleCheckResultCollectionInterface $value ): void {
-		$this->reports = $value;
-	}
+	public ?RuleCheckResultCollectionInterface $reports;
 
 	/**
 	 * @inheritDoc
 	 */
 	public function from_array( array $data = array() ): self {
 		if ( isset( $data['reports'] ) && is_array( $data['reports'] ) ) {
-			$data['reports'] = ( new RuleCheckResultCollection() )->from_array( $data['reports'] );
+			$data['reports'] = 
+				( new RuleCheckResultCollection() )->from_array(
+					$data['reports']
+				);
 		}
 		return parent::from_array( $data );
 	}
@@ -68,11 +47,11 @@ class Verdict extends Model implements VerdictInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'status' => $this->get_status(),
-			'note'   => $this->get_note(),
+			'status' => $this->status,
+			'note'   => $this->note,
 		);
-		if ( $this->get_reports() ) {
-			$array['reports'] = $this->get_reports()->to_array();
+		if ( $this->reports ) {
+			$array['reports'] = $this->reports->to_array();
 		}
 		return $array;
 	}

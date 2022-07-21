@@ -10,7 +10,9 @@ use Tokenly\Wp\Interfaces\Services\Application\Token\VendorServiceInterface;
 /**
  * Defines transaction endpoints
  */
-class VendorController extends Controller implements VendorControllerInterface {
+class VendorController extends Controller
+	implements VendorControllerInterface
+{
 	protected VendorServiceInterface $vendor_service;
 
 	public function __construct(

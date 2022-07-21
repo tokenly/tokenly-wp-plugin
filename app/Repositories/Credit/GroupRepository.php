@@ -30,8 +30,10 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 		GroupWhitelistRepositoryInterface $group_whitelist_repository
 	) {
 		$this->client = $client;
-		$this->integration_settings_repository = $integration_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings_repository =
+			$integration_settings_repository;
+		$this->integration_settings =
+			$this->integration_settings_repository->show();
 		$this->group_whitelist_repository = $group_whitelist_repository;
 		$this->group_whitelist = $this->group_whitelist_repository->show();
 	}
@@ -41,7 +43,9 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return GroupCollectionInterface Groups found
 	 */
-	public function index( array $params = array() ): GroupCollectionInterface {
+	public function index(
+		array $params = array()
+	): GroupCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -59,7 +63,9 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return GroupHistoryInterface|null Group found
 	 */
-	public function show_history( array $params = array() ): ?GroupHistoryInterface {
+	public function show_history(
+		array $params = array()
+	): ?GroupHistoryInterface {
 		if ( !isset( $params['group_uuid'] ) ) {
 			return null;
 		}
@@ -88,7 +94,9 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 			$app_whitelist = preg_replace( '/\s+/', '', $app_whitelist );
 			$app_whitelist = explode( ',', $app_whitelist ) ;
 		}
-		$credit_group_data = $this->client->newAppCreditGroup( $name, $app_whitelist );
+		$credit_group_data = $this->client->newAppCreditGroup(
+			$name, $app_whitelist
+		);
 		if ( !$credit_group_data ) {
 			return null;
 		}
@@ -102,7 +110,9 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 	 * @param array $params Update parameters
 	 * @return void
 	 */
-	public function update( GroupInterface $group, array $params = array() ): ?GroupInterface {
+	public function update(
+		GroupInterface $group, array $params = array()
+	): ?GroupInterface {
 		$update_params = array();
 		if ( isset( $params['name'] ) ) {
 			$update_params['name'] = $params['name'];
@@ -110,7 +120,9 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 		if ( isset( $params['app_whitelist'] ) ) {
 			$update_params['app_whitelist'] = $params['app_whitelist'];
 		}
-		$group = $this->client->updateAppCreditGroup( $group->get_uuid(), $update_params );
+		$group = $this->client->updateAppCreditGroup(
+			$group->uuid, $update_params
+		);
 		$group = ( new Group() )->from_array( $credit_group_data );
 	}
 
@@ -120,14 +132,21 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return GroupCollectionInterface $groups Groups found
 	 */
-	protected function index_cacheable( array $params = array() ): GroupCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): GroupCollectionInterface {
 		$groups = $this->client->listAppCreditGroups();
 		if ( !$groups ) {
 			$groups = array();
 		}
 		$groups = ( new GroupCollection() )->from_array( $groups );
-		$groups->exclude_not_valid_clients( $this->integration_settings->get_client_id() );
-		if ( !isset( $params['filtered'] ) || $params['filtered'] === true ) {
+		$groups->exclude_not_valid_clients(
+			$this->integration_settings->client_id
+		);
+		if (
+			!isset( $params['filtered'] ) ||
+			$params['filtered'] === true
+		) {
 			$groups->exclude_not_whitelisted( $this->group_whitelist );
 		}
 		return $groups;
@@ -139,7 +158,9 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return GroupInterface|null Group found
 	 */
-	protected function show_cacheable( array $params = array() ): ?GroupInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?GroupInterface {
 		if ( !isset( $params['group_uuid'] ) ) {
 			return null;
 		}

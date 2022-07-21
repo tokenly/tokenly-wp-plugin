@@ -126,7 +126,7 @@ class PostRouter extends Router implements PostRouterInterface {
 				"{$this->namespace}-data",
 				$this->brand,
 				function() use ( $route, $post ) {
-					$edit_callback = $route->get_edit_callback();
+					$edit_callback = $route->edit_callback;
 					$this->render_route( $edit_callback, array( $post ) );
 				}, $post->post_type, 'advanced', 'high'
 			);

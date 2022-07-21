@@ -179,7 +179,7 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 		OauthUserInterface $user = null,
 		array $params = array() ): AddressCollectionInterface {
 		if ( $user ) {
-			$params['username'] = $user->get_username();
+			$params['username'] = $user->username;
 		}
 		$addresses = array();
 		if ( isset( $params['username'] ) ) {

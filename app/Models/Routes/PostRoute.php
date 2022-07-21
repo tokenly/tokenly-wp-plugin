@@ -9,9 +9,9 @@ class PostRoute extends Route implements PostRouteInterface {
 	public ?array $post_type = null;
 	public ?string $id = null;
 	public ?string $title = null;
-	public mixed $show_callback;
-	public mixed $edit_callback;
-	public mixed $update_callback;
+	public mixed $show_callback = null;
+	public mixed $edit_callback = null;
+	public mixed $update_callback = null;
 
 	/**
 	 * @inheritDoc

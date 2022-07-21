@@ -9,8 +9,8 @@ class ApiRoute extends Route implements ApiRouteInterface {
 	public ?string $path = null;
 	public ?string $path_regex = null;
 	public ?string $methods = null;
-	public mixed $callback;
-	public mixed $permission_callback;
+	public mixed $callback = null;
+	public mixed $permission_callback = null;
 
 	public function get_register_arguments(): array {
 		return array(
@@ -53,7 +53,9 @@ class ApiRoute extends Route implements ApiRouteInterface {
 	 * @return string $path Formatted path
 	 */
 	protected function parse_path( string $path ): string {
-		$sections = preg_split( '/({[^}]*})/', $path, 0, PREG_SPLIT_DELIM_CAPTURE );
+		$sections = preg_split(
+			'/({[^}]*})/', $path, 0, PREG_SPLIT_DELIM_CAPTURE
+		);
 		foreach ( $sections as &$section ) {
 			if ( $this->is_section_variable( $section ) ) {
 				$section = $this->variable_to_regex( $section );
@@ -64,7 +66,10 @@ class ApiRoute extends Route implements ApiRouteInterface {
 	}
 
 	protected function is_section_variable( string $section ): bool {
-		return ( str_contains( $section, '{' ) && str_contains( $section, '}' ) );
+		return (
+			str_contains( $section, '{' ) &&
+			str_contains( $section, '}' )
+		);
 	}
 
 	protected function variable_to_regex( string $section ): string {

@@ -65,7 +65,7 @@ class VendorService extends Service implements VendorServiceInterface {
 		) {
 			throw new \Exception( 'Source not found or no address data.' );
 		}
-		$address_id = $source->get_address_id();
+		$address_id = $source->address_id;
 		$username = $params['destination'];
 		$destination_user = $this->user_repository->show( array(
 			'name' => $username,

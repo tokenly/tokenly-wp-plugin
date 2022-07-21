@@ -15,7 +15,8 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\SourceRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface as TokenCategoryTermRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface
+	as TokenCategoryTermRepositoryInterface;
 
 class UserController extends Controller implements UserControllerInterface {
 	protected string $namespace;
@@ -47,7 +48,9 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserCollectionInterface $users Bound users
 	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, UserCollectionInterface $users ): \WP_REST_Response {
+	public function index(
+		\WP_REST_Request $request, UserCollectionInterface $users
+	): \WP_REST_Response {
 		if ( $request->get_param( 'suggestions' ) ) {
 			$users->to_suggestions();
 		}
@@ -61,7 +64,9 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserInterface|null $user Bound user
 	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+	public function show(
+		\WP_REST_Request $request, ?UserInterface $user = null
+	): \WP_REST_Response {
 		if ( $user ) {
 			$user = $user->to_array();
 		}
@@ -74,7 +79,9 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserInterface|null $user Bound user
 	 * @return \WP_REST_Response
 	 */
-	public function credit_balance_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+	public function credit_balance_index(
+		\WP_REST_Request $request, ?UserInterface $user = null
+	): \WP_REST_Response {
 		$account = array();
 		if ( $user ) {
 			$account = $this->user_repository->credit_balance_index( $user );
@@ -91,11 +98,15 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserInterface|null $user Bound user
 	 * @return \WP_REST_Response
 	 */
-	public function credit_balance_show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+	public function credit_balance_show(
+		\WP_REST_Request $request, ?UserInterface $user = null
+	): \WP_REST_Response {
 		$balance = 0;
 		$group = $request->get_param( 'group' );
 		if ( $user ) {
-			$balance = $this->user_repository->credit_balance_show( $user, $group );
+			$balance = $this->user_repository->credit_balance_show(
+				$user, $group
+			);
 		}
 		return new \WP_REST_Response( $balance );
 	}
@@ -106,15 +117,22 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserInterface|null $user Bound user
 	 * @return \WP_REST_Response
 	 */
-	public function token_balance_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+	public function token_balance_index(
+		\WP_REST_Request $request, ?UserInterface $user = null
+	): \WP_REST_Response {
 		$params = array(
 			'with' => array( 'meta' ),
 		);
-		$balance = $this->user_repository->token_balance_index( $user, $params );
+		$balance = $this->user_repository->token_balance_index(
+			$user, $params
+		);
 		foreach ( $balance as &$item ) {
-			if ( $item->get_meta() ) {
-				$this->token_category_term_repository->apply_meta_fallback_single( $item->get_meta() );
+			if ( !$item->meta ) {
+				continue;
 			}
+			$this->token_category_term_repository->apply_meta_fallback_single(
+				$item->meta
+			);
 		}
 		$balance = $balance->to_array();
 		return new \WP_REST_Response( $balance );
@@ -126,14 +144,17 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserInterface|null $user Bound user
 	 * @return \WP_REST_Response
 	 */
-	public function token_balance_show( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+	public function token_balance_show(
+		\WP_REST_Request $request, ?UserInterface $user = null
+	): \WP_REST_Response {
 		$asset = $request->get_param( 'asset' );
-		$balance;
+		$balance = null;
 		if ( $asset && $user ) {
-			$balance = $this->user_repository->token_balance_show( $user, $asset );
-			$balance = $balance->to_array();
-		} else {
-			$balance = null;
+			$balance_obj = 
+				$this->user_repository->token_balance_show( $user, $asset );
+			if ( $balance_obj ) {
+				$balance = $balance_obj->to_array();
+			}
 		}
 		return new \WP_REST_Response( $balance );
 	}
@@ -144,14 +165,18 @@ class UserController extends Controller implements UserControllerInterface {
 	 * @param UserInterface|null $user Bound user
 	 * @return \WP_REST_Response
 	 */
-	public function token_address_index( \WP_REST_Request $request, ?UserInterface $user = null ): \WP_REST_Response {
+	public function token_address_index(
+		\WP_REST_Request $request, ?UserInterface $user = null
+	): \WP_REST_Response {
 		$registered = $request->get_param( 'registered' );
 		$params = array(
 			'registered' => $registered,
 		);
 		$addresses;
 		if ( $user ) {
-			$addresses = $this->user_repository->token_address_index( $user, $params );
+			$addresses = $this->user_repository->token_address_index(
+				$user, $params
+			);
 			$addresses = $addresses->to_array();
 		} else {
 			$addresses = null;
@@ -165,8 +190,8 @@ class UserController extends Controller implements UserControllerInterface {
 	 */
 	protected function get_bind_params(): array {
 		return array(
-			'service'                   => $this->user_repository,
-			'single_methods'            => array(
+			'service' => $this->user_repository,
+			'single_methods' => array(
 				'show',
 				'credit_balance_index',
 				'credit_balance_show',

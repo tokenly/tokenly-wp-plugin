@@ -8,16 +8,21 @@ use Tokenly\Wp\Interfaces\Models\Routes\WebRouteInterface;
 class WebRoute extends Route implements WebRouteInterface {
 	public ?string $id = null;
 	public ?string $path = null;
-	public mixed $callback;
+	public mixed $callback = null;
 	public ?array $rules = null;
 	public ?array $vars = null;
 
 	public function from_array( array $data = array() ): self {
 		$path = $data['path'];
-		$path_elements = preg_split( '/({[^}]*})/', $path, 0, PREG_SPLIT_DELIM_CAPTURE );
+		$path_elements = preg_split(
+			'/({[^}]*})/', $path, 0, PREG_SPLIT_DELIM_CAPTURE
+		);
 		$variables = array();
 		foreach ( $path_elements as $key => &$element ) {
-			if ( str_contains( $element, '{' ) && str_contains( $element, '}' ) ) {
+			if (
+				str_contains( $element, '{' ) &&
+				str_contains( $element, '}' )
+			) {
 				$element = str_replace( '{', '', $element );
 				$element = str_replace( '}', '', $element );
 				$variables[ $element ] = '$matches[' . $key . ']';

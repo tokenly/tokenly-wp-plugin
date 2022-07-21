@@ -14,11 +14,18 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	public function __get( $name ) {
 		switch ( $name ) {
 			case 'available_post_types':
-				$this->get_available_post_types();
+				return $this->get_available_post_types();
+				break;
+			case 'enabled_post_types':
+				return $this->get_enabled_taxonomies();
 				break;
 			case 'available_taxonomies':
-				$this->get_available_taxonomies();
+				return $this->get_available_taxonomies();
 				break;
+			case 'enabled_taxonomies':
+				return $this->get_enabled_taxonomies();
+				break;
+	
 		}
     }
 	
@@ -48,7 +55,7 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 * @return bool
 	 */
 	public function is_enabled_for_post_type( string $post_type ): bool {
-		return $this->get_post_types()[ $post_type ] ?? false;
+		return $this->post_types[ $post_type ] ?? false;
 	}
 
 	/**
@@ -57,7 +64,7 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 * @return bool
 	 */
 	public function is_enabled_for_taxonomy( string $taxonomy ): bool {
-		return $this->get_taxonomies()[ $taxonomy ] ?? false;
+		return $this->taxonomies[ $taxonomy ] ?? false;
 	}
 
 	/**
@@ -90,9 +97,9 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 * Gets a collection of post types for which TCA is enabled
 	 * @return array
 	 */
-	public function get_enabled_post_types(): array {
+	protected function get_enabled_post_types(): array {
 		$post_types_enabled = array();
-		foreach ( $this->get_post_types() as $key => $post_type ) {
+		foreach ( $this->post_types as $key => $post_type ) {
 			if ( $post_type == true ) {
 				$post_types_enabled[] = $key;
 			}
@@ -104,9 +111,9 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 * Gets a collection of taxonomies for which TCA is enabled
 	 * @return array
 	 */
-	public function get_enabled_taxonomies(): array {
+	protected function get_enabled_taxonomies(): array {
 		$taxonomies_enabled = array();
-		foreach ( $this->get_taxonomies() as $key => $taxonomy ) {
+		foreach ( $this->taxonomies as $key => $taxonomy ) {
 			if ( $taxonomy == true ) {
 				$taxonomies_enabled[] = $key;
 			}

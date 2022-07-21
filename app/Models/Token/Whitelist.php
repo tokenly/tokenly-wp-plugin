@@ -10,7 +10,7 @@ use Tokenly\Wp\Interfaces\Collections\Token\WhitelistItemCollectionInterface;
 
 class Whitelist extends Settings implements WhitelistInterface {
 	public ?bool $enabled = false;
-	public ?WhitelistItemCollectionInterface $items;
+	public ?WhitelistItemCollectionInterface $items = null;
 
 	/**
 	 * @inheritDoc

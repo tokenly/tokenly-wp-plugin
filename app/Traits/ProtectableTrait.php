@@ -20,7 +20,8 @@ trait ProtectableTrait {
 
 	protected function protectable_from_array( array $data = array() ): array {
 		if ( isset( $data['tca_rules'] ) && is_array( $data['tca_rules'] ) ) {
-			$data['tca_rules'] = ( new RuleCollection() )->from_array( $data['tca_rules'] );
+			$data['tca_rules'] =
+				( new RuleCollection() )->from_array( $data['tca_rules'] );
 		}
 		return $data;
 	}

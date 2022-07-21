@@ -9,7 +9,9 @@ use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\PostRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
 
-class PostEditViewModel extends DynamicViewModel implements PostEditViewModelInterface {
+class PostEditViewModel extends DynamicViewModel
+	implements PostEditViewModelInterface
+{
 	protected TcaSettingsInterface $tca_settings;
 	protected TcaSettingsRepositoryInterface $tca_settings_repository;
 	protected PostRepositoryInterface $post_repository;
@@ -28,7 +30,9 @@ class PostEditViewModel extends DynamicViewModel implements PostEditViewModelInt
 	 */
 	protected function get_view_props( array $data = array() ): array {
 		$post = $data['post'];
-		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post->post_type );
+		$tca_enabled = $this->tca_settings->is_enabled_for_post_type(
+			$post->post_type
+		);
 		$tca_rules = array();
 		if ( $post->tca_rules ) {
 			$tca_rules = $post->tca_rules->to_array();

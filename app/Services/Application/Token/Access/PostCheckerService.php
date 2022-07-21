@@ -77,7 +77,7 @@ class PostCheckerService extends CheckerService implements PostCheckerServiceInt
 		$post = $target;
 		$terms_protected = false;
 		$post = $this->post_repository->load( $post, array( 'term' ) );
-		if ( $post->get_term() ) {
+		if ( $post->term ) {
 			$terms_protected = $this->term_checker_service->is_protected(
 				$post->term
 			);

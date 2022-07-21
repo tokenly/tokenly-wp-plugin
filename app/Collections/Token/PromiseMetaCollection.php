@@ -16,7 +16,15 @@ class PromiseMetaCollection extends PostCollection
 {
 	protected string $item_type = PromiseMeta::class;
 
-	public function get_users(): array {
+    public function __get( $name ) {
+		switch ( $name ) {
+			case 'users':
+				return $this->get_users();
+				break;
+		}
+    }
+
+	protected function get_users(): array {
 		$users = array();
 		$items = clone $this;
 		$source_users = $items->extract( 'source_user_id' );

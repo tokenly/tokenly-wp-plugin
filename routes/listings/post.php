@@ -7,15 +7,16 @@ return function(
 	string $namespace
 ) {
 		$columns = function() use (
-			$namespace,
-			$token_meta_featured_image_column
+			$namespace, $token_meta_featured_image_column
 		) {
 			return array(
 				array(
-					'post_type'    => array( "{$namespace}_token_meta" ),
-					'id'           => "featured-image",
-					'title'        => 'Featured Image',
-					'callback'     => array( $token_meta_featured_image_column, 'column_callback' ),
+					'post_type' => array( "{$namespace}_token_meta" ),
+					'id'        => "featured-image",
+					'title'     => 'Featured Image',
+					'callback'  => array(
+						$token_meta_featured_image_column, 'column_callback'
+					),
 				),
 			);
 		};

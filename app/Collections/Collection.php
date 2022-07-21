@@ -72,10 +72,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 		$this->keyed = true;
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
-			$method = "get_{$field}";
-			if ( method_exists( $item, $method ) ) {
-				$keyed[ $item->{$method}() ] = $item;
-			} else {
+			if ( property_exists( $item, $field ) ) {
 				$keyed[ $item->$field ] = $item;
 			}
 		}
@@ -103,7 +100,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 			if ( !$item ) {
 				continue;
 			}
-			$value = $item[ $field ];
+			$value = $item->$field;
 			if ( $this->keyed === true ) {
 				$extracted[ $key ] = $value;
 			} else {

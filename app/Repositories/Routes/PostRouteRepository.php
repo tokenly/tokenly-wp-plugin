@@ -21,8 +21,9 @@ class PostRouteRepository extends RouteRepository implements PostRouteRepository
 				$post_types = get_post_types() ?? array();
 			}
 			foreach ( $post_types as $post_type ) {
+				$url = "/wp-admin/edit.php?post_type={$post_type}";
 				$urls[ "{$id}_{$post_type}" ] = array(
-					'url'    => "/wp-admin/edit.php?post_type={$post_type}",
+					'url'    => $url,
 					'access' => $can_register,
 				);
 			}

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import eventBus from "../../../../EventBus";
 
 import {
 	Button,
@@ -8,21 +7,24 @@ import {
 	TextControl,
 } from '@wordpress/components';
 
+
 interface TcaRuleEditorProps {
 	editData?: any;
 	onChange: any;
 }
 
+import Rule from '../../../../Models/Token/Rule'
+
 export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 	function onAdd() {
-		const newRules = Object.assign( [], props.editData.tcaRules );
-		newRules.push( {
+		const newRules = props.editData.tcaRules.clone();
+		newRules.set( newRules.size, ( new Rule() ).fromJson( {
 			asset: null,
 			quantity: 0,
 			op: '=',
 			stackOp: 'AND',
-		} );
-		props.onChange( newRules );
+		} ) )
+		props.onChange( newRules )
 	}
 
 	function removeEmpty( newRules: any ) {
@@ -32,41 +34,38 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 	}
 	
 	function onRemove( index: number ) {
-		let newRules = Object.assign( [], props.editData.tcaRules );
-		delete newRules[ index ];
-		newRules = removeEmpty( newRules );
+		const newRules = props.editData.tcaRules.clone();
+		newRules.delete(index);
 		props.onChange( newRules );
 	}
 	
 	function onAssetFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tcaRules );
-		newRules[ key ].asset = value;
+		const newRules = props.editData.tcaRules.clone()
+		newRules.get(key).asset = value;
 		props.onChange( newRules );
 	}
 
 	function onLogicFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tcaRules );
-		newRules[ key ].op = value;
+		const newRules = props.editData.tcaRules.clone()
+		newRules.get(key).op = value;
 		props.onChange( newRules );
 	}
 
 	function onQuantityFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tcaRules );
-		newRules[ key ].quantity = value;
+		const newRules = props.editData.tcaRules.clone()
+		newRules.get(key).quantity = value;
 		props.onChange( newRules );
 	}
 
 	function onGroupingFieldChange( key: any, value: any ) {
-		const newRules = Object.assign( [], props.editData.tcaRules );
-		newRules[ key ].stackOp = value;
+		const newRules = props.editData.tcaRules.clone()
+		newRules.get(key).stackOp = value;
 		props.onChange( newRules );
 	}
 
-	let rules = props.editData.tcaRules ?? [];
-	if ( typeof rules === 'object' ) {
-		rules = Object.values( rules );
-	}
-	const listItems = rules.map( ( rule: any, i: number ) => {
+	const listItems = Array.from(
+		props.editData.tcaRules.values()
+	).map( ( rule: any, i: number ) => {
 		return (
 			<Flex justify="flex-start" align="center">
 				<TextControl

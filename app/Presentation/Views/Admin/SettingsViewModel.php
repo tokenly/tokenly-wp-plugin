@@ -12,7 +12,9 @@ use Tokenly\Wp\Interfaces\Repositories\Settings\IntegrationSettingsRepositoryInt
 use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Settings\OauthSettingsRepositoryInterface;
 
-class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInterface {
+class SettingsViewModel extends DynamicViewModel
+	implements SettingsViewModelInterface
+{
 	protected IntegrationSettingsInterface $integration_settings;
 	protected IntegrationSettingsRepositoryInterface $integration_settings_repository;
 	protected OauthSettingsInterface $oauth_settings;
@@ -27,8 +29,10 @@ class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInt
 		TcaSettingsRepositoryInterface $tca_settings_repository,
 		string $oauth_callback_route
 	) {
-		$this->integration_settings_repository = $integration_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings_repository =
+			$integration_settings_repository;
+		$this->integration_settings = 
+			$this->integration_settings_repository->show();
 		$this->oauth_settings_repository = $oauth_settings_repository;
 		$this->oauth_settings = $this->oauth_settings_repository->show();
 		$this->tca_settings_repository = $tca_settings_repository;
@@ -48,16 +52,16 @@ class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInt
 		return array(
 			'integration_settings' => $integration_settings,
 			'integration_data'     => array(
-				'app_homepage_url'  => get_site_url(),
-				'client_auth_url'   => $this->oauth_callback_route,
-				'status'            => $this->integration_settings->can_connect,
+				'app_homepage_url' => get_site_url(),
+				'client_auth_url'  => $this->oauth_callback_route,
+				'status'           => $this->integration_settings->can_connect,
 			),
 			'tca_settings'          => $tca_settings,
 			'tca_data'              => array(
 				'post_types' => $post_types,
 				'taxonomies' => $taxonomies,
 			),
-			'oauth_settings'        => $oauth_settings,
+			'oauth_settings' => $oauth_settings,
 		);
 	}
 

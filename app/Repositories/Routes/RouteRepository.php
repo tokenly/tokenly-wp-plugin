@@ -14,7 +14,8 @@ class RouteRepository extends Repository implements RouteRepositoryInterface {
 	protected RouteCollectionInterface $routes;
 
 	public function register( array $routes = array() ): void {
-		$this->routes = ( new $this->collection_class() )->from_array( $routes );
+		$this->routes =
+			( new $this->collection_class() )->from_array( $routes );
 	}
 
 	public function index(): RouteCollectionInterface {
@@ -27,10 +28,15 @@ class RouteRepository extends Repository implements RouteRepositoryInterface {
 
 	public function get_can_register( $route ): bool {
 		$can_register = true;
-		if ( method_exists( $route, 'get_policy' ) && $route->policy ) {
+		if ( property_exists( $route, 'policy' ) && $route->policy ) {
 			if ( is_array( $route->policy ) ) {
-				$can_register = call_user_func( array( $route->policy[0], 'before' ) );
-				if ( $can_register === false && method_exists( $route->policy[0], $route->policy[1] ) ) {
+				$can_register = call_user_func(
+					array( $route->policy[0], 'before' )
+				);
+				if (
+					$can_register === false &&
+					method_exists( $route->policy[0], $route->policy[1] )
+				) {
 					$can_register = call_user_func( $route->policy );
 				}
 			} else {

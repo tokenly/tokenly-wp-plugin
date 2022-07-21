@@ -20,7 +20,7 @@ class Model implements ModelInterface {
 				continue;
 			}
 			if ( property_exists( $this, $key ) ) {
-				$this[ $key ]->$value;
+				$this->$key = $value;
 			}
 		}
 		return $this;

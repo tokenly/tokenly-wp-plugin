@@ -42,7 +42,10 @@ class Controller implements ControllerInterface {
 		$service_method;
 		$params = $request->get_params();
 		$params = $this->remap_parameters( $params );
-		$bind_params = array_merge( $this->defaults, $this->get_bind_params() );
+		$bind_params = array_merge(
+			$this->defaults,
+			$this->get_bind_params()
+		);
 		if ( in_array( $method, $bind_params['single_methods'] ) ) {
 			$service_method = $bind_params['single_service_method'];
 		} elseif ( in_array( $method, $bind_params['collection_methods'] ) ) {
@@ -55,7 +58,10 @@ class Controller implements ControllerInterface {
 			$service = $bind_params['service'];
 		}
 		if ( isset( $service ) && isset( $service_method ) ) {
-			$model = call_user_func( array( $service, $service_method ), $params );
+			$model = call_user_func(
+				array( $service, $service_method ),
+				$params
+			);
 			return call_user_func( array( $this, $method ), $request, $model );
 		} else {
 			return call_user_func( array( $this, $method ), $request );
