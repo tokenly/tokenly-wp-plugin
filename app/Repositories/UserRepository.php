@@ -11,13 +11,17 @@ use Tokenly\Wp\Models\User;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface as CreditAccountCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface 
+	as CreditAccountCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
-use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface as TokenBalanceInterface;
-use Tokenly\Wp\Interfaces\Models\Credit\AccountInterface as CreditAccountInterface;
+use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface 
+	as TokenBalanceInterface;
+use Tokenly\Wp\Interfaces\Models\Credit\AccountInterface 
+	as CreditAccountInterface;
 use Tokenly\Wp\Interfaces\Repositories\OauthUserRepositoryInterface;
-use Tokenly\Wp\Interfaces\Repositories\Credit\AccountRepositoryInterface as CreditAccountRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Credit\AccountRepositoryInterface 
+	as CreditAccountRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\AddressRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\BalanceRepositoryInterface;
@@ -132,14 +136,17 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @param \WP_User[] $users Users to decorate
 	 * @return UserCollectionInterface
 	 */
-	public function complete_collection( array $users = array() ): TermCollectionInterface {
+	public function complete_collection(
+		array $users = array()
+	): TermCollectionInterface {
 		$users = $this->append_meta_collection( $users );
 		$users = ( new UserCollection() )->from_array( $users );
 		return $users;
 	}
 
 	public function get_promise_users( $promises ): UserCollectionInterface {
-		$promises = $this->promise_repository->load( $promises, array( 'promise_meta' ) );
+		$promises = $this->promise_repository->load(
+			$promises, array( 'promise_meta' ) );
 		$promise_meta = clone $promises;
 		$promise_meta = $promises->extract( 'promise_meta' );
 		$promise_meta = new PromiseMetaCollection( $promise_meta );
@@ -153,14 +160,16 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		) );
 	}
 
-	public function credit_balance_index( UserInterface $user ): ?CreditAccountCollectionInterface {
+	public function credit_balance_index(
+		UserInterface $user
+	): ?CreditAccountCollectionInterface {
 		$this->load( $user, array( 'oauth_user.credit_account' ) );
 		$account;
 		if (
-			$user->get_oauth_user() &&
-			$user->get_oauth_user()->get_credit_account()
+			$user->oauth_user &&
+			$user->oauth_user->credit_account
 		) {
-			$account = $user->get_oauth_user()->get_credit_account();
+			$account = $user->oauth_user->credit_account;
 		} else {
 			$account = null;
 		}
@@ -173,17 +182,23 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @param string $group_id Target group
 	 * @return CreditAccountInterface|null
 	 */
-	public function credit_balance_show( UserInterface $user, string $group_id ): ?CreditAccountInterface {
+	public function credit_balance_show(
+		UserInterface $user,
+		string $group_id
+	): ?CreditAccountInterface {
 		$account = $this->credit_account_repository->show( array(
 			'group_uuid'   => $group_id,
-			'account_uuid' => $user->get_uuid(),
+			'account_uuid' => $user->uuid,
 		) );
 		return $account;
 	}
 
-	public function token_balance_index( UserInterface $user, array $params = array() ): ?BalanceCollectionInterface {
+	public function token_balance_index(
+		UserInterface $user,
+		array $params = array()
+	): ?BalanceCollectionInterface {
 		$balance = $this->balance_repository->index( array(
-			'oauth_token' => $user->get_oauth_token(),
+			'oauth_token' => $user->oauth_token,
 			'with'        => array( 'meta' ),
 		) );
 		return $balance;
@@ -194,7 +209,10 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @param string $asset Asset to get balance for
 	 * @return TokenBalanceInterface|null
 	 */
-	public function token_balance_show( UserInterface $user, string $asset ): ?TokenBalanceInterface {
+	public function token_balance_show(
+		UserInterface $user,
+		string $asset
+	): ?TokenBalanceInterface {
 		$balance = $this->token_balance_index( $user );
 		$balance = clone $balance;
 		$balance->key_by_asset_name();
@@ -206,9 +224,12 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 		return $balance;
 	}
 
-	public function token_address_index( UserInterface $user, array $params ): AddressCollectionInterface {
+	public function token_address_index(
+		UserInterface $user,
+		array $params
+	): AddressCollectionInterface {
 		$addresses = $this->address_repository->index( array(
-			'oauth_token' => $user->get_oauth_token(),
+			'oauth_token' => $user->oauth_token,
 		) );
 		if ( isset( $params['registered'] ) ) {
 			$sources = $this->source_repository->index();
@@ -224,7 +245,9 @@ class UserRepository extends Repository implements UserRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return UserCollectionInterface
 	 */
-	protected function index_cacheable( array $params = array() ): UserCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): UserCollectionInterface {
 		$users = array();
 		$args = $this->get_query_args( $params );
 		if ( $args && is_array( $args ) ) {

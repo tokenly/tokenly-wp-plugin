@@ -11,33 +11,9 @@ use Tokenly\Wp\Interfaces\Models\Credit\AccountInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\TransactionCollectionInterface;
 
 class AccountHistory extends Model implements AccountHistoryInterface {
-	protected ?AccountInterface $account = null;
-	protected ?int $count = null;
-	protected ?TransactionCollectionInterface $transactions = null;
-
-	public function get_account(): ?AccountInterface {
-		return $this->account ?? null;
-	}
-
-	public function set_account( ?AccountInterface $value ): void {
-		$this->account = $value;
-	}
-
-	public function get_count(): ?int {
-		return $this->count ?? null;
-	}
-
-	public function set_count( ?int $value ): void {
-		$this->count = $value;
-	}
-
-	public function get_transactions(): ?TransactionCollectionInterface {
-		return $this->transactions ?? null;
-	}
-
-	public function set_transactions( ?TransactionCollectionInterface $value ): void {
-		$this->transactions = $value;
-	}
+	public ?AccountInterface $account = null;
+	public ?int $count = null;
+	public ?TransactionCollectionInterface $transactions = null;
 
 	/**
 	 * @inheritDoc
@@ -57,13 +33,13 @@ class AccountHistory extends Model implements AccountHistoryInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'count' => $this->get_count(),
+			'count' => $this->count,
 		);
-		if ( $this->get_account() ) {
-			$array['account'] = $this->get_account()->to_array();
+		if ( $this->account ) {
+			$array['account'] = $this->account->to_array();
 		}
-		if ( $this->get_transactions() ) {
-			$array['transactions'] = $this->get_transactions()->to_array();
+		if ( $this->transactions ) {
+			$array['transactions'] = $this->transactions->to_array();
 		}
 		return $array;
 	}

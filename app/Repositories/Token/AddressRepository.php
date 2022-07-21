@@ -42,7 +42,8 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface Addresses found
 	 */
-	public function index( array $params = array() ): AddressCollectionInterface {
+	public function index(
+		array $params = array() ): AddressCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -51,7 +52,8 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface Addresses found
 	 */
-	public function index_user( array $params = array() ): AddressCollectionInterface {
+	public function index_user(
+		array $params = array() ): AddressCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -85,10 +87,10 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 		$address_data = $this->client->registerAddress(
 			$params['address'],
 			$params['oauth_token'],
-			$params['label'] ?? 'New address',
+			$params['label']  ?? 'New address',
 			$params['public'] ?? false,
 			$params['active'] ?? true,
-			$params['type'] ?? 'bitcoin'
+			$params['type']   ?? 'bitcoin'
 		);
 		if ( !$address_data ) {
 			return null;
@@ -101,9 +103,10 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * Verifies the address
 	 * @return void
 	 */
-	public function verify( AddressInterface $address, array $params = array() ): void {
+	public function verify(
+		AddressInterface $address, array $params = array() ): void {
 		$this->client->verifyAddress(
-			$params['address'] ?? $address->get_address(),
+			$params['address'] ?? $address->address,
 			$params['oauth_token'],
 			$params['signature'],
 		);
@@ -114,13 +117,15 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params New address properties
 	 * @return AddressInterface|null
 	 */
-	public function update( AddressInterface $address, array $params = array() ): ?AddressInterface {
+	public function update( 
+		AddressInterface $address,
+		array $params = array() ): ?AddressInterface {
 		$address_data = $this->client->updateAddressDetails(
-			$params['address'] ?? $address->get_address(),
+			$params['address'] ?? $address->address,
 			$params['oauth_token'],
-			$params['label'] ?? $address->get_label(),
-			$params['public'] ?? $address->get_public(),
-			$params['active'] ?? $address->get_active()
+			$params['label']  ?? $address->label,
+			$params['public'] ?? $address->public,
+			$params['active'] ?? $address->active
 		);
 		if ( !$address_data ) {
 			return null;
@@ -133,8 +138,14 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * Deletes the model
 	 * @return void
 	 */
-	public function destroy( AddressInterface $address, array $params = array() ): void {
-		$this->client->deleteAddress( $address->get_address(), $params['oauth_token'] );
+	public function destroy(
+		AddressInterface $address, 
+		array $params = array()
+	): void {
+		$this->client->deleteAddress(
+			$address->address,
+		 	$params['oauth_token']
+		);
 	}
 
 	/**
@@ -143,11 +154,15 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface Addresses found
 	 */
-	protected function index_cacheable( array $params = array() ): AddressCollectionInterface {
+	protected function index_cacheable( 
+		array $params = array() ): AddressCollectionInterface {
 		$addresses = array();
 		if ( isset( $params['oauth_token'] ) ) {
 			$oauth_token = $params['oauth_token'];
-			$addresses = $this->client->getAddressesForAuthenticatedUser( $oauth_token );
+			$addresses = 
+				$this->client->getAddressesForAuthenticatedUser(
+					$oauth_token
+				);
 		}
 		$addresses = ( new AddressCollection() )->from_array( $addresses );
 		$addresses = $this->handle_registered( $addresses, $params );
@@ -160,7 +175,9 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface Addresses found
 	 */
-	protected function index_user_cacheable( OauthUserInterface $user = null, array $params = array() ): AddressCollectionInterface {
+	protected function index_user_cacheable(
+		OauthUserInterface $user = null,
+		array $params = array() ): AddressCollectionInterface {
 		if ( $user ) {
 			$params['username'] = $user->get_username();
 		}
@@ -185,17 +202,21 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressInterface|null Address found
 	 */
-	protected function show_cacheable( array $params = array() ): ?AddressInterface {
+	protected function show_cacheable(
+		array $params = array() ): ?AddressInterface {
 		if ( !isset( $params['address'] ) ) {
 			return null;
 		}
-		if ( !isset( $params['address'] ) || !isset( $params['oauth_token'] ) ) {
+		if ( !isset( $params['address'] ) ||
+			!isset( $params['oauth_token'] )
+		) {
 			return null;
 		}
 		$address_id = $params['address'];
 		$oauth_token = $params['oauth_token'];
-		$address = $this->client->getAddressDetailsForAuthenticatedUser( $address_id, $oauth_token );
-		if( !$address || !is_array( $address ) ) {
+		$address = $this->client->getAddressDetailsForAuthenticatedUser( 
+			$address_id, $oauth_token );
+		if ( !$address || !is_array( $address ) ) {
 			return null;
 		}
 		$address = $this->format_item( $address );
@@ -209,7 +230,8 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressInterface|null Address found
 	 */
-	protected function show_user_cacheable( array $params = array() ): ?AddressInterface {
+	protected function show_user_cacheable(
+		array $params = array() ): ?AddressInterface {
 		if ( !isset( $params['address'] ) || !isset( $params['username'] ) ) {
 			return null;
 		}
@@ -218,8 +240,11 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 		}
 		$username = $params['username'];
 		$address_id = $params['address'];
-		$address = $this->client->getPublicAddressDetails( $username, $address_id );
-		if( !$address ){
+		$address = $this->client->getPublicAddressDetails(
+			$username,
+			$address_id
+		);
+		if ( !$address ){
 			return null;
 		}
 		$address = $this->format_item( $address );
@@ -233,8 +258,13 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AddressCollectionInterface
 	 */
-	protected function handle_registered( AddressCollectionInterface $addresses, array $params ): AddressCollectionInterface {
-		if ( isset( $params['registered'] ) && $params['registered'] == true ) {
+	protected function handle_registered(
+		AddressCollectionInterface $addresses,
+		array $params
+	): AddressCollectionInterface {
+		if ( isset( $params['registered'] ) &&
+			$params['registered'] == true
+		) {
 			$addresses->filter_registered();
 			$addresses->key_by_field( 'address' );
 		}
@@ -247,10 +277,13 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	protected function format_item( array $item ): array {
 		if ( isset( $item['balances'] ) && is_array( $item['balances'] ) ) {
 			foreach ( $item['balances'] as $key => &$balance ) {
-				$balance['asset'] = $this->asset_name_formatter_service->split( $key );
+				$balance['asset'] = 
+					$this->asset_name_formatter_service->split( $key );
 				$balance['name'] = $key;
 				$balance['quantity'] = array(
-					'value'     => $this->quantity_calculator_service->from_sat( $balance['value'], $balance['precision'] ),
+					'value'     => 
+						$this->quantity_calculator_service->from_sat(
+							 $balance['value'], $balance['precision'] ),
 					'value_sat' => $balance['value'],
 					'precision' => $balance['precision'],
 				);
@@ -259,7 +292,8 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 			$item['balance'] = $item['balances'];
 			unset( $item['balances'] );
 			$balances = array_values( $item['balance'] );
-			$balance_collection = ( new BalanceCollection() )->from_array( $balances );
+			$balance_collection = 
+				( new BalanceCollection() )->from_array( $balances );
 			$item['balance'] = $balance_collection;
 		}
 		return $item;
@@ -270,7 +304,10 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 	 * @param string[] $relations Further relations
 	 * @return BalanceCollectionInterface
 	 */
-	protected function load_balance( AddressInterface $address, array $relations = array() ): BalanceCollectionInterface {
+	protected function load_balance(
+		AddressInterface $address,
+		array $relations = array()
+	): BalanceCollectionInterface {
 		$balance = $address->get_balance();
 		if ( !$balance ) {
 			$balance = new BalanceCollection( array() );

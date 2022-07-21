@@ -14,24 +14,23 @@ class AdminRouteRepository extends RouteRepository implements AdminRouteReposito
 		$formatted = array();
 		foreach ( $this->routes as $route_key => $route ) {
 			$can_register = $this->get_can_register( $route );
-			if ( $route->get_subroutes() ) {
-				$route_menu_slug = $route->get_menu_slug();
-				$formatted[ "{$route_key}" ] = array(
-					'name' => $route->get_menu_title(),
-					'url'  => "/wp-admin/admin.php?page={$route_menu_slug}",
+			$route_menu_slug = $route->menu_slug;
+			$formatted[ "{$route_key}" ] = array(
+				'name' => $route->menu_title,
+				'url'  => "/wp-admin/admin.php?page={$route_menu_slug}",
+				'access' => $can_register,
+			);
+			if ( !$route->subroutes ) {
+				continue;
+			}
+			foreach ( $route->subroutes as $subroute_key => $subroute ) {
+				$can_register = $this->get_can_register( $subroute );
+				$subroute_menu_slug = $subroute->menu_slug;
+				$formatted[ "{$route_key}_{$subroute_key}" ] = array(
+					'name' => $subroute->menu_title,
+					'url'  => "/wp-admin/admin.php?page={$subroute_menu_slug}",
 					'access' => $can_register,
 				);
-				if ( $route->get_subroutes() ) {
-					foreach ( $route->get_subroutes() as $subroute_key => $subroute ) {
-						$can_register = $this->get_can_register( $subroute );
-						$subroute_menu_slug = $subroute->get_menu_slug();
-						$formatted[ "{$route_key}_{$subroute_key}" ] = array(
-							'name' => $subroute->get_menu_title(),
-							'url'  => "/wp-admin/admin.php?page={$subroute_menu_slug}",
-							'access' => $can_register,
-						);
-					}
-				}
 			}
 		}
 		return $formatted;

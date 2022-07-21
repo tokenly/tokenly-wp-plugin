@@ -12,22 +12,6 @@ class TransactionReport extends Model implements TransactionReportInterface {
 	protected ?TransactionCollectionInterface $credit = null;
 	protected ?TransactionCollectionInterface $debit = null;
 
-	public function get_credit(): ?TransactionCollectionInterface {
-		return $this->credit ?? null;
-	}
-
-	public function set_credit( ?TransactionCollectionInterface $value ): void {
-		$this->credit = $credit;
-	}
-
-	public function get_debit(): ?TransactionCollectionInterface {
-		return $this->debit ?? null;
-	}
-
-	public function set_debit( ?TransactionCollectionInterface $value ): void {
-		$this->debit = $debit;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -46,11 +30,11 @@ class TransactionReport extends Model implements TransactionReportInterface {
 	 */
 	public function to_array(): array {
 		$array = array();
-		if ( $this->get_debit() ) {
-			$array['debit'] = $this->get_debit()->to_array();
+		if ( $this->debit ) {
+			$array['debit'] = $this->debit->to_array();
 		}
-		if ( $this->get_credit() ) {
-			$array['credit'] = $this->get_credit()->to_array();
+		if ( $this->credit ) {
+			$array['credit'] = $this->credit->to_array();
 		}
 		return $array;
 	}

@@ -27,14 +27,6 @@ class Term extends Model implements TermInterface, ProtectableInterface {
 		return $this->term->$key = $value;
 	}
 
-	public function get_term(): ?\WP_Term {
-		return $this->term ?? null;
-	}
-
-	public function set_term( ?\WP_Term $value ): void {
-		$this->term = $value;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -47,7 +39,7 @@ class Term extends Model implements TermInterface, ProtectableInterface {
 	 * @inheritDoc
 	 */
 	public function to_array(): array {
-		$term = $this->get_term();
+		$term = $this->term;
 		$array = array(
 			'id'          => $term->slug,
 			'name'        => $term->name,
@@ -64,9 +56,11 @@ class Term extends Model implements TermInterface, ProtectableInterface {
 	 * @inheritDoc
 	 */
 	protected function get_fillable(): array {
-		return array_merge( parent::get_fillable(), $this->protectable_get_fillable(), array(
-			'term',
-		) );
+		return array_merge(
+			parent::get_fillable(),
+			$this->protectable_get_fillable(),
+			array( 'term' )
+		);
 	}
 
 	public function get_tca_rules_relation() {

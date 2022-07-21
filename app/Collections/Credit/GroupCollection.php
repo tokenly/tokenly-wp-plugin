@@ -22,7 +22,7 @@ class GroupCollection extends Collection implements GroupCollectionInterface {
 	 */
 	public function exclude_not_valid_clients( string $client_id ): self {
 		foreach ( ( array ) $this as $key => $item ) {
-			$app_whitelist = $item->get_app_whitelist();
+			$app_whitelist = $item->app_whitelist;
 			if ( !in_array( $client_id, $app_whitelist ) ) {
 				unset( $this[ $key ] );
 			}
@@ -36,9 +36,11 @@ class GroupCollection extends Collection implements GroupCollectionInterface {
 	 * @param GroupWhitelistInterface $whitelist
 	 * @return self
 	 */
-	public function exclude_not_whitelisted( GroupWhitelistInterface $whitelist ): self {
+	public function exclude_not_whitelisted(
+		GroupWhitelistInterface $whitelist
+	): self {
 		foreach ( ( array ) $this as $key => $item ) {
-			if ( $whitelist->is_whitelisted( $item->get_uuid() ) === false ) {
+			if ( $whitelist->is_whitelisted( $item->uuid ) === false ) {
 				unset( $this[ $key ] );
 			}
 		}

@@ -12,7 +12,9 @@ use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 /**
  * Defines balance endpoints
  */
-class BalanceController extends Controller implements BalanceControllerInterface {
+class BalanceController extends Controller
+	implements BalanceControllerInterface
+{
 	protected BalanceRepositoryInterface $balance_repository;
 
 	public function __construct(
@@ -27,7 +29,9 @@ class BalanceController extends Controller implements BalanceControllerInterface
 	 * @param BalanceCollectionInterface $balance Bound balance
 	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, BalanceCollectionInterface $balance ): \WP_REST_Response {
+	public function index(
+		\WP_REST_Request $request, BalanceCollectionInterface $balance
+	): \WP_REST_Response {
 		$balance = $balance->to_array();
 		return new \WP_REST_Response( $balance );
 	}

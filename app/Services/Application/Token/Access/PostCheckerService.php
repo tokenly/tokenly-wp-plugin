@@ -30,18 +30,24 @@ class PostCheckerService extends CheckerService implements PostCheckerServiceInt
 		$this->post_repository = $post_repository;
 		$this->term_checker_service = $term_checker_service;
 		
-		parent::__construct( $tca_settings_repository, $user_repository, $client );
+		parent::__construct(
+			$tca_settings_repository,
+			$user_repository,
+			$client
+		);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	protected function get_tca_rules_relation( ProtectableInterface $target ): RuleCollectionCollectionInterface {
+	protected function get_tca_rules_relation(
+		ProtectableInterface $target
+	): RuleCollectionCollectionInterface {
 		$post = $target;
 		$rules = new RuleCollectionCollection();
 		$post = $this->post_repository->load( $post, array( 'term' ) );
-		if ( $post->get_term() ) {
-			$term_rules = $post->get_term()->get_tca_rules();
+		if ( $post->term ) {
+			$term_rules = $post->term->tca_rules;
 			if (
 				$term_rules &&
 				count( ( array ) $term_rules ) > 0
@@ -57,18 +63,24 @@ class PostCheckerService extends CheckerService implements PostCheckerServiceInt
 	 */
 	public function check_tca_enabled( ProtectableInterface $target ): bool {
 		$post = $target;
-		return $this->tca_settings->is_enabled_for_post_type( $post->post_type ) ?? false;
+		return $this->tca_settings->is_enabled_for_post_type(
+			$post->post_type
+		) ?? false;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function check_relations_protected( ProtectableInterface $target ): bool {
+	public function check_relations_protected(
+		ProtectableInterface $target
+	): bool {
 		$post = $target;
 		$terms_protected = false;
 		$post = $this->post_repository->load( $post, array( 'term' ) );
 		if ( $post->get_term() ) {
-			$terms_protected = $this->term_checker_service->is_protected( $post->get_term() );
+			$terms_protected = $this->term_checker_service->is_protected(
+				$post->term
+			);
 		}
 		if ( $terms_protected === true ) {
 			return true;
@@ -80,12 +92,17 @@ class PostCheckerService extends CheckerService implements PostCheckerServiceInt
 	/**
 	 * @inheritDoc
 	 */
-	public function test_access_relations( ProtectableInterface $target, ?UserInterface $user = null ): ?VerdictInterface {
+	public function test_access_relations(
+		ProtectableInterface $target,
+		?UserInterface $user = null ): ?VerdictInterface {
 		$post = $target;
 		$post = $this->post_repository->load( $post, array( 'term' ) );
 		$verdict = null;
-		if ( $post->get_term() ) {
-			$verdict = $this->term_checker_service->check( $post->get_term(), $user );
+		if ( $post->term ) {
+			$verdict = $this->term_checker_service->check(
+				$post->term,
+				$user
+			);
 		}
 		return $verdict;
 	}

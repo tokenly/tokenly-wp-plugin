@@ -11,6 +11,8 @@ use Tokenly\Wp\Interfaces\Collections\Token\WhitelistItemCollectionInterface;
 
 use Tokenly\Wp\Models\Token\WhitelistItem;
 
-class WhitelistItemCollection extends Collection implements WhitelistItemCollectionInterface {
+class WhitelistItemCollection extends Collection
+	implements WhitelistItemCollectionInterface
+{
 	protected string $item_type = WhitelistItem::class;
 }

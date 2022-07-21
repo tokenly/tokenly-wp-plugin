@@ -27,7 +27,9 @@ class Router extends Service implements RouterInterface {
 	 * @param RouteCollectionInterface $routes Routes to process
 	 * @return RouteCollectionInterface $routes Formatted route data
 	 */
-	protected function process_routes( RouteCollectionInterface $routes ): RouteCollectionInterface {
+	protected function process_routes(
+		RouteCollectionInterface $routes
+	): RouteCollectionInterface {
 		return $routes;
 	}
 
@@ -36,7 +38,10 @@ class Router extends Service implements RouterInterface {
 	 * @param callable $render_function Controller's render function
 	 * @return void
 	 */
-	public function render_route( callable $render_function, array $arguments = array() ): void {
+	public function render_route(
+		callable $render_function,
+		array $arguments = array()
+	): void {
 		$response = call_user_func( $render_function, ...$arguments );
 		if ( !$response ) {
 			return;
@@ -54,7 +59,11 @@ class Router extends Service implements RouterInterface {
 			$props = $response['data'];
 		}
 		if ( $template == 'Dynamic.twig' ) {
-			$props = htmlspecialchars( json_encode( $props ), ENT_QUOTES, 'UTF-8' );
+			$props = htmlspecialchars(
+				json_encode( $props ),
+				ENT_QUOTES,
+				'UTF-8'
+			);
 		}
 		$view_data['props'] = $props;
 		$view_data['namespace'] = $this->namespace;

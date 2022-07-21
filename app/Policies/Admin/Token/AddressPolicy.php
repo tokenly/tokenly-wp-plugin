@@ -22,8 +22,10 @@ class AddressPolicy extends Policy implements AddressPolicyInterface {
 	) {
 		$this->user_repository = $user_repository;
 		$this->user = $this->user_repository->show_current();
-		$this->integration_settings_repository = $integration_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings_repository =
+			$integration_settings_repository;
+		$this->integration_settings =
+			$this->integration_settings_repository->show();
 	}
 
 	public function index() {
@@ -53,7 +55,7 @@ class AddressPolicy extends Policy implements AddressPolicyInterface {
 	public function before() {
 		if (
 			$this->user &&
-			$this->user->get_can_connect()
+			$this->user->can_connect
 		) {
 			return true;
 		}

@@ -40,14 +40,14 @@ class LoginButtonComponentModel extends ComponentModel implements LoginButtonCom
 		if ( isset( $data['label'] ) ) {
 			$label = $data['label'];
 		}
-		$redirect = $this->oauth_settings->get_success_url();
+		$redirect = $this->oauth_settings->success_url;
 		if ( isset( $data['redirect'] ) ) {
 			$redirect = $data['redirect'];
 		}
-		$can_connect = $this->integration_settings->get_can_connect();
+		$can_connect = $this->integration_settings->can_connect;
 		$is_logged_in = is_user_logged_in();
 		$logo = file_get_contents( $this->root_dir . '/resources/images/tokenly_logo.svg' );
-		$use_single_sign_on = $this->oauth_settings->get_use_single_sign_on();
+		$use_single_sign_on = $this->oauth_settings->use_single_sign_on;
 		$url = "/{$this->namespace}/oauth/connect";
 		if ( $redirect ) {
 			$url = add_query_arg( "{$this->namespace}_success_url", $redirect, $url );

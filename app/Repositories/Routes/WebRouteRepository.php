@@ -13,8 +13,8 @@ class WebRouteRepository extends RouteRepository implements WebRouteRepositoryIn
 	public function index_formatted(): array {
 		$formatted = array();
 		foreach ( $this->routes as $route ) {
-			$path = $route->get_path();
-			$id = $route->get_id();
+			$path = $route->path;
+			$id = $route->id;
 			$formatted[ $id ] = array(
 				'url'  => $path,
 			);

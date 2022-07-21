@@ -23,7 +23,11 @@ class TermCheckerService extends CheckerService implements TermCheckerServiceInt
 		TokenpassAPIInterface $client
 	) {
 		$this->post_repository = $post_repository;
-		parent::__construct( $tca_settings_repository, $user_repository, $client );
+		parent::__construct(
+			$tca_settings_repository,
+			$user_repository,
+			$client
+		);
 	}
 
 	/**
@@ -41,7 +45,9 @@ class TermCheckerService extends CheckerService implements TermCheckerServiceInt
 			}
 			return $is_enabled;
 		} elseif ( $term instanceof ModelInterface ) {
-			$is_enabled = $this->tca_settings->is_enabled_for_taxonomy( $term->taxonomy ) ?? false;
+			$is_enabled = $this->tca_settings->is_enabled_for_taxonomy(
+				$term->taxonomy
+			) ?? false;
 		}
 		return $is_enabled;
 	}

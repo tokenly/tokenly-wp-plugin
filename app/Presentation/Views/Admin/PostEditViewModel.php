@@ -30,8 +30,8 @@ class PostEditViewModel extends DynamicViewModel implements PostEditViewModelInt
 		$post = $data['post'];
 		$tca_enabled = $this->tca_settings->is_enabled_for_post_type( $post->post_type );
 		$tca_rules = array();
-		if ( $post->get_tca_rules() ) {
-			$tca_rules = $post->get_tca_rules()->to_array();
+		if ( $post->tca_rules ) {
+			$tca_rules = $post->tca_rules->to_array();
 		}
 		$props = array(
 			'tca_enabled' => $tca_enabled,

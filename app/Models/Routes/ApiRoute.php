@@ -6,59 +6,19 @@ use Tokenly\Wp\Models\Routes\Route;
 use Tokenly\Wp\Interfaces\Models\Routes\ApiRouteInterface;
 
 class ApiRoute extends Route implements ApiRouteInterface {
-	protected ?string $path = null;
-	protected ?string $path_regex = null;
-	protected ?string $methods = null;
-	protected mixed $callback;
-	protected mixed $permission_callback;
-
-	public function get_path(): ?string {
-		return $this->path ?? null;
-	}
-
-	public function set_path( ?string $value ): void {
-		$this->path = $value;
-	}
-
-	public function get_path_regex(): ?string {
-		return $this->path_regex ?? null;
-	}
-
-	public function set_path_regex( ?string $value ): void {
-		$this->path_regex = $value;
-	}
-
-	public function get_methods(): ?string {
-		return $this->methods ?? null;
-	}
-
-	public function set_methods( ?string $value ): void {
-		$this->methods = $value;
-	}
-
-	public function get_callback(): ?callable {
-		return $this->callback ?? null;
-	}
-
-	public function set_callback( ?callable $value ): void {
-		$this->callback = $value;
-	}
-
-	public function get_permission_callback(): ?callable {
-		return $this->permission_callback ?? null;
-	}
-
-	public function set_permission_callback( ?callable $value ): void {
-		$this->permission_callback = $value;
-	}
+	public ?string $path = null;
+	public ?string $path_regex = null;
+	public ?string $methods = null;
+	public mixed $callback;
+	public mixed $permission_callback;
 
 	public function get_register_arguments(): array {
 		return array(
-			$this->get_path_regex(),
+			$this->path_regex,
 			array(
-				'methods'             => $this->get_methods(),
-				'callback'            => $this->get_callback(),
-				'permission_callback' => $this->get_permission_callback(),
+				'methods'             => $this->methods,
+				'callback'            => $this->callback,
+				'permission_callback' => $this->permission_callback,
 			),
 		);
 	}

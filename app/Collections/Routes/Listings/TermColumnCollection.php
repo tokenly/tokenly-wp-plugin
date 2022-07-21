@@ -7,6 +7,8 @@ use Tokenly\Wp\Interfaces\Collections\Routes\Listings\TermColumnCollectionInterf
 
 use Tokenly\Wp\Models\Routes\Listings\TermColumn;
 
-class TermColumnCollection extends ColumnCollection implements TermColumnCollectionInterface {
+class TermColumnCollection extends ColumnCollection
+	implements TermColumnCollectionInterface
+{
 	protected string $item_type = TermColumn::class;
 }

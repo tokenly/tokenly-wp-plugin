@@ -24,7 +24,7 @@ class GroupStoreViewModel extends DynamicViewModel implements GroupStoreViewMode
 	 */
 	protected function get_view_props( array $data = array() ): array {
 		return array(
-			'client_id' => $this->integration_settings->get_client_id(),
+			'client_id' => $this->integration_settings->client_id,
 		);
 	}
 }

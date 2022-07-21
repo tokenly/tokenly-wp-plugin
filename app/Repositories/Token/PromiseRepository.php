@@ -147,7 +147,7 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 		if ( ( !is_numeric( $expiration ) || ( int )$expiration != $expiration ) ) {
 			unset( $params['expiration'] );
 		}
-		$this->client->updatePromisedTransaction( $promise->get_promise_id(), $params );
+		$this->client->updatePromisedTransaction( $promise->promise_id, $params );
 	}
 
 	/**
@@ -157,11 +157,11 @@ class PromiseRepository extends Repository implements PromiseRepositoryInterface
 	 */
 	public function destroy( PromiseInterface $promise ): void {
 		$this->load( $promise, array( 'promise_meta' ) );
-		if ( $promise->get_promise_meta() ) {
-			$promise_meta = $promise->get_promise_meta();
+		if ( $promise->promise_meta ) {
+			$promise_meta = $promise->promise_meta;
 			$this->promise_meta_repository->destroy( $promise_meta );
 		}
-		$this->client->deletePromisedTransaction( $promise->get_promise_id() );
+		$this->client->deletePromisedTransaction( $promise->promise_id );
 	}
 
 	/**

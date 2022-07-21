@@ -13,10 +13,20 @@ use Tokenly\Wp\Models\Token\Promise;
 use Tokenly\Wp\Collections\Token\PromiseMetaCollection;
 use Tokenly\Wp\Interfaces\Collections\UserCollectionInterface;
 
-class PromiseCollection extends Collection implements PromiseCollectionInterface {
+class PromiseCollection extends Collection
+	implements PromiseCollectionInterface
+{
 	protected string $item_type = Promise::class;
 
-	public function get_users(): array {
+	public function __get( $name ) {
+		switch ( $name ) {
+			case 'users':
+				return $this->get_users();
+				break;
+		}
+    }
+
+	protected function get_users(): array {
 		$items = clone $this;
 		$items = $items->extract( 'promise_meta' );
 		$items = new PromiseMetaCollection( $items );
@@ -36,8 +46,8 @@ class PromiseCollection extends Collection implements PromiseCollectionInterface
 			$meta = $promise['promise_meta'];
 			$destination = $meta['destination_user_id'];
 			$source = $meta['source_user_id'];
-			$meta['destination_user'] = $users[$destination] ?? null;
-			$meta['source_user'] = $users[$source] ?? null;
+			$meta['destination_user'] = $users[ $destination ] ?? null;
+			$meta['source_user'] = $users[ $source ] ?? null;
 			$promise['promise_meta'] = $meta;
 			return $promise;
 		}, $promises );

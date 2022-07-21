@@ -14,7 +14,9 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 /**
  * Defines address endpoints
  */
-class AddressController extends Controller implements AddressControllerInterface {
+class AddressController extends Controller
+	implements AddressControllerInterface
+{
 	protected AddressRepositoryInterface $address_repository;
 	protected UserRepositoryInterface $user_repository;
 
@@ -32,7 +34,9 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param AddressCollectionInterface $addresses Bound addresses
 	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, AddressCollectionInterface $addresses ): \WP_REST_Response {
+	public function index(
+		\WP_REST_Request $request, AddressCollectionInterface $addresses
+	): \WP_REST_Response {
 		$addresses = $addresses->to_array();
 		return new \WP_REST_Response( $addresses );
 	}
@@ -43,7 +47,9 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param AddressInterface $address Bound address
 	 * @return \WP_REST_Response
 	 */
-	public function show( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+	public function show(
+		\WP_REST_Request $request, AddressInterface $address = null
+	): \WP_REST_Response {
 		if ( $address ) {
 			$address = $address->to_array();
 		}
@@ -77,7 +83,9 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param AddressInterface|null $address Address to update
 	 * @return \WP_REST_Response
 	 */
-	public function update( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+	public function update(
+		\WP_REST_Request $request, AddressInterface $address = null
+	): \WP_REST_Response {
 		$status;
 		if ( $address ) {
 			$params = $request->get_params();
@@ -98,7 +106,9 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param AddressInterface|null $address Address to verify
 	 * @return \WP_REST_Response
 	 */
-	public function verify( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+	public function verify(
+		\WP_REST_Request $request, AddressInterface $address = null
+	): \WP_REST_Response {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
@@ -118,7 +128,9 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param AddressInterface|null $address Bound address
 	 * @return \WP_REST_Response
 	 */
-	public function destroy( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+	public function destroy(
+		\WP_REST_Request $request, AddressInterface $address = null
+	): \WP_REST_Response {
 		if ( $address ) {
 			$params = $request->get_params();
 			$params = $this->remap_parameters( $params );
@@ -138,12 +150,14 @@ class AddressController extends Controller implements AddressControllerInterface
 	 * @param AddressInterface $user Bound address
 	 * @return \WP_REST_Response
 	 */
-	public function balance_index( \WP_REST_Request $request, AddressInterface $address = null ): \WP_REST_Response {
+	public function balance_index(
+		\WP_REST_Request $request, AddressInterface $address = null
+	): \WP_REST_Response {
 		$balance = array();
 		if ( $address ) {
 			$this->address_repository->load( $address, array( 'balance.meta' ) );
-			if ( $address->get_balance() ) {
-				$balance = $address->get_balance()->to_array();
+			if ( $address->balance ) {
+				$balance = $address->balance->to_array();
 			}
 		}
 		return new \WP_REST_Response( $balance );
@@ -152,7 +166,7 @@ class AddressController extends Controller implements AddressControllerInterface
 	protected function remap_parameters( array $params = array() ): array {
 		$user = $this->user_repository->show_current();
 		if ( $user ) {
-			$params['oauth_token'] = $user->get_oauth_token();
+			$params['oauth_token'] = $user->oauth_token;
 		}
 		if ( isset( $params['id'] ) ) {
 			$params['address'] = $params['id'];
@@ -168,7 +182,9 @@ class AddressController extends Controller implements AddressControllerInterface
 	protected function get_bind_params(): array {
 		return array(
 			'service'                   => $this->address_repository,
-			'single_methods'            => array( 'show', 'update', 'destroy', 'verify', 'balance_index' ),
+			'single_methods'            => array(
+				'show', 'update', 'destroy', 'verify', 'balance_index'
+			),
 			'single_service_method'     => 'show',
 			'collection_methods'        => array( 'index' ),
 			'collection_service_method' => 'index',

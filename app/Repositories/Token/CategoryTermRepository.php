@@ -16,7 +16,8 @@ use Tokenly\Wp\Interfaces\Repositories\General\TermMetaRepositoryInterface;
 /**
  * Manages Category Terms
  */
-class CategoryTermRepository extends TermRepository implements CategoryTermRepositoryInterface {
+class CategoryTermRepository extends TermRepository
+	implements CategoryTermRepositoryInterface {
 	protected string $class = CategoryTerm::class;
 	protected string $class_collection = CategoryTermCollection::class;
 	protected string $namespace;
@@ -29,17 +30,24 @@ class CategoryTermRepository extends TermRepository implements CategoryTermRepos
 		$this->namespace = $namespace;
 	}
 
-	public function apply_meta_fallback_collection( MetaCollectionInterface $meta ): MetaCollectionInterface {
+	public function apply_meta_fallback_collection(
+		MetaCollectionInterface $meta
+	): MetaCollectionInterface {
 		foreach ( ( array ) $meta as &$item ) {
 			$terms = $this->index( array(
 				'id' => $item->ID,
 			) );
-			$meta->append_fallback( "{$this->namespace}_token_category", $terms );
+			$meta->append_fallback(
+				"{$this->namespace}_token_category",
+				$terms
+			);
 		}
 		return $meta;
 	}
 
-	public function apply_meta_fallback_single( MetaInterface $meta ): MetaInterface {
+	public function apply_meta_fallback_single(
+		MetaInterface $meta
+	): MetaInterface {
 		$terms = $this->index( array(
 			'id' => $meta->ID,
 		) );

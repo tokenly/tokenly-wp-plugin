@@ -7,6 +7,8 @@ use Tokenly\Wp\Interfaces\Collections\Routes\TermRouteCollectionInterface;
 
 use Tokenly\Wp\Models\Routes\TermRoute;
 
-class TermRouteCollection extends RouteCollection implements TermRouteCollectionInterface {
+class TermRouteCollection extends RouteCollection
+	implements TermRouteCollectionInterface
+{
 	protected string $item_type = TermRoute::class;
 }

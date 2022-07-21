@@ -28,7 +28,7 @@ class UserViewModel extends ViewModel implements UserViewModelInterface {
 			'id' => $user_id,
 		) );
 		if ( $user ) {
-			$can_connect = $user->get_can_connect();
+			$can_connect = $user->can_connect;
 		}
 		return array(
 			'user_id'     => $user_id,

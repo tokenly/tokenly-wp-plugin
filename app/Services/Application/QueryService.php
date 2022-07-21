@@ -42,7 +42,10 @@ class QueryService extends Service implements QueryServiceInterface {
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		add_filter( 'query_vars', array( $this, 'register_query_variables' ) );
+		add_filter(
+			'query_vars',
+			array( $this, 'register_query_variables' )
+		);
 	}
 
 	/**

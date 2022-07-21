@@ -22,8 +22,10 @@ class TransactionPolicy extends Policy implements TransactionPolicyInterface {
 	) {
 		$this->user_repository = $user_repository;
 		$this->user = $this->user_repository->show_current();
-		$this->integration_settings_repository = $integration_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings_repository =
+			$integration_settings_repository;
+		$this->integration_settings =
+			$this->integration_settings_repository->show();
 	}
 
 	public function index(): bool {
@@ -37,8 +39,8 @@ class TransactionPolicy extends Policy implements TransactionPolicyInterface {
 	public function before(): bool {
 		if (
 			$this->user &&
-			$this->user->get_can_connect() &&
-			$this->integration_settings->get_can_connect() &&
+			$this->user->can_connect &&
+			$this->integration_settings->can_connect &&
 			user_can( $this->user, 'administrator' )
 		) {
 			return true;

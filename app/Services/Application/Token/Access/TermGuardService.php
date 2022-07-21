@@ -42,23 +42,31 @@ class TermGuardService extends Service implements TermGuardServiceInterface {
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		add_action( "{$this->namespace}_template_redirect_term", array( $this, 'check' ) );
+		add_action(
+			"{$this->namespace}_template_redirect_term",
+			array( $this, 'check' )
+		);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function check( TermInterface $term ): void {
-		$verdict = $this->term_checker_service->check( $term, $this->current_user );
+		$verdict = $this->term_checker_service->check(
+			$term,
+			$this->current_user
+		);
 		$rules = $this->term_checker_service->get_tca_rules( $term );
-		if ( $verdict->get_status() === false ) {
+		if ( $verdict->status === false ) {
 			if ( is_admin() === true ) {
 				wp_die( 'Access Denied - Token Controlled Access.' );
 			} else {
-				$view_data = $this->post_access_denied_view_model->prepare( array(
-					'verdict' => $verdict,
-					'rules'   => $rules,
-				) );
+				$view_data = $this->post_access_denied_view_model->prepare(
+					array(
+						'verdict' => $verdict,
+						'rules'   => $rules,
+					)
+				);
 				echo $this->twig->render( 'Denied.twig', $view_data );
 				exit;
 			}

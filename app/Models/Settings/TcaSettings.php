@@ -6,43 +6,22 @@ use Tokenly\Wp\Models\Settings;
 use Tokenly\Wp\Interfaces\Models\Settings\TcaSettingsInterface;
 
 class TcaSettings extends Settings implements TcaSettingsInterface {
-	protected ?array $post_types = array();
-	protected ?array $taxonomies = array();
-	protected ?bool $filter_menu_items = true;
-	protected ?bool $filter_post_results = true;
+	public ?array $post_types = array();
+	public ?array $taxonomies = array();
+	public ?bool $filter_menu_items = true;
+	public ?bool $filter_post_results = true;
 
-	public function get_post_types(): ?array {
-		return $this->post_types ?? null;
-	}
-
-	public function set_post_types( ?array $value ): void {
-		$this->post_types = $value;
-	}
-
-	public function get_taxonomies(): ?array {
-		return $this->taxonomies ?? null;
-	}
-
-	public function set_taxonomies( ?array $value ): void {
-		$this->taxonomies = $value;
-	}
-
-	public function get_filter_menu_items(): ?bool {
-		return $this->filter_menu_items ?? null;
-	}
-
-	public function set_filter_menu_items( ?bool $value ): void {
-		$this->filter_menu_items = $value;
-	}
-
-	public function get_filter_post_results(): ?bool {
-		return $this->filter_post_results ?? null;
-	}
-
-	public function set_filter_post_results( ?bool $value ): void {
-		$this->filter_post_results = $value;
-	}
-
+	public function __get( $name ) {
+		switch ( $name ) {
+			case 'available_post_types':
+				$this->get_available_post_types();
+				break;
+			case 'available_taxonomies':
+				$this->get_available_taxonomies();
+				break;
+		}
+    }
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -55,10 +34,10 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'taxonomies'          => $this->get_taxonomies(),
-			'post_types'          => $this->get_post_types(),
-			'filter_menu_items'   => $this->get_filter_menu_items(),
-			'filter_post_results' => $this->get_filter_post_results(),
+			'taxonomies'          => $this->taxonomies,
+			'post_types'          => $this->post_types,
+			'filter_menu_items'   => $this->filter_menu_items,
+			'filter_post_results' => $this->filter_post_results,
 		);
 		return $array;
 	}
@@ -85,7 +64,7 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 * Returns an array of post types for which TCA can be enabled
 	 * @return array
 	 */
-	public function get_available_post_types(): array {
+	protected function get_available_post_types(): array {
 		$post_type_objects = get_post_types( array(), 'objects' );
 		$post_types = array();
 		foreach ( $post_type_objects as $post_type_object ) {
@@ -98,7 +77,7 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 * Returns an array of taxonomies for which TCA can be enabled
 	 * @return array
 	 */
-	public function get_available_taxonomies(): array {
+	protected function get_available_taxonomies(): array {
 		$taxonomy_objects = get_taxonomies( array(), 'object_type' );
 		$taxonomies = array();
 		foreach ( $taxonomy_objects as $taxonomy_object ) {

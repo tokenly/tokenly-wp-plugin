@@ -20,7 +20,8 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 /**
  * Manages token balance
  */
-class BalanceRepository extends Repository implements BalanceRepositoryInterface {
+class BalanceRepository extends Repository 
+	implements BalanceRepositoryInterface {
 	protected MetaRepositoryInterface $meta_repository;
 	protected WhitelistRepositoryInterface $whitelist_repository;
 	protected WhitelistInterface $whitelist;
@@ -45,7 +46,9 @@ class BalanceRepository extends Repository implements BalanceRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return BalanceCollectionInterface Balances found
 	 */
-	public function index( array $params = array() ): BalanceCollectionInterface {
+	public function index(
+		array $params = array()
+	): BalanceCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -55,11 +58,14 @@ class BalanceRepository extends Repository implements BalanceRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return BalanceCollectionInterface Balances found
 	 */
-	protected function index_cacheable( array $params = array() ): BalanceCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): BalanceCollectionInterface {
 		$balance = array();
 		if ( isset( $params['oauth_token'] ) ) {
 			$oauth_token = $params['oauth_token'];
-			$balance = $this->client->getCombinedPublicBalances( $oauth_token );
+			$balance = 
+				$this->client->getCombinedPublicBalances( $oauth_token );
 			if ( $balance && is_array( $balance ) ) {
 				foreach ( $balance as &$balance_item ) {
 					$balance_item = $this->format_item( $balance_item );
@@ -77,7 +83,9 @@ class BalanceRepository extends Repository implements BalanceRepositoryInterface
 	 * @inheritDoc
 	 */
 	protected function format_item( array $item = array() ): array {
-		$item['asset'] = $this->asset_name_formatter_service->split( $item['asset'] );
+		$item['asset'] = $this->asset_name_formatter_service->split(
+			$item['asset']
+		);
 		$value = 0;
 		if ( isset( $item['balance'] ) ) {
 			$value = $item['balance'];
@@ -107,9 +115,12 @@ class BalanceRepository extends Repository implements BalanceRepositoryInterface
 	 * @param string[] $relations Further relations
 	 * @return MetaInterface|null
 	 */
-	protected function load_meta( BalanceInterface $balance, array $relations = array() ): ?MetaInterface {
+	protected function load_meta(
+		BalanceInterface $balance,
+		array $relations = array()
+	): ?MetaInterface {
 		$meta = $this->meta_repository->show( array(
-			'assets' => array( $balance->get_asset()->get_name() ),
+			'assets' => array( $balance->asset->name ),
 			'with'   => $relations,
 		) );
 		return $meta;

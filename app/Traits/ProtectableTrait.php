@@ -15,15 +15,8 @@ trait ProtectableTrait {
 	 * Associated TCA rules
 	 * @var RuleCollectionInterface
 	 */
-	protected ?RuleCollectionInterface $tca_rules = null;
+	public ?RuleCollectionInterface $tca_rules = null;
 
-	public function get_tca_rules(): ?RuleCollectionInterface {
-		return $this->tca_rules ?? null;
-	}
-
-	public function set_tca_rules( ?RuleCollectionInterface $value ): void {
-		$this->tca_rules = $value;
-	}
 
 	protected function protectable_from_array( array $data = array() ): array {
 		if ( isset( $data['tca_rules'] ) && is_array( $data['tca_rules'] ) ) {
@@ -34,8 +27,8 @@ trait ProtectableTrait {
 
 	protected function protectable_to_array(): array {
 		$array = array();
-		if ( $this->get_tca_rules() ) {
-			$array['tca_rules'] = $this->get_tca_rules()->to_array();
+		if ( $this->tca_rules ) {
+			$array['tca_rules'] = $this->tca_rules->to_array();
 		}
 		return $array;
 	}

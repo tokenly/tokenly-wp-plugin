@@ -56,12 +56,12 @@ class VendorService extends Service implements VendorServiceInterface {
 		$source = $this->source_repository->show( array(
 			'address'     => $params['source_id'],
 			'with'        => array( 'address' ),
-			'oauth_token' => $current_user->get_oauth_token(),
+			'oauth_token' => $current_user->oauth_token,
 		) );
 		if ( 
 			!$source ||
-			!$source->get_address() ||
-			!$source->get_address_id()
+			!$source->address ||
+			!$source->address_id
 		) {
 			throw new \Exception( 'Source not found or no address data.' );
 		}
@@ -71,22 +71,26 @@ class VendorService extends Service implements VendorServiceInterface {
 			'name' => $username,
 			'with' => array( 'oauth_user' ),
 		) );
-		if ( $destination_user && $destination_user->get_oauth_user() ) {
-			$username = $destination_user->get_oauth_user()->get_username();
+		if ( $destination_user && $destination_user->oauth_user ) {
+			$username = $destination_user->oauth_user->username;
 		}
 		$destination = $this->get_promise_destination( $username );
 		if ( !$destination ) {
 			throw new \Exception( 'Destination is invalid.' );
 		}
-		$address = $source->get_address();
+		$address = $source->address;
 		if (
-			!$address->get_type() ||
-			!$address->get_balance()
+			!$address->type ||
+			!$address->balance
 		) {
 			throw new \Exception( 'Address is incomplete.' );
 		}
-		$balance = $address->get_balance();
-		$quantity = $this->apply_precision_to_quantity( $quantity, $asset, $balance );
+		$balance = $address->balance;
+		$quantity = $this->apply_precision_to_quantity(
+			$quantity,
+			$asset,
+			$balance
+		);
 		$promise = $this->promise_repository->store( array(
 			'address'     => $address_id,
 			'destination' => $destination,
@@ -96,7 +100,7 @@ class VendorService extends Service implements VendorServiceInterface {
 			'txid'        => null,
 			'fingerprint' => null,
 			'ref'         => $params['ref'] ?? '',
-			'type'        => $address->get_type(),
+			'type'        => $address->type,
 			'protocol'    => 'counterparty',
 			'pseudo'      => $pseudo,
 			'note'        => $params['note'] ?? '',
@@ -104,18 +108,26 @@ class VendorService extends Service implements VendorServiceInterface {
 		if ( !$promise ) {
 			return null;
 		}
-		$this->generate_promise_meta( $promise, $current_user, $destination_user );
+		$this->generate_promise_meta(
+			$promise,
+			$current_user,
+			$destination_user
+		);
 		return $promise;
 	}
 
-	protected function generate_promise_meta( PromiseInterface $promise, UserInterface $current_user = null, UserInterface $destination_user = null ) {
+	protected function generate_promise_meta(
+		PromiseInterface $promise,
+		UserInterface $current_user = null,
+		UserInterface $destination_user = null
+	) {
 		$meta = array();
-		$meta['promise_id'] = $promise->get_promise_id();
+		$meta['promise_id'] = $promise->promise_id;
 		if ( $current_user ) {
-			$meta['source_user_id'] = $current_user->get_uuid();
+			$meta['source_user_id'] = $current_user->uuid;
 		}
-		if ( $destination_user->get_uuid() ) {
-			$meta['destination_user_id'] = $destination_user->get_uuid();
+		if ( $destination_user->uuid ) {
+			$meta['destination_user_id'] = $destination_user->uuid;
 		}
 		$meta = $this->promise_meta_repository->store( $meta );
 		$this->promise_meta_repository->associate( $meta, $promise );
@@ -136,18 +148,25 @@ class VendorService extends Service implements VendorServiceInterface {
 	 * the asset data will be searched
 	 * @return float
 	 */
-	protected function apply_precision_to_quantity( int $quantity, string $asset, BalanceCollectionInterface $balance ): float {
+	protected function apply_precision_to_quantity(
+		int $quantity,
+		string $asset,
+		BalanceCollectionInterface $balance
+	): float {
 		$balance = clone $balance;
 		$balance = $balance->key_by_asset_name();
 		if ( !isset( $balance[ $asset ] ) ) {
 			return $quantity;
 		}
 		$balance = $balance[ $asset ];
-		if ( !$balance->get_quantity() ) {
+		if ( !$balance->quantity ) {
 			return $quantity;
 		}
-		$precision = $balance->get_quantity()->get_precision();
-		$quantity = $this->quantity_calculator_service->to_sat( $quantity, $precision );
+		$precision = $balance->quantity->precision;
+		$quantity = $this->quantity_calculator_service->to_sat(
+			$quantity,
+			$precision
+		);
 		return $quantity;
 	}
 }

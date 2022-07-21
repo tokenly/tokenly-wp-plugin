@@ -47,22 +47,28 @@ class ApiRouter extends Router implements ApiRouterInterface {
 	/**
 	 * @inheritDoc
 	 */
-	protected function process_routes( RouteCollectionInterface $routes ): RouteCollectionInterface {
+	protected function process_routes(
+		RouteCollectionInterface $routes
+	): RouteCollectionInterface {
 		foreach ( ( array ) $routes as $key => $route ) {
-			$callback = $route->get_callback();
-			$route->set_callback( function( $request ) use ( $callback ) {
+			$callback = $route->callback;
+			$route->callback = function( $request ) use ( $callback ) {
 				if ( is_array( $callback ) ) {
 					$controller = $callback[0];
 					$method = $callback[1];
 					if ( method_exists( $controller, 'call' ) ) {
-						return call_user_func( array( $controller, 'call' ), $request, $method );
+						return call_user_func(
+							array( $controller, 'call' ),
+							$request,
+							$method
+						);
 					} else {
 						return call_user_func( $callback, $request );
 					}
 				} else {
 					return call_user_func( $callback, $request );
 				}
-			} );
+			};
 			$routes[ $key ] = $route;
 		}
 		return $routes;

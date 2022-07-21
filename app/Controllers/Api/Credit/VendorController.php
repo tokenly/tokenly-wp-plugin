@@ -11,7 +11,9 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 /**
  * Defines transaction endpoints
  */
-class VendorController extends Controller implements VendorControllerInterface {
+class VendorController extends Controller
+	implements VendorControllerInterface
+{
 	protected VendorServiceInterface $vendor_service;
 
 	public function __construct(
@@ -49,7 +51,9 @@ class VendorController extends Controller implements VendorControllerInterface {
 		if ( isset( $params['source'] ) ) {
 			$source = $params['source'];
 		};
-		$transactions = $this->vendor_service->debit( $group, $account, $amount, $ref, $source );
+		$transactions = $this->vendor_service->debit(
+			$group, $account, $amount, $ref, $source
+		);
 		if ( $transactions ) {
 			$transactions = $transactions->to_array();
 		}
@@ -83,7 +87,9 @@ class VendorController extends Controller implements VendorControllerInterface {
 		if ( isset( $params['source'] ) ) {
 			$source = $params['source'];
 		};
-		$transactions = $this->vendor_service->credit( $group, $account, $amount, $ref, $source );
+		$transactions = $this->vendor_service->credit(
+			$group, $account, $amount, $ref, $source
+		);
 		if ( $transactions ) {
 			$transactions = $transactions->to_array();
 		}
@@ -93,9 +99,7 @@ class VendorController extends Controller implements VendorControllerInterface {
 	protected function get_account_by_username( string $account ): ?string {
 		$user = $this->user_repository->show( array(
 			'name' => $account,
-			'with' => array(
-				'oauth_user',
-			),
+			'with' => array( 'oauth_user' ),
 		) );
 		if ( $user ) {
 			return $user->get_uuid();

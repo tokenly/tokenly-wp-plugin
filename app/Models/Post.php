@@ -15,39 +15,19 @@ use Tokenly\Wp\Interfaces\Collections\TermCollectionInterface;
 class Post extends Model implements PostInterface, ProtectableInterface {
 	use ProtectableTrait;
 
-	protected ?TermCollectionInterface $term = null;
-	protected ?\WP_Post $post = null;
+	public ?TermCollectionInterface $term = null;
+	public ?\WP_Post $post = null;
 
 	public function __call( $method, $args ) {
-		return call_user_func_array( array( $this->get_post(), $method ), $args );
+		return call_user_func_array( array( $this->post, $method ), $args );
 	}
 
 	public function __get( $key ) {
-		return $this->get_post()->$key;
+		return $this->post->$key;
 	}
 
 	public function __set( $key, $value ) {
-		return $this->get_post()->$key = $value;
-	}
-
-	public function get_term(): ?TermCollectionInterface {
-		return $this->term ?? null;
-	}
-
-	public function set_term( ?TermCollectionInterface $value ): void {
-		$this->term = $value;
-	}
-
-	public function get_post(): ?\WP_Post {
-		return $this->post ?? null;
-	}
-
-	public function set_post( ?\WP_Post $value ): void {
-		$this->post = $value;
-	}
-
-	public function get_image(): ?string {
-		return wp_get_attachment_url( get_post_thumbnail_id( $this->get_post()->ID ), 'full' );
+		return $this->post->$key = $value;
 	}
 
 	/**
@@ -63,13 +43,13 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'id'          => $this->get_post()->ID,
-			'name'        => $this->get_post()->post_title,
-			'description' => $this->get_post()->post_excerpt,
-			'image'       => $this->get_image(),
+			'id'          => $this->post->ID,
+			'name'        => $this->post->post_title,
+			'description' => $this->post->post_excerpt,
+			'image'       => $this->image,
 		);
-		if ( $this->get_term() ) {
-			$array['term'] = $this->get_term()->to_array();
+		if ( $this->term ) {
+			$array['term'] = $this->term->to_array();
 		}
 		$array_protectable = $this->protectable_to_array();
 		$array = array_merge( $array, $array_protectable );
@@ -78,8 +58,8 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 
 	public function get_tca_rules_relation() {
 		$rules = null;
-		if ( $this->get_term() ) {
-			$rules = $this->get_term()->get_tca_rules();
+		if ( $this->term ) {
+			$rules = $this->term->tca_rules;
 		}
 		return $rules;
 	}
@@ -88,8 +68,12 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 	 * @inheritDoc
 	 */
 	protected function get_fillable(): array {
-		return array_merge( parent::get_fillable(), $this->protectable_get_fillable(), array(
-			'post',
-		) );
+		return array_merge(
+			parent::get_fillable(),
+			$this->protectable_get_fillable(),
+			array(
+				'post',
+			)
+		);
 	}
 }

@@ -56,20 +56,26 @@ class AuthService extends Service implements AuthServiceInterface {
 		$this->oauth_callback_route = $oauth_callback_route;
 		$this->oauth_user_repository = $oauth_user_repository;
 		$this->user_meta_repository = $user_meta_repository;
-		$this->integration_settings_repository = $integration_settings_repository;
+		$this->integration_settings_repository = 
+			$integration_settings_repository;
 		$this->oauth_settings_repository = $oauth_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings = 
+			$this->integration_settings_repository->show();
 		$this->oauth_settings = $this->oauth_settings_repository->show();
 		$this->state_cookie_name = "{$this->namespace}_oauth_state";
-		$this->success_url_cookie_name = "{$this->namespace}_oauth_success_url";
+		$this->success_url_cookie_name = 
+			"{$this->namespace}_oauth_success_url";
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		if ( $this->oauth_settings->get_use_single_sign_on() == true ) {
-			add_action( 'login_footer', array( $this, 'embed_tokenpass_login' ) );
+		if ( $this->oauth_settings->use_single_sign_on == true ) {
+			add_action(
+				'login_footer',
+				array( $this, 'embed_tokenpass_login' )
+			);
 		}
 	}
 
@@ -82,7 +88,8 @@ class AuthService extends Service implements AuthServiceInterface {
 	public function authorize_callback( string $state, string $code ): bool {
 		$success = $this->authorize( $state, $code );
 		$on_failure_url = home_url();
-		$on_success_url = $_COOKIE[ $this->success_url_cookie_name ] ?? $on_failure_url;
+		$on_success_url =
+			$_COOKIE[ $this->success_url_cookie_name ] ?? $on_failure_url;
 		$redirect_url = $success ? $on_success_url : $on_failure_url;
 		$this->reset_state();
 		$this->reset_success_url();
@@ -106,9 +113,9 @@ class AuthService extends Service implements AuthServiceInterface {
 		$state = wp_generate_password( 12, false );
 		$this->set_state( $state );
 		if ( !$success_url ) {
-			$success_url = $this->oauth_settings->get_success_url();
+			$success_url = $this->oauth_settings->success_url;
 		}
-		$this->set_success_url( $success_url );
+		$this->success_url = $success_url;
 		$url = $this->get_tokenpass_login_url( $state );
 		wp_redirect( $url );
 		exit;
@@ -117,13 +124,18 @@ class AuthService extends Service implements AuthServiceInterface {
 	/**
 	 * Connects the User to Tokenpass
 	 * @param UserInterface $user Target User
-	 * @param OauthUserInterface $oauth_user OAuth user to associate the current user with
+	 * @param OauthUserInterface $oauth_user OAuth user to associate
+	 * the current user with
 	 * @param string $oauth_token OAuth token of the OAuth user
 	 * @return void
 	 */
-	public function connect_user( UserInterface $user, OauthUserInterface $oauth_user, string $oauth_token ): self {
+	public function connect_user(
+		UserInterface $user,
+		OauthUserInterface $oauth_user,
+		string $oauth_token
+	): self {
 		$this->user_repository->update( $user, array(
-			'uuid'        => $oauth_user->get_id(),
+			'uuid'        => $oauth_user->id,
 			'oauth_token' => $oauth_token,
 			'can_connect' => true,
 		) );
@@ -137,7 +149,11 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return void
 	 */
 	public function disconnect_user( UserInterface $user ): void {
-		$this->user_meta_repository->destroy( $user->ID, ...array( 'uuid', 'oauth_token', 'can_connect' ) );
+		$this->user_meta_repository->destroy( $user->ID, ...array(
+			'uuid',
+			'oauth_token',
+			'can_connect'
+		) );
 		$user->remove_cap( 'use_tokenpass');
 	}
 
@@ -160,7 +176,10 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( $can_login === false ) {
 			return false;
 		}
-		if ( $this->current_user && $this->current_user instanceof UserInterface ) {
+		if (
+			$this->current_user &&
+			$this->current_user instanceof UserInterface
+		) {
 			$user = $this->current_user;
 		} else {
 			$user = $this->find_existing_user( $oauth_user );
@@ -171,7 +190,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( !$user ) {
 			return false;
 		}
-		$this->connect_user( $user, $oauth_user, $oauth_user->get_oauth_token() );
+		$this->connect_user( $user, $oauth_user, $oauth_user->oauth_token );
 		wp_set_auth_cookie( $user->ID );
 		return true;
 	}
@@ -181,7 +200,9 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @param string $code The code
 	 * @return OauthUserInterface|null
 	 */
-	protected function get_oauth_user_from_code( string $code ): ?OauthUserInterface {
+	protected function get_oauth_user_from_code(
+		string $code
+	): ?OauthUserInterface {
 		$oauth_token = $this->client->getOAuthAccessToken( $code );
 		if ( !$oauth_token ) {
 			return null;
@@ -199,7 +220,13 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return bool
 	 */
 	protected function set_success_url( string $url ): bool {
-		return setcookie( $this->success_url_cookie_name, $url, time() + 3600, COOKIEPATH, COOKIE_DOMAIN );
+		return setcookie(
+			$this->success_url_cookie_name,
+			$url,
+			time() + 3600,
+			COOKIEPATH,
+			COOKIE_DOMAIN
+		);
 	}
 
 	/**
@@ -207,7 +234,13 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return bool
 	 */
 	protected function reset_success_url(): bool {
-		return setcookie( $this->success_url_cookie_name, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN );
+		return setcookie(
+			$this->success_url_cookie_name,
+			'',
+			time() - 3600,
+			COOKIEPATH,
+			COOKIE_DOMAIN
+		);
 	}
 
 	/**
@@ -216,7 +249,13 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return bool
 	 */
 	protected function set_state( string $state ): bool {
-		return setcookie( $this->state_cookie_name, $state, time() + 3600, COOKIEPATH, COOKIE_DOMAIN );
+		return setcookie(
+			$this->state_cookie_name,
+			$state,
+			time() + 3600,
+			COOKIEPATH,
+			COOKIE_DOMAIN
+		);
 	}
 
 	/**
@@ -224,11 +263,18 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return bool
 	 */
 	protected function reset_state(): bool {
-		return setcookie( $this->state_cookie_name, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN );
+		return setcookie(
+			$this->state_cookie_name,
+			'',
+			time() - 3600,
+			COOKIEPATH,
+			COOKIE_DOMAIN
+		);
 	}
 
 	/**
-	 * Checks if the input session identifier matches the one currently stored.
+	 * Checks if the input session identifier matches
+	 * the one currently stored.
 	 * @param string $state Session identifier
 	 * @return bool
 	 */
@@ -246,19 +292,21 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @param OauthUserInterface $oauth_user Tokenpass user data
 	 * @return UserInterface|null
 	 */
-	protected function find_existing_user( OauthUserInterface $oauth_user ): ?UserInterface {
+	protected function find_existing_user(
+		OauthUserInterface $oauth_user
+	): ?UserInterface {
 		$user;
-		if ( $oauth_user->get_id() ) {
+		if ( $oauth_user->id ) {
 			$user = $this->user_repository->show( array(
-				'uuid' => $oauth_user->get_id(),
+				'uuid' => $oauth_user->id,
 			) );
 			if ( $user ) {
 				return $user;
 			}
 		}
-		if ( $oauth_user->get_email() ) {
+		if ( $oauth_user->email ) {
 			$user = $this->user_repository->show( array(
-				'email' => $oauth_user->get_email(),
+				'email' => $oauth_user->email,
 			) );
 			if ( $user ) {
 				return $user;
@@ -272,11 +320,11 @@ class AuthService extends Service implements AuthServiceInterface {
 	 * @return string
 	 */
 	protected function get_tokenpass_login_url( string $state ) {
-		if ( !$this->integration_settings->get_client_id() ) {
+		if ( !$this->integration_settings->client_id ) {
 			return;
 		}
 		$args = array(
-			'client_id'     => $this->integration_settings->get_client_id(),
+			'client_id'     => $this->integration_settings->client_id,
 			'redirect_uri'  => $this->oauth_callback_route,
 			'scope'         => 'user,tca,manage-address',
 			'response_type' => 'code',

@@ -11,7 +11,9 @@ use Tokenly\Wp\Interfaces\Collections\Token\PromiseMetaCollectionInterface;
 
 use Tokenly\Wp\Models\Token\PromiseMeta;
 
-class PromiseMetaCollection extends PostCollection implements PromiseMetaCollectionInterface {
+class PromiseMetaCollection extends PostCollection
+	implements PromiseMetaCollectionInterface
+{
 	protected string $item_type = PromiseMeta::class;
 
 	public function get_users(): array {

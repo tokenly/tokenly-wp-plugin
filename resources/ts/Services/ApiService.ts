@@ -38,8 +38,6 @@ import {
 	SettingsUpdateParamsInterface
 } from '../Interfaces/Services/ApiServiceInterface';
 
-import AddressInterface from '../Interfaces/Models/Token/AddressInterface';
-
 @injectable()
 export default class ApiService implements ApiServiceInterface {
 	protected namespace: string;

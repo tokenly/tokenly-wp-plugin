@@ -30,7 +30,7 @@ class UserPolicy extends Policy implements UserPolicyInterface {
 	public function before() {
 		if (
 			$this->user &&
-			$this->user->get_can_connect()
+			$this->user->can_connect
 		) {
 			return true;
 		}

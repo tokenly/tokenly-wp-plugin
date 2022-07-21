@@ -5,7 +5,8 @@ namespace Tokenly\Wp\Services\Domain\Token;
 use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\QuantityCalculatorServiceInterface;
 
-class QuantityCalculatorService extends Service implements QuantityCalculatorServiceInterface {
+class QuantityCalculatorService extends Service
+	implements QuantityCalculatorServiceInterface {
 	/**
 	 * Applies precision to the Satoshi equivalent
 	 * @param float $value Satoshi equivalent

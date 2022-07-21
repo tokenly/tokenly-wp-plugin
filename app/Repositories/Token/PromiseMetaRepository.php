@@ -42,18 +42,23 @@ class PromiseMetaRepository extends PostRepository implements PromiseMetaReposit
 	 * @param PromiseMetaInterface $promise_meta_data Promise meta to associate
 	 * @return PromiseMetaInterface
 	 */
-	public function associate( PromiseMetaInterface $promise_meta, PromiseInterface $promise ): PromiseMetaInterface {
+	public function associate(
+		PromiseMetaInterface $promise_meta,
+		PromiseInterface $promise
+	): PromiseMetaInterface {
 		$this->update( $promise_meta, array(
-			'promise_id' => $promise->get_promise_id(),
+			'promise_id' => $promise->promise_id,
 		) );
-		$promise->set_promise_meta( $promise_meta );
+		$promise->promise_meta = $promise_meta;
 		return $promise_meta;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	protected function get_store_existing_post( array $params = array() ): ?PromiseMetaInterface {
+	protected function get_store_existing_post(
+		array $params = array()
+	): ?PromiseMetaInterface {
 		$post = $this->show( array(
 			'promise_ids' => array( $params['promise_id'] ),
 		) );

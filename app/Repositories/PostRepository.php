@@ -39,7 +39,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param array $params Search params
 	 * @return PostCollectionInterface
 	 */
-	public function index( array $params = array() ): PostCollectionInterface {
+	public function index(
+		array $params = array()
+	): PostCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -78,7 +80,10 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * Decorates and updates the post
 	 * @return void
 	 */
-	public function update( PostInterface $post, array $params = array() ): PostInterface {
+	public function update(
+		PostInterface $post,
+		array $params = array()
+	): PostInterface {
 		$params = $this->filter_meta_params( $params );
 		$this->meta_repository->update( $post->ID, $params );
 		$post = $this->complete( $post->get_post() );
@@ -110,7 +115,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param \WP_Post[] $posts Posts to decorate
 	 * @return PostCollectionInterface
 	 */
-	public function complete_collection( array $posts = array() ): PostCollectionInterface {
+	public function complete_collection(
+		array $posts = array()
+	): PostCollectionInterface {
 		$posts = $this->append_meta_collection( $posts );
 		$posts = ( new $this->class_collection() )->from_array( $posts );
 		return $posts;
@@ -122,7 +129,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param array $params Search params
 	 * @return PostCollectionInterface
 	 */
-	protected function index_cacheable( array $params = array() ): PostCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): PostCollectionInterface {
 		$args = $this->get_query_args( $params );
 		$posts = $this->query( $args );
 		$posts = $this->complete_collection( $posts );
@@ -135,7 +144,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param array $params Post search params 
 	 * @return PostInterface|null
 	 */
-	protected function show_cacheable( array $params = array() ): ?PostInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?PostInterface {
 		$params['posts_per_page'] = 1;
 		$args = $this->get_query_args( $params );
 		$posts = $this->query( $args );
@@ -166,7 +177,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param array $params Store params
 	 * @return PostInterface|null $post Post found
 	 */
-	protected function get_store_existing_post( array $params = array() ): ?PostInterface {
+	protected function get_store_existing_post(
+		array $params = array()
+	): ?PostInterface {
 		if ( !isset( $params['id'] ) ) {
 			return null;
 		}
@@ -269,7 +282,9 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param array $posts Posts to target
 	 * @return array
 	 */
-	protected function append_meta_collection( array $posts = array() ): array {
+	protected function append_meta_collection(
+		array $posts = array()
+	): array {
 		foreach ( $posts as &$post ) {
 			$post = $this->append_meta( $post );
 		}
@@ -282,7 +297,10 @@ class PostRepository extends Repository implements PostRepositoryInterface {
 	 * @param string[] $relations Further relations
 	 * @return TermCollectionInterface
 	 */
-	protected function load_term( PostInterface $post, array $relations = array() ): TermCollectionInterface {
+	protected function load_term(
+		PostInterface $post,
+		array $relations = array()
+	): TermCollectionInterface {
 		$term = $this->term_repository->index( array(
 			'id' => $post->ID,
 		) );

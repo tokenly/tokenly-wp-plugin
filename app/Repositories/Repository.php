@@ -27,12 +27,18 @@ class Repository implements RepositoryInterface {
 
 	/**
 	 * Memoizes a new instance
-	 * @param string $name Service method the new instance will be associated with.
-	 * @param array $params Method parameters. They are used to key the instance.
+	 * @param string $name Service method the new instance will be
+	 * associated with.
+	 * @param array $params Method parameters. They are used to key
+	 * the instance.
 	 * @param mixed $instance New instance data
 	 * @return void
 	 */
-	protected function store_memoize( string $name, object $instance, array $arguments = array() ): void {
+	protected function store_memoize(
+		string $name,
+		object $instance,
+		array $arguments = array()
+	): void {
 		$hash = $this->make_hash_memoize( $name, $arguments );
 		$this->memoized[ $hash ] = $instance;
 	}
@@ -40,10 +46,14 @@ class Repository implements RepositoryInterface {
 	/**
 	 * Retrieves a memoized instance
 	 * @param string $name Service method
-	 * @param array $params Method parameters. They are used to identify the instance.
+	 * @param array $params Method parameters.
+	 * They are used to identify the instance.
 	 * @return object|null
 	 */
-	protected function show_memoize( string $name, array $arguments ): ?object {
+	protected function show_memoize(
+		string $name,
+		array $arguments
+	): ?object {
 		$hash = $this->make_hash_memoize( $name, $arguments );
 		if ( isset( $this->memoized[ $hash ] ) ) {
 			return $this->memoized[ $hash ];
@@ -59,7 +69,10 @@ class Repository implements RepositoryInterface {
 	 * @param array $arguments Method arguments
 	 * @return string
 	 */
-	protected function make_hash_memoize( string $name, array $arguments ): string {
+	protected function make_hash_memoize(
+		string $name,
+		array $arguments
+	): string {
 		$arguments = serialize( $arguments );
 		$arguments = "{$name}_{$arguments}";
 		$hash = md5( $arguments );
@@ -73,7 +86,10 @@ class Repository implements RepositoryInterface {
 	 * @param array $params Method arguments
 	 * @return object|null
 	 */
-	protected function handle_method( string $method, array $arguments = array() ): ?object {
+	protected function handle_method(
+		string $method,
+		array $arguments = array()
+	): ?object {
 		$method_cacheable = "{$method}_cacheable";
 		if ( !method_exists( $this, $method_cacheable ) ) {
 			throw new \Exception( "Cacheable method not found!" );
@@ -86,7 +102,11 @@ class Repository implements RepositoryInterface {
 		if ( !$instance ) {
 			return null;
 		}
-		if ( is_object( $instance ) && isset( $arguments[0] ) && isset( $arguments[0]['with'] ) ) {
+		if (
+			is_object( $instance ) &&
+			isset( $arguments[0] ) &&
+			isset( $arguments[0]['with'] )
+		) {
 			$params = $arguments[0];
 			unset( $params['with'] );
 			$this->load( $instance, $arguments[0]['with'], $params );
@@ -100,7 +120,11 @@ class Repository implements RepositoryInterface {
 	 * @param string[] $relations List of relations to load
 	 * @return object
 	 */
-	public function load( object $instance, array $relations = array(), array $params = array() ): object {
+	public function load(
+		object $instance,
+		array $relations = array(),
+		array $params = array()
+	): object {
 		foreach ( $relations as $key => $relation ) {
 			if ( $instance instanceof ModelInterface ) {
 				if ( !$relation ) {
@@ -112,13 +136,27 @@ class Repository implements RepositoryInterface {
 				}
 				$relation = $relation_formatted['root'];
 				$relations_nested = $relation_formatted['relations'] ?? null;
-				if ( $instance->{"get_{$relation}"}() && is_object( $instance->{"get_{$relation}"}() ) ) {
-					$this->{"{$relation}_repository"}->load( $instance->{"get_{$relation}"}(), array( $relations_nested ), $params );
+				if ( 
+					property_exists( $instance, $relation ) &&
+					is_object( $instance[ $relation ] )
+				) {
+					$this->{"{$relation}_repository"}->load(
+						$instance[ $relation ],
+						array( $relations_nested ), $params
+					);
 					continue;
 				} else {
-					if ( method_exists( $this, "load_{$relation}" ) && method_exists( $instance, "set_{$relation}" ) ) {
-						$relation_instance = call_user_func( array( $this, "load_{$relation}" ), $instance, array( $relations_nested ), $params );
-						$instance->{"set_{$relation}"}( $relation_instance );
+					if (
+						method_exists( $this, "load_{$relation}" ) &&
+						property_exists( $instance, $relation )
+					) {
+						$relation_instance = call_user_func(
+							array( $this, "load_{$relation}" ),
+							$instance,
+							array( $relations_nested ),
+							$params
+						);
+						$instance[ $relation ] = $relation_instance;
 					}
 				}
 			} elseif ( $instance instanceof CollectionInterface ) {

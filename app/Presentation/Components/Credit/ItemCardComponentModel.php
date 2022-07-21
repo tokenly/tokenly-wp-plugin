@@ -15,10 +15,10 @@ class ItemCardComponentModel extends ComponentModel implements ItemCardComponent
 		$name = null;
 		if ( isset( $data['group'] ) ) {
 			$group = $data['group'];
-			$name = $group->get_name();
+			$name = $group->name;
 		}
 		if ( isset( $data['account'] ) ) {
-			$balance = $account->get_balance();
+			$balance = $account->balance;
 		}
 		return array(
 			'name'   => $name,

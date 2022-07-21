@@ -41,34 +41,42 @@ class WebRouter extends Router implements WebRouterInterface {
 		$this->routes = $this->web_route_repository->index();
 		parent::register();
 		$this->routes = $this->process_routes( $this->routes );
-		add_filter( 'generate_rewrite_rules', array( $this, 'merge_rewrite_rules' ) );
+		add_filter(
+			'generate_rewrite_rules',
+			array( $this, 'merge_rewrite_rules' )
+		);
 		add_filter( 'template_include', array( $this, 'find_template' ) );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	protected function process_routes( RouteCollectionInterface $routes ): RouteCollectionInterface {
+	protected function process_routes(
+		RouteCollectionInterface $routes
+	): RouteCollectionInterface {
 		foreach ( $routes as $key => &$route ) {
-			$vars = $this->prefix_vars( $route->get_vars() );
-			$rules = $this->process_rules( $route->get_rules(), $vars );
+			$vars = $this->prefix_vars( $route->vars );
+			$rules = $this->process_rules( $route->rules, $vars );
 			$vars = $this->process_vars( $vars );
 			$this->rules = array_merge( $this->rules, $rules ?? null );
 			$this->vars = array_merge( $this->vars, $vars ?? null );
-			$route->set_rules( $rules );
-			$route->set_vars( $vars );
-			if ( $route->get_callback() ) {
-				$callback = $route->get_callback();
-				$route->set_callback( function() use ( $callback ) {
+			$route->rules = $rules;
+			$route->vars = $vars;
+			if ( $route->callback ) {
+				$callback = $route->callback;
+				$route->callback = function() use ( $callback ) {
 					$this->render_route( $callback );
-				} );
+				};
 			}
 			$routes[ $key ] = $route;
 		}
 		return $routes;
 	}
 
-	protected function process_rules( array $rules = array(), array $vars = array() ): array {
+	protected function process_rules(
+		array $rules = array(),
+		array $vars = array()
+	): array {
 		$rules_processed = array();
 		foreach ( $rules as $rule ) {
 			$new_key = "{$this->namespace}/{$rule}";
@@ -133,14 +141,14 @@ class WebRouter extends Router implements WebRouterInterface {
 	 */
 	public function find_template( $template ): ?string {
 		foreach ( $this->routes as $route ) {
-			if ( !$route->get_id() || !$route->get_callback() ) {
+			if ( !$route->id || !$route->callback ) {
 				continue;
 			}
-			$id = $route->get_id();
+			$id = $route->id;
 			$route_var = "{$this->namespace}_{$id}_page";
 			$query_var = get_query_var( $route_var );
 			if ( $query_var ) {
-				$callback = $route->get_callback();
+				$callback = $route->callback;
 				return call_user_func( $callback );
 			}
 		}

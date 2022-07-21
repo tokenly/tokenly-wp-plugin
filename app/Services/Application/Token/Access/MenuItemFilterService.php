@@ -16,7 +16,8 @@ use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostCheckerServiceIn
  * Filters the reuslts of navigation menu item queries by checking
  * if the current user can access the post associated with it
  */
-class MenuItemFilterService extends Service implements MenuItemFilterServiceInterface {
+class MenuItemFilterService extends Service
+	implements MenuItemFilterServiceInterface {
 	protected TcaSettingsRepositoryInterface $tca_settings_repository;
 	protected TcaSettingsInterface $tca_settings;
 	protected PostRepositoryInterface $post_repository;
@@ -43,8 +44,10 @@ class MenuItemFilterService extends Service implements MenuItemFilterServiceInte
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		if ( $this->tca_settings->get_filter_menu_items() === true ) {
-			add_filter( 'wp_get_nav_menu_items', array( $this, 'run' ), 10, 3 );
+		if ( $this->tca_settings->filter_menu_items === true ) {
+			add_filter( 'wp_get_nav_menu_items', array( $this, 'run' ),
+				10, 3
+			);
 		}
 	}
 	
@@ -64,8 +67,11 @@ class MenuItemFilterService extends Service implements MenuItemFilterServiceInte
 			if ( !$post ) {
 				continue;
 			}
-			$verdict = $this->post_checker_service->check( $post, $this->current_user );
-			if ( $verdict->get_status() === false ) {
+			$verdict = $this->post_checker_service->check(
+				$post,
+				$this->current_user
+			);
+			if ( $verdict->status === false ) {
 				unset( $items[ $key ] );
 			}
 		}

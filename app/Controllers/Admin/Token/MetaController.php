@@ -13,7 +13,9 @@ use Tokenly\Wp\Interfaces\Models\PostInterface;
 /**
  * Serves the admin address views
  */
-class MetaController extends PostController implements MetaControllerInterface {
+class MetaController extends PostController
+	implements MetaControllerInterface
+{
 	protected MetaEditViewModelInterface $edit_view_model;
 	protected MetaRepositoryInterface $meta_repository;
 	protected CategoryTermRepositoryInterface $category_term_repository;
@@ -47,7 +49,12 @@ class MetaController extends PostController implements MetaControllerInterface {
 			$terms = $terms->to_array();
 		}
 		$post = $post->to_array();
-		if ( empty( $post['image'] ) && $terms && isset( $terms[0] ) && isset( $terms[0]['image'] ) ) {
+		if (
+			empty( $post['image'] ) &&
+			$terms &&
+			isset( $terms[0] ) &&
+			isset( $terms[0]['image'] )
+		) {
 			$post['image'] = $terms[0]['image']['url'];
 		}
 		$view_data = array(

@@ -42,23 +42,31 @@ class PostGuardService extends Service implements PostGuardServiceInterface {
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		add_action( "{$this->namespace}_template_redirect_post", array( $this, 'check' ) );
+		add_action(
+			"{$this->namespace}_template_redirect_post",
+			array( $this, 'check' )
+		);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function check( PostInterface $post ): void {
-		$verdict = $this->post_checker_service->check( $post, $this->current_user );
+		$verdict = $this->post_checker_service->check(
+			$post,
+			$this->current_user
+		);
 		$rules = $this->post_checker_service->get_tca_rules( $post );
 		if ( $verdict->get_status() === false ) {
 			if ( is_admin() === true ) {
 				wp_die( 'Access Denied - Token Controlled Access.' );
 			} else {
-				$view_data = $this->post_access_denied_view_model->prepare( array(
-					'verdict' => $verdict,
-					'rules'   => $rules,
-				) );
+				$view_data = $this->post_access_denied_view_model->prepare(
+					array(
+						'verdict' => $verdict,
+						'rules'   => $rules,
+					)
+				);
 				echo $this->twig->render( 'Denied.twig', $view_data );
 				exit;
 			}

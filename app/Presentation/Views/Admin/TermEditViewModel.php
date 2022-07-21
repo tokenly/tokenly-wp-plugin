@@ -34,8 +34,8 @@ class TermEditViewModel extends DynamicViewModel implements TermEditViewModelInt
 		$term = $data['term'];
 		$tca_enabled = $this->tca_settings->is_enabled_for_taxonomy( $term->taxonomy );
 		$tca_rules = array();
-		if ( $term && $term->get_tca_rules() ) {
-			$tca_rules = $term->get_tca_rules()->to_array();
+		if ( $term && $term->tca_rules ) {
+			$tca_rules = $term->tca_rules->to_array();
 		}
 		return array(
 			'tca_enabled' => $tca_enabled,

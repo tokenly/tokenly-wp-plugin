@@ -20,7 +20,8 @@ class PostRouter extends Router implements PostRouterInterface {
 	protected string $default_template = 'Dynamic.twig';
 	protected PostRouteRepositoryInterface $post_route_repository;
 	/**
-	 * @var array $registered Is used to prevent registration of multiple routes for the same post type
+	 * @var array $registered Is used to prevent registration
+	 * of multiple routes for the same post type
 	 */
 	protected array $registered = array();
 	public function __construct(
@@ -49,10 +50,10 @@ class PostRouter extends Router implements PostRouterInterface {
 	 */
 	public function register_routes(): void {
 		foreach ( ( array ) $this->routes as $route ) {
-			if ( !$route->get_post_type() ) {
+			if ( !$route->post_type ) {
 				$post_types = get_post_types();
 			} else {
-				$post_types = $route->get_post_type();
+				$post_types = $route->post_type;
 			}
 			foreach ( $post_types as $post_type ) {
 				if ( in_array( $post_type, $this->registered ) ) {
@@ -69,7 +70,10 @@ class PostRouter extends Router implements PostRouterInterface {
 	 * @param RouteInterface $route Route data
 	 * @return void
 	 */
-	public function register_route( string $post_type , RouteInterface $route ): void {
+	public function register_route(
+		string $post_type ,
+		RouteInterface $route
+	): void {
 		if ( is_admin() ) {
 			$this->register_edit_callback( $post_type, $route );
 		} else {
@@ -84,17 +88,25 @@ class PostRouter extends Router implements PostRouterInterface {
 	 * @param array $route Route data
 	 * @return void 
 	 */
-	protected function register_show_callback( string $post_type , RouteInterface $route ): void {
-		if ( $route->get_show_callback() ) {
-			$callback = $route->get_show_callback();
-			$route->set_show_callback( function( PostInterface $post ) use ( $callback ) {
+	protected function register_show_callback(
+		string $post_type,
+		RouteInterface $route
+	): void {
+		if ( $route->show_callback ) {
+			$callback = $route->show_callback;
+			$callback = function( PostInterface $post ) use ( $callback ) {
 				$this->render_route( $callback, array( $post ) );
-			} );
-			add_action( "{$this->namespace}_template_redirect_post_{$post_type}", function( PostInterface $post ) use ( $route, $post_type ) {
-				$callback = $route->get_show_callback();
+			};
+			$route->show_callback = $callback;
+			$action = "{$this->namespace}_template_redirect_post_{$post_type}";
+			$action_callback = function(
+				PostInterface $post
+			) use ( $route, $post_type ) {
+				$callback = $route->show_callback;
 				call_user_func( $callback, $post );
 				exit;
-			}, 100, 1 );
+			};
+			add_action( $action, $action_callback, 100, 1 );
 		}
 	}
 
@@ -104,20 +116,34 @@ class PostRouter extends Router implements PostRouterInterface {
 	 * @param RouteInterface $route Route data
 	 * @return void 
 	 */
-	protected function register_edit_callback( string $post_type, RouteInterface $route ): void {
-		add_action( "{$this->namespace}_add_meta_boxes_{$post_type}", function( PostInterface $post ) use ( $route ) {
-			add_meta_box( "{$this->namespace}-data", $this->brand, function() use ( $route, $post ) {
-				$edit_callback = $route->get_edit_callback();
-				$this->render_route( $edit_callback, array( $post ) );
-			}, $post->post_type, 'advanced', 'high' );
-		} );
-		$update_callback = $route->get_update_callback();
-		add_action( "{$this->namespace}_save_post_{$post_type}", function( PostInterface $post, bool $update ) use ( $update_callback ) {
+	protected function register_edit_callback(
+		string $post_type,
+		RouteInterface $route
+	): void {
+		$action = "{$this->namespace}_add_meta_boxes_{$post_type}";
+		$callback = function( PostInterface $post ) use ( $route ) {
+			add_meta_box(
+				"{$this->namespace}-data",
+				$this->brand,
+				function() use ( $route, $post ) {
+					$edit_callback = $route->get_edit_callback();
+					$this->render_route( $edit_callback, array( $post ) );
+				}, $post->post_type, 'advanced', 'high'
+			);
+		};
+		add_action( $action, $callback );
+		$update_callback = $route->update_callback;
+		$action = "{$this->namespace}_save_post_{$post_type}";
+		$callback = function(
+			PostInterface $post,
+			bool $update
+		) use ( $update_callback ) {
 			if ( !$this->request_params_present() ) {
 				return;
 			}
 			$params = $this->get_request_params();
 			call_user_func( $update_callback, $post, $params );
-		}, 10, 2 );
+		};
+		add_action( $action, $callback, 10, 2 );
 	}
 }

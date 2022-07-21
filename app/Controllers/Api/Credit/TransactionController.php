@@ -12,7 +12,9 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 /**
  * Defines transaction endpoints
  */
-class TransactionController extends Controller implements TransactionControllerInterface {
+class TransactionController extends Controller
+	implements TransactionControllerInterface
+{
 	protected TransactionRepositoryInterface $transaction_repository;
 	protected UserRepositoryInterface $user_repository;
 
@@ -30,7 +32,10 @@ class TransactionController extends Controller implements TransactionControllerI
 	 * @param TransactionCollectionInterface $transactions Bound transactions
 	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, TransactionCollectionInterface $transactions ): \WP_REST_Response {
+	public function index(
+			\WP_REST_Request $request,
+			TransactionCollectionInterface $transactions
+	): \WP_REST_Response {
 		$users = clone $transactions;
 		$users->extract( 'account_uuid' );
 		$users = $this->user_repository->index( array(

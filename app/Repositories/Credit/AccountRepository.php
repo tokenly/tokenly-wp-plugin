@@ -55,7 +55,7 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 		$group_uuid = $params['group_uuid'];
 		$account_uuid = $params['account_uuid'];
 		$history = $this->client->getAppCreditAccountHistory( $group_uuid, $account_uuid );
-		if( !$history ){
+		if ( !$history ){
 			return null;
 		}
 		$history = ( new AccountHistory() )->from_array( $history );
@@ -77,7 +77,7 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 		$group_uuid = $params['group_uuid'];
 		$name = $params['account_uuid'];
 		$account = $this->client->newAppCreditAccount( $group_uuid, $name );
-		if( !$account ){
+		if ( !$account ){
 			return null;
 		}
 		$account = ( new Account() )->from_array( $account );
@@ -119,7 +119,7 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 		$group_uuid = $params['group_uuid'];
 		$account_uuid = $params['account_uuid'];
 		$account = $this->client->getAppCreditAccount( $group_uuid, $account_uuid );
-		if( !$account ){
+		if ( !$account ){
 			return null;
 		}
 		$account = ( new Account() )->from_array( $account );

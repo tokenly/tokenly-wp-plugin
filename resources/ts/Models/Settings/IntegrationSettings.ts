@@ -2,42 +2,10 @@ import Settings from '../Settings';
 import IntegrationSettingsInterface from '../../Interfaces/Models/Settings/IntegrationSettingsInterface';
 
 export default class IntegrationSettings extends Settings implements IntegrationSettingsInterface {
-	protected _clientId?: string = null;
-	protected _clientSecret?: string = null;
-	protected _settingsUpdated?: boolean = null;
-	protected _canConnect?: boolean = null;
-
-	public get clientId(): string|null {
-		return this._clientId ?? null;
-	}
-
-	public set clientId( value: string ) {
-		this._clientId = value;
-	}
-
-	public get clientSecret(): string|null {
-		return this._clientSecret ?? null;
-	}
-
-	public set clientSecret( value: string ) {
-		this._clientSecret = value;
-	}
-
-	public get settingsUpdated(): boolean|null {
-		return this._settingsUpdated ?? null;
-	}
-
-	public set settingsUpdated( value: boolean ) {
-		this._settingsUpdated = value;
-	}
-
-	public get canConnect(): boolean|null {
-		return this._canConnect ?? null;
-	}
-
-	public set canConnect( value: boolean ) {
-		this._canConnect = value;
-	}
+	public clientId?: string = null;
+	public clientSecret?: string = null;
+	public settingsUpdated?: boolean = null;
+	public canConnect?: boolean = null;
 
 	public fromJson( data: any = {} ): this {
 		if ( data.client_id ) {

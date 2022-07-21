@@ -32,9 +32,11 @@ class PromiseController extends Controller implements PromiseControllerInterface
 	 * @param PromiseCollectionInterface $promises Bound promises
 	 * @return \WP_REST_Response
 	 */
-	public function index( \WP_REST_Request $request, PromiseCollectionInterface $promises ): \WP_REST_Response {
+	public function index(
+		\WP_REST_Request $request, PromiseCollectionInterface $promises
+	): \WP_REST_Response {
 		$promises = $this->promise_repository->load( $promises, array( 'promise_meta' ) );
-		$users = $promises->get_users();
+		$users = $promises->users;
 		$users = $this->user_repository->index( array(
 			'uuids' => $users,
 		) );

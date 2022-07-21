@@ -11,7 +11,9 @@ use Tokenly\Wp\Interfaces\Collections\Token\Access\RuleCollectionCollectionInter
 
 use Tokenly\Wp\Collections\Token\Access\RuleCollection;
 
-class RuleCollectionCollection extends Collection implements RuleCollectionCollectionInterface {
+class RuleCollectionCollection extends Collection
+	implements RuleCollectionCollectionInterface
+{
 	protected string $item_type = RuleCollection::class;
 	
 	/**

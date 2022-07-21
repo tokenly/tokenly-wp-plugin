@@ -3,7 +3,6 @@ import { container } from "./Inversify.config";
 import '../../scss/Frontend.scss';
 import { TYPES } from './Types';
 import Swiper, { Navigation, Pagination } from 'swiper';
-// import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';

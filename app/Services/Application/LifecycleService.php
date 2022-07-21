@@ -33,7 +33,8 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 		$this->root_dir = $root_dir;
 		$this->option_repository = $option_repository;
 		$this->integration_settings_repository = $integration_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings = 
+			$this->integration_settings_repository->show();
 		$this->version = $this->get_current_git_commit();
 		$this->client = $client;
 	}
@@ -42,8 +43,14 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		register_activation_hook( $this->root_filepath, array( self::class, 'on_activation' ) );
-		register_uninstall_hook( $this->root_filepath, array( self::class, 'on_uninstall' ) );
+		register_activation_hook(
+			$this->root_filepath,
+			array( self::class, 'on_activation' )
+		);
+		register_uninstall_hook(
+			$this->root_filepath,
+			array( self::class, 'on_uninstall' )
+		);
 		$this->check_version();
 		$this->check_connection();
 	}
@@ -77,7 +84,9 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @param string $branch Git branch
 	 * @return string|null
 	 */
-	protected function get_current_git_commit( string $branch = 'main' ): ?string {
+	protected function get_current_git_commit(
+		string $branch = 'main'
+	): ?string {
 		$path = "{$this->root_dir}/.git/refs/heads/{$branch}";
 		if ( !file_exists( $path ) ) {
 			return null;
@@ -93,7 +102,11 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 */
 	protected function check_version(): void {
 		$persisted_version = $this->option_repository->show( 'version' );
-		if ( $this->version == $persisted_version || !isset( $this->version ) || empty( $this->version ) ) {
+		if (
+			$this->version == $persisted_version ||
+			!isset( $this->version ) ||
+			empty( $this->version )
+		) {
 			return;
 		}
 		$this->refresh();
@@ -107,7 +120,8 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @return void
 	 */
 	protected function check_connection(): void {
-		$settings_updated = $this->integration_settings->get_settings_updated();
+		$settings_updated = 
+			$this->integration_settings->settings_updated;
 		if ( !$settings_updated ) {
 			return;
 		}

@@ -61,7 +61,8 @@ class PostTypeServiceProvider extends ServiceProvider implements PostTypeService
 
 	protected function register_post_type( string $key, array $post_type_definition ): void {
 		$data = $post_type_definition['data'];
-		$post_type = $this->invoker->call( include( "{$this->root_dir}/post_types/{$key}.php" ), $data );
+		$path = "{$this->root_dir}/post_types/{$key}.php";
+		$post_type = $this->invoker->call( include( $path ), $data );
 		$name = "{$this->namespace}_{$key}";
 		if ( isset( $post_type['repository'] ) ) {
 			$this->repositories[ $name ] = $post_type['repository'];

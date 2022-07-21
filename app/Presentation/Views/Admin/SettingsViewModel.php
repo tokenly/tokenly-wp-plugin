@@ -43,14 +43,14 @@ class SettingsViewModel extends DynamicViewModel implements SettingsViewModelInt
 		$integration_settings = $this->integration_settings->to_array();
 		$tca_settings = $this->tca_settings->to_array();
 		$oauth_settings = $this->oauth_settings->to_array();
-		$post_types = $this->tca_settings->get_available_post_types();
-		$taxonomies = $this->tca_settings->get_available_taxonomies();
+		$post_types = $this->tca_settings->available_post_types;
+		$taxonomies = $this->tca_settings->available_taxonomies;
 		return array(
 			'integration_settings' => $integration_settings,
 			'integration_data'     => array(
 				'app_homepage_url'  => get_site_url(),
 				'client_auth_url'   => $this->oauth_callback_route,
-				'status'            => $this->integration_settings->get_can_connect(),
+				'status'            => $this->integration_settings->can_connect,
 			),
 			'tca_settings'          => $tca_settings,
 			'tca_data'              => array(

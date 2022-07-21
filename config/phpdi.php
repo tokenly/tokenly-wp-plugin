@@ -296,126 +296,189 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
 	//Variables
-	'general.name'             => 'tokenly-wp-plugin',
-	'general.namespace'        => 'tokenly',
-	'general.brand'            => 'Tokenly',
-	'general.logo'             => \DI\factory( function( string $namespace, string $root_dir ) {
-		$svg = base64_encode( file_get_contents( "{$root_dir}/resources/images/{$namespace}_logo.svg" ) );
-		return "data:image/svg+xml;base64,{$svg}";
-	} )
+	'general.name'      => 'tokenly-wp-plugin',
+	'general.namespace' => 'tokenly',
+	'general.brand'     => 'Tokenly',
+	'general.logo'      => \DI\factory(
+		function( string $namespace, string $root_dir ) {
+			$path = "{$root_dir}/resources/images/{$namespace}_logo.svg";
+			$svg = base64_encode( file_get_contents( $path ) );
+			return "data:image/svg+xml;base64,{$svg}";
+		} )
 		->parameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	'general.fallback_image'   => \DI\factory( function( string $root_url ) {
-		return "{$root_url}/resources/images/placeholder.png";
-	} )
+	'general.fallback_image' => \DI\factory(
+		function( string $root_url ) {
+			return "{$root_url}/resources/images/placeholder.png";
+		} )
 		->parameter( 'root_url', \DI\get( 'general.root_url' ) ),
-	'general.wp_plugin_dir'    => \DI\factory( function() {
+	'general.wp_plugin_dir' => \DI\factory( function() {
 		return WP_PLUGIN_DIR;
 	} ),
-	'general.wp_plugin_url'    => \DI\factory( function() {
+	'general.wp_plugin_url' => \DI\factory( function() {
 		return WP_PLUGIN_URL;
 	} ),
-	'general.root_dir'         => \DI\factory( function( string $name, string $wp_plugin_dir ) {
-		return "{$wp_plugin_dir}/{$name}";
-	} )
+	'general.root_dir' => \DI\factory( 
+		function( string $name, string $wp_plugin_dir ) {
+			return "{$wp_plugin_dir}/{$name}";
+		} )
 		->parameter( 'name', \DI\get( 'general.name' ) )
 		->parameter( 'wp_plugin_dir', \DI\get( 'general.wp_plugin_dir' ) ),
-	'general.root_url'         => \DI\factory( function( string $name, string $wp_plugin_url ) {
-		return "{$wp_plugin_url}/{$name}";
-	} )
+	'general.root_url' => \DI\factory(
+		function( string $name, string $wp_plugin_url ) {
+			return "{$wp_plugin_url}/{$name}";
+		} )
 		->parameter( 'name', \DI\get( 'general.name' ) )
 		->parameter( 'wp_plugin_url', \DI\get( 'general.wp_plugin_url' ) ),
-	'general.root_filepath'    => \DI\factory( function( string $root_dir, string $namespace ) {
-		return "{$root_dir}/{$namespace}-wp-plugin.php";
-	} )
+	'general.root_filepath'    => \DI\factory(
+		function( string $root_dir, string $namespace ) {
+			return "{$root_dir}/{$namespace}-wp-plugin.php";
+		} )
 		->parameter( 'root_dir', \DI\get( 'general.root_dir' ) )
 		->parameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	'general.text_domain'      => \DI\factory( function( string $namespace ) {
-		return "{$namespace}-wp-plugin";
-	} )
+	'general.text_domain'      => \DI\factory(
+		function( string $namespace ) {
+			return "{$namespace}-wp-plugin";
+		} )
 		->parameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	'admin.url'                => \DI\factory( function() {
-		return admin_url();
-	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	'admin.page_url'           => \DI\factory( function( string $admin_url ) {
+	'admin.url' => \DI\factory( function() { return admin_url(); } )
+		->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+	'admin.page_url' => \DI\factory( function( string $admin_url ) {
 		return "{$admin_url}admin.php?page=";
 	} )->parameter( 'admin_url', \DI\get( 'admin.url' ) ),
-	'api.host'                 => 'https://tokenpass.tokenly.com',
-	'twig.template_dir'        => \DI\factory( function( string $root_dir ) {
+	'api.host' => 'https://tokenpass.tokenly.com',
+	'twig.template_dir' => \DI\factory( function( string $root_dir ) {
 		return "{$root_dir}/resources/views/";
 	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	'twig.template_cache_dir'  => \DI\factory( function( string $root_dir ) {
+	'twig.template_cache_dir' => \DI\factory( function( string $root_dir ) {
 		return "{$root_dir}/build/template-cache/";
 	} )->parameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	'oauth.callback_route'     => \DI\factory( function( string $namespace ) {
+	'oauth.callback_route' => \DI\factory( function( string $namespace ) {
 		$site_url = get_site_url();
 		return "{$site_url}/{$namespace}/oauth/callback";
 	} )->parameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	'oauth.host'               => \DI\factory( function( string $api_host ) {
+	'oauth.host' => \DI\factory( function( string $api_host ) {
 		return "{$api_host}/oauth/authorize";
 	} )->parameter( 'api_host', \DI\get( 'api.host' ) ),
 	//Providers
-	AppServiceProviderInterface::class             => \DI\autowire( AppServiceProvider::class )
+	AppServiceProviderInterface::class => \DI\autowire( AppServiceProvider::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	ListingServiceProviderInterface::class          => \DI\autowire( ListingServiceProvider::class )
+	ListingServiceProviderInterface::class =>
+		\DI\autowire( ListingServiceProvider::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	ServiceServiceProviderInterface::class      => \DI\autowire( ServiceServiceProvider::class ),
-	PostTypeServiceProviderInterface::class        => \DI\autowire( PostTypeServiceProvider::class )
+	ServiceServiceProviderInterface::class =>
+		\DI\autowire( ServiceServiceProvider::class ),
+	PostTypeServiceProviderInterface::class =>
+		\DI\autowire( PostTypeServiceProvider::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) )
 		->constructorParameter( 'text_domain', \DI\get( 'general.text_domain' ) ),
-	RouteServiceProviderInterface::class           => \DI\autowire( RouteServiceProvider::class )
+	RouteServiceProviderInterface::class => 
+		\DI\autowire( RouteServiceProvider::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'logo', \DI\get( 'general.logo' ) )
 		->constructorParameter( 'brand', \DI\get( 'general.brand' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	ShortcodeServiceProviderInterface::class       => \DI\autowire( ShortcodeServiceProvider::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TaxonomyServiceProviderInterface::class        => \DI\autowire( TaxonomyServiceProvider::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
-		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) )
-		->constructorParameter( 'text_domain', \DI\get( 'general.text_domain' ) ),
+	ShortcodeServiceProviderInterface::class =>
+		\DI\autowire( ShortcodeServiceProvider::class )
+		->constructorParameter(
+			'namespace', \DI\get( 'general.namespace' )
+		),
+	TaxonomyServiceProviderInterface::class =>
+		\DI\autowire( TaxonomyServiceProvider::class )
+		->constructorParameter(
+			'namespace', \DI\get( 'general.namespace' )
+		)
+		->constructorParameter(
+			'root_dir', \DI\get( 'general.root_dir' )
+		)
+		->constructorParameter(
+			'text_domain', \DI\get( 'general.text_domain' )
+		),
 	//Controllers - API
-	AuthApiControllerInterface::class                 => \DI\autowire( AuthApiController::class ),
-	CreditGroupApiControllerInterface::class          => \DI\autowire( CreditGroupApiController::class ),
-	CreditTransactionApiControllerInterface::class    => \DI\autowire( CreditTransactionApiController::class ),
-	CreditVendorApiControllerInterface::class         => \DI\autowire( CreditVendorApiController::class ),
-	TokenAddressApiControllerInterface::class         => \DI\autowire( TokenAddressApiController::class ),
-	TokenPromiseApiControllerInterface::class         => \DI\autowire( TokenPromiseApiController::class ),
-	TokenSourceApiControllerInterface::class          => \DI\autowire( TokenSourceApiController::class ),
-	TokenVendorApiControllerInterface::class          => \DI\autowire( TokenVendorApiController::class ),
-	SettingsApiControllerInterface::class             => \DI\autowire( SettingsApiController::class ),
-	UserApiControllerInterface::class                 => \DI\autowire( UserApiController::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
+	AuthApiControllerInterface::class =>
+		\DI\autowire( AuthApiController::class ),
+	CreditGroupApiControllerInterface::class =>
+		\DI\autowire( CreditGroupApiController::class ),
+	CreditTransactionApiControllerInterface::class    
+		=> \DI\autowire( CreditTransactionApiController::class ),
+	CreditVendorApiControllerInterface::class         
+		=> \DI\autowire( CreditVendorApiController::class ),
+	TokenAddressApiControllerInterface::class         
+		=> \DI\autowire( TokenAddressApiController::class ),
+	TokenPromiseApiControllerInterface::class         
+		=> \DI\autowire( TokenPromiseApiController::class ),
+	TokenSourceApiControllerInterface::class          
+		=> \DI\autowire( TokenSourceApiController::class ),
+	TokenVendorApiControllerInterface::class          
+		=> \DI\autowire( TokenVendorApiController::class ),
+	SettingsApiControllerInterface::class             
+		=> \DI\autowire( SettingsApiController::class ),
+	UserApiControllerInterface::class
+		=> \DI\autowire( UserApiController::class )
+			->constructorParameter(
+				'namespace', \DI\get( 'general.namespace' )
+			),
 	//Controllers - Admin
-	CreditGroupAdminControllerInterface::class        => \DI\autowire( CreditGroupAdminController::class ),
-	CreditTransactionAdminControllerInterface::class  => \DI\autowire( CreditTransactionAdminController::class ),
-	CreditVendorAdminControllerInterface::class       => \DI\autowire( CreditVendorAdminController::class ),
-	DashboardAdminControllerInterface::class          => \DI\autowire( DashboardAdminController::class ),
-	PostAdminControllerInterface::class               => \DI\autowire( PostAdminController::class ),
-	SettingsAdminControllerInterface::class           => \DI\autowire( SettingsAdminController::class ),
-	TermAdminControllerInterface::class               => \DI\autowire( TermAdminController::class ),
-	TokenAddressAdminControllerInterface::class       => \DI\autowire( TokenAddressAdminController::class ),
-	TokenCategoryTermAdminControllerInterface::class  => \DI\autowire( TokenCategoryTermAdminController::class )
-		->constructorParameter( 'fallback_image', \DI\get( 'general.fallback_image' ) ),
-	TokenMetaAdminControllerInterface::class          => \DI\autowire( TokenMetaAdminController::class ),
-	TokenPromiseAdminControllerInterface::class       => \DI\autowire( TokenPromiseAdminController::class ),
-	TokenSourceAdminControllerInterface::class        => \DI\autowire( TokenSourceAdminController::class ),
-	TokenVendorAdminControllerInterface::class        => \DI\autowire( TokenVendorAdminController::class ),
-	TokenWhitelistAdminControllerInterface::class     => \DI\autowire( TokenWhitelistAdminController::class ),
-	UserAdminControllerInterface::class               => \DI\autowire( UserAdminController::class ),
+	CreditGroupAdminControllerInterface::class
+		=> \DI\autowire( CreditGroupAdminController::class ),
+	CreditTransactionAdminControllerInterface::class
+		=> \DI\autowire( CreditTransactionAdminController::class ),
+	CreditVendorAdminControllerInterface::class
+		=> \DI\autowire( CreditVendorAdminController::class ),
+	DashboardAdminControllerInterface::class
+		=> \DI\autowire( DashboardAdminController::class ),
+	PostAdminControllerInterface::class
+		=> \DI\autowire( PostAdminController::class ),
+	SettingsAdminControllerInterface::class
+		=> \DI\autowire( SettingsAdminController::class ),
+	TermAdminControllerInterface::class
+		=> \DI\autowire( TermAdminController::class ),
+	TokenAddressAdminControllerInterface::class
+		=> \DI\autowire( TokenAddressAdminController::class ),
+	TokenCategoryTermAdminControllerInterface::class
+		=> \DI\autowire( TokenCategoryTermAdminController::class )
+			->constructorParameter(
+					'fallback_image', \DI\get( 'general.fallback_image' )
+			),
+	TokenMetaAdminControllerInterface::class
+		=> \DI\autowire( TokenMetaAdminController::class ),
+	TokenPromiseAdminControllerInterface::class
+		=> \DI\autowire( TokenPromiseAdminController::class ),
+	TokenSourceAdminControllerInterface::class
+		=> \DI\autowire( TokenSourceAdminController::class ),
+	TokenVendorAdminControllerInterface::class
+		=> \DI\autowire( TokenVendorAdminController::class ),
+	TokenWhitelistAdminControllerInterface::class
+		=> \DI\autowire( TokenWhitelistAdminController::class ),
+	UserAdminControllerInterface::class
+		=> \DI\autowire( UserAdminController::class ),
 	//Controllers - Web
-	AuthControllerInterface::class                    => \DI\autowire( AuthController::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	UserControllerInterface::class                    => \DI\autowire( UserController::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	PostControllerInterface::class                    => \DI\autowire( PostController::class ),
+	AuthControllerInterface::class
+		=> \DI\autowire( AuthController::class )
+			->constructorParameter(
+				'namespace', \DI\get( 'general.namespace' )
+			),
+	UserControllerInterface::class
+		=> \DI\autowire( UserController::class )
+			->constructorParameter(
+				'namespace', \DI\get( 'general.namespace' )
+			),
+	PostControllerInterface::class
+		=> \DI\autowire( PostController::class ),
 	//Services - Application
-	AuthServiceInterface::class                       => \DI\autowire( AuthService::class )
-		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
-		->constructorParameter( 'oauth_callback_route', \DI\get('oauth.callback_route') )
-		->constructorParameter( 'api_host', \DI\get( 'api.host' ) ),
+	AuthServiceInterface::class
+		=> \DI\autowire( AuthService::class )
+			->constructorParameter(
+				'namespace', \DI\get( 'general.namespace' )
+			)
+			->constructorParameter(
+				'oauth_callback_route', \DI\get('oauth.callback_route')
+			)
+			->constructorParameter(
+				'api_host', \DI\get( 'api.host' )
+			),
 	LifecycleServiceInterface::class                  => \DI\autowire( LifecycleService::class )
 		->constructorParameter( 'root_filepath', \DI\get( 'general.root_filepath' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
@@ -459,151 +522,241 @@ return array(
 	UserColumnRouterInterface::class     => \DI\autowire( UserColumnRouter::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
 	//Services - Domain
-	AssetNameFormatterServiceInterface::class      => \DI\autowire( AssetNameFormatterService::class ),
-	QuantityCalculatorServiceInterface::class      => \DI\autowire( QuantityCalculatorService::class ),
+	AssetNameFormatterServiceInterface::class =>
+		\DI\autowire( AssetNameFormatterService::class ),
+	QuantityCalculatorServiceInterface::class =>
+		\DI\autowire( QuantityCalculatorService::class ),
 	//Repositories
-	CreditAccountRepositoryInterface::class        => \DI\autowire( CreditAccountRepository::class ),
-	CreditGroupRepositoryInterface::class          => \DI\autowire( CreditGroupRepository::class ),
-	CreditGroupWhitelistRepositoryInterface::class => \DI\autowire( CreditGroupWhitelistRepository::class ),
-	CreditTransactionRepositoryInterface::class    => \DI\autowire( CreditTransactionRepository::class ),
-	TermRepositoryInterface::class                 => \DI\autowire( TermRepository::class ),
-	TokenPromiseMetaRepositoryInterface::class     => \DI\autowire( TokenPromiseMetaRepository::class )
+	CreditAccountRepositoryInterface::class =>
+		\DI\autowire( CreditAccountRepository::class ),
+	CreditGroupRepositoryInterface::class =>
+		\DI\autowire( CreditGroupRepository::class ),
+	CreditGroupWhitelistRepositoryInterface::class =>
+		\DI\autowire( CreditGroupWhitelistRepository::class ),
+	CreditTransactionRepositoryInterface::class =>
+		\DI\autowire( CreditTransactionRepository::class ),
+	TermRepositoryInterface::class =>
+		\DI\autowire( TermRepository::class ),
+	TokenPromiseMetaRepositoryInterface::class =>
+		\DI\autowire( TokenPromiseMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TokenMetaRepositoryInterface::class            => \DI\autowire( TokenMetaRepository::class )
+	TokenMetaRepositoryInterface::class =>
+		\DI\autowire( TokenMetaRepository::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	TokenPromiseRepositoryInterface::class         => \DI\autowire( TokenPromiseRepository::class ),
-	TokenSourceRepositoryInterface::class          => \DI\autowire( TokenSourceRepository::class ),
-	TokenAddressRepositoryInterface::class         => \DI\autowire( TokenAddressRepository::class ),
-	TokenBalanceRepositoryInterface::class         => \DI\autowire( TokenBalanceRepository::class ),
-	TokenCategoryTermRepositoryInterface::class    => \DI\autowire( TokenCategoryTermRepository::class )
+	TokenPromiseRepositoryInterface::class =>
+		\DI\autowire( TokenPromiseRepository::class ),
+	TokenSourceRepositoryInterface::class =>
+		\DI\autowire( TokenSourceRepository::class ),
+	TokenAddressRepositoryInterface::class =>
+		\DI\autowire( TokenAddressRepository::class ),
+	TokenBalanceRepositoryInterface::class =>
+		\DI\autowire( TokenBalanceRepository::class ),
+	TokenCategoryTermRepositoryInterface::class =>
+		\DI\autowire( TokenCategoryTermRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TokenWhitelistRepositoryInterface::class       => \DI\autowire( TokenWhitelistRepository::class ),
-	OauthUserRepositoryInterface::class            => \DI\autowire( OauthUserRepository::class ),
-	UserRepositoryInterface::class                 => \DI\autowire( UserRepository::class )
+	TokenWhitelistRepositoryInterface::class =>
+		\DI\autowire( TokenWhitelistRepository::class ),
+	OauthUserRepositoryInterface::class =>
+		\DI\autowire( OauthUserRepository::class ),
+	UserRepositoryInterface::class =>
+		\DI\autowire( UserRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	PostRepositoryInterface::class                 => \DI\autowire( PostRepository::class ),
+	PostRepositoryInterface::class =>
+		\DI\autowire( PostRepository::class ),
 	//Repositories - General
-	PostMetaRepositoryInterface::class             => \DI\autowire( PostMetaRepository::class )
+	PostMetaRepositoryInterface::class =>
+		\DI\autowire( PostMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TermMetaRepositoryInterface::class             => \DI\autowire( TermMetaRepository::class )
+	TermMetaRepositoryInterface::class =>
+		\DI\autowire( TermMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	UserMetaRepositoryInterface::class             => \DI\autowire( UserMetaRepository::class )
+	UserMetaRepositoryInterface::class =>
+		\DI\autowire( UserMetaRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	OptionRepositoryInterface::class               => \DI\autowire( OptionRepository::class )
+	OptionRepositoryInterface::class =>
+		\DI\autowire( OptionRepository::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	//Repositories - Settings
-	OauthSettingsRepositoryInterface::class            => \DI\autowire( OauthSettingsRepository::class ),
-	IntegrationSettingsRepositoryInterface::class      => \DI\autowire( IntegrationSettingsRepository::class ),
-	TcaSettingsRepositoryInterface::class              => \DI\autowire( TcaSettingsRepository::class ),
+	OauthSettingsRepositoryInterface::class =>
+		\DI\autowire( OauthSettingsRepository::class ),
+	IntegrationSettingsRepositoryInterface::class =>
+		\DI\autowire( IntegrationSettingsRepository::class ),
+	TcaSettingsRepositoryInterface::class =>
+		\DI\autowire( TcaSettingsRepository::class ),
 	//Repositories - Routes
-	AdminRouteRepositoryInterface::class   => \DI\autowire( AdminRouteRepository::class ),
-	ApiRouteRepositoryInterface::class     => \DI\autowire( ApiRouteRepository::class ),
-	PostRouteRepositoryInterface::class    => \DI\autowire( PostRouteRepository::class ),
-	TermRouteRepositoryInterface::class    => \DI\autowire( TermRouteRepository::class ),
-	WebRouteRepositoryInterface::class     => \DI\autowire( WebRouteRepository::class ),
+	AdminRouteRepositoryInterface::class =>
+		\DI\autowire( AdminRouteRepository::class ),
+	ApiRouteRepositoryInterface::class =>
+		\DI\autowire( ApiRouteRepository::class ),
+	PostRouteRepositoryInterface::class =>
+		\DI\autowire( PostRouteRepository::class ),
+	TermRouteRepositoryInterface::class =>
+		\DI\autowire( TermRouteRepository::class ),
+	WebRouteRepositoryInterface::class =>
+		\DI\autowire( WebRouteRepository::class ),
 	//Policies
-	DashboardPolicyInterface::class  => \DI\autowire( DashboardPolicy::class ),
-	PostPolicyInterface::class       => \DI\autowire( PostPolicy::class ),
-	SettingsPolicyInterface::class   => \DI\autowire( SettingsPolicy::class ),
-	TermPolicyInterface::class       => \DI\autowire( TermPolicy::class ),
-	UserPolicyInterface::class       => \DI\autowire( UserPolicy::class ),
+	DashboardPolicyInterface::class =>
+		\DI\autowire( DashboardPolicy::class ),
+	PostPolicyInterface::class =>
+		\DI\autowire( PostPolicy::class ),
+	SettingsPolicyInterface::class =>
+		\DI\autowire( SettingsPolicy::class ),
+	TermPolicyInterface::class =>
+		\DI\autowire( TermPolicy::class ),
+	UserPolicyInterface::class =>
+		\DI\autowire( UserPolicy::class ),
 	//Policies - Token
-	TokenAddressPolicyInterface::class       => \DI\autowire( TokenAddressPolicy::class ),
-	TokenCategoryTermPolicyInterface::class  => \DI\autowire( TokenCategoryTermPolicy::class ),
-	TokenMetaPolicyInterface::class          => \DI\autowire( TokenMetaPolicy::class ),
-	TokenPromisePolicyInterface::class       => \DI\autowire( TokenPromisePolicy::class ),
-	TokenSourcePolicyInterface::class        => \DI\autowire( TokenSourcePolicy::class ),
-	TokenVendorPolicyInterface::class        => \DI\autowire( TokenVendorPolicy::class ),
-	TokenWhitelistPolicyInterface::class     => \DI\autowire( TokenWhitelistPolicy::class ),
+	TokenAddressPolicyInterface::class =>
+		\DI\autowire( TokenAddressPolicy::class ),
+	TokenCategoryTermPolicyInterface::class =>
+		\DI\autowire( TokenCategoryTermPolicy::class ),
+	TokenMetaPolicyInterface::class =>
+		\DI\autowire( TokenMetaPolicy::class ),
+	TokenPromisePolicyInterface::class =>
+		\DI\autowire( TokenPromisePolicy::class ),
+	TokenSourcePolicyInterface::class =>
+		\DI\autowire( TokenSourcePolicy::class ),
+	TokenVendorPolicyInterface::class =>
+		\DI\autowire( TokenVendorPolicy::class ),
+	TokenWhitelistPolicyInterface::class =>
+		\DI\autowire( TokenWhitelistPolicy::class ),
 	//Policies - Credit
-	CreditGroupPolicyInterface::class        => \DI\autowire( CreditGroupPolicy::class ),
-	CreditTransactionPolicyInterface::class  => \DI\autowire( CreditTransactionPolicy::class ),
-	CreditVendorPolicyInterface::class       => \DI\autowire( CreditVendorPolicy::class ),
+	CreditGroupPolicyInterface::class =>
+		\DI\autowire( CreditGroupPolicy::class ),
+	CreditTransactionPolicyInterface::class =>
+		\DI\autowire( CreditTransactionPolicy::class ),
+	CreditVendorPolicyInterface::class =>
+		\DI\autowire( CreditVendorPolicy::class ),
 	//Presentation - Block models
-	CreditItemCardListBlockModelInterface::class     => \DI\autowire( CreditItemCardListBlockModel::class )
+	CreditItemCardListBlockModelInterface::class =>
+		\DI\autowire( CreditItemCardListBlockModel::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'admin_page_url', DI\get( 'admin.page_url' ) ),
-	TokenItemCardListBlockModelInterface::class      => \DI\autowire( TokenItemCardListBlockModel::class )
+	TokenItemCardListBlockModelInterface::class =>
+		\DI\autowire( TokenItemCardListBlockModel::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'admin_page_url', DI\get( 'admin.page_url' ) ),
-	UserInfoBlockModelInterface::class               => \DI\autowire( UserInfoBlockModel::class ),
+	UserInfoBlockModelInterface::class =>
+		\DI\autowire( UserInfoBlockModel::class ),
 	//Presentation - Component models
-	LoginButtonComponentModelInterface::class        => \DI\autowire( LoginButtonComponentModel::class )
+	LoginButtonComponentModelInterface::class =>
+		\DI\autowire( LoginButtonComponentModel::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	LogoutButtonComponentModelInterface::class       => \DI\autowire( LogoutButtonComponentModel::class )
+	LogoutButtonComponentModelInterface::class =>
+		\DI\autowire( LogoutButtonComponentModel::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
 		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
-	CreditItemCardComponentModelInterface::class     => \DI\autowire( CreditItemCardComponentModel::class )
+	CreditItemCardComponentModelInterface::class =>
+		\DI\autowire( CreditItemCardComponentModel::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
-	TokenItemCardComponentModelInterface::class      => \DI\autowire( TokenItemCardComponentModel::class )
+	TokenItemCardComponentModelInterface::class =>
+		\DI\autowire( TokenItemCardComponentModel::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
-		->constructorParameter( 'fallback_image', \DI\get( 'general.fallback_image' ) ),
+		->constructorParameter( 
+			'fallback_image', 
+			\DI\get( 'general.fallback_image' ) 
+		),
 	//Presentation - Columns
-	TokenMetaFeaturedImageColumnInterface::class     => \DI\autowire( TokenMetaFeaturedImageColumn::class )
+	TokenMetaFeaturedImageColumnInterface::class =>
+		\DI\autowire( TokenMetaFeaturedImageColumn::class )
 		->constructorParameter( 'root_url', \DI\get( 'general.root_url' ) ),
-	UserCreditBalanceColumnInterface::class          => \DI\autowire( UserCreditBalanceColumn::class ),
+	UserCreditBalanceColumnInterface::class =>
+		\DI\autowire( UserCreditBalanceColumn::class ),
 	//Presentation - View Models - Admin
-	CreditGroupStoreViewModelInterface::class         => \DI\autowire( CreditGroupStoreViewModel::class ),
-	CreditGroupWhitelistEditViewModelInterface::class => \DI\autowire( CreditGroupWhitelistEditViewModel::class ),
-	DashboardViewModelInterface::class                => \DI\autowire( DashboardViewModel::class ),
-	PostEditViewModelInterface::class                 => \DI\autowire( PostEditViewModel::class ),
-	TermEditViewModelInterface::class                 => \DI\autowire( TermEditViewModel::class ),
-	SettingsViewModelInterface::class                 => \DI\autowire( SettingsViewModel::class )
-		->constructorParameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
-	TokenMetaEditViewModelInterface::class            => \DI\autowire( TokenMetaEditViewModel::class ),
-	TokenCategoryTermEditViewModelInterface::class    => \DI\autowire( TokenCategoryTermEditViewModel::class ),
-	TokenWhitelistEditViewModelInterface::class       => \DI\autowire( TokenWhitelistEditViewModel::class ),
+	CreditGroupStoreViewModelInterface::class =>
+		\DI\autowire( CreditGroupStoreViewModel::class ),
+	CreditGroupWhitelistEditViewModelInterface::class =>
+		\DI\autowire( CreditGroupWhitelistEditViewModel::class ),
+	DashboardViewModelInterface::class =>
+		\DI\autowire( DashboardViewModel::class ),
+	PostEditViewModelInterface::class =>
+		\DI\autowire( PostEditViewModel::class ),
+	TermEditViewModelInterface::class =>
+		\DI\autowire( TermEditViewModel::class ),
+	SettingsViewModelInterface::class =>
+		\DI\autowire( SettingsViewModel::class )
+		->constructorParameter(
+			'oauth_callback_route',
+			\DI\get( 'oauth.callback_route' )
+		),
+	TokenMetaEditViewModelInterface::class =>
+		\DI\autowire( TokenMetaEditViewModel::class ),
+	TokenCategoryTermEditViewModelInterface::class =>
+		\DI\autowire( TokenCategoryTermEditViewModel::class ),
+	TokenWhitelistEditViewModelInterface::class =>
+		\DI\autowire( TokenWhitelistEditViewModel::class ),
 	//Presentation - View Models - Web
-	PostAccessDeniedViewModelInterface::class         => \DI\autowire( PostAccessDeniedViewModel::class ),
-	UserViewModelInterface::class                     => \DI\autowire( UserViewModel::class ),
+	PostAccessDeniedViewModelInterface::class =>
+		\DI\autowire( PostAccessDeniedViewModel::class ),
+	UserViewModelInterface::class =>
+		\DI\autowire( UserViewModel::class ),
 	//Presentation - Shortcodes
-	LoginButtonShortcodeInterface::class              => \DI\autowire( LoginButtonShortcode::class ),
-	LogoutButtonShortcodeInterface::class             => \DI\autowire( LogoutButtonShortcode::class ),
-	InventoryShortcodeInterface::class                => \DI\autowire( InventoryShortcode::class ),
-	UserInfoShortcodeInterface::class                 => \DI\autowire( UserInfoShortcode::class ),
-	CreditBalanceShortcodeInterface::class            => \DI\autowire( CreditBalanceShortcode::class )
+	LoginButtonShortcodeInterface::class =>
+		\DI\autowire( LoginButtonShortcode::class ),
+	LogoutButtonShortcodeInterface::class =>
+		\DI\autowire( LogoutButtonShortcode::class ),
+	InventoryShortcodeInterface::class =>
+		\DI\autowire( InventoryShortcode::class ),
+	UserInfoShortcodeInterface::class =>
+		\DI\autowire( UserInfoShortcode::class ),
+	CreditBalanceShortcodeInterface::class =>
+		\DI\autowire( CreditBalanceShortcode::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	CreditInventoryShortcodeInterface::class          => \DI\autowire( CreditInventoryShortcode::class ),
-	TokenBalanceShortcodeInterface::class             => \DI\autowire( TokenBalanceShortcode::class )
+	CreditInventoryShortcodeInterface::class =>
+		\DI\autowire( CreditInventoryShortcode::class ),
+	TokenBalanceShortcodeInterface::class =>
+		\DI\autowire( TokenBalanceShortcode::class )
 		->constructorParameter( 'namespace', DI\get( 'general.namespace' ) ),
-	TokenInventoryShortcodeInterface::class           => \DI\autowire( TokenInventoryShortcode::class ),
-	TokenMetaShortcodeInterface::class                => \DI\autowire( TokenMetaShortcode::class ),
-	TokenMetaInfoShortcodeInterface::class            => \DI\autowire( TokenMetaInfoShortcode::class )
-		->constructorParameter( 'fallback_image', DI\get( 'general.fallback_image' ) ),
-	TokenMetaAttributesShortcodeInterface::class      => \DI\autowire( TokenMetaAttributesShortcode::class ),
-	TokenMetaMediaShortcodeInterface::class           => \DI\autowire( TokenMetaMediaShortcode::class ),
+	TokenInventoryShortcodeInterface::class =>
+		\DI\autowire( TokenInventoryShortcode::class ),
+	TokenMetaShortcodeInterface::class =>
+		\DI\autowire( TokenMetaShortcode::class ),
+	TokenMetaInfoShortcodeInterface::class =>
+		\DI\autowire( TokenMetaInfoShortcode::class )
+		->constructorParameter(
+			'fallback_image',
+			DI\get( 'general.fallback_image' )
+		),
+	TokenMetaAttributesShortcodeInterface::class =>
+		\DI\autowire( TokenMetaAttributesShortcode::class ),
+	TokenMetaMediaShortcodeInterface::class =>
+		\DI\autowire( TokenMetaMediaShortcode::class ),
 	//Third-party
-	TokenpassAPI::class => \DI\factory( function ( 
-		ContainerInterface $container,
-		IntegrationSettingsRepositoryInterface $integration_settings_repository,
-		string $api_host,
-		string $oauth_callback_route
-	) {
-		$settings = $integration_settings_repository->show();
-		$client_id = $settings->get_client_id();
-		$client_secret = $settings->get_client_secret();
-		$privileged_client_id = $client_id;
-		$privileged_client_secret = $client_secret;
-		$oauth_client_id = $client_id;
-		$oauth_client_secret = $client_secret;
-		$tokenpass_url = $api_host;
-		$redirect_uri = $oauth_callback_route;
-		$ssl = is_ssl();
-		return new TokenpassAPI(
-			$client_id,
-			$client_secret,
-			$privileged_client_id,
-			$privileged_client_secret,
-			$tokenpass_url,
-			$redirect_uri,
-			$oauth_client_id,
-			$oauth_client_secret,
-			$ssl,
-		);
-	} )
+	TokenpassAPI::class =>
+		\DI\factory( function ( 
+			ContainerInterface $container,
+			IntegrationSettingsRepositoryInterface $integration_settings_repository,
+			string $api_host,
+			string $oauth_callback_route
+		) {
+			$settings = $integration_settings_repository->show();
+			$client_id = $settings->client_id;
+			$client_secret = $settings->client_secret;
+			$privileged_client_id = $client_id;
+			$privileged_client_secret = $client_secret;
+			$oauth_client_id = $client_id;
+			$oauth_client_secret = $client_secret;
+			$tokenpass_url = $api_host;
+			$redirect_uri = $oauth_callback_route;
+			$ssl = is_ssl();
+			return new TokenpassAPI(
+				$client_id,
+				$client_secret,
+				$privileged_client_id,
+				$privileged_client_secret,
+				$tokenpass_url,
+				$redirect_uri,
+				$oauth_client_id,
+				$oauth_client_secret,
+				$ssl,
+			);
+		} )
 		->parameter( 'api_host', \DI\get( 'api.host' ) )
-		->parameter( 'oauth_callback_route', \DI\get( 'oauth.callback_route' ) ),
+		->parameter(
+			'oauth_callback_route',
+			\DI\get( 'oauth.callback_route' )
+		),
 	TokenpassAPIInterface::class => \DI\get( TokenpassAPI::class ),
 	Environment::class => \DI\factory( function (
 		string $twig_template_dir,
@@ -616,14 +769,25 @@ return array(
 		) );
 		$twig->registerUndefinedFunctionCallback(function( $name ) {
 			if ( function_exists( $name ) ) {
-				return new \Twig\TwigFunction( $name, function() use ( $name ) {
-					return call_user_func_array( $name, func_get_args() );
-				} );
+				return new \Twig\TwigFunction(
+					$name,
+					function() use ( $name ) {
+						return call_user_func_array( $name, func_get_args() );
+					}
+				);
 			}
-			throw new \RuntimeException( sprintf( 'Function %s not found', $name ) );
+			throw new \RuntimeException(
+				sprintf( 'Function %s not found', $name )
+			);
 		});
 		return $twig;
 	} )
-		->parameter( 'twig_template_dir', \DI\get( 'twig.template_dir' ) )
-		->parameter( 'twig_template_cache_dir', \DI\get( 'twig.template_cache_dir' ) ),
+		->parameter(
+			'twig_template_dir',
+			\DI\get( 'twig.template_dir' )
+		)
+		->parameter(
+			'twig_template_cache_dir',
+			\DI\get( 'twig.template_cache_dir' )
+		),
 );

@@ -26,15 +26,15 @@ class ItemCardComponentModel extends ComponentModel implements ItemCardComponent
 			return null;
 		}
 		$balance = $data['balance'];
-		$name = $balance->get_name();
-		$asset = $balance->get_asset();
-		$asset = $asset->get_name();
-		$amount = $balance->get_quantity()->get_value();
+		$name = $balance->name;
+		$asset = $balance->asset;
+		$asset = $asset->name;
+		$amount = $balance->quantity->value;
 		$description = 'No description.';
 		$image = '';
 		$extra = array();
-		if ( $balance->get_meta() ) {
-			$meta = $balance->get_meta();
+		if ( $balance->meta ) {
+			$meta = $balance->meta;
 			$post_id = $meta->ID;
 			$name = $meta->post_title;
 			$image = get_the_post_thumbnail( $post_id, 'full' );
@@ -45,9 +45,9 @@ class ItemCardComponentModel extends ComponentModel implements ItemCardComponent
 			if ( !empty( $description ) ) {
 				$description = $excerpt;
 			}
-			if ( $meta->get_asset() ) {
-				$asset = $meta->get_asset();
-				$asset = $asset->get_name();
+			if ( $meta->asset ) {
+				$asset = $meta->asset;
+				$asset = $asset->name;
 			}
 		}
 		$data = array(

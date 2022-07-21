@@ -14,9 +14,9 @@ class TermRouteRepository extends RouteRepository implements TermRouteRepository
 		$formatted = array();
 		foreach ( $this->routes as $route_key => $route ) {
 			$urls = array();
-			$id = $route->get_id();
+			$id = $route->id;
 			$can_register = $this->get_can_register( $route );
-			$taxonomies = $route->get_taxonomy();
+			$taxonomies = $route->taxonomy;
 			if ( !$taxonomies ) {
 				$taxonomies = get_taxonomies() ?? array();
 			}

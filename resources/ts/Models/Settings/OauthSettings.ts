@@ -2,42 +2,10 @@ import Settings from '../Settings';
 import OauthSettingsInterface from '../../Interfaces/Models/Settings/OauthSettingsInterface';
 
 export default class OauthSettings extends Settings implements OauthSettingsInterface {
-	protected _useSingleSignOn?: boolean = null;
-	protected _successUrl?: string = null;
-	protected _allowNoEmail?: boolean = null;
-	protected _allowUnconfirmedEmail?: boolean = null;
-
-	public get useSingleSignOn(): boolean|null {
-		return this._useSingleSignOn ?? null;
-	}
-
-	public set useSingleSignOn( value: boolean ) {
-		this._useSingleSignOn = value;
-	}
-
-	public get successUrl(): string|null {
-		return this._successUrl ?? null;
-	}
-
-	public set successUrl( value: string ) {
-		this._successUrl = value;
-	}
-	
-	public get allowNoEmail(): boolean|null {
-		return this._allowNoEmail ?? null;
-	}
-
-	public set allowNoEmail( value: boolean ) {
-		this._allowNoEmail = value;
-	}
-
-	public get allowUnconfirmedEmail(): boolean|null {
-		return this._allowUnconfirmedEmail ?? null;
-	}
-
-	public set allowUnconfirmedEmail( value: boolean ) {
-		this._allowUnconfirmedEmail = value;
-	}
+	public useSingleSignOn?: boolean = null;
+	public successUrl?: string = null;
+	public allowNoEmail?: boolean = null;
+	public allowUnconfirmedEmail?: boolean = null;
 
 	public toJson(): any {
 		return {

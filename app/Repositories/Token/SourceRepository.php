@@ -29,8 +29,10 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 		IntegrationSettingsRepositoryInterface $integration_settings_repository,
 		AddressRepositoryInterface $address_repository
 	) {
-		$this->integration_settings_repository = $integration_settings_repository;
-		$this->integration_settings = $this->integration_settings_repository->show();
+		$this->integration_settings_repository 
+			= $integration_settings_repository;
+		$this->integration_settings =
+			$this->integration_settings_repository->show();
 		$this->address_repository = $address_repository;
 		$this->client = $client;
 	}
@@ -40,7 +42,9 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return SourceCollectionInterface
 	 */
-	public function index( array $params = array() ): SourceCollectionInterface {
+	public function index(
+		array $params = array()
+	): SourceCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -69,7 +73,8 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 		$proof = $this->make_proof( $address );
 		$type = $params['type'];
 		$assets = $params['assets'] ?? null;
-		$result = $this->client->registerProvisionalSource( $address, $type, $proof, $assets );
+		$result = $this->client->registerProvisionalSource(
+			$address, $type, $proof, $assets );
 		return $result;
 	}
 
@@ -88,8 +93,8 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 				$params['assets'] = null;
 			}
 		}
-		$params['address'] = $source->get_address_id();
-		$params['type'] = $source->get_type();
+		$params['address'] = $source->address_id;
+		$params['type'] = $source->type;
 		$this->store( $params );
 	}
 
@@ -99,7 +104,7 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 	 * @return void
 	 */
 	public function destroy( SourceInterface $source ): void {
-		$this->client->deleteProvisionalSource( $source->get_address_id() );
+		$this->client->deleteProvisionalSource( $source->address_id );
 	}
 
 	/**
@@ -108,7 +113,9 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return SourceCollectionInterface
 	 */
-	protected function index_cacheable( array $params = array() ): SourceCollectionInterface {	
+	protected function index_cacheable(
+		array $params = array()
+	): SourceCollectionInterface {	
 		$sources = $this->client->getProvisionalSourceList();
 		if ( $sources && is_array( $sources ) ) {
 			foreach ( $sources as &$source ) {
@@ -127,7 +134,9 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 	 * @param string $params Search parameters
 	 * @return SourceInterface|null
 	 */
-	protected function show_cacheable( array $params = array() ): ?SourceInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?SourceInterface {
 		if ( isset( $params['address'] ) === false ) {
 			return null;
 		}
@@ -146,7 +155,7 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 	 * @return string
 	 */
 	protected function make_proof( string $address ): string {
-		$hash = hash( 'sha256', $this->integration_settings->get_client_id() );
+		$hash = hash( 'sha256', $this->integration_settings->client_id );
 		$proof =  "{$address}_{$hash}";
 		return $proof;
 	}
@@ -162,9 +171,13 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 	 * @param array $relations Further relations
 	 * @return AddressInterface 
 	 */
-	protected function load_address( SourceInterface $source, array $relations = array(), ?array $params = array() ): ?AddressInterface {
+	protected function load_address(
+		SourceInterface $source,
+		array $relations = array(),
+		?array $params = array()
+	): ?AddressInterface {
 		$params = array_merge( array(
-			'address'     => $source->get_address_id(),
+			'address'     => $source->address_id,
 			'with'        => $relations,
 		), $params );
 		$address = $this->address_repository->show( $params );

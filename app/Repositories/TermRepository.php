@@ -32,7 +32,9 @@ class TermRepository extends Repository implements TermRepositoryInterface {
 	 * @param array $params Search parameters 
 	 * @return TermCollectionInterface
 	 */
-	public function index( array $params = array() ): TermCollectionInterface {
+	public function index(
+		array $params = array()
+	): TermCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -49,7 +51,10 @@ class TermRepository extends Repository implements TermRepositoryInterface {
 	 * Decorates and updates the term
 	 * @return void
 	 */
-	public function update( TermInterface $term, array $params = array() ): void {
+	public function update(
+		TermInterface $term,
+		array $params = array()
+	): void {
 		$params = $this->filter_meta_params( $params );
 		$this->term_meta_repository->update( $term->term_id, $params );
 	}
@@ -74,7 +79,9 @@ class TermRepository extends Repository implements TermRepositoryInterface {
 	 * @param \WP_Term[] $terms Terms to decorate
 	 * @return TermCollectionInterface
 	 */
-	public function complete_collection( array $terms = array() ): TermCollectionInterface {
+	public function complete_collection(
+		array $terms = array()
+	): TermCollectionInterface {
 		$terms = $this->append_meta_collection( $terms );
 		$terms = ( new $this->class_collection() )->from_array( $terms );
 		return $terms;
@@ -86,7 +93,9 @@ class TermRepository extends Repository implements TermRepositoryInterface {
 	 * @param array $params Search parameters 
 	 * @return TermCollectionInterface
 	 */
-	protected function index_cacheable( array $params = array() ): TermCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): TermCollectionInterface {
 		$args = $this->get_query_args( $params );
 		$terms = $this->query( $args );
 		if ( !$terms ) {
@@ -102,7 +111,9 @@ class TermRepository extends Repository implements TermRepositoryInterface {
 	 * @param array $params Search parameters
 	 * @return TermInterface|null
 	 */
-	protected function show_cacheable( array $params = array() ): ?TermInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?TermInterface {
 		$params['number'] = 1;
 		$args = $this->get_query_args( $params );
 		$terms = $this->query( $args );
@@ -184,7 +195,10 @@ class TermRepository extends Repository implements TermRepositoryInterface {
 	 * @return array
 	 */
 	protected function load_meta( \WP_Term $term ): array {
-		$meta = $this->term_meta_repository->index( $term->term_id, ...$this->meta );
+		$meta = $this->term_meta_repository->index(
+			$term->term_id,
+			...$this->meta
+		);
 		return $meta;
 	}
 

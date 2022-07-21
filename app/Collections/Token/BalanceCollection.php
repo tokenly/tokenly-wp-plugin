@@ -12,7 +12,9 @@ use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 use Tokenly\Wp\Models\Token\Balance;
 use Tokenly\Wp\Interfaces\Models\Token\WhitelistInterface;
 
-class BalanceCollection extends Collection implements BalanceCollectionInterface {
+class BalanceCollection extends Collection
+	implements BalanceCollectionInterface
+{
 	protected string $item_type = Balance::class;
 
 	/**
@@ -22,8 +24,8 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	public function key_by_asset_name(): self {
 		$keyed = array();
 		foreach ( ( array ) $this as $item ) {
-			if ( $item->get_asset() ) {
-				$name = $item->get_asset()->get_name();
+			if ( $item->asset ) {
+				$name = $item->asset->name;
 				$keyed[ $name ] = $item;
 			}
 		}
@@ -36,19 +38,19 @@ class BalanceCollection extends Collection implements BalanceCollectionInterface
 	 * @return void
 	 */
 	public function apply_whitelist( WhitelistInterface $whitelist ):void {
-		if ( $whitelist->get_enabled() == true ) {
-			$items = $whitelist->get_items() ?? null;
+		if ( $whitelist->enabled == true ) {
+			$items = $whitelist->items ?? null;
 			$balances_filtered = array();
 			if ( $items ) {
 				$assets = array_map( function( $item ) {
-					return $item->get_asset()->get_name();
+					return $item->asset->name;
 				}, ( array ) $this );	
 				foreach ( ( array ) $items as $item ) {
-					$asset = $item->get_asset();
+					$asset = $item->asset;
 					if ( !$asset ) {
 						continue;
 					}
-					$search = array_search( $asset->get_name(), $assets );
+					$search = array_search( $asset->name, $assets );
 					if ( $search !== false ) {
 						$balances_filtered[] = $this[ $search ];
 					}

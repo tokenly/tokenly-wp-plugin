@@ -17,7 +17,9 @@ use Tokenly\Wp\Models\Term;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Traits\ProtectableCollectionTrait;
 
-class TermCollection extends Collection implements TermCollectionInterface, ProtectableInterface {
+class TermCollection extends Collection
+	implements TermCollectionInterface, ProtectableInterface
+{
 	use ProtectableCollectionTrait;
 	protected string $item_type = Term::class;
 }

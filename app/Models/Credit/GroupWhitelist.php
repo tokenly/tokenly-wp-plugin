@@ -8,15 +8,7 @@ use Tokenly\Wp\Interfaces\Models\Credit\GroupWhitelistInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\GroupWhitelistItemCollectionInterface;
 
 class GroupWhitelist extends Settings implements GroupWhitelistInterface {
-	protected array $items = array();
-
-	public function get_items(): ?array {
-		return $this->items ?? null;
-	}
-
-	public function set_items( ?array $items ): void {
-		$this->items = $items;
-	}
+	public array $items = array();
 
 	/**
 	 * @inheritDoc
@@ -30,7 +22,7 @@ class GroupWhitelist extends Settings implements GroupWhitelistInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'items'   => $this->get_items(),
+			'items'   => $this->items,
 		);
 		return $array;
 	}
@@ -41,8 +33,8 @@ class GroupWhitelist extends Settings implements GroupWhitelistInterface {
 	 * @return bool
 	 */
 	public function is_whitelisted( ?string $group ): bool {
-		if ( isset ( $this->get_items()[ $group ] ) ) {
-			return $this->get_items()[ $group ];
+		if ( isset ( $this->items[ $group ] ) ) {
+			return $this->items[ $group ];
 		} else {
 			return false;
 		}

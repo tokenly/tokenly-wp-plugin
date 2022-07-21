@@ -103,7 +103,7 @@ class Collection extends \ArrayObject implements CollectionInterface {
 			if ( !$item ) {
 				continue;
 			}
-			$value = $item->{"get_{$field}"}();
+			$value = $item[ $field ];
 			if ( $this->keyed === true ) {
 				$extracted[ $key ] = $value;
 			} else {

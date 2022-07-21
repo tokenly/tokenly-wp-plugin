@@ -12,10 +12,15 @@ use Tokenly\Wp\Interfaces\Collections\Token\MetaCollectionInterface;
 use Tokenly\Wp\Models\Token\Meta;
 use Tokenly\Wp\Interfaces\Collections\Token\CategoryTermCollectionInterface;
 
-class MetaCollection extends PostCollection implements MetaCollectionInterface {
+class MetaCollection extends PostCollection
+	implements MetaCollectionInterface
+{
 	protected string $item_type = Meta::class;
 
-	public function append_fallback( string $taxonomy, CategoryTermCollectionInterface $categories ): self {
+	public function append_fallback(
+		string $taxonomy,
+		CategoryTermCollectionInterface $categories
+	): self {
 		foreach ( ( array ) $this as $item ) {
 			$item->append_fallback( $taxonomy, $categories );
 		}

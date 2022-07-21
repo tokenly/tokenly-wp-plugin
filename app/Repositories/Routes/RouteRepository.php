@@ -27,14 +27,14 @@ class RouteRepository extends Repository implements RouteRepositoryInterface {
 
 	public function get_can_register( $route ): bool {
 		$can_register = true;
-		if ( method_exists( $route, 'get_policy' ) && $route->get_policy() ) {
-			if ( is_array( $route->get_policy() ) ) {
-				$can_register = call_user_func( array( $route->get_policy()[0], 'before' ) );
-				if ( $can_register === false && method_exists( $route->get_policy()[0], $route->get_policy()[1] ) ) {
-					$can_register = call_user_func( $route->get_policy() );
+		if ( method_exists( $route, 'get_policy' ) && $route->policy ) {
+			if ( is_array( $route->policy ) ) {
+				$can_register = call_user_func( array( $route->policy[0], 'before' ) );
+				if ( $can_register === false && method_exists( $route->policy[0], $route->policy[1] ) ) {
+					$can_register = call_user_func( $route->policy );
 				}
 			} else {
-				$can_register = call_user_func( $route->get_policy() );
+				$can_register = call_user_func( $route->policy );
 			}
 		} else {
 			$can_register = true;

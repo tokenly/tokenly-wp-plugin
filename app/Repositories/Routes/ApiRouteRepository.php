@@ -13,7 +13,7 @@ class ApiRouteRepository extends RouteRepository implements ApiRouteRepositoryIn
 	public function index_formatted(): array {
 		$formatted = array();
 		foreach ( $this->routes as $route_key => $route ) {
-			$path = $route->get_path();
+			$path = $route->path;
 			$formatted[ $route_key ] = array(
 				'url'  => "/wp-json/tokenly/v1{$path}",
 			);

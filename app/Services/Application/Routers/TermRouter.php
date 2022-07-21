@@ -19,7 +19,8 @@ class TermRouter extends Router implements TermRouterInterface {
 	protected string $brand;
 	protected Environment $twig;
 	/**
-	 * @var array $registered Is used to prevent registration of multiple routes for the same post type
+	 * @var array $registered Is used to prevent registration of multiple
+	 * routes for the same post type
 	 */
 	protected array $registered = array();
 	protected string $default_template = 'Dynamic.twig';
@@ -50,10 +51,10 @@ class TermRouter extends Router implements TermRouterInterface {
 	 */
 	public function register_routes(): void {
 		foreach ( ( array ) $this->routes as $route ) {
-			if ( !$route->get_taxonomy() ) {
+			if ( !$route->taxonomy ) {
 				$taxonomies = get_taxonomies();
 			} else {
-				$taxonomies = $route->get_taxonomy();
+				$taxonomies = $route->taxonomy;
 			}
 			foreach ( $taxonomies as $taxonomy ) {
 				if ( in_array( $taxonomy, $this->registered ) ) {
@@ -70,7 +71,10 @@ class TermRouter extends Router implements TermRouterInterface {
 	 * @param RouteInterface $route Route data
 	 * @return void
 	 */
-	public function register_route( string $taxonomy , RouteInterface $route ): void {
+	public function register_route(
+		string $taxonomy,
+		RouteInterface $route
+	): void {
 		if ( is_admin() ) {
 			$this->register_edit_callback( $taxonomy, $route );
 			$this->register_update_callback( $taxonomy, $route );
@@ -80,11 +84,13 @@ class TermRouter extends Router implements TermRouterInterface {
 		$this->registered[] = $taxonomy;
 	}
 
-	protected function get_route_by_taxonomy( string $search_taxonomy ): ?array {
+	protected function get_route_by_taxonomy(
+		string $search_taxonomy
+	): ?array {
 		foreach ( $this->routes as $route ) {
 			$taxonomies = array();
-			if ( $route->get_taxonomy() && is_array( $route->get_taxonomy() ) ) {
-				$taxonomies = $route->get_taxonomy();
+			if ( $route->taxonomy && is_array( $route->taxonomy ) ) {
+				$taxonomies = $route->taxonomy;
 			} else {
 				$taxonomies = get_taxonomies();
 			}
@@ -103,17 +109,24 @@ class TermRouter extends Router implements TermRouterInterface {
 	 * @param array $route Route data
 	 * @return void 
 	 */
-	protected function register_show_callback( string $taxonomy , RouteInterface $route ): void {
-		if ( $route->get_show_callback() ) {
-			$callback = $route->get_show_callback();
-			$route->set_show_callback( function( TermInterface $term ) use ( $callback ) {
+	protected function register_show_callback(
+		string $taxonomy,
+		RouteInterface $route
+	): void {
+		if ( $route->show_callback ) {
+			$callback = $route->show_callback;
+			$route->show_callback = function( TermInterface $term ) use ( $callback ) {
 				$this->render_route( $callback, array( $term ) );
-			} );
-			add_action( "{$this->namespace}_template_redirect_term_{$taxonomy}", function( TermInterface $term ) use ( $route, $taxonomy ) {
-				$callback = $route->get_show_callback();
+			};
+			$action = "{$this->namespace}_template_redirect_term_{$taxonomy}";
+			$callback = function(
+				TermInterface $term
+			) use ( $route, $taxonomy ) {
+				$callback = $route->show_callback;
 				call_user_func( $callback, $term );
 				exit;
-			}, 100, 1 );
+			};
+			add_action( $action, $callback, 100, 1 );
 		}
 	}
 
@@ -123,23 +136,36 @@ class TermRouter extends Router implements TermRouterInterface {
 	 * @param RouteInterface $route Route data
 	 * @return void 
 	 */
-	protected function register_edit_callback( string $taxonomy , RouteInterface $route ): void {
-		add_action( "{$this->namespace}_{$taxonomy}_edit_form", function( TermInterface $term ) use ( $route ) {
-			$callback = $route->get_edit_callback();
+	protected function register_edit_callback(
+		string $taxonomy,
+		RouteInterface $route
+	): void {
+		$action = "{$this->namespace}_{$taxonomy}_edit_form";
+		$callback = function( TermInterface $term ) use ( $route ) {
+			$callback = $route->edit_callback;
 			$this->render_route( $callback, array( $term ) );
-		} , 10, 1 );
+		};
+		add_action( $action, $callback, 10, 1 );
 	}
 
-	protected function register_update_callback( string $taxonomy , RouteInterface $route ): void {
-		$update_callback = $route->get_update_callback();
-		add_action( "{$this->namespace}_saved_{$taxonomy}", function( TermInterface $term, bool $update ) use ( $route, $taxonomy, $update_callback ) {
+	protected function register_update_callback(
+		string $taxonomy,
+		RouteInterface $route
+	): void {
+		$update_callback = $route->update_callback;
+		$action = "{$this->namespace}_saved_{$taxonomy}";
+		$callback = function(
+			TermInterface $term,
+			bool $update
+		) use ( $route, $taxonomy, $update_callback ) {
 			if ( !$this->request_params_present() ) {
 				return;
 			}
 			if ( $route ) {
 				$params = $this->get_request_params();
-				call_user_func( $route->get_update_callback(), $term, $params );
+				call_user_func( $route->update_callback, $term, $params );
 			}
-		}, 10, 2 );
+		};
+		add_action( $action, $callback, 10, 2 );
 	}
 }

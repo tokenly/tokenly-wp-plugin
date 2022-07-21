@@ -6,15 +6,7 @@ use Tokenly\Wp\Models\Routes\Listings\Column;
 use Tokenly\Wp\Interfaces\Models\Routes\Listings\TermColumnInterface;
 
 class TermColumn extends Column implements TermColumnInterface {
-	protected ?array $taxonomy = null;
-
-	public function get_taxonomy(): ?array {
-		return $this->taxonomy ?? null;
-	}
-
-	public function set_taxonomy( ?array $value ): void {
-		$this->taxonomy = $value;
-	}
+	public ?array $taxonomy = null;
 
 	/**
 	 * @inheritDoc

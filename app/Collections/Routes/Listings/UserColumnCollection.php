@@ -7,6 +7,8 @@ use Tokenly\Wp\Interfaces\Collections\Routes\Listings\UserColumnCollectionInterf
 
 use Tokenly\Wp\Models\Routes\Listings\UserColumn;
 
-class UserColumnCollection extends ColumnCollection implements UserColumnCollectionInterface {
+class UserColumnCollection extends ColumnCollection
+	implements UserColumnCollectionInterface
+{
 	protected string $item_type = UserColumn::class;
 }

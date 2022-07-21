@@ -7,6 +7,8 @@ use Tokenly\Wp\Interfaces\Collections\Routes\Listings\ActionCollectionInterface;
 
 use Tokenly\Wp\Models\Routes\Listings\Action;
 
-class ActionCollection extends Collection implements ActionCollectionInterface {
+class ActionCollection extends Collection 
+	implements ActionCollectionInterface
+{
 	protected string $item_type = Action::class;
 }

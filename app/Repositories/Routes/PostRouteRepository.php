@@ -14,9 +14,9 @@ class PostRouteRepository extends RouteRepository implements PostRouteRepository
 		$formatted = array();
 		foreach ( $this->routes as $route_key => $route ) {
 			$urls = array();
-			$id = $route->get_id();
+			$id = $route->id;
 			$can_register = $this->get_can_register( $route );
-			$post_types = $route->get_post_type();
+			$post_types = $route->post_type;
 			if ( !$post_types ) {
 				$post_types = get_post_types() ?? array();
 			}

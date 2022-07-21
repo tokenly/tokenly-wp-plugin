@@ -7,7 +7,8 @@ use Tokenly\Wp\Interfaces\Repositories\Token\WhitelistRepositoryInterface;
 
 use Tokenly\Wp\Models\Token\Whitelist;
 
-class WhitelistRepository extends SettingsRepository implements WhitelistRepositoryInterface {
+class WhitelistRepository extends SettingsRepository
+	implements WhitelistRepositoryInterface {
 	protected string $option_prefix = 'token_whitelist';
 	protected array $meta_keys = array(
 		'enabled',

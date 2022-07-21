@@ -63,7 +63,8 @@ class ListingServiceProvider extends ServiceProvider implements ListingServicePr
 	public function register(): void {
 		foreach ( $this->services as $key => $router_definition ) {
 			$data = $router_definition['data'];
-			$routes = $this->invoker->call( include( "{$this->root_dir}/routes/listings/{$key}.php" ), $data );
+			$path = "{$this->root_dir}/routes/listings/{$key}.php";
+			$routes = $this->invoker->call( include( $path ), $data );
 			$router = $router_definition['router'];
 			if ( isset( $routes['actions'] ) ) {
 				$router->register_actions( $routes['actions'] );

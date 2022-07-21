@@ -9,15 +9,7 @@ use Tokenly\Wp\Models\Token\Asset;
 use Tokenly\Wp\Interfaces\Models\Token\AssetInterface;
 
 class WhitelistItem extends Model implements WhitelistItemInterface {
-	protected ?AssetInterface $asset = null;
-
-	public function get_asset(): ?AssetInterface {
-		return $this->asset ?? null;
-	}
-
-	public function set_asset( ?AssetInterface $value ): void {
-		$this->asset = $value;
-	}
+	public ?AssetInterface $asset = null;
 
 	/**
 	 * @inheritDoc
@@ -34,8 +26,8 @@ class WhitelistItem extends Model implements WhitelistItemInterface {
 	 */
 	public function to_array(): array {
 		$array = array();
-		if ( $this->get_asset() ) {
-			$array['asset'] = $this->get_asset()->to_array();
+		if ( $this->asset ) {
+			$array['asset'] = $this->asset->to_array();
 		}
 		return $array;
 	}

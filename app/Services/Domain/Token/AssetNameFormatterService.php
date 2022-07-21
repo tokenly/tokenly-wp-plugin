@@ -5,7 +5,8 @@ namespace Tokenly\Wp\Services\Domain\Token;
 use Tokenly\Wp\Services\Service;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\AssetNameFormatterServiceInterface;
 
-class AssetNameFormatterService extends Service implements AssetNameFormatterServiceInterface {
+class AssetNameFormatterService extends Service
+	implements AssetNameFormatterServiceInterface {
 	/**
 	 * Splits the asset name on address and index
 	 * @param string $value Asset name

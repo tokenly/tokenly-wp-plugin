@@ -11,7 +11,8 @@ use Tokenly\Wp\Interfaces\Models\SettingsInterface;
 /**
  * Manages post data
  */
-class SettingsRepository extends Repository implements SettingsRepositoryInterface {
+class SettingsRepository extends Repository
+	implements SettingsRepositoryInterface {
 	protected string $option_prefix = '';
 	protected array $meta_keys = array();
 	protected array $meta_keys_prefixed = array();

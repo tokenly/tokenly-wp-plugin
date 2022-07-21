@@ -46,8 +46,11 @@ class PostResultsFilterService extends Service implements PostResultsFilterServi
 	 * @inheritDoc
 	 */
 	public function register(): void {
-		if ( $this->tca_settings->get_filter_post_results() === true ) {
-			add_filter( "{$this->namespace}_posts_results", array( $this, 'filter' ), 10, 2 );
+		if ( $this->tca_settings->filter_post_results === true ) {
+			add_filter(
+				"{$this->namespace}_posts_results",
+				array( $this, 'filter' ), 10, 2
+			);
 		}
 	}
 	
@@ -68,7 +71,10 @@ class PostResultsFilterService extends Service implements PostResultsFilterServi
 			if ( $current_post_id == $post->ID ) {
 				continue;
 			}
-			$verdict = $this->post_checker_service->check( $post, $this->current_user );
+			$verdict = $this->post_checker_service->check(
+				$post,
+				$this->current_user
+			);
 			if ( $verdict->get_status() === false ) {
 				unset( $posts[ $key ] );
 			}

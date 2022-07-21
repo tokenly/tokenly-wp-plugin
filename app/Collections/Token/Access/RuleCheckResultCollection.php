@@ -11,7 +11,9 @@ use Tokenly\Wp\Interfaces\Collections\Token\Access\RuleCheckResultCollectionInte
 
 use Tokenly\Wp\Models\Token\Access\RuleCheckResult;
 
-class RuleCheckResultCollection extends Collection implements RuleCheckResultCollectionInterface {
+class RuleCheckResultCollection extends Collection
+	implements RuleCheckResultCollectionInterface
+{
 	protected string $item_type = RuleCheckResult::class;
 
 	/**

@@ -73,14 +73,13 @@ class MetaRepository extends PostRepository implements MetaRepositoryInterface {
 	 */
 	public function update( PostInterface $post, array $params = array() ): PostInterface {
 		$post = parent::update( $post, $params );
-		if ( !$post->get_asset() ) {
+		if ( !$post->asset ) {
 			return $post;
 		}
 		$params = array(
-			'asset_name' => $post->get_asset()->get_name(),
+			'asset_name' => $post->asset->name,
 		);
 		$post = parent::update( $post, $params );
-		error_log(d($post));
 		return $post;
 	}
 }

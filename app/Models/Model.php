@@ -19,8 +19,8 @@ class Model implements ModelInterface {
 			if ( !in_array( $key, $this->get_fillable() ) ) {
 				continue;
 			}
-			if ( method_exists( $this, "set_{$key}" ) ) {
-				call_user_func( array( $this, "set_{$key}" ), $value );
+			if ( property_exists( $this, $key ) ) {
+				$this[ $key ]->$value;
 			}
 		}
 		return $this;

@@ -12,7 +12,9 @@ use Tokenly\Wp\Interfaces\Models\TermInterface;
 /**
  * Serves the admin address views
  */
-class CategoryTermController extends TermController implements CategoryTermControllerInterface {
+class CategoryTermController extends TermController
+	implements CategoryTermControllerInterface
+{
 	protected string $fallback_image;
 	protected CategoryTermEditViewModelInterface $edit_view_model;
 	protected CategoryTermRepositoryInterface $category_term_repository;

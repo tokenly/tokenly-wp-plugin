@@ -45,37 +45,37 @@ class RouteServiceProvider extends ServiceProvider implements RouteServiceProvid
 		$this->root_dir = $root_dir;
 		$this->services = array(
 			'admin' => array(
-				'router'                 => $admin_router,
-				'repository'             => $admin_route_repository,
-				'data'                   => array(
+				'router'      => $admin_router,
+				'repository'  => $admin_route_repository,
+				'data'        => array(
 					'namespace' => $namespace,
 					'logo'      => $logo,
 					'brand'     => $brand,
 				),
 			),
 			'api'	=> array(
-				'router'                 => $api_router,
-				'repository'             => $api_route_repository,
-				'data'                   => array(),
+				'router'      => $api_router,
+				'repository'  => $api_route_repository,
+				'data'        => array(),
 			),
 			'post'	=> array(
-				'router'                 => $post_router,
-				'repository'             => $post_route_repository,
-				'data'                   => array(
+				'router'      => $post_router,
+				'repository'  => $post_route_repository,
+				'data'        => array(
 					'namespace' => $namespace,
 				),
 			),
 			'term'  => array(
-				'router'                 => $term_router,
-				'repository'             => $term_route_repository,
-				'data'                   => array(
+				'router'      => $term_router,
+				'repository'  => $term_route_repository,
+				'data'        => array(
 					'namespace' => $namespace,
 				),
 			),
 			'web'	=> array(
-				'router'                 => $web_router,
-				'repository'             => $web_route_repository,
-				'data'                   => array(
+				'router'      => $web_router,
+				'repository'  => $web_route_repository,
+				'data'        => array(
 					'namespace' => $namespace,
 				),
 			),

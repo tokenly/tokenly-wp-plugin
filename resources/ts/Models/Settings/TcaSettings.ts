@@ -2,42 +2,10 @@ import Settings from '../Settings';
 import TcaSettingsInterface from '../../Interfaces/Models/Settings/TcaSettingsInterface';
 
 export default class TcaSettings extends Settings implements TcaSettingsInterface {
-	protected _taxonomies?: object = null;
-	protected _postTypes?: object = null;
-	protected _filterMenuItems?: boolean = null;
-	protected _filterPostResults?: boolean = null;
-
-	public get taxonomies(): object|null {
-		return this._taxonomies ?? null;
-	}
-
-	public set taxonomies( value: object ) {
-		this._taxonomies = value;
-	}
-
-	public get postTypes(): object|null {
-		return this._postTypes ?? null;
-	}
-
-	public set postTypes( value: object ) {
-		this._postTypes = value;
-	}
-
-	public get filterMenuItems(): boolean|null {
-		return this._filterMenuItems ?? null;
-	}
-
-	public set filterMenuItems( value: boolean ) {
-		this._filterMenuItems = value;
-	}
-
-	public get filterPostResults(): boolean|null {
-		return this._filterPostResults ?? null;
-	}
-
-	public set filterPostResults( value: boolean ) {
-		this._filterPostResults = value;
-	}
+	public taxonomies?: object = null;
+	public postTypes?: object = null;
+	public filterMenuItems?: boolean = null;
+	public filterPostResults?: boolean = null;
 
 	public toJson(): any {
 		return {

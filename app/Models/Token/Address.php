@@ -9,78 +9,14 @@ use Tokenly\Wp\Collections\Token\BalanceCollection;
 use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 
 class Address extends Model implements AddressInterface {
-	protected ?string $address = null;
-	protected ?BalanceCollectionInterface $balance = null;
-	protected ?string $type = null;
-	protected ?bool $public = null;
-	protected ?string $label = null;
-	protected ?bool $active = null;
-	protected ?bool $verified = null;
-	protected ?string $verify_code = null; 
-
-	public function get_address(): ?string {
-		return $this->address ?? null;
-	}
-
-	public function set_address( ?string $value ): void {
-		$this->address = $value;
-	}
-
-	public function get_balance(): ?BalanceCollectionInterface {
-		return $this->balance ?? null;
-	}
-
-	public function set_balance( ?BalanceCollectionInterface $value ): void {
-		$this->balance = $value;
-	}
-
-	public function get_type(): ?string {
-		return $this->type ?? null;
-	}
-
-	public function set_type( ?string $type ): void {
-		$this->type = $type;
-	}
-
-	public function get_public(): ?bool {
-		return $this->public ?? null;
-	}
-
-	public function set_public( ?bool $value ): void {
-		$this->public = $value;
-	}
-
-	public function get_label(): ?string {
-		return $this->label ?? null;
-	}
-
-	public function set_label( ?string $value ): void {
-		$this->label = $value;
-	}
-
-	public function get_active(): ?bool {
-		return $this->active ?? null;
-	}
-
-	public function set_active( ?bool $value ): void {
-		$this->active = $value;
-	}
-
-	public function get_verified(): ?bool {
-		return $this->verified ?? null;
-	}
-
-	public function set_verified( ?bool $value ): void {
-		$this->verified = $value;
-	}
-
-	public function get_verify_code(): ?string {
-		return $this->verify_code ?? null;
-	}
-
-	public function set_verify_code( ?string $value ): void {
-		$this->verify_code = $value;
-	}
+	public ?string $address = null;
+	public ?BalanceCollectionInterface $balance = null;
+	public ?string $type = null;
+	public ?bool $public = null;
+	public ?string $label = null;
+	public ?bool $active = null;
+	public ?bool $verified = null;
+	public ?string $verify_code = null; 
 
 	/**
 	 * @inheritDoc
@@ -94,16 +30,16 @@ class Address extends Model implements AddressInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'address'     => $this->get_address(),
-			'type'        => $this->get_type(),
-			'label'       => $this->get_label(),
-			'public'      => $this->get_public(),
-			'active'      => $this->get_active(),
-			'verified'    => $this->get_verified(),
-			'verify_code' => $this->get_verify_code(),
+			'address'     => $this->address,
+			'type'        => $this->type,
+			'label'       => $this->label,
+			'public'      => $this->public,
+			'active'      => $this->active,
+			'verified'    => $this->verified,
+			'verify_code' => $this->verify_code,
 		);
-		if ( $this->get_balance() ) {
-			$array['balance'] = $this->get_balance()->to_array();
+		if ( $this->balance ) {
+			$array['balance'] = $this->balance->to_array();
 		}
 		return $array;
 	}

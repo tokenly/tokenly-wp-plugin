@@ -22,7 +22,8 @@ use Tokenly\Wp\Interfaces\Repositories\General\UserMetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\AddressRepositoryInterface as TokenAddressRepositoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class OauthUserRepository extends Repository implements OauthUserRepositoryInterface {
+class OauthUserRepository extends Repository
+	implements OauthUserRepositoryInterface {
 	protected TokenBalanceRepositoryInterface $token_balance_repository;
 	protected UserMetaRepositoryInterface $user_meta_repository;
 	protected CreditAccountRepositoryInterface $credit_account_repository;
@@ -62,11 +63,13 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param \WP_REST_Request $request Request data
 	 * @return TokenAccountCollectionInterface
 	 */
-	public function credit_balance_index( OauthUserInterface $oauth_user ): TokenAccountCollectionInterface {
+	public function credit_balance_index(
+		OauthUserInterface $oauth_user
+	): TokenAccountCollectionInterface {
 		$this->load( $oauth_user, array( 'credit_account' ) );
 		$account = new TokenAccountCollection();
-		if ( $oauth_user->get_credit_account() ) {
-			$account = clone $oauth_user->get_credit_account();
+		if ( $oauth_user->credit_account ) {
+			$account = clone $oauth_user->credit_account;
 		}
 		return $account;
 	}
@@ -77,10 +80,13 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param \WP_REST_Request $request Request data
 	 * @return CreditAccountInterface|null
 	 */
-	public function credit_balance_show( OauthUserInterface $oauth_user, string $group_id ): ?CreditAccountInterface {
+	public function credit_balance_show(
+		OauthUserInterface $oauth_user,
+		string $group_id
+	): ?CreditAccountInterface {
 		$account = $this->credit_account_repository->show( array(
 			'group_uuid'   => $group_id,
-			'account_uuid' => $oauth_user->get_id(),
+			'account_uuid' => $oauth_user->id,
 		) );
 		return $account;
 	}
@@ -91,15 +97,21 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param \WP_REST_Request $request Request data
 	 * @return TokenBalanceCollectionInterface
 	 */
-	public function token_balance_index( OauthUserInterface $oauth_user, \WP_REST_Request $request ): TokenBalanceCollectionInterface {
+	public function token_balance_index(
+		OauthUserInterface $oauth_user,
+		\WP_REST_Request $request
+	): TokenBalanceCollectionInterface {
 		$categories = $this->category_term_repository->index();
 		$balance = $this->balance_repository->index( array(
-			'oauth_token' => $oauth_user->get_oauth_token(),
+			'oauth_token' => $oauth_user->oauth_token,
 			'with'        => array( 'meta' ),
 		) );
 		foreach ( (array) $balance as $item ) {
-			if ( $item->get_meta() ) {
-				$item->get_meta()->append_fallback( "{$this->namespace}_token_category", $categories );
+			if ( $item->meta ) {
+				$item->meta->append_fallback(
+					"{$this->namespace}_token_category",
+					$categories
+				);
 			}
 		}
 		return $balance;
@@ -111,9 +123,12 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param \WP_REST_Request $request Request data
 	 * @return TokenBalanceInterface|null
 	 */
-	public function token_balance_show( OauthUserInterface $oauth_user, string $asset ): ?TokenBalanceInterface {
+	public function token_balance_show(
+		OauthUserInterface $oauth_user,
+		string $asset
+	): ?TokenBalanceInterface {
 		$this->load( $oauth_user, array( 'balance' ) );
-		$balance = clone $oauth_user->get_balance();
+		$balance = clone $oauth_user->balance;
 		$balance->key_by_asset_name();
 		if ( isset( $balance[ $asset ] ) ) {
 			$balance = $balance[ $asset ];
@@ -128,9 +143,12 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param array $params Search parameters
 	 * @return TokenAddressCollectionInterface
 	 */
-	public function token_address_index( OauthUserInterface $oauth_user, array $params ): TokenAddressCollectionInterface {
+	public function token_address_index(
+		OauthUserInterface $oauth_user,
+		array $params
+	): TokenAddressCollectionInterface {
 		$addresses = $this->address_repository->index( array(
-			'oauth_token' => $oauth_user->get_oauth_token(),
+			'oauth_token' => $oauth_user->oauth_token,
 		) );
 		if ( isset( $params['registered'] ) ) {
 			$sources = $this->source_repository->index();
@@ -146,11 +164,16 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param array $params Search parameters
 	 * @return OauthUserInterface|null
 	 */
-	protected function show_cacheable( array $params = array() ): ?OauthUserInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?OauthUserInterface {
 		$oauth_token;
 		if ( isset( $params['id'] ) ) {
 			$user_id = $params['id'];
-			$oauth_token = $this->user_meta_repository->show( $user_id, 'oauth_token' );
+			$oauth_token = $this->user_meta_repository->show(
+				$user_id,
+				'oauth_token'
+			);
 			$params['oauth_token'] = $oauth_token;
 		}
 		$oauth_user = null;
@@ -205,9 +228,12 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param string[] $relations Further relations
 	 * @return TokenBalanceCollectionInterface
 	 */
-	protected function load_balance( OauthUserInterface $oauth_user, array $relations = array() ): TokenBalanceCollectionInterface {
+	protected function load_balance(
+		OauthUserInterface $oauth_user,
+		array $relations = array()
+	): TokenBalanceCollectionInterface {
 		$balance = $this->token_balance_repository->index( array(
-			'oauth_token'  => $oauth_user->get_oauth_token(),
+			'oauth_token'  => $oauth_user->oauth_token,
 			'with'         => $relations,
 		) );
 		return $balance;
@@ -219,10 +245,13 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param string[] $relations Further relations
 	 * @return TokenAddressCollectionInterface
 	 */
-	protected function load_address( OauthUserInterface $oauth_user, array $relations = array() ): TokenAddressCollectionInterface {
+	protected function load_address(
+		OauthUserInterface $oauth_user,
+		array $relations = array()
+	): TokenAddressCollectionInterface {
 		$address = $this->address_repository->index( array(
-			'username'    => $oauth_user->get_username(),
-			'oauth_token' => $oauth_user->get_oauth_token(),
+			'username'    => $oauth_user->username,
+			'oauth_token' => $oauth_user->oauth_token,
 			'with'        => $relations,
 		) );
 		return $address;
@@ -234,21 +263,24 @@ class OauthUserRepository extends Repository implements OauthUserRepositoryInter
 	 * @param string[] $relations Further relations
 	 * @return CreditAccountCollectionInterface
 	 */
-	protected function load_credit_account( OauthUserInterface $oauth_user, array $relations = array() ): CreditAccountCollectionInterface {
+	protected function load_credit_account(
+		OauthUserInterface $oauth_user,
+		array $relations = array()
+	): CreditAccountCollectionInterface {
 		$groups = $this->credit_group_repository->index();
 		$groups = clone $groups->key_by_field( 'uuid' );
 		$accounts = new CreditAccountCollection();
 		foreach ( ( array ) $groups as $group ) {
 			$account = $this->credit_account_repository->show( array(
-				'group_uuid'   => $group->get_uuid(),
-				'account_uuid' => $oauth_user->get_id(),
+				'group_uuid'   => $group->uuid,
+				'account_uuid' => $oauth_user->id,
 			) );
 			if ( !$account ) {
 				continue;
 			}
-			$account->set_group_id( $group->get_uuid() );
-			$account->set_group( $group );
-			$accounts[ $group->get_uuid() ] = $account;
+			$account->group_id = $group->uuid;
+			$account->group = $group;
+			$accounts[ $group->uuid ] = $account;
 		}
 		return $accounts;
 	}

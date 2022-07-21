@@ -27,7 +27,7 @@ class VendorController implements VendorControllerInterface {
 	public function show_policy(): bool {
 		$user = $this->user_repository->show_current();
 		if ( $user ) {
-			if ( user_can( $user, 'administrator' ) && $user->get_can_connect() ) {
+			if ( user_can( $user, 'administrator' ) && $user->can_connect ) {
 				return true;
 			}
 		}

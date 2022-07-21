@@ -66,13 +66,15 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	public function register(): void {
 		foreach ( $this->services as $key => $service ) {
 			$name = "{$this->namespace}_{$key}";
-			add_shortcode( $name, function(  $atts = array(), $content = null, $tag = ''  ) use ( $service ) {
+			$callback = function( $atts = array(), $content = null, $tag = '' )
+			use ( $service ) {
 				if ( !is_array( $atts ) ) {
 					$atts = array();
 				}
 				$response = $service->shortcode_callback( $atts, $content, $tag );
 				return $this->render_shortcode( $response );
-			} );
+			};
+			add_shortcode( $name, $callback );
 			$service->register();
 		}
 	}

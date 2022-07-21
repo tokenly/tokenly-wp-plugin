@@ -2,33 +2,9 @@ import Model from '../Model';
 import QuantityInterface from '../../Interfaces/Models/Token/QuantityInterface';
 
 export default class Quantity extends Model implements QuantityInterface {
-	protected _value?: number = null;
-	protected _valueSat?: number = null;
-	protected _precision?: number = null;
-
-	public get value(): number|null {
-		return this._value ?? null;
-	}
-
-	public set value( value: number ) {
-		this._value = value;
-	}
-
-	public get valueSat(): number|null {
-		return this._valueSat ?? null;
-	}
-
-	public set valueSat( value: number ) {
-		this._valueSat = value;
-	}
-
-	public get precision(): number|null {
-		return this._precision ?? null;
-	}
-
-	public set precision( value: number ) {
-		this._precision = value;
-	}
+	public value?: number = null;
+	public valueSat?: number = null;
+	public precision?: number = null;
 
 	public fromJson( data: any = {} ): this {
 		if ( data.value_sat ) {

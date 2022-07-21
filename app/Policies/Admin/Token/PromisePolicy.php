@@ -45,7 +45,7 @@ class PromisePolicy extends Policy implements PromisePolicyInterface {
 
 	public function before() {
 		if (
-			$this->integration_settings->get_can_connect() &&
+			$this->integration_settings->can_connect &&
 			$this->user &&
 			user_can( $this->user, 'administrator' )
 		) {

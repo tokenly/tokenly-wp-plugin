@@ -10,24 +10,8 @@ use Tokenly\Wp\Interfaces\Repositories\General\OptionRepositoryInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 class Integration extends Model implements IntegrationInterface {
-	protected ?IntegrationSettingsInterface $settings = null;
-	protected ?bool $can_connect = false;
-
-	public function get_can_connect(): ?bool {
-		return $this->can_connect ?? null;
-	}
-
-	public function set_can_connect( ?bool $value ): void {
-		$this->can_connect = $value;
-	}
-
-	public function get_settings(): ?IntegrationSettingsInterface {
-		return $this->settings ?? null;
-	}
-
-	public function set_settings( ?IntegrationSettingsInterface $value ): void {
-		$this->settings = $value;
-	}
+	public ?IntegrationSettingsInterface $settings = null;
+	public ?bool $can_connect = false;
 
 	/**
 	 * @inheritDoc
@@ -41,7 +25,7 @@ class Integration extends Model implements IntegrationInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'can_connect' => $this->get_can_connect(),
+			'can_connect' => $this->can_connect,
 		);
 		return $array;
 	}

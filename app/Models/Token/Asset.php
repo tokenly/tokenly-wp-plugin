@@ -6,42 +6,24 @@ use Tokenly\Wp\Models\Model;
 use Tokenly\Wp\Interfaces\Models\Token\AssetInterface;
 
 class Asset extends Model implements AssetInterface {
-	protected ?string $address = '';
-	protected ?string $index = '';
+	public ?string $address = '';
+	public ?string $index = '';
 
-	/**
-	 * Gets the Address property
-	 * @return string
-	 */
-	public function get_address(): ?string {
-		return $this->address ?? null;
-	}
+    public function __get( $name ) {
+		switch ( $name ) {
+			case "name":
+				$this->get_name();
+				break;
+		}
+    }
 
-	/**
-	 * Sets the Address property
-	 * @param string $value New value
-	 * @return void
-	 */
-	public function set_address( ?string $value ): void {
-		$this->address = $value;
-	}
-
-	/**
-	 * Gets the Index property
-	 * @return string
-	 */
-	public function get_index(): ?string {
-		return $this->index ?? null;
-	}
-
-	/**
-	 * Sets the Index property
-	 * @param string $value New value
-	 * @return void
-	 */
-	public function set_index( ?string $value ): void {
-		$this->index = $value;
-	}
+    public function __set( $name, $value ) {
+		switch ( $name ) {
+			case "name":
+				$this->set_name( $value );
+				break;
+		}
+    }
 
 	/**
 	 * @inheritDoc
@@ -55,8 +37,8 @@ class Asset extends Model implements AssetInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'address' => $this->get_address(),
-			'index'   => $this->get_index(),
+			'address' => $this->address,
+			'index'   => $this->index,
 		);
 		return $array;
 	}
@@ -65,9 +47,9 @@ class Asset extends Model implements AssetInterface {
 	 * Gets the Name ancestor
 	 * @return string
 	 */
-	public function get_name(): ?string {
-		$address = $this->get_address();
-		$index = $this->get_index();
+	protected function get_name(): ?string {
+		$address = $this->address;
+		$index = $this->index;
 		$asset = $address;
 		if ( isset( $index ) && !empty( $index ) ) {
 			$asset = "{$asset}:{$index}";
@@ -80,13 +62,13 @@ class Asset extends Model implements AssetInterface {
 	 * @param string $value New name
 	 * @return void
 	 */
-	public function set_name( string $value ): void {
-		if ( strpos( $value, ':' ) !== false) {
+	protected function set_name( string $value ): void {
+		if ( strpos( $value, ':' ) !== false ) {
 			$value = explode( ':', $value );
-			$this->set_address( $value[0] );
-			$this->set_index( $value[1] );
+			$this->address = $value[0];
+			$this->index = $value[1];
 		} else {
-			$this->set_address( $value );
+			$this->address = $value;
 		}
 	}
 

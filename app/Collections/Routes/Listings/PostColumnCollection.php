@@ -7,6 +7,8 @@ use Tokenly\Wp\Interfaces\Collections\Routes\Listings\PostColumnCollectionInterf
 
 use Tokenly\Wp\Models\Routes\Listings\PostColumn;
 
-class PostColumnCollection extends ColumnCollection implements PostColumnCollectionInterface {
+class PostColumnCollection extends ColumnCollection
+	implements PostColumnCollectionInterface
+{
 	protected string $item_type = PostColumn::class;
 }
