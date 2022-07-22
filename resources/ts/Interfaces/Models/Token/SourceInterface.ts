@@ -1,8 +1,8 @@
-import ModelInterface from '../ModelInterface';
+import ModelInterface from '../ModelInterface'
 
 export default interface SourceInterface extends ModelInterface {
-	addressId?: string;
-	assets?: object;
-	type?: string;
-	address?: object;
+	addressId?: string
+	assets?: object
+	type?: string
+	address?: object
 }

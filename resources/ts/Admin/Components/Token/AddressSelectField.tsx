@@ -1,18 +1,18 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Spinner,
 	SelectControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressSelectFieldProps {
-	address: any;
-	addresses: any;
-	loading: boolean;
-	onChange: any;
-	label?: string;
-	inputProps?: any;
+	address: any
+	addresses: any
+	loading: boolean
+	onChange: any
+	label?: string
+	inputProps?: any
 }
 
 export default function AddressSelectField( props: AddressSelectFieldProps ) {
@@ -22,19 +22,19 @@ export default function AddressSelectField( props: AddressSelectFieldProps ) {
 				label: 'Not Selected',
 				value: '',
 			}
-		];
+		]
 		if ( props.addresses && typeof props.addresses === 'object' ) {
 			Object.keys( props.addresses ).forEach( ( key ) => {
 				options.push( {
 					label: props.addresses[ key ].label,
 					value: key,
-				} );
-			} );
+				} )
+			} )
 		}
-		return options;
+		return options
 	}
 
-	const addressOptions = getAddressOptions();
+	const addressOptions = getAddressOptions()
 	return (
 		<Flex
 			//@ts-ignore
@@ -60,7 +60,7 @@ export default function AddressSelectField( props: AddressSelectFieldProps ) {
 				}
 			</Flex>
 		</Flex>
-	);
+	)
 }
  
 

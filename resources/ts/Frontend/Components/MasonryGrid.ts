@@ -1,18 +1,18 @@
 export default class MasonryGrid {
-	protected gridContainer: HTMLElement;
-	protected gridItems: Array<HTMLElement>;
-	protected resizeTimeout: any = null;
-	protected onResizeDebounceHandler: any;
-	protected columns: number;
-	protected seed: number;
+	protected gridContainer: HTMLElement
+	protected gridItems: Array<HTMLElement>
+	protected resizeTimeout: any = null
+	protected onResizeDebounceHandler: any
+	protected columns: number
+	protected seed: number
 
 	public constructor( gridContainer: HTMLElement, gridItems: Array<HTMLElement> = [], seed: string = '100' ) {
-		this.seed = this.getHash( seed );
-		this.gridContainer = gridContainer;
-		this.gridItems = Array.from( gridItems );
-		const columns = this.getGridColumns();
-		this.rebuildGrid( columns );
-		this.handleResize();
+		this.seed = this.getHash( seed )
+		this.gridContainer = gridContainer
+		this.gridItems = Array.from( gridItems )
+		const columns = this.getGridColumns()
+		this.rebuildGrid( columns )
+		this.handleResize()
 	}
 
 	/**
@@ -21,14 +21,14 @@ export default class MasonryGrid {
 	 * @returns {void} 
 	 */
 	public rebuildGrid( columns: number ): void {
-		this.columns = columns;
-		const itemsTotal: number = this.gridItems.length - 1;
-		let areas: any = [];
-		areas = this.generateAreas( columns, itemsTotal );
-		areas = this.groupAreas( columns, areas );
-		areas = this.makeContainerStyle( areas );
-		this.applyContainerStyle( areas );
-		this.applyItemStyles();
+		this.columns = columns
+		const itemsTotal: number = this.gridItems.length - 1
+		let areas: any = []
+		areas = this.generateAreas( columns, itemsTotal )
+		areas = this.groupAreas( columns, areas )
+		areas = this.makeContainerStyle( areas )
+		this.applyContainerStyle( areas )
+		this.applyItemStyles()
 	}
 
 	/**
@@ -36,10 +36,10 @@ export default class MasonryGrid {
 	 * @returns {void}
 	 */
 	public destroy(): void {
-		window.removeEventListener( 'resize', this.onResizeDebounceHandler );
-		this.gridContainer.style.gridTemplateAreas = null;
+		window.removeEventListener( 'resize', this.onResizeDebounceHandler )
+		this.gridContainer.style.gridTemplateAreas = null
 		this.gridItems.forEach( ( gridItem: HTMLElement ) => {
-			gridItem.style.gridArea = null;
+			gridItem.style.gridArea = null
 		} )
 	}
 
@@ -48,8 +48,8 @@ export default class MasonryGrid {
 	 * @returns {void}
 	 */
 	protected handleResize(): void {
-		this.onResizeDebounceHandler = this.onResizeDebounce.bind( this );
-		window.addEventListener( 'resize', this.onResizeDebounceHandler );
+		this.onResizeDebounceHandler = this.onResizeDebounce.bind( this )
+		window.addEventListener( 'resize', this.onResizeDebounceHandler )
 	}
 
 	/**
@@ -57,10 +57,10 @@ export default class MasonryGrid {
 	 * @returns {void}
 	 */
 	protected onResizeDebounce(): void {
-		clearTimeout( this.resizeTimeout );
+		clearTimeout( this.resizeTimeout )
 		this.resizeTimeout = setTimeout( () => {
-			this.onResize();
-		}, 500 );
+			this.onResize()
+		}, 500 )
 	}
 
 	/**
@@ -69,9 +69,9 @@ export default class MasonryGrid {
 	 * @returns {void}
 	 */
 	protected onResize(): void {
-		const columns: number = this.getGridColumns();
+		const columns: number = this.getGridColumns()
 		if ( columns != this.columns ) {
-			this.rebuildGrid( columns );
+			this.rebuildGrid( columns )
 		}
 	}
 
@@ -80,12 +80,12 @@ export default class MasonryGrid {
 	 * @returns {number} Number of columns
 	 */
 	protected getGridColumns(): number {
-		const width: number = window.innerWidth;
-		let columns: number = 2;
+		const width: number = window.innerWidth
+		let columns: number = 2
 		if ( width > 768 ) {
-			columns = 4;
+			columns = 4
 		}
-		return columns;
+		return columns
 	}
 
 	/**
@@ -94,7 +94,7 @@ export default class MasonryGrid {
 	 * @returns void 
 	 */
 	protected applyContainerStyle( rule: string ): void {
-		this.gridContainer.style.gridTemplateAreas = `${rule}`;
+		this.gridContainer.style.gridTemplateAreas = `${rule}`
 	}
 
 	/**
@@ -103,9 +103,9 @@ export default class MasonryGrid {
 	 */
 	protected applyItemStyles(): void {
 		this.gridItems.forEach( ( card: any, index: number ) => {
-			const name: string = this.getItemName( index );
-			card.style.gridArea = name;
-		} );
+			const name: string = this.getItemName( index )
+			card.style.gridArea = name
+		} )
 	}
 
 	/**
@@ -115,19 +115,19 @@ export default class MasonryGrid {
 	 * @returns Array<String> areas Generated grid areas
 	 */
 	protected generateAreas( columns: number, itemsTotal: number ): Array<string> {
-		let areas: Array<string> = [];
-		let itemId: number = 0;
-		let cell:number = 0;
+		let areas: Array<string> = []
+		let itemId: number = 0
+		let cell:number = 0
 		while ( itemId <= itemsTotal ) {
 			if ( !areas[ cell ] ) {
-				const name: string = this.getItemName( itemId );
-				areas[ cell ] = name;
-				areas = this.expandArea( areas, cell, columns, itemId, itemsTotal );
-				itemId++;
+				const name: string = this.getItemName( itemId )
+				areas[ cell ] = name
+				areas = this.expandArea( areas, cell, columns, itemId, itemsTotal )
+				itemId++
 			 }
-			cell++;
+			cell++
 		}
-		return areas;
+		return areas
 	}
 
 	/**
@@ -141,13 +141,13 @@ export default class MasonryGrid {
 	 */
 	protected expandArea( areas: Array<string>, cell: number, columns: number, itemId: number, itemsTotal: number ): Array<string> {
 		if ( this.shouldModifyCell( cell ) === true) {
-			const offset: number = this.getDirectionOffset( cell, columns, itemId, itemsTotal );
+			const offset: number = this.getDirectionOffset( cell, columns, itemId, itemsTotal )
 			if ( offset && !areas[ offset ] ) {
-				const name = this.getItemName( itemId );
-				areas[ offset ] = name;
+				const name = this.getItemName( itemId )
+				areas[ offset ] = name
 			}
 		}
-		return areas;
+		return areas
 	}
 	
 	/**
@@ -157,27 +157,27 @@ export default class MasonryGrid {
 	 * @returns {Array<Array<string>} Grouped areas
 	 */
 	protected groupAreas( columns: number, areas: any ): Array<Array<string>> {
-		let counter: number = 0;
-		let currentGroup: number= 0;
-		const areasGrouped = [] as any;
+		let counter: number = 0
+		let currentGroup: number= 0
+		const areasGrouped = [] as any
 		areas.forEach( ( area: string, index: number ) => {
 			if ( !Array.isArray( areasGrouped[ currentGroup ] ) ) {
-				areasGrouped[ currentGroup ] = [];
+				areasGrouped[ currentGroup ] = []
 			}
-			areasGrouped[ currentGroup ].push( area );
-			counter++;
+			areasGrouped[ currentGroup ].push( area )
+			counter++
 			if ( counter % columns === 0 ) {
-				currentGroup++;
-				counter = 0;
+				currentGroup++
+				counter = 0
 			}
 			if ( index == (areas.length - 1) && counter != 0 ) {
 				while ( counter < ( columns ) ) {
-					areasGrouped[ currentGroup ].push( 'padding' );
-					counter++;
+					areasGrouped[ currentGroup ].push( 'padding' )
+					counter++
 				}
 			}
-		} );
-		return areasGrouped;
+		} )
+		return areasGrouped
 	}
 	
 	/**
@@ -186,7 +186,7 @@ export default class MasonryGrid {
 	 * @returns {string} New grid area name
 	 */
 	protected getItemName( index: number ): string {
-		return 'i' + index;
+		return 'i' + index
 	}
 	
 	/**
@@ -198,21 +198,21 @@ export default class MasonryGrid {
 	 * @returns {number} Number of cell to assign the same name for
 	 */
 	protected getDirectionOffset( cell: number, columns: number, currentItemID: number, itemsTotal: number ): number {
-		const number = this.getRandomInRange( 0, 1, cell );
-		let offset = null;
+		const number = this.getRandomInRange( 0, 1, cell )
+		let offset = null
 		switch ( number ) {
 			case 0:
 				if ( this.canModifyHorizontally( cell, columns ) ) {
-					offset = cell + 1;
+					offset = cell + 1
 				}
-				break;
+				break
 			case 1:
 				if ( this.canModifyVertically( columns, currentItemID, itemsTotal ) ) {
-					offset = cell + columns;
+					offset = cell + columns
 				}
-				break;
+				break
 		}
-		return offset;
+		return offset
 	}
 	
 	/**
@@ -222,8 +222,8 @@ export default class MasonryGrid {
 	 * @returns {boolean} Result
 	 */
 	protected canModifyHorizontally( cell: number, columns: number ): boolean {
-		const column = cell % columns;
-		return ( column != ( columns - 1 ) );
+		const column = cell % columns
+		return ( column != ( columns - 1 ) )
 	}
 	
 	/**
@@ -234,7 +234,7 @@ export default class MasonryGrid {
 	 * @returns {boolean} Result
 	 */
 	protected canModifyVertically( columns: number, currentItemID: number, itemsTotal: number ): boolean {
-		return ( ( itemsTotal - currentItemID ) > columns );
+		return ( ( itemsTotal - currentItemID ) > columns )
 	}
 	
 	/**
@@ -244,12 +244,12 @@ export default class MasonryGrid {
 	 */
 	protected makeContainerStyle( areaGroups: any ): string {
 		areaGroups = areaGroups.map( ( areaGroup: any ) => {
-			areaGroup = areaGroup.join( ' ' );
-			areaGroup = `'` + areaGroup + `'`;
-			return areaGroup;
-		} );
-		let rule: string = areaGroups.join( ' ' );
-		return rule;
+			areaGroup = areaGroup.join( ' ' )
+			areaGroup = `'` + areaGroup + `'`
+			return areaGroup
+		} )
+		let rule: string = areaGroups.join( ' ' )
+		return rule
 	}
 
 	/**
@@ -259,9 +259,9 @@ export default class MasonryGrid {
 	 * @returns {number} Random number
 	 */
 	protected getRandomInRange( min: number, max: number, key: number ): number {
-		let random = Math.sin( this.seed + key ) * 10000;
-		random = random - Math.floor( random );
-		return Math.floor( random * ( max - min + 1 ) ) + min;
+		let random = Math.sin( this.seed + key ) * 10000
+		random = random - Math.floor( random )
+		return Math.floor( random * ( max - min + 1 ) ) + min
 	}
 	
 	/**
@@ -269,17 +269,17 @@ export default class MasonryGrid {
 	 * @returns {boolean} Result
 	 */
 	protected shouldModifyCell( cell: number ): boolean {
-		const number = this.getRandomInRange( 0, 1, cell );
-		return ( number == 1 );
+		const number = this.getRandomInRange( 0, 1, cell )
+		return ( number == 1 )
 	}
 
 	protected getHash( input: string ): number {
-		var hash = 0, len = input.length;
+		var hash = 0, len = input.length
 		for ( var i = 0; i < len; i++ ) {
-		  hash  = ( ( hash << 5 ) - hash ) + input.charCodeAt( i );
-		  hash |= 0;
+		  hash  = ( ( hash << 5 ) - hash ) + input.charCodeAt( i )
+		  hash |= 0
 		}
-		return hash;
+		return hash
 	  }
 }
 

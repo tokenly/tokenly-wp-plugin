@@ -1,21 +1,21 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
 
 import {
 	Button,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressInfoProps {
-	address?: AddressInterface;
-	verbose?: boolean;
+	address?: AddressInterface
+	verbose?: boolean
 }
 
 export default function AddressInfo( props: AddressInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 	return (
 		<Flex
 			//@ts-ignore
@@ -51,5 +51,5 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				}
 			</Flex>
 		</Flex>
-	);
+	)
 }

@@ -1,62 +1,62 @@
-import * as React from 'react';
-import { Fragment } from 'react';
-import { useState } from 'react';
+import * as React from 'react'
+import { Fragment } from 'react'
+import { useState } from 'react'
 
 import { 
 	// @ts-ignore
 	TextControl,
-} from '@wordpress/components';
-import Autocomplete from './Autocomplete';
+} from '@wordpress/components'
+import Autocomplete from './Autocomplete'
 
 interface AssetSearchFieldProps {
-	onChange: any;
-	asset: any;
-	assets: any;
-	label?: string;
-	help?: string;
-	inputProps?: any;
-	disabled?: boolean;
+	onChange: any
+	asset: any
+	assets: any
+	label?: string
+	help?: string
+	inputProps?: any
+	disabled?: boolean
 }
 
 export default function AssetSearchField( props: AssetSearchFieldProps ) {
-	const [ keywords, setKeywords ] = useState( '' );
-	const [ options, setOptions ] = useState( [] );
-	const [ focused, setFocused ] = useState<boolean>( false );
+	const [ keywords, setKeywords ] = useState( '' )
+	const [ options, setOptions ] = useState( [] )
+	const [ focused, setFocused ] = useState<boolean>( false )
 
 	function onKeywordsChange( newKeywords: string ) {
-		props.onChange( newKeywords );
-		setKeywords( newKeywords );
-		setOptions( getAssetOptions() );
+		props.onChange( newKeywords )
+		setKeywords( newKeywords )
+		setOptions( getAssetOptions() )
 	}
 
 	function getAssetName( asset: any ) {
-		let assetName = asset.asset.address;
+		let assetName = asset.asset.address
 		if ( asset.asset.index ) {
-			assetName = `${assetName}:${asset.asset.index}`;
+			assetName = `${assetName}:${asset.asset.index}`
 		}
-		return assetName;
+		return assetName
 	}
 
 	function getAssetOptions() {
 		if ( !props.assets || !Array.isArray( props.assets ) || keywords == '' ) {
-			return [];
+			return []
 		}
-		const keywordsFormatted = keywords.toLowerCase();
+		const keywordsFormatted = keywords.toLowerCase()
 		const assetsFiltered = props.assets.filter( ( asset: any ) => {
-			let assetName = getAssetName( asset );
-			return assetName.toLowerCase().indexOf( keywordsFormatted ) >= 0;
-		} );
+			let assetName = getAssetName( asset )
+			return assetName.toLowerCase().indexOf( keywordsFormatted ) >= 0
+		} )
 		const optionsFiltered = assetsFiltered.map( ( asset ) => {
-			const name = getAssetName( asset );
+			const name = getAssetName( asset )
 			return {
 				label: name,
 				value: name,
 			}
-		} );
+		} )
 		if ( optionsFiltered.length > 1 ) {
-			optionsFiltered.length = 1;
+			optionsFiltered.length = 1
 		}
-		return optionsFiltered;
+		return optionsFiltered
 	}
 
 	return (
@@ -67,10 +67,10 @@ export default function AssetSearchField( props: AssetSearchFieldProps ) {
 				value={ props.asset }
 				onChange={ onKeywordsChange }
 				onFocus={ () => {
-					setFocused( true );
+					setFocused( true )
 				} }
 				onBlur={ ( event: any ) => {
-					setFocused( false );
+					setFocused( false )
 				} }
 			/>
 		{ ( focused && options.length > 0 ) &&

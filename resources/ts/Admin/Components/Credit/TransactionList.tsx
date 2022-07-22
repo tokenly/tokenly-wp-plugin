@@ -1,10 +1,10 @@
-import * as React from 'react';
-import TransactionCard from './TransactionCard';
-import ResourceList from '../../Components/ResourceList';
-import TransactionCollectionInterface from '../../../Interfaces/Collections/Credit/TransactionCollectionInterface';
+import * as React from 'react'
+import TransactionCard from './TransactionCard'
+import ResourceList from '../../Components/ResourceList'
+import TransactionCollectionInterface from '../../../Interfaces/Collections/Credit/TransactionCollectionInterface'
 
 interface TransactionList {
-	transactions: TransactionCollectionInterface;
+	transactions: TransactionCollectionInterface
 }
 
 export default function PromiseList( props: TransactionList ) {
@@ -15,5 +15,5 @@ export default function PromiseList( props: TransactionList ) {
 			itemProp="transaction"
 			notFoundLabel="transactions"
 		/>
-	);
+	)
 }

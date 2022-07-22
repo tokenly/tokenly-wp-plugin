@@ -1,12 +1,12 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Dashicon,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressStatusProps {
-	address: any;
+	address: any
 }
 
 export default function AddressStatus( props: AddressStatusProps ) {
@@ -24,7 +24,7 @@ export default function AddressStatus( props: AddressStatusProps ) {
                 </span>
             }
 		</Flex>
-	);
+	)
 }
  
 

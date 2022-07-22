@@ -1,4 +1,4 @@
-import TermCollectionInterface from '../TermCollectionInterface';
+import TermCollectionInterface from '../TermCollectionInterface'
 
 export default interface CategoryTermCollectionInterface extends TermCollectionInterface {
 	//

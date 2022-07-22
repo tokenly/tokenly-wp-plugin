@@ -1,7 +1,7 @@
-import { TYPES as CommonTypes } from '../Types';
+import { TYPES as CommonTypes } from '../Types'
 
 const TYPES = Object.assign( {
 	//
-}, CommonTypes );
+}, CommonTypes )
 
-export { TYPES };
+export { TYPES }

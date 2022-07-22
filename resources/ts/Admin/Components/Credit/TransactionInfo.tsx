@@ -1,31 +1,31 @@
-import * as React from 'react';
+import * as React from 'react'
 import * as dayjs from 'dayjs'
-import UserLink from '../UserLink';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import UserLink from '../UserLink'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface TransactionInfoProps {
-	transaction: any;
-	verbose?: boolean;
+	transaction: any
+	verbose?: boolean
 }
 
 export default function TransactionInfo( props: TransactionInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 	function dateFormatted( date: Date ) {
 		if ( date ) {
 			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
 		}
-		return;
+		return
 	}
 
 	function getUserLink() {
 		if ( props.transaction?.user?.id ) {
-			return `${adminPageUrl}${namespace}-user-credit-balance-index&id=${props.transaction?.user.id}`;
+			return `${adminPageUrl}${namespace}-user-credit-balance-index&id=${props.transaction?.user.id}`
 		} else {
 			return null
 		}		
@@ -59,5 +59,5 @@ export default function TransactionInfo( props: TransactionInfoProps ) {
 				</div>
 			</div>
 		</Flex>
-	);
+	)
 }

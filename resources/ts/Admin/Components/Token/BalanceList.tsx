@@ -1,11 +1,11 @@
-import * as React from 'react';
-import BalanceCard from './BalanceCard';
-import ResourceList from '../../Components/ResourceList';
-import BalanceCollectionInterface from '../../../Interfaces/Collections/Token/BalanceCollectionInterface';
+import * as React from 'react'
+import BalanceCard from './BalanceCard'
+import ResourceList from '../../Components/ResourceList'
+import BalanceCollectionInterface from '../../../Interfaces/Collections/Token/BalanceCollectionInterface'
 
 interface BalanceListProps {
-	balance: BalanceCollectionInterface;
-	username?: string;
+	balance: BalanceCollectionInterface
+	username?: string
 }
 
 export default function BalanceList( props: BalanceListProps ) {
@@ -19,5 +19,5 @@ export default function BalanceList( props: BalanceListProps ) {
 			} }
 			notFoundLabel="balances"
 		/>
-	);
+	)
 }

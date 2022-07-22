@@ -1,14 +1,14 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Button,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SavePanelProps {
-	label?: string;
-	saving: boolean;
-	onClick: any;
+	label?: string
+	saving: boolean
+	onClick: any
 }
 
 export default function SavePanel( props: SavePanelProps ) {
@@ -24,13 +24,13 @@ export default function SavePanel( props: SavePanelProps ) {
 				isLarge
 				isBusy={ props.saving }
 				onClick={ () => {
-					props.onClick();
+					props.onClick()
 				} }
 			>
 				{ props.label ?? 'Save Settings' }
 			</Button>
 		</Flex>
-	);
+	)
 }
  
 

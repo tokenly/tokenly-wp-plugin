@@ -1,40 +1,40 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { useState, useEffect } from 'react';
-import Page from '../Page';
-import { TYPES } from '../../Types';
-import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
-import GroupInfo from '../../Components/Credit/GroupInfo';
-import GroupShowActions from '../../Components/Credit/GroupShowActions';
-import Preloader from '../../Components/Preloader';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { useState, useEffect } from 'react'
+import Page from '../Page'
+import { TYPES } from '../../Types'
+import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface'
+import GroupInfo from '../../Components/Credit/GroupInfo'
+import GroupShowActions from '../../Components/Credit/GroupShowActions'
+import Preloader from '../../Components/Preloader'
 
 import { 
 	Panel,
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-} from '@wordpress/components';
-import GroupInterface from '../../../Interfaces/Models/Credit/GroupInterface';
+} from '@wordpress/components'
+import GroupInterface from '../../../Interfaces/Models/Credit/GroupInterface'
 
 interface GroupShowPageProps {
 	//
 }
 
 export default function GroupShowPage( props: GroupShowPageProps ) {
-	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	
-	const urlParams = new URLSearchParams( window.location.search );
-	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'id' ) );
-	const [ group, setGroup ] = useState<GroupInterface>( null );
-	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( null );
+	const urlParams = new URLSearchParams( window.location.search )
+	const [ uuid, setUuid ] = useState<string>( urlParams.get( 'id' ) )
+	const [ group, setGroup ] = useState<GroupInterface>( null )
+	const [ loadingGroup, setLoadingGroup ] = useState<boolean>( null )
 
 	useEffect( () => {
-		setLoadingGroup( true );
+		setLoadingGroup( true )
 		groupRepository.show( uuid ).then( ( groupFound: any ) => {
-			setLoadingGroup( false );
-			setGroup( groupFound );
-		} );
-	 }, [] );
+			setLoadingGroup( false )
+			setGroup( groupFound )
+		} )
+	 }, [] )
 
 	return (
 		<Page title="Group Details">
@@ -61,5 +61,5 @@ export default function GroupShowPage( props: GroupShowPageProps ) {
 				</PanelBody>
 			</Panel>
 		</Page>
-	);
+	)
 }

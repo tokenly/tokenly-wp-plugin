@@ -1,6 +1,6 @@
-import * as React from 'react';
-import WalletField from './WalletField';
-import { useState } from 'react';
+import * as React from 'react'
+import WalletField from './WalletField'
+import { useState } from 'react'
 
 import { 
 	TextControl,
@@ -8,51 +8,51 @@ import {
 	Flex,
 	CheckboxControl,
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressStoreFormProps {
-	storeData: any;
-	onChange: any;
+	storeData: any
+	onChange: any
 }
 
-declare const window: any;
+declare const window: any
 
 export default function AddressStoreForm( props: AddressStoreFormProps ) {
-	const [ isWalletAddress, setIsWalletAddress ] = useState<boolean>( false );
+	const [ isWalletAddress, setIsWalletAddress ] = useState<boolean>( false )
 
 	function onAddressFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.address = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.address = value
+		props.onChange( state )
 	}
 
 	function onLabelFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.label = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.label = value
+		props.onChange( state )
 	}
 
 	function onPublicFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.public = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.public = value
+		props.onChange( state )
 	}
 
 	function onTypeFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.type = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.type = value
+		props.onChange( state )
 	}
 
 	function onAddressSelect( value: string ) {
-		const state = Object.assign( {}, props.storeData );
-		state.address = value;
-		const isValid = ( value && value != '' );
+		const state = Object.assign( {}, props.storeData )
+		state.address = value
+		const isValid = ( value && value != '' )
 		if ( isValid ) {
-			state.type = 'ethereum';
+			state.type = 'ethereum'
 		}
-		props.onChange( state );
-		setIsWalletAddress( isValid );
+		props.onChange( state )
+		setIsWalletAddress( isValid )
 	} 
 
 	return (
@@ -105,5 +105,5 @@ export default function AddressStoreForm( props: AddressStoreFormProps ) {
 				onChange={ onTypeFieldChange }
 			/>
 		</Flex>
-	);
+	)
 }

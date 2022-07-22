@@ -20,7 +20,9 @@ use Invoker\InvokerInterface;
 /**
  * Registers routers
  */
-class RouteServiceProvider extends ServiceProvider implements RouteServiceProviderInterface {
+class RouteServiceProvider extends ServiceProvider
+	implements RouteServiceProviderInterface
+{
 	protected InvokerInterface $invoker;
 	protected string $root_dir;
 
@@ -88,7 +90,8 @@ class RouteServiceProvider extends ServiceProvider implements RouteServiceProvid
 	public function register(): void {
 		foreach ( $this->services as $key => $route_definition ) {
 			$data = $route_definition['data'];
-			$routes = $this->invoker->call( include( "{$this->root_dir}/routes/{$key}.php" ), $data );
+			$path = "{$this->root_dir}/routes/{$key}.php";
+			$routes = $this->invoker->call( include( $path ), $data );
 			if ( isset( $route_definition['repository'] ) ) {
 				$repository = $route_definition['repository'];
 				$repository->register( $routes );

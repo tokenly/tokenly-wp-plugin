@@ -123,7 +123,8 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 		$group = $this->client->updateAppCreditGroup(
 			$group->uuid, $update_params
 		);
-		$group = ( new Group() )->from_array( $credit_group_data );
+		$group = ( new Group() )->from_array( $group );
+		return $group;
 	}
 
 	/**
@@ -149,6 +150,7 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 		) {
 			$groups->exclude_not_whitelisted( $this->group_whitelist );
 		}
+		
 		return $groups;
 	}
 

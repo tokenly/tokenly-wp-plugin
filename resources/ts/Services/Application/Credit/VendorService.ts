@@ -1,41 +1,52 @@
-import VendorServiceInterface from '../../../Interfaces/Services/Application/Credit/VendorServiceInterface';
+import VendorServiceInterface
+	from '../../../Interfaces/Services/Application/Credit/VendorServiceInterface'
 
-import { injectable, inject } from 'inversify';
-import { TYPES } from '../../../Types';
+import { injectable, inject } from 'inversify'
+import { TYPES } from '../../../Types'
 
 import {
 	ApiServiceInterface,
 	CreditVendorDebitParamsInterface,
 	CreditVendorCreditParamsInterface,
-} from '../../../Interfaces/Services/ApiServiceInterface';
+} from '../../../Interfaces/Services/ApiServiceInterface'
 
 @injectable()
 export default class VendorService implements VendorServiceInterface {
-	protected ApiService: ApiServiceInterface;
+	protected ApiService: ApiServiceInterface
 	
 	constructor(
-		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
+		@inject(
+			TYPES.Services.ApiServiceInterface
+		) ApiService: ApiServiceInterface
 	) {
-		this.ApiService = ApiService;
+		this.ApiService = ApiService
 	}
 
-	public debit( params?: CreditVendorDebitParamsInterface ): Promise<Array<any>> {
+	public debit(
+		params?: CreditVendorDebitParamsInterface
+	): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.creditVendorDebit( params ).then( ( result: Array<any> ) => {
-				resolve( result );
+			this.ApiService.creditVendorDebit(
+				params
+			).then( ( result: Array<any> ) => {
+				resolve( result )
 			} ).catch( error => {
-				reject( error );
-			} );
-		} );
+				reject( error )
+			} )
+		} )
 	}
 
-	public credit( params?: CreditVendorCreditParamsInterface ): Promise<Array<any>> {
+	public credit(
+		params?: CreditVendorCreditParamsInterface
+	): Promise<Array<any>> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.creditVendorCredit( params ).then( ( result: Array<any> ) => {
-				resolve( result );
+			this.ApiService.creditVendorCredit(
+				params
+			).then( ( result: Array<any> ) => {
+				resolve( result )
 			} ).catch( error => {
-				reject( error );
-			} );
-		} );
+				reject( error )
+			} )
+		} )
 	}
 }

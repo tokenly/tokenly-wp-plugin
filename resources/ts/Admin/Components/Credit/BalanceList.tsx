@@ -1,11 +1,11 @@
-import * as React from 'react';
-import BalanceCard from './BalanceCard';
-import ResourceList from '../../Components/ResourceList';
-import AccountCollectionInterface from '../../../Interfaces/Collections/Credit/AccountCollectionInterface';
+import * as React from 'react'
+import BalanceCard from './BalanceCard'
+import ResourceList from '../../Components/ResourceList'
+import AccountCollectionInterface from '../../../Interfaces/Collections/Credit/AccountCollectionInterface'
 
 interface BalanceListProps {
-	balance: AccountCollectionInterface;
-	username?: string;
+	balance: AccountCollectionInterface
+	username?: string
 }
 
 export default function BalanceList( props: BalanceListProps ) {
@@ -19,5 +19,5 @@ export default function BalanceList( props: BalanceListProps ) {
 			} }
 			notFoundLabel="balances"
 		/>
-	);
+	)
 }

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import StatusIndicator from '../Components/StatusIndicator';
-import UserInterface from '../../Interfaces/Models/UserInterface';
+import * as React from 'react'
+import StatusIndicator from '../Components/StatusIndicator'
+import UserInterface from '../../Interfaces/Models/UserInterface'
 
 interface ConnectionInfoProps {
-	status: boolean;
-	user: UserInterface;
+	status: boolean
+	user: UserInterface
 }
 
 export default function ConnectionInfo( props: ConnectionInfoProps ) {
@@ -20,5 +20,5 @@ export default function ConnectionInfo( props: ConnectionInfoProps ) {
 				</div>
 			}
 		</div>
-	);
+	)
 }

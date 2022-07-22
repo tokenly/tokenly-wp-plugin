@@ -1,18 +1,18 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface ResourceEditActionsProps {
-	saving: boolean;
-	deleting?: boolean;
-	onSave?: any;
-	onDelete?: any;
-	onCancel: any;
-	name: string;
-	noDelete?: boolean;
+	saving: boolean
+	deleting?: boolean
+	onSave?: any
+	onDelete?: any
+	onCancel: any
+	name: string
+	noDelete?: boolean
 }
 
 export default function ResourceEditActions( props: ResourceEditActionsProps ) {
@@ -39,13 +39,13 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 			<Button
 				isTertiary
 				onClick={ () => {
-					history.back();
+					history.back()
 				} }
 			>
 				Cancel
 			</Button>
 		</Flex>
-	);
+	)
 }
  
 

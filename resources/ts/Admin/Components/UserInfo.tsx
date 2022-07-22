@@ -1,11 +1,11 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	 Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface UserInfoProps {
-	user: any;
+	user: any
 }
 
 export default function UserInfo( props: UserInfoProps ) {
@@ -16,7 +16,7 @@ export default function UserInfo( props: UserInfoProps ) {
 		>
 			<div>Name: <b>{ props.user?.name } ({ props.user?.oauth_user?.username ?? '-' })</b></div>
 		</Flex>
-	);
+	)
 }
  
 

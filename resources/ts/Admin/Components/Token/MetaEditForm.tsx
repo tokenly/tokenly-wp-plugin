@@ -1,7 +1,7 @@
-import * as React from 'react';
-import AssetField from './AssetField';
-import AttributeRepeater from '../AttributeRepeater';
-import MediaRepeater from '../MediaRepeater';
+import * as React from 'react'
+import AssetField from './AssetField'
+import AttributeRepeater from '../AttributeRepeater'
+import MediaRepeater from '../MediaRepeater'
 
 import { 
 	TextControl,
@@ -9,49 +9,49 @@ import {
 	SelectControl,
 	//@ts-ignore
 	Grid,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface MetaEditFormProps {
-	editData: any;
-	onChange: any;
+	editData: any
+	onChange: any
 }
 
 export default function MetaEditForm( props: MetaEditFormProps ) {
 	function onAssetFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.asset = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.asset = value
+		props.onChange( state )
 	}
 	
 	function onBlockchainFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.blockchain = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.blockchain = value
+		props.onChange( state )
 	}
 
 	function onProtocolFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.protocol = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.protocol = value
+		props.onChange( state )
 	}
 
 	function onAttributesFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.attributes = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.attributes = value
+		props.onChange( state )
 	}
 
 	function onMediaFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.media = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.media = value
+		props.onChange( state )
 	}
 
 	function getProtocolOptions(): Array<any> {
-		let options: any = [];
-		let blockchain = 'bitcoin';
+		let options: any = []
+		let blockchain = 'bitcoin'
 		if ( props.editData?.blockchain && props.editData.blockchain != '' ) {
-			blockchain = props.editData?.blockchain;
+			blockchain = props.editData?.blockchain
 		}
 		switch( blockchain ) {
 			case 'bitcoin':
@@ -60,8 +60,8 @@ export default function MetaEditForm( props: MetaEditFormProps ) {
 						label: 'Counterparty',
 						value: 'counterparty'
 					}
-				];
-				break;
+				]
+				break
 			case 'ethereum':
 				options = [
 					{
@@ -76,10 +76,10 @@ export default function MetaEditForm( props: MetaEditFormProps ) {
 						label: 'ERC1155',
 						value: 'erc1155',
 					},
-				];
-				break;
+				]
+				break
 		}
-		return options;
+		return options
 	}
 
 	return (
@@ -122,5 +122,5 @@ export default function MetaEditForm( props: MetaEditFormProps ) {
 				/>
 			</Flex>
 		</form>
-	);
+	)
 }

@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from 'react'
 
 interface ConnectionInfoProps {
-	label?: string;
-	help?: string;
-	children: any;
+	label?: string
+	help?: string
+	children: any
 }
 
 export default function ConnectionInfo( props: ConnectionInfoProps ) {
@@ -13,5 +13,5 @@ export default function ConnectionInfo( props: ConnectionInfoProps ) {
 			<div>{ props.help } </div>
 			{ props.children }
 		</fieldset>
-	);
+	)
 }

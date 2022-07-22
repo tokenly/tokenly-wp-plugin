@@ -1,28 +1,28 @@
-import * as React from 'react';
-import MediaPicker from '../MediaPicker';
-import MediaRepeater from '../MediaRepeater';
-import FormTable from '../FormTable';
+import * as React from 'react'
+import MediaPicker from '../MediaPicker'
+import MediaRepeater from '../MediaRepeater'
+import FormTable from '../FormTable'
 
 import { 
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface CategoryTermEditFormProps {
-	editData: any;
-	onChange: any;
+	editData: any
+	onChange: any
 }
 
 export default function CategoryTermEditForm( props: CategoryTermEditFormProps ) {
 	function onFeaturedImageFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.image = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.image = value
+		props.onChange( state )
 	}
 
 	function onMediaFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.media = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.media = value
+		props.onChange( state )
 	}
 
 	return (
@@ -57,5 +57,5 @@ export default function CategoryTermEditForm( props: CategoryTermEditFormProps )
 				/>
 			</Flex>
 		</form>
-	);
+	)
 }

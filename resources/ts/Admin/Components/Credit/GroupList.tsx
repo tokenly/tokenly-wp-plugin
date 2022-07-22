@@ -1,10 +1,10 @@
-import * as React from 'react';
-import GroupCard from './GroupCard';
-import ResourceList from '../../Components/ResourceList';
-import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface';
+import * as React from 'react'
+import GroupCard from './GroupCard'
+import ResourceList from '../../Components/ResourceList'
+import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface'
 
 interface GroupListProps {
-	groups: GroupCollectionInterface;
+	groups: GroupCollectionInterface
 }
 
 export default function GroupList( props: GroupListProps ) {
@@ -15,5 +15,5 @@ export default function GroupList( props: GroupListProps ) {
 			itemProp="group"
 			notFoundLabel="groups"
 		/>
-	);
+	)
 }

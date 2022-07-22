@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../Page';
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
-import AddressStoreForm from '../../Components/Token/AddressStoreForm';
-import Preloader from '../../Components/Preloader';
-import ResourceStoreActions from '../../Components/ResourceStoreActions';
-import { TYPES } from '../../../Types';
+import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../Page'
+import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import AddressStoreForm from '../../Components/Token/AddressStoreForm'
+import Preloader from '../../Components/Preloader'
+import ResourceStoreActions from '../../Components/ResourceStoreActions'
+import { TYPES } from '../../../Types'
 
-declare const window: any;
+declare const window: any
 
 import { 
 	Panel,
@@ -16,44 +16,44 @@ import {
 	PanelBody,
 	PanelRow,
 	Button
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressStorePageProps {
 	//
 }
 
 export default function AddressStorePage( props: AddressStorePageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
 	
 	const [ storeData, setStoreData ] = useState<any>( {
 		address: null,
 		label: 'New Address',
 		public: false,
 		type: 'bitcoin',
-	} );
-	const [ storing, setStoring ] = useState<boolean>( false );
+	} )
+	const [ storing, setStoring ] = useState<boolean>( false )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-address-index`;
+		window.location = `${adminPageUrl}${namespace}-token-address-index`
 	}
 
 	function onStoreSubmit( event: any ) {
-		event.preventDefault();
-		setStoring( true );
+		event.preventDefault()
+		setStoring( true )
 		addressRepository.store( storeData ).then( ( result: any ) => {
-			setStoring( false );
-			window.location = `${adminPageUrl}${namespace}-token-address-show&address=${storeData.address}`;
-		} );
+			setStoring( false )
+			window.location = `${adminPageUrl}${namespace}-token-address-show&address=${storeData.address}`
+		} )
 	}
 
 	function onCancel() {
-		goBack();
+		goBack()
 	}
 
 	function onStoreDataChange( newData: any ) {
-		setStoreData( newData );
+		setStoreData( newData )
 	}
 	
 	return (
@@ -85,5 +85,5 @@ export default function AddressStorePage( props: AddressStorePageProps ) {
 				</Panel>
 			</form>
 		</Page>
-	);
+	)
 }

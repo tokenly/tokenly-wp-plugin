@@ -1,25 +1,25 @@
-import * as React from 'react';
-import PromiseParticipants from './PromiseParticipants';
+import * as React from 'react'
+import PromiseParticipants from './PromiseParticipants'
 import * as dayjs from 'dayjs'
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import {
 	Button,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressInfoProps {
-	promise: any;
-	verbose?: boolean;
+	promise: any
+	verbose?: boolean
 }
 
 export default function AddressInfo( props: AddressInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	function getListItems() {
-		const properties = getProperties();
+		const properties = getProperties()
 		return properties.map( ( property ) => {
 			return (
 				<div>
@@ -33,21 +33,21 @@ export default function AddressInfo( props: AddressInfoProps ) {
 					}
 					</b>
 				</div>
-			);
-		} );
+			)
+		} )
 	}
 
 	function getAssetName(): string {
-		let name: string;
+		let name: string
 		if ( props.promise.token_meta ) {
-			name = props.promise.token_meta.name;
+			name = props.promise.token_meta.name
 		} else {
-			name = props.promise.asset.address;
+			name = props.promise.asset.address
 			if ( props.promise.asset.index ) {
-				name = `${name}:${props.promise.asset.index}`;
+				name = `${name}:${props.promise.asset.index}`
 			}
 		}
-		return name;
+		return name
 	}
 
 	function getProperties() {
@@ -60,7 +60,7 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				label: 'Quantity',
 				value: props.promise?.quantity?.value ?? props.promise?.quantity?.value_sat,
 			},
-		];
+		]
 		if ( props.verbose ) {
 			properties.push(
 				{
@@ -85,18 +85,18 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				},
 			)
 		}
-		return properties;
+		return properties
 	}
 
 	function isPromiseValid() {
-		return ( props.promise && typeof props.promise === 'object' );
+		return ( props.promise && typeof props.promise === 'object' )
 	}
 
 	function dateFormatted( date: Date ) {
 		if ( date ) {
 			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
 		}
-		return;
+		return
 	}
 
 	return (
@@ -117,5 +117,5 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				</div>
 			</Flex>
 		</Flex>
-	);
+	)
 }

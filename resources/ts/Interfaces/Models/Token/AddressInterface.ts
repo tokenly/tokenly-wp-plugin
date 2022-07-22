@@ -1,13 +1,13 @@
-import ModelInterface from '../ModelInterface';
+import ModelInterface from '../ModelInterface'
 
 export default interface AddressInterface extends ModelInterface {
-	address?: string;
-	type?: string;
-	label?: string;
-	public?: boolean;
-	active?: boolean;
-	verified?: boolean;
-	verifyCode?: string;
-	balance?: object;
-	isSource?: boolean;
+	address?: string
+	type?: string
+	label?: string
+	public?: boolean
+	active?: boolean
+	verified?: boolean
+	verifyCode?: string
+	balance?: object
+	isSource?: boolean
 }

@@ -1,54 +1,54 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../Page';
-import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
-import GroupStoreForm from '../../Components/Credit/GroupStoreForm';
-import ResourceStoreActions from '../../Components/ResourceStoreActions';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useState } from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../Page'
+import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface'
+import GroupStoreForm from '../../Components/Credit/GroupStoreForm'
+import ResourceStoreActions from '../../Components/ResourceStoreActions'
+import { TYPES } from '../../Types'
 
-declare const window: any;
+declare const window: any
 
 import { 
 	Panel,
 	PanelBody,
 	PanelRow,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface GroupStorePageProps {
-	client_id: string;
+	client_id: string
 }
 
 export default function GroupStorePage( props: GroupStorePageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface )
 	
-	const [ storing, setStoring ] = useState<boolean>( false );
+	const [ storing, setStoring ] = useState<boolean>( false )
 	const [ storeData, setStoreData ] = useState<any>( {
 		name: 'New Group',
 		app_whitelist: props.client_id,
-	} );
+	} )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-credit-group-index`;
+		window.location = `${adminPageUrl}${namespace}-credit-group-index`
 	}
 	
 	function onStoreSubmit( event: any ) {
-		event.preventDefault();
-		setStoring( true );
+		event.preventDefault()
+		setStoring( true )
 		groupRepository.store( storeData ).then( ( result: any ) => {
-			setStoring( false );
-			goBack();
-		} );
+			setStoring( false )
+			goBack()
+		} )
 	}
 
 	function onCancel() {
-		goBack();
+		goBack()
 	}
 
 	function onStoreDataChange( newData: any ) {
-		setStoreData( newData );
+		setStoreData( newData )
 	}
 
 	return (
@@ -77,5 +77,5 @@ export default function GroupStorePage( props: GroupStorePageProps ) {
 				</Panel>
 			</form>
 		</Page>
-	);
+	)
 }

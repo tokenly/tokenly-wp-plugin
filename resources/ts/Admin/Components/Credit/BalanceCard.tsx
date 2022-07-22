@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import CardActions from '../CardActions';
-import GroupLink from './GroupLink';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import CardActions from '../CardActions'
+import GroupLink from './GroupLink'
 
 import { 
 	Card,
@@ -10,31 +10,31 @@ import {
 	CardBody,
 	Flex,
 	CardFooter
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface BalanceCardProps {
-	balance: any;
-	username?: string;
+	balance: any
+	username?: string
 }
 
 export default function BalanceCard( props: BalanceCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	function getDebitLink(): string {
-		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.groupId }&type=debit`;
+		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.groupId }&type=debit`
 		if ( props.username ) {
-			link = `${link}&account=${props.username}`;
+			link = `${link}&account=${props.username}`
 		}
-		return link;
+		return link
 	}
 
 	function getCreditLink(): string {
-		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.groupId }&type=credit`;
+		let link = `${ adminPageUrl }${ namespace }-credit-transaction-store&group=${ props.balance.groupId }&type=credit`
 		if ( props.username ) {
-			link = `${link}&account=${props.username}`;
+			link = `${link}&account=${props.username}`
 		}
-		return link;
+		return link
 	}
 
 	return (
@@ -75,7 +75,7 @@ export default function BalanceCard( props: BalanceCardProps ) {
 				/>
 			</CardFooter>
 		</Card>
-	);
+	)
 }
  
 

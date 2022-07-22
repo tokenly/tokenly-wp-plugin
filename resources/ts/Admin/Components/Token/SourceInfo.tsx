@@ -1,19 +1,19 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import {
 	Button,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SourceInfoProps {
-	source: any;
+	source: any
 }
 
 export default function SourceInfo( props: SourceInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	return (
 		<Flex style={ { width: '100%', alignItems: 'center' } }>
@@ -39,5 +39,5 @@ export default function SourceInfo( props: SourceInfoProps ) {
 				</div>
 			</div>
 		</Flex>
-	);
+	)
 }

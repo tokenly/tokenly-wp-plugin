@@ -1,77 +1,78 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../Page';
-import WhitelistEditor from '../../Components/Token/WhitelistEditor';
-import { WhitelistData, WhitelistItem } from '../../../Interfaces';
-import WhitelistRepositoryInterface from '../../../Interfaces/Repositories/Token/WhitelistRepositoryInterface';
-import ResourceEditActions from '../../Components/ResourceEditActions';
-import { TYPES } from '../../Types';
-import eventBus from "../../../EventBus";
+import * as React from 'react'
+import { useState } from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../Page'
+import WhitelistEditor from '../../Components/Token/WhitelistEditor'
+import { WhitelistData, WhitelistItem } from '../../../Interfaces'
+import WhitelistRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/WhitelistRepositoryInterface'
+import ResourceEditActions from '../../Components/ResourceEditActions'
+import { TYPES } from '../../Types'
 import { 
 	Panel,
 	PanelBody,
 	PanelRow,
 	ToggleControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface WhitelistEditPageProps {
-	whitelist: WhitelistData;
+	whitelist: WhitelistData
 }
 
-declare const window: any;
+declare const window: any
 
 export default function WhitelistEditPage( props: WhitelistEditPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const whitelistSettingsRepository: WhitelistRepositoryInterface = useInjection( TYPES.Repositories.Token.WhitelistRepositoryInterface );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const whitelistSettingsRepository: WhitelistRepositoryInterface =
+		useInjection( TYPES.Repositories.Token.WhitelistRepositoryInterface )
 	
-	const enabled = props.whitelist?.enabled ?? false;
-	let items = Object.assign( [], props.whitelist?.items ) as any;
+	const enabled = props.whitelist?.enabled ?? false
+	let items = Object.assign( [], props.whitelist?.items ) as any
 	if ( items && Array.isArray( items ) ) {
 		items = items.filter( function ( item: any ) {
-			return item != null;
-		} );
+			return item != null
+		} )
 	} else {
-		items = [];
+		items = []
 	}
 	const [ editData, setEditData ] = useState<any>( {
 		enabled: enabled,
 		items: items,
-	}, );
-	const [ saving, setSaving ] = useState<any>( false );
+	}, )
+	const [ saving, setSaving ] = useState<any>( false )
 	
 	function onSave() {
-		setSaving( true );
+		setSaving( true )
 		whitelistSettingsRepository.update( editData ).then( ( result: any ) => {
-			setSaving( false );
-			goBack();
+			setSaving( false )
+			goBack()
 		} ).catch( ( error: any ) => {
-			console.log( error );
-		} );
+			console.log( error )
+		} )
 	}
 
 	function onCancel() {
-		goBack();
+		goBack()
 	}
 
 	function onEnabledFieldChange( value: boolean ) {
-		let newState = Object.assign( {}, editData );
-		newState.enabled = value;
-		setEditData( newState );
+		let newState = Object.assign( {}, editData )
+		newState.enabled = value
+		setEditData( newState )
 	}
 
 	function onWhitelistFieldChange( value: Array<any> ) {
 		value = value.filter( function ( item: any ) {
-			return item != null;
-		} );
-		const newState = Object.assign( {}, editData );
-		newState.items = value;
-		setEditData( newState );
+			return item != null
+		} )
+		const newState = Object.assign( {}, editData )
+		newState.items = value
+		setEditData( newState )
 	}
 
 	function goBack() {
-		window.location = `${ adminPageUrl }${ namespace }-token-vendor`;
+		window.location = `${ adminPageUrl }${ namespace }-token-vendor`
 	}
 
 	return (
@@ -112,7 +113,7 @@ export default function WhitelistEditPage( props: WhitelistEditPageProps ) {
 				</PanelBody>
 			</Panel>
 		</Page>
-	);
+	)
 }
  
 

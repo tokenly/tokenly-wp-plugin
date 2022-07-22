@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import AddressLink from './AddressLink';
-import AddressInfo from './AddressInfo';
-import AddressStatus from './AddressStatus';
-import CardActions from '../CardActions';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import AddressLink from './AddressLink'
+import AddressInfo from './AddressInfo'
+import AddressStatus from './AddressStatus'
+import CardActions from '../CardActions'
 
 import { 
 	Card,
@@ -12,15 +12,15 @@ import {
 	CardBody,
 	CardFooter,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressCardProps {
-	address: any;
+	address: any
 }
 
 export default function AddressCard( props: AddressCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	function getCardActions(): Array<object> {
 		const cardActions: Array<object> = [
@@ -32,8 +32,8 @@ export default function AddressCard( props: AddressCardProps ) {
 				title: 'Edit Address',
 				href: `${ adminPageUrl }${ namespace }-token-address-edit&address=${ props.address.address }`,
 			}
-		];
-		return cardActions;
+		]
+		return cardActions
 	}
 
 	return (
@@ -54,7 +54,7 @@ export default function AddressCard( props: AddressCardProps ) {
 				<CardActions actions={ getCardActions() } />
 			</CardFooter>
 		</Card>
-	);
+	)
 }
  
 

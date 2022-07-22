@@ -1,26 +1,26 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	// @ts-ignore
 	Modal,
 	Flex,
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface ConfirmModalProps {
-	title: string;
-	subtitle: string;
-	onRequestClose: any;
-	onChoice: any;
+	title: string
+	subtitle: string
+	onRequestClose: any
+	onChoice: any
 }
 
 export default function AppConfirmModal( props: ConfirmModalProps ) {
 	function onRequestClose() {
-		props.onRequestClose();
+		props.onRequestClose()
 	}
 
 	function onChoice( choice: string ) {
-		props.onChoice( choice );
+		props.onChoice( choice )
 	}
 	
 	return (
@@ -33,7 +33,7 @@ export default function AppConfirmModal( props: ConfirmModalProps ) {
 				<Button
 					isSecondary
 					onClick={ () => {
-						onChoice( 'accept' );
+						onChoice( 'accept' )
 					} }
 				>
 					Accept
@@ -41,12 +41,12 @@ export default function AppConfirmModal( props: ConfirmModalProps ) {
 				<Button
 					isSecondary
 					onClick={ () => {
-						onChoice( 'deny' );
+						onChoice( 'deny' )
 					} }
 				>
 					Deny
 				</Button>
 			</Flex>
 		</Modal>
-	);
+	)
 }

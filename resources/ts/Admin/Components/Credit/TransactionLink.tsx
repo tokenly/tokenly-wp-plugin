@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'react'
 
 interface GroupLinkProps {
 	uuid: string,
@@ -12,7 +12,7 @@ export default function GroupLink( props: GroupLinkProps ) {
 				<span>{ props.uuid }</span>
 			</b>
 		</div>
-	);
+	)
 }
  
 

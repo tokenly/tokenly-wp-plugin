@@ -1,4 +1,4 @@
-import ComponentInterface from '../ComponentInterface';
+import ComponentInterface from '../ComponentInterface'
 
 export default interface ItemCardListComponentInterface extends ComponentInterface {
 	//

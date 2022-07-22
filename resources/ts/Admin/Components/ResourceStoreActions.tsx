@@ -1,17 +1,17 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface ResourceEditActionsProps {
-	storing: boolean;
-	loading?: boolean;
-	onStore?: any;
-	onCancel: any;
-	name: string;
-	children?: any;
+	storing: boolean
+	loading?: boolean
+	onStore?: any
+	onCancel: any
+	name: string
+	children?: any
 }
 
 export default function ResourceEditActions( props: ResourceEditActionsProps ) {
@@ -33,7 +33,7 @@ export default function ResourceEditActions( props: ResourceEditActionsProps ) {
 			</Button>
 			{ props.children }
 		</Flex>
-	);
+	)
 }
  
 

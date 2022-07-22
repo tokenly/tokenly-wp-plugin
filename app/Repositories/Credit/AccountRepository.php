@@ -13,7 +13,9 @@ use Tokenly\Wp\Interfaces\Models\Credit\AccountHistoryInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface;
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
-class AccountRepository extends Repository implements AccountRepositoryInterface {
+class AccountRepository extends Repository
+	implements AccountRepositoryInterface
+{
 	protected TokenpassAPIInterface $client;
 	
 	public function __construct(
@@ -27,7 +29,9 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AccountCollectionInterface Accounts found
 	 */
-	public function index( array $params = array() ): AccountCollectionInterface {
+	public function index(
+		array $params = array()
+	): AccountCollectionInterface {
 		return $this->handle_method( __FUNCTION__, func_get_args() );
 	}
 
@@ -45,7 +49,9 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AccountHistoryInterface Group found
 	 */
-	public function show_history( array $params = array() ): AccountHistoryInterface {
+	public function show_history(
+		array $params = array()
+	): AccountHistoryInterface {
 		if (
 			!isset( $params['group_uuid'] ) ||
 			!isset( $params['account_uuid'] )
@@ -54,7 +60,9 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 		}
 		$group_uuid = $params['group_uuid'];
 		$account_uuid = $params['account_uuid'];
-		$history = $this->client->getAppCreditAccountHistory( $group_uuid, $account_uuid );
+		$history = $this->client->getAppCreditAccountHistory(
+			$group_uuid, $account_uuid
+		);
 		if ( !$history ){
 			return null;
 		}
@@ -90,11 +98,15 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AccountCollectionInterface Accounts found
 	 */
-	protected function index_cacheable( array $params = array() ): AccountCollectionInterface {
+	protected function index_cacheable(
+		array $params = array()
+	): AccountCollectionInterface {
 		$accounts = array();
 		if ( isset( $params['group_uuid'] ) ) {
 			$group_uuid = $params['group_uuid'];
-			$accounts_found = $this->client->listAppCreditAccounts( $group_uuid );
+			$accounts_found = $this->client->listAppCreditAccounts(
+				$group_uuid
+			);
 			if ( $accounts_found && is_array( $accounts_found ) ) {
 				$accounts = $accounts_found;
 			}
@@ -109,7 +121,9 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 	 * @param array $params Search parameters
 	 * @return AccountInterface|null Account found
 	 */
-	protected function show_cacheable( array $params = array() ): ?AccountInterface {
+	protected function show_cacheable(
+		array $params = array()
+	): ?AccountInterface {
 		if (
 			!isset( $params['group_uuid'] ) ||
 			!isset( $params['account_uuid'] )
@@ -118,7 +132,9 @@ class AccountRepository extends Repository implements AccountRepositoryInterface
 		}
 		$group_uuid = $params['group_uuid'];
 		$account_uuid = $params['account_uuid'];
-		$account = $this->client->getAppCreditAccount( $group_uuid, $account_uuid );
+		$account = $this->client->getAppCreditAccount(
+			$group_uuid, $account_uuid
+		);
 		if ( !$account ){
 			return null;
 		}

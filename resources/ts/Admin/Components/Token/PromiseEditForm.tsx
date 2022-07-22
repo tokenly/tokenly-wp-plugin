@@ -1,45 +1,45 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	TextControl,
 	TextareaControl,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface PromiseEditFormProps {
-	onChange: any;
-	editData: any;
+	onChange: any
+	editData: any
 }
 
 export default function PromiseEditForm( props: PromiseEditFormProps ) {
 	function onQuantityFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.quantity.value_sat = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.quantity.value_sat = value
+		props.onChange( state )
 	}
 
 	function onTxidFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.txid = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.txid = value
+		props.onChange( state )
 	}
 
 	function onFingerprintFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.fingerprint = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.fingerprint = value
+		props.onChange( state )
 	}
 
 	function onReferenceFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.ref = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.ref = value
+		props.onChange( state )
 	}
 
 	function onNoteFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.note = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.note = value
+		props.onChange( state )
 	}
 
 	return (
@@ -81,5 +81,5 @@ export default function PromiseEditForm( props: PromiseEditFormProps ) {
 				onChange={ onNoteFieldChange }
 			/>
 		</Flex>
-	);
+	)
 }

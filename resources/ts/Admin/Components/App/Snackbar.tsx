@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Animate,
 	Snackbar,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SnackbarProps {
-	children?: any;
-	show?: boolean;
+	children?: any
+	show?: boolean
 }
 
 export default function AppSnackbar( props: SnackbarProps ) {
@@ -23,5 +23,5 @@ export default function AppSnackbar( props: SnackbarProps ) {
 			<Snackbar>{ props?.children }</Snackbar>
 			</div>
 		</div>
-	);
+	)
 }

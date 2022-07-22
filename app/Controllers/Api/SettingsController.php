@@ -100,8 +100,9 @@ class SettingsController implements SettingsControllerInterface {
 		}
 		$this->settings[ $type ]->update( $params );
 		$name = $this->names[ $type ];
+		$status = "The {$name} settings were successfully updated!";
 		return new \WP_REST_Response( array(
-			'status' => "The {$name} settings were successfully updated!",
+			'status' => $status,
 		) );
 	}
 }

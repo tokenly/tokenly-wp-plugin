@@ -1,3 +1,3 @@
 export default interface ComponentInterface {
-	register( selector: string ): any;
+	register( selector: string ): any
 }

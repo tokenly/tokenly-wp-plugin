@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Card,
@@ -8,37 +8,47 @@ import {
     Flex,
     Button,
     Dashicon,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface GridMenuProps {
-	items: Array<GridMenuItemInterface>;
+	items: Array<GridMenuItemInterface>
 }
 
 export interface GridMenuItemInterface {
-	title: string;
-	description: string;
-	icon: string;
-    route?: any;
-	href?: string;
-	append?: string;
+	key: string
+	title: string
+	description: string
+	icon: string
+    route?: any
+	href?: string
+	append?: string
 }
 
 export default function GridMenu( props: GridMenuProps ) {
 	function canView( key: string ): boolean {
-		return ( props.items[ key as any ].href || ( props.items[ key as any ]?.route?.access ?? false ) );
+		return (
+			props.items[ key as any ].href ||
+			( props.items[ key as any ]?.route?.access ?? false )
+		)
 	}
 
 	function getUrl( menuItem: any ): string {
-		let url: string = menuItem?.route?.url;
-		if ( menuItem?.append ) {
-			url = url + menuItem.append;
+		let url: string = ""
+		if ( menuItem?.route?.url ) {
+			url = menuItem?.route?.url
+		} else if (menuItem?.href) {
+			url = menuItem.href
 		}
-		return url;
+		if ( menuItem?.append ) {
+			url = url + menuItem.append
+		}
+		return url
 	}
 
-	let cards = [] as any;
+	let cards = [] as any
 	cards = Object.keys( props.items ).map( ( key: string ) => {
-		const item = props.items[ key as any ];
+		const item = props.items[ key as any ]
+		const url = getUrl( item )
 			return (
 				<Card style={ { opacity: canView( key ) ? 1 : 0.5 } }>
 					<CardHeader>
@@ -51,15 +61,15 @@ export default function GridMenu( props: GridMenuProps ) {
 					<CardFooter>
 						<Button 
 							isPrimary
-							href={ getUrl( item ) }
+							href={ url }
 							disabled={ !canView( key ) }
 						>
 							Visit Page
 						</Button>
 					</CardFooter>
 				</Card>
-			);
-	} );
+			)
+	} )
 
-    return <div className="dashboard-card-grid">{ cards }</div>;
+    return <div className="dashboard-card-grid">{ cards }</div>
 }

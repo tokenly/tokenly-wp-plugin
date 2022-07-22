@@ -1,88 +1,88 @@
-import * as React from 'react';
-import FormTable from '../FormTable';
-import TcaSettings from '../../../Models/Settings/TcaSettings';
-import TcaSettingsInterface from '../../../Interfaces/Models/Settings/TcaSettingsInterface';
+import * as React from 'react'
+import FormTable from '../FormTable'
+import TcaSettings from '../../../Models/Settings/TcaSettings'
+import TcaSettingsInterface from '../../../Interfaces/Models/Settings/TcaSettingsInterface'
 
 import { 
 	Flex,
 	CheckboxControl,
 	ToggleControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface TcaSettingsFormProps {
-	settings: TcaSettingsInterface;
-	data: any;
-	onChange: any;
+	settings: TcaSettingsInterface
+	data: any
+	onChange: any
 }
 
 export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 	function onChange( newSettings: any ) {
-		props.onChange( newSettings );
+		props.onChange( newSettings )
 	}
 
 	function isPostTypeChecked( key: string ) {
-		let checked = false;
+		let checked = false
 		if ( props.settings?.postTypes && props.settings?.postTypes[ key ] ) {
 			checked = props.settings.postTypes[ key ]
 		}
-		return checked;
+		return checked
 	}
 
 	function isTaxonomyChecked( key: string ) {
-		let checked = false;
+		let checked = false
 		if ( props.settings?.taxonomies && props.settings?.taxonomies[ key ] ) {
 			checked = props.settings.taxonomies[ key ]
 		}
-		return checked;
+		return checked
 	}
 
 	function onFilterMenuItemsFieldChange( value: any ) {
-		let settings = Object.assign( new TcaSettings(), props.settings );
-		settings.filterMenuItems = value;
-		onChange( settings );
+		let settings = Object.assign( new TcaSettings(), props.settings )
+		settings.filterMenuItems = value
+		onChange( settings )
 	}
  
 	function onFilterPostResultsFieldChange( value: any ) {
-		let settings = Object.assign( new TcaSettings(), props.settings );
-		settings.filterPostResults = value;
-		onChange( settings );
+		let settings = Object.assign( new TcaSettings(), props.settings )
+		settings.filterPostResults = value
+		onChange( settings )
 	}
 
-	const postTypes: any = [];
+	const postTypes: any = []
 	if ( props.data.post_types ) {
 		Object.keys( props.data.post_types ).map( ( key: string, index: number ) => {
-			const label = props.data.post_types[ key ];
+			const label = props.data.post_types[ key ]
 			const item = (
 				<CheckboxControl
 					label={ label }
 					checked={ isPostTypeChecked( key ) }
 					onChange={ ( value: any ) => {
-						let settings = Object.assign( new TcaSettings(), props.settings );
-						settings.postTypes[ key ] = value;
-						onChange( settings );
+						let settings = Object.assign( new TcaSettings(), props.settings )
+						settings.postTypes[ key ] = value
+						onChange( settings )
 					} }
 				/>
-			);
-			postTypes.push( item );
-		} );
+			)
+			postTypes.push( item )
+		} )
 	}
-	const taxonomies: any = [];
+	const taxonomies: any = []
 	if ( props.data.taxonomies ) {
 		Object.keys( props.data.taxonomies ).map( ( key: string, index: number ) => {
-			const label = props.data.taxonomies[ key ];
+			const label = props.data.taxonomies[ key ]
 			const item = (
 				<CheckboxControl
 					label={ label }
 					checked={ isTaxonomyChecked( key ) }
 					onChange={ ( value: any ) => {
-						let settings = Object.assign( new TcaSettings(), props.settings );
-						settings.taxonomies[ key ] = value;
-						onChange( settings );
+						let settings = Object.assign( new TcaSettings(), props.settings )
+						settings.taxonomies[ key ] = value
+						onChange( settings )
 					} }
 				/>
-			);
-			taxonomies.push( item );
-		});
+			)
+			taxonomies.push( item )
+		})
 	}
 	return (
 		<div>
@@ -155,7 +155,7 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 				}
 			/>
 		</div>
-	);
+	)
 }
  
 

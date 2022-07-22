@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from 'react'
 import * as dayjs from 'dayjs'
 
 import { 
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface GroupInfoProps {
-	group: any;
-	verbose?: boolean;
+	group: any
+	verbose?: boolean
 }
 
 export default function GroupInfo( props: GroupInfoProps ) {
@@ -15,7 +15,7 @@ export default function GroupInfo( props: GroupInfoProps ) {
 		if ( date ) {
 			return dayjs( date ).format( 'MMMM D, YYYY h:mm A' )
 		}
-		return;
+		return
 	}
 
 	return (
@@ -51,5 +51,5 @@ export default function GroupInfo( props: GroupInfoProps ) {
 				</div>
 			</div>
 		</Flex>
-	);
+	)
 }

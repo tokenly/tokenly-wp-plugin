@@ -1,14 +1,14 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	SelectControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface TransactionTypeFieldProps {
-	type: string;
-	onChange: any;
-	inputProps?: any;
-	label?: string;
+	type: string
+	onChange: any
+	inputProps?: any
+	label?: string
 }
 
 export default function TransactionTypeField( props: TransactionTypeFieldProps ) {
@@ -23,7 +23,7 @@ export default function TransactionTypeField( props: TransactionTypeFieldProps )
 			onChange={ props.onChange }
 			{ ...props?.inputProps }
 		/>
-	);
+	)
 }
  
 

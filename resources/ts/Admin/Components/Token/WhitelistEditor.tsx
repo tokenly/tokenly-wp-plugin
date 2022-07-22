@@ -1,45 +1,45 @@
-import * as React from 'react';
-import { Fragment } from 'react';
-import AssetField from './AssetField';
+import * as React from 'react'
+import { Fragment } from 'react'
+import AssetField from './AssetField'
 
 import { 
 	Button,
 	Flex,
 	TextControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface WhitelistEditorProps {
-	items: any;
-	onChange: any;
+	items: any
+	onChange: any
 }
 
 export default function WhitelistEditor( props: WhitelistEditorProps ) {
 	function onAdd() {
-		const newState = Object.assign( [], props.items );
+		const newState = Object.assign( [], props.items )
 		newState.push( { asset: {
 			index: '',
 			address: '',
-		} } );
-		props.onChange( newState );
+		} } )
+		props.onChange( newState )
 	}
 	
 	function onRemove( index: number ) {
-		let newState = Object.assign( [], props.items );
-		delete newState[ index ];
-		removeEmpty( newState );
-		props.onChange( newState );
+		let newState = Object.assign( [], props.items )
+		delete newState[ index ]
+		removeEmpty( newState )
+		props.onChange( newState )
 	}
 	
 	function onAssetFieldChange( key: any, value: any ) {
-		const newState = Object.assign( [], props.items );
-		newState[ key ].asset = value;
-		props.onChange( newState );
+		const newState = Object.assign( [], props.items )
+		newState[ key ].asset = value
+		props.onChange( newState )
 	}
 
 	function removeEmpty( newState: any ) {
 		newState = newState.filter( function ( item: any ) {
-			return item != null;
-		} );
+			return item != null
+		} )
 	}
 
 	const listItems = props.items.map( ( item: any, i: number ) => {
@@ -50,7 +50,7 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 					<AssetField
 						asset={ item.asset }
 						onChange={ ( value: any ) => {
-							onAssetFieldChange( i, value );	
+							onAssetFieldChange( i, value )	
 						} }
 					/>
 				</Flex>
@@ -58,12 +58,12 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 					isTertiary
 					icon="no"
 					onClick={ () => {
-						onRemove( i );
+						onRemove( i )
 					} }
 				/>
 			</Flex>
-		);
-	} );
+		)
+	} )
 	return ( 
 		<Flex
 			//@ts-ignore
@@ -94,5 +94,5 @@ export default function WhitelistEditor( props: WhitelistEditorProps ) {
 				</Button>
 			</div>
 		</Flex>
-	);
+	)
 }

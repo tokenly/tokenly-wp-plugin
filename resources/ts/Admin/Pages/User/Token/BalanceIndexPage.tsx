@@ -1,64 +1,70 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../../Page';
-import Preloader from '../../../Components/Preloader';
-import BalanceList from '../../../Components/Token/BalanceList';
-import UserRepositoryInterface from '../../../../Interfaces/Repositories/UserRepositoryInterface';
-import { TYPES } from '../../../../Types';
+import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../../Page'
+import Preloader from '../../../Components/Preloader'
+import BalanceList from '../../../Components/Token/BalanceList'
+import UserRepositoryInterface
+	from '../../../../Interfaces/Repositories/UserRepositoryInterface'
+import { TYPES } from '../../../../Types'
 
 import { 
 	Panel,
 	PanelBody,
 	PanelRow,
 	PanelHeader,
-} from '@wordpress/components';
-import BalanceCollectionInterface from '../../../../Interfaces/Collections/Token/BalanceCollectionInterface';
-import UserInterface from '../../../../Interfaces/Models/UserInterface';
+} from '@wordpress/components'
+import BalanceCollectionInterface
+	from '../../../../Interfaces/Collections/Token/BalanceCollectionInterface'
+import UserInterface from '../../../../Interfaces/Models/UserInterface'
 
 interface BalanceIndexPageProps {
 	//
 }
 
 export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const dictionary: any = useInjection( TYPES.Variables.dictionary )
+	const userRepository: UserRepositoryInterface = useInjection(
+		TYPES.Repositories.UserRepositoryInterface
+	)
 
-	const urlParams = new URLSearchParams( window.location.search );
+	const urlParams = new URLSearchParams( window.location.search )
 
-	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) );
-	const [ loadingUser, setLoadingUser ] = useState<boolean>( false );
-	const [ loadingBalance, setLoadingBalance ] = useState<boolean>( false );
-	const [ balance, setBalance ] = useState<BalanceCollectionInterface>( null );
-	const [ user, setUser ] = useState<UserInterface>( null );
-
+	const [ id, setId ] = useState<string>( urlParams.get( 'id' ) )
+	const [ loadingUser, setLoadingUser ] = useState<boolean>( false )
+	const [ loadingBalance, setLoadingBalance ] = useState<boolean>( false )
+	const [ balance, setBalance ] = useState<BalanceCollectionInterface>( null )
+	const [ user, setUser ] = useState<UserInterface>( null )
 
 	useEffect( () => {
-		setLoadingBalance( true );
-		setLoadingUser( true );
+		setLoadingBalance( true )
+		setLoadingUser( true )
 		userRepository.tokenBalanceIndex( id, {
 			with: [ 'meta' ],
 		} )
 		.then( ( balancesFound: BalanceCollectionInterface ) => {
-			setBalance( balancesFound );
-			return balancesFound;
+			setBalance( balancesFound )
+			return balancesFound
 		} )
 		.then( ( balancesFound: BalanceCollectionInterface ) => {
 			userRepository.show( id, {
 				with: [ 'oauth_user' ],
 			} ).then( ( userFound: UserInterface ) => {
-				setLoadingBalance( false );
-				setLoadingUser( false );
-				setUser( userFound );
-			} );
-		} );
-	}, [] );
+				setLoadingBalance( false )
+				setLoadingUser( false )
+				setUser( userFound )
+			} )
+		} )
+	}, [] )
 
 	return (
-		<Page title="User Token Balance Listing">
+		<Page title={ dictionary.get( 'userTokenBalanceTitle' ) }>
 			<Panel>
 				<PanelHeader>
-					<Preloader loading={ loadingBalance }>Balance Listing</Preloader>
+					<Preloader loading={ loadingBalance }>
+						{ dictionary.get( 'userBalanceSectionTitle' ) }
+					</Preloader>
 				</PanelHeader>
 				<PanelBody>
 					<PanelRow>
@@ -77,5 +83,5 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 				</PanelBody>
 			</Panel>
 		</Page>
-	);
+	)
 }

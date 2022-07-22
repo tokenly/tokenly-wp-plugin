@@ -1,22 +1,22 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	TextareaControl,
 	Flex,
 	Disabled,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SourceEditFormProps {
-	loading: boolean;
-	onChange: any;
-	editData: any;
+	loading: boolean
+	onChange: any
+	editData: any
 }
 
 export default function SourceEditForm( props: SourceEditFormProps ) {
 	function onWhitelistFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.assets = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.assets = value
+		props.onChange( state )
 	}
 
 	return (
@@ -35,5 +35,5 @@ export default function SourceEditForm( props: SourceEditFormProps ) {
 				</Disabled>
 			</Flex>
 		</form>
-	);
+	)
 }

@@ -1,24 +1,24 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	Button,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface IntegrationSettingsHelpProps {
-	appHomepageUrl: string;
-	clientAuthUrl: string;
+	appHomepageUrl: string
+	clientAuthUrl: string
 }
 
 export default function IntegrationSettingsHelp( props: IntegrationSettingsHelpProps ) {
-	const brand = useInjection( TYPES.Variables.brand );
-	const apiHost = useInjection( TYPES.Variables.apiHost );
+	const brand = useInjection( TYPES.Variables.brand )
+	const apiHost = useInjection( TYPES.Variables.apiHost )
 
 	function copyToClipboard( text: string ) {
 		if ( navigator && navigator.clipboard ) {
-			navigator.clipboard.writeText( text );
+			navigator.clipboard.writeText( text )
 		}
 	}
 
@@ -50,7 +50,7 @@ export default function IntegrationSettingsHelp( props: IntegrationSettingsHelpP
 						title="Copy Homepage URL"
 						icon="admin-page"
 						onClick={ () => {
-							copyToClipboard( props?.appHomepageUrl );
+							copyToClipboard( props?.appHomepageUrl )
 						} }
 					/>
 				</Flex>
@@ -66,13 +66,13 @@ export default function IntegrationSettingsHelp( props: IntegrationSettingsHelpP
 						title="Copy Redirect URL"
 						icon="admin-page"
 						onClick={ () => {
-							copyToClipboard( props?.clientAuthUrl );
+							copyToClipboard( props?.clientAuthUrl )
 						} }
 					/>
 				</Flex>
 			</div>
 		</div>
-	);
+	)
 }
  
 

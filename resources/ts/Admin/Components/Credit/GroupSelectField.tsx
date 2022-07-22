@@ -1,18 +1,19 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Spinner,
 	SelectControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
+import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface'
 
 interface GroupSelectFieldProps {
-	group: any;
-	groups: any;
-	loading: boolean;
-	onChange: any;
-	inputProps?: any;
-	label?: string;
+	group: string
+	groups: GroupCollectionInterface
+	loading: boolean
+	onChange: any
+	inputProps?: any
+	label?: string
 }
 
 export default function GroupSelectField( props: GroupSelectFieldProps ) {
@@ -22,19 +23,17 @@ export default function GroupSelectField( props: GroupSelectFieldProps ) {
 				label: 'Not selected',
 				value: '',
 			}
-		];
-		if ( props.groups && Array.isArray( props.groups ) ) {
-			props.groups.forEach( ( group: any ) => {
-				options.push( {
-					label: group.name,
-					value: group.uuid,
-				} );
-			});
-		}
-		return options;
+		]
+		props.groups.forEach( ( group: any ) => {
+			options.push( {
+				label: group.name,
+				value: group.uuid,
+			} )
+		})
+		return options
 	}
 
-	const groupOptions = getGroupOptions();
+	const groupOptions = getGroupOptions()
 	return (
 		<Flex
 			style={ { width: '100%' } }
@@ -50,7 +49,7 @@ export default function GroupSelectField( props: GroupSelectFieldProps ) {
 					style={ { width: '100%' } }
 					options={ groupOptions }
 					onChange={ ( value: any ) => {
-						props.onChange( value );
+						props.onChange( value )
 					} }
 					{ ...props?.inputProps }
 				/>
@@ -59,7 +58,7 @@ export default function GroupSelectField( props: GroupSelectFieldProps ) {
 				}
 			</div>
 		</Flex>
-	);
+	)
 }
  
 

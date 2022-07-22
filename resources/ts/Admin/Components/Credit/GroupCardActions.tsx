@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import CardActions from '../CardActions';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import CardActions from '../CardActions'
 
 interface GroupCardActionsProps {
 	group: string
 }
 
 export default function GroupCardActions( props: GroupCardActionsProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	return (
 		<CardActions
@@ -28,7 +28,7 @@ export default function GroupCardActions( props: GroupCardActionsProps ) {
 					},
 			] }
 		/>
-	);
+	)
 }
  
 

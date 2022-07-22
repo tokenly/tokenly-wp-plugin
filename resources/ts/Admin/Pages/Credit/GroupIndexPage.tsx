@@ -1,38 +1,43 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../Page';
-import GroupList from '../../Components/Credit/GroupList';
-import VendorActions from '../../Components/Credit/VendorActions';
-import GroupRepositoryInterface from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../Page'
+import GroupList from '../../Components/Credit/GroupList'
+import VendorActions from '../../Components/Credit/VendorActions'
+import GroupRepositoryInterface
+	from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface'
+import { TYPES } from '../../Types'
 
 import { 
 	Panel,
 	PanelBody,
 	PanelRow,
 	PanelHeader,
-} from '@wordpress/components';
-import Preloader from '../../Components/Preloader';
-import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface';
+} from '@wordpress/components'
+import Preloader from '../../Components/Preloader'
+import GroupCollectionInterface
+	from '../../../Interfaces/Collections/Credit/GroupCollectionInterface'
 
 interface GroupIndexPageProps {
 	//
 }
 
 export default function GroupIndexPage( props: GroupIndexPageProps ) {
-	const groupRepository: GroupRepositoryInterface = useInjection( TYPES.Repositories.Credit.GroupRepositoryInterface );
-
-	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( true );
-	const [ groups, setGroups ] = useState<GroupCollectionInterface>( null );
+	const groupRepository: GroupRepositoryInterface = useInjection(
+		TYPES.Repositories.Credit.GroupRepositoryInterface
+	)
+	const [ loadingGroups, setLoadingGroups ] = useState<boolean>( true )
+	const [ groups, setGroups ] = useState<GroupCollectionInterface>( null )
 
 	useEffect( () => {
-		setLoadingGroups( true );
-		groupRepository.index().then( ( groupsFound: GroupCollectionInterface ) => {
-			setLoadingGroups( false );
-			setGroups( groupsFound );
-		} );
-	 }, [] );
+		setLoadingGroups( true )
+		groupRepository.index().then( (
+			groupsFound: GroupCollectionInterface
+		) => {
+			setLoadingGroups( false )
+			setGroups( groupsFound )
+		} )
+	 }, [] )
 
 	return (
 		<Page title="Group Listing">
@@ -60,5 +65,5 @@ export default function GroupIndexPage( props: GroupIndexPageProps ) {
 			}
 			</Panel>
 		</Page>
-	);
+	)
 }

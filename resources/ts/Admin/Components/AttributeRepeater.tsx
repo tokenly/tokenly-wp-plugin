@@ -1,50 +1,50 @@
-import * as React from 'react';
-import { Attribute } from '../../Interfaces';
-import Fieldset from '../Components/Fieldset';
+import * as React from 'react'
+import { Attribute } from '../../Interfaces'
+import Fieldset from '../Components/Fieldset'
 
 import { 
 	Button,
 	Flex,
 	TextControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AttributeRepeaterProps {
-	label?: string;
-	help?: string;
-	attributes: Array<Attribute>;
-	onChange: any;
+	label?: string
+	help?: string
+	attributes: Array<Attribute>
+	onChange: any
 }
 
 export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 	function onAdd() {
-		const newState = Object.assign( [], props.attributes );
-		newState.push( { key: '', value: '' } );
-		props.onChange( newState );
+		const newState = Object.assign( [], props.attributes )
+		newState.push( { key: '', value: '' } )
+		props.onChange( newState )
 	}
 	
 	function onRemove( index: number ) {
-		let newState = Object.assign( [], props.attributes );
-		delete newState[ index ];
-		removeEmpty( newState );
-		props.onChange( newState );
+		let newState = Object.assign( [], props.attributes )
+		delete newState[ index ]
+		removeEmpty( newState )
+		props.onChange( newState )
 	}
 	
 	function onKeyFieldChange( key: any, value: any ) {
-		const newState = Object.assign( [], props.attributes );
-		newState[ key ].key = value;
-		props.onChange( newState );
+		const newState = Object.assign( [], props.attributes )
+		newState[ key ].key = value
+		props.onChange( newState )
 	}
 
 	function onValueFieldChange( key: any, value: any ) {
-		const newState = Object.assign( [], props.attributes );
-		newState[ key ].value = value;
-		props.onChange( newState );
+		const newState = Object.assign( [], props.attributes )
+		newState[ key ].value = value
+		props.onChange( newState )
 	}
 
 	function removeEmpty( newState: any ) {
 		newState = newState.filter( function ( attribute: any ) {
-			return attribute != null;
-		} );
+			return attribute != null
+		} )
 	}
 
 	const listItems = props.attributes.map( ( attribute: Attribute, i: number ) => {
@@ -55,14 +55,14 @@ export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 					placeholder="Key"
 					value={ attribute.key }
 					onChange={ ( value: string ) => {
-						onKeyFieldChange( i, value );
+						onKeyFieldChange( i, value )
 					} }
 				/>
 				<TextControl
 					placeholder="Value"
 					value={ attribute.value }
 					onChange={ ( value: string ) => {
-						onValueFieldChange( i, value );
+						onValueFieldChange( i, value )
 					} }
 				/>
 				<Button
@@ -71,12 +71,12 @@ export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 					icon="no"
 					style={ { marginBottom: '8px' } }
 					onClick={ () => {
-						onRemove( i );
+						onRemove( i )
 					} }
 				/>
 			</Flex>
-		);
-	} );
+		)
+	} )
 	return ( 
 		<Fieldset label={ props.label } help={ props.help }>
 			<Flex
@@ -107,5 +107,5 @@ export default function AttributeRepeater ( props: AttributeRepeaterProps ) {
 				</Button>
 			</Flex>
 		</Fieldset>
-	);
+	)
 }

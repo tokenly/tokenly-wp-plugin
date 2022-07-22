@@ -1,5 +1,5 @@
-import { TokenVendorPromiseParamsInterface } from '../../../Services/ApiServiceInterface';
+import { TokenVendorPromiseParamsInterface } from '../../../Services/ApiServiceInterface'
 
 export default interface VendorServiceInterface {
-	promise( params?: TokenVendorPromiseParamsInterface ): Promise<any>;
+	promise( params?: TokenVendorPromiseParamsInterface ): Promise<any>
 }

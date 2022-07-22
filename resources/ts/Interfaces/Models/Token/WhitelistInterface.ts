@@ -1,6 +1,6 @@
-import SettingsInterface from '../SettingsInterface';
+import SettingsInterface from '../SettingsInterface'
 
 export default interface WhitelistInterface extends SettingsInterface {
-	enabled?: boolean;
-	items?: object;
+	enabled?: boolean
+	items?: object
 }

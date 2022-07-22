@@ -1,19 +1,21 @@
-import * as React from 'react';
-import BackButton from '../Components/BackButton';
+import * as React from 'react'
+import BackButton from '../Components/BackButton'
 
 import { 
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 import { 
 	Fragment,
-} from '@wordpress/element';
-import IntegrationNotConnectedNotice from '../Components/Notices/IntegrationNotConnectedNotice';
-import UserNotConnectedNotice from '../Components/Notices/UserNotConnectedNotice';
+} from '@wordpress/element'
+import IntegrationNotConnectedNotice
+	from '../Components/Notices/IntegrationNotConnectedNotice'
+import UserNotConnectedNotice
+	from '../Components/Notices/UserNotConnectedNotice'
 
 interface PageProps {
 	title: string,
-	children: any;
+	children: any
 }
 
 export default function Page( props: PageProps ) {

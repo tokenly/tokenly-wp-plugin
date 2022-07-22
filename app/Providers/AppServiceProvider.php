@@ -9,16 +9,22 @@ use Tokenly\Wp\Interfaces\Services\Application\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Application\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Application\ResourceServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Application\QueryServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Application\Token\Access\MenuItemFilterServiceInterface as TokenAccessMenuItemFilterServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostResultsFilterServiceInterface as TokenAccessPostResultsFilterServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostGuardServiceInterface as TokenAccessPostGuardServiceInterface;
-use Tokenly\Wp\Interfaces\Services\Application\Token\Access\TermGuardServiceInterface as TokenAccessTermGuardServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\MenuItemFilterServiceInterface
+	as TokenAccessMenuItemFilterServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostResultsFilterServiceInterface
+	as TokenAccessPostResultsFilterServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\PostGuardServiceInterface
+	as TokenAccessPostGuardServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\Token\Access\TermGuardServiceInterface
+	as TokenAccessTermGuardServiceInterface;
 use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 
 /**
  * Registers general plugin modules
  */
-class AppServiceProvider extends ServiceProvider implements AppServiceProviderInterface {
+class AppServiceProvider extends ServiceProvider
+	implements AppServiceProviderInterface
+{
 	protected string $namespace;
 	protected UserRepositoryInterface $user_repository;
 
@@ -37,14 +43,22 @@ class AppServiceProvider extends ServiceProvider implements AppServiceProviderIn
 		$this->namespace = $namespace;
 		$this->user_repository = $user_repository;
 		$this->services = array(
-			'auth'                             => $auth_service,
-			'lifecycle'                        => $lifecycle_service,
-			'resource'                         => $resource_service,
-			'query'                            => $query_service,
-			'token_access_menu_item_filter'    => $token_access_menu_item_filter_service,
-			'token_access_post_results_filter' => $token_access_post_results_filter_service,
-			'token_access_post_guard'          => $token_access_post_guard_service,
-			'token_access_term_guard'          => $token_access_term_guard_service,
+			'auth'                             
+				=> $auth_service,
+			'lifecycle'                        
+				=> $lifecycle_service,
+			'resource'                         
+				=> $resource_service,
+			'query'                            
+				=> $query_service,
+			'token_access_menu_item_filter'    
+				=> $token_access_menu_item_filter_service,
+			'token_access_post_results_filter' 
+				=> $token_access_post_results_filter_service,
+			'token_access_post_guard'          
+				=> $token_access_post_guard_service,
+			'token_access_term_guard'          
+				=> $token_access_term_guard_service,
 		);
 		$this->register_hooks();
 	}
@@ -62,10 +76,12 @@ class AppServiceProvider extends ServiceProvider implements AppServiceProviderIn
 	}
 
 	protected function register_user_row_actions_hook(): void {
-		add_filter( "user_row_actions", function( array $actions, \WP_User $user ) {
+		$callback = function(array $actions, \WP_User $user ) {
 			$user = $this->user_repository->complete( $user );
-			$actions = apply_filters( "{$this->namespace}_user_row_actions", $actions, $user );
+			$filter = "{$this->namespace}_user_row_actions";
+			$actions = apply_filters( $filter, $actions, $user );
 			return $actions;
-		}, 10, 2 );
+		};
+		add_filter( "user_row_actions", $callback, 10, 2 );
 	}
 }

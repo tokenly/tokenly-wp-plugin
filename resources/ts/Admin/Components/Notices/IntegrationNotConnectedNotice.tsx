@@ -1,29 +1,29 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import { useState, useEffect } from 'react';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import { useState, useEffect } from 'react'
 
 import { 
 	Notice,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 export default function IntegrationNotConnectedNotice() {
-	const brand: string = useInjection( TYPES.Variables.brand );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const isIntegrationConnected: string = useInjection( TYPES.Variables.isIntegrationConnected );
-    const localStorageKey: string = `${namespace}-integration-not-connected-notice-dismissed`;
+	const brand: string = useInjection( TYPES.Variables.brand )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const isIntegrationConnected: string = useInjection( TYPES.Variables.isIntegrationConnected )
+    const localStorageKey: string = `${namespace}-integration-not-connected-notice-dismissed`
 
-    const [ dismissed, setDismissed ] = useState<boolean>( true );
+    const [ dismissed, setDismissed ] = useState<boolean>( true )
 
     useEffect( () => {
-        let dismissedStored: string = localStorage.getItem( localStorageKey );
-        dismissedStored = JSON.parse( dismissedStored );
-		setDismissed( dismissedStored as unknown as boolean );
-	}, [] );
+        let dismissedStored: string = localStorage.getItem( localStorageKey )
+        dismissedStored = JSON.parse( dismissedStored )
+		setDismissed( dismissedStored as unknown as boolean )
+	}, [] )
 
     function onDismiss(): void {
-        setDismissed( true );
-        localStorage.setItem( localStorageKey, 'true' );
+        setDismissed( true )
+        localStorage.setItem( localStorageKey, 'true' )
     }
 
     if ( !isIntegrationConnected && !dismissed ) {
@@ -45,7 +45,7 @@ export default function IntegrationNotConnectedNotice() {
             </Notice>
         )
     } else {
-        return null;
+        return null
     }
 }
  

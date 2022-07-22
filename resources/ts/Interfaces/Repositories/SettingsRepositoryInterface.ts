@@ -1,5 +1,5 @@
-import { SettingsUpdateParamsInterface } from '../../Interfaces/Services/ApiServiceInterface';
+import { SettingsUpdateParamsInterface } from '../../Interfaces/Services/ApiServiceInterface'
 
 export default interface SettingsRepositoryInterface {
-	update( params: SettingsUpdateParamsInterface ): Promise<any>;
+	update( params: SettingsUpdateParamsInterface ): Promise<any>
 }

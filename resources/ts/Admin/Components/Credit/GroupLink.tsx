@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface GroupLinkProps {
 	uuid: string,
@@ -13,11 +13,11 @@ interface GroupLinkProps {
 }
 
 export default function GroupLink( props: GroupLinkProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
-	const title = props?.name ?? props.uuid;
-	const url = `${ adminPageUrl }${ namespace }-credit-group-show&id=${ props.uuid }`;
+	const title = props?.name ?? props.uuid
+	const url = `${ adminPageUrl }${ namespace }-credit-group-show&id=${ props.uuid }`
 	if ( props.text ) {
 		return (
 			<b><span>{ title }</span></b>
@@ -30,7 +30,7 @@ export default function GroupLink( props: GroupLinkProps ) {
 		>
 			{ title }
 		</Button>
-	);
+	)
 }
  
 

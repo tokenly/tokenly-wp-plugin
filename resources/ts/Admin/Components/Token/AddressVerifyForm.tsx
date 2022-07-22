@@ -1,20 +1,20 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import {
 	Flex,
 	TextareaControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressVerifyFormProps {
-	onChange: any;
-	verifyData: any;
+	onChange: any
+	verifyData: any
 }
 
 export default function AddressVerifyForm( props: AddressVerifyFormProps ) {
 	function onSignatureFieldChange( value: any ) {
-		const state = Object.assign( {}, props.verifyData );
-		state.signature = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.verifyData )
+		state.signature = value
+		props.onChange( state )
 	}
 
 	return (
@@ -29,5 +29,5 @@ export default function AddressVerifyForm( props: AddressVerifyFormProps ) {
 				onChange={ onSignatureFieldChange }
 			/>
 		</Flex>
-	);
+	)
 }

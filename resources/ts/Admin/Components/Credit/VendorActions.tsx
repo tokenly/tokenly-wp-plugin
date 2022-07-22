@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 import { 
 	Button,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 export default function VendorActions() {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	return (
 		<Flex
@@ -28,7 +28,7 @@ export default function VendorActions() {
 				Register Group
 			</Button>
 		</Flex>
-	);
+	)
 }
  
 

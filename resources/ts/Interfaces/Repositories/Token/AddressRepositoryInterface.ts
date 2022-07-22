@@ -5,10 +5,10 @@ import {
 	TokenAddressStoreParamsInterface,
 	TokenAddressUpdateParamsInterface,
 	TokenAddressVerifyParamsInterface,
-} from '../../../Interfaces/Services/ApiServiceInterface';
-import AddressInterface from '../../Models/Token/AddressInterface';
-import AddressCollectionInterface from '../../Collections/Token/AddressCollectionInterface';
-import BalanceCollectionInterface from '../../Collections/Token/BalanceCollectionInterface';
+} from '../../../Interfaces/Services/ApiServiceInterface'
+import AddressInterface from '../../Models/Token/AddressInterface'
+import AddressCollectionInterface from '../../Collections/Token/AddressCollectionInterface'
+import BalanceCollectionInterface from '../../Collections/Token/BalanceCollectionInterface'
 
 export default interface AddressRepositoryInterface {
 	index( params?: TokenAddressIndexParamsInterface ): Promise<AddressCollectionInterface>

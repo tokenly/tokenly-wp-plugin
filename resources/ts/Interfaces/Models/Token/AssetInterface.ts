@@ -1,6 +1,6 @@
-import ModelInterface from '../ModelInterface';
+import ModelInterface from '../ModelInterface'
 
 export default interface AssetInterface extends ModelInterface {
-	address?: string;
-	index?: string;
+	address?: string
+	index?: string
 }

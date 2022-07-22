@@ -1,126 +1,126 @@
-import * as React from 'react';
-import UserSearchField from '../UserSearchField';
-import AssetSearchField from '../AssetSearchField';
-import SourceSelectField from '../Token/SourceSelectField';
-import QuantityField from '../Token/QuantityField';
-import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
+import * as React from 'react'
+import UserSearchField from '../UserSearchField'
+import AssetSearchField from '../AssetSearchField'
+import SourceSelectField from '../Token/SourceSelectField'
+import QuantityField from '../Token/QuantityField'
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
 
 import { 
 	TextControl,
 	TextareaControl,
 	Flex,
 	CheckboxControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface PromiseStoreFormProps {
-	loadingSources: boolean;
-	storeData: any;
-	sources: SourceCollectionInterface;
-	onChange: any;
+	loadingSources: boolean
+	storeData: any
+	sources: SourceCollectionInterface
+	onChange: any
 }
 
 export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 	function getBalance() {
 		if ( !props.storeData?.sourceId ) {
-			return [];
+			return []
 		}
-		const balance = props.sources.get( props.storeData?.sourceId )?.address?.balance;
-		return balance;
+		const balance = props.sources.get( props.storeData?.sourceId )?.address?.balance
+		return balance
 	}
 
 	function getCurrentAssetBalance() {
 		if ( !props.storeData?.asset ) {
-			return null;
+			return null
 		}
-		const asset = props.storeData.asset;
+		const asset = props.storeData.asset
 		if ( asset == '' ) {
-			return null;
+			return null
 		}
-		let balance = props.sources.get( props.storeData?.sourceId )?.address?.balance;
+		let balance = props.sources.get( props.storeData?.sourceId )?.address?.balance
 		if ( !balance ) {
-			return null;
+			return null
 		}
-		balance = Object.values( balance );
+		balance = Object.values( balance )
 		balance = balance.filter( ( balance: any ) => {
-			let assetName = balance.asset.address;
+			let assetName = balance.asset.address
 			if ( balance.asset.index ) {
-				assetName = `${assetName}:${balance.asset.index}`;
+				assetName = `${assetName}:${balance.asset.index}`
 			}
-			return assetName === props.storeData?.asset;
-		} );
+			return assetName === props.storeData?.asset
+		} )
 		if ( balance.length == 0 ) {
-			return null;
+			return null
 		}
-		return balance[0];
+		return balance[0]
 	}
 
 	function getMaxCount() {
-		const balance = getCurrentAssetBalance();
+		const balance = getCurrentAssetBalance()
 		if ( !balance ) {
-			return 0;
+			return 0
 		}
-		const quantity = parseFloat( balance.quantity.value );
-		return quantity;
+		const quantity = parseFloat( balance.quantity.value )
+		return quantity
 	}
 
 	function isAssetValid() {
-		const balance = getCurrentAssetBalance();
+		const balance = getCurrentAssetBalance()
 		if ( balance || props.storeData?.pseudo == true ) {
-			return true;
+			return true
 		}
-		return false;
+		return false
 	}
 
 	function getAssetName( asset: any ) {
-		let assetName = asset.address;
+		let assetName = asset.address
 		if ( asset.index ) {
-			assetName = `${assetName}:${asset.index}`;
+			assetName = `${assetName}:${asset.index}`
 		}
-		return assetName;
+		return assetName
 	}
 
 	function onDestinationFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.destination = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.destination = value
+		props.onChange( state )
 	}
 
 	function onSourceFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.source_id = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.source_id = value
+		props.onChange( state )
 	}
 
 	function onPseudoFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.pseudo = value;
-		state.asset = null;
-		state.quantity = 0;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.pseudo = value
+		state.asset = null
+		state.quantity = 0
+		props.onChange( state )
 	}
 
 	function onAssetFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.asset = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.asset = value
+		props.onChange( state )
 	}
 
 	function onQuantityFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.quantity = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.quantity = value
+		props.onChange( state )
 	}
 
 	function onRefFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.ref = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.ref = value
+		props.onChange( state )
 	}
 
 	function onNoteFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.note = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.note = value
+		props.onChange( state )
 	}
 
 	return (
@@ -207,5 +207,5 @@ export default function PromiseStoreForm( props: PromiseStoreFormProps ) {
 		: 	<div style={ { opacity: 0.8 } }>No sources registered.</div>
 		}
 		</div>
-	);
+	)
 }

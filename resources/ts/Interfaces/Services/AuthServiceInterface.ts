@@ -1,7 +1,7 @@
-import { AuthData } from '../../Interfaces';
+import { AuthData } from '../../Interfaces'
 
 export default interface AuthServiceInterface {
-	getStatus(): Promise<AuthData>;
-	connect(): Promise<any>;
-	disconnect(): Promise<any>;
+	getStatus(): Promise<AuthData>
+	connect(): Promise<any>
+	disconnect(): Promise<any>
 }

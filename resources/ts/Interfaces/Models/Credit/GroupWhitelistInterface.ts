@@ -1,5 +1,5 @@
-import SettingsInterface from '../SettingsInterface';
+import SettingsInterface from '../SettingsInterface'
 
 export default interface GroupWhitelistInterface extends SettingsInterface {
-	items?: object;
+	items?: object
 }

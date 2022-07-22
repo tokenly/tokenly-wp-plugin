@@ -1,52 +1,59 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import Page from './Page';
-import SavePanel from '../Components/SavePanel';
-import IntegrationSettingsForm from '../Components/Settings/IntegrationSettingsForm';
-import IntegrationSettingsHelp from '../Components/Settings/IntegrationSettingsHelp';
-import TcaSettingsForm from '../Components/Settings/TcaSettingsForm';
-import OauthSettingsForm from '../Components/Settings/OauthSettingsForm';
-import IntegrationSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface';
-import TcaSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface';
-import OauthSettingsRepositoryInterface from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface';
-import eventBus from "../../EventBus";
-import IntegrationSettings from '../../Models/Settings/IntegrationSettings';
-import OauthSettings from '../../Models/Settings/OauthSettings';
-import TcaSettings from '../../Models/Settings/TcaSettings';
-import IntegrationSettingsInterface from '../../Interfaces/Models/Settings/IntegrationSettingsInterface';
-import OauthSettingsInterface from '../../Interfaces/Models/Settings/OauthSettingsInterface';
-import TcaSettingsInterface from '../../Interfaces/Models/Settings/TcaSettingsInterface';
-
+import * as React from 'react'
+import { useState } from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import Page from './Page'
+import SavePanel from '../Components/SavePanel'
+import IntegrationSettingsForm
+	from '../Components/Settings/IntegrationSettingsForm'
+import IntegrationSettingsHelp
+	from '../Components/Settings/IntegrationSettingsHelp'
+import TcaSettingsForm from '../Components/Settings/TcaSettingsForm'
+import OauthSettingsForm from '../Components/Settings/OauthSettingsForm'
+import IntegrationSettingsRepositoryInterface
+	from '../../Interfaces/Repositories/Settings/IntegrationSettingsRepositoryInterface'
+import TcaSettingsRepositoryInterface
+	from '../../Interfaces/Repositories/Settings/TcaSettingsRepositoryInterface'
+import OauthSettingsRepositoryInterface
+	from '../../Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface'
+import eventBus from "../../EventBus"
+import IntegrationSettings from '../../Models/Settings/IntegrationSettings'
+import OauthSettings from '../../Models/Settings/OauthSettings'
+import TcaSettings from '../../Models/Settings/TcaSettings'
+import IntegrationSettingsInterface
+	from '../../Interfaces/Models/Settings/IntegrationSettingsInterface'
+import OauthSettingsInterface
+	from '../../Interfaces/Models/Settings/OauthSettingsInterface'
+import TcaSettingsInterface
+	from '../../Interfaces/Models/Settings/TcaSettingsInterface'
 import { 
 	Panel,
 	PanelBody,
 	PanelRow,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SettingsPageProps {
-	integration_settings: any;
-	integration_data: any;
-	tca_settings: any;
-	oauth_settings: any;
-	tca_data: any;
+	integration_settings: any
+	integration_data: any
+	tca_settings: any
+	oauth_settings: any
+	tca_data: any
 }
 
 export default function SettingsPage( props: SettingsPageProps ) {
-	const brand: string = useInjection( TYPES.Variables.brand )
-	const namespace: string = useInjection( TYPES.Variables.namespace );
+	const namespace: string = useInjection( TYPES.Variables.namespace )
 	const integrationSettingsRepository: IntegrationSettingsRepositoryInterface =
 		useInjection( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface )
 	const tcaSettingsRepository: TcaSettingsRepositoryInterface =
 		useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
 	const oauthSettingsRepository: OauthSettingsRepositoryInterface =
 		useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface )
+	const dictionary: any = useInjection( TYPES.Variables.dictionary )
 	
 	const [ integrationSettings, setIntegrationSettings ] = 
 		useState<IntegrationSettingsInterface>(
 			( new IntegrationSettings ).fromJson( props.integration_settings )
-		);
+		)
 	const [ oauthSettings, setOauthSettings ] =
 		useState<OauthSettingsInterface>(
 			( new OauthSettings ).fromJson( props.oauth_settings )
@@ -73,51 +80,57 @@ export default function SettingsPage( props: SettingsPageProps ) {
 			window.location.reload()
 		} ).catch( ( error: any ) => {
 			console.log( error )
-		} );
+		} )
 	}
 
 	function onIntegrationSettingsChange( newSettings: any ) {
-		setIntegrationSettings( newSettings );
+		setIntegrationSettings( newSettings )
 	}
 
 	function onTcaSettingsSave() {
-		setSavingTcaSettings( true );
-		const json = tcaSettings.toJson();
+		setSavingTcaSettings( true )
+		const json = tcaSettings.toJson()
 		tcaSettingsRepository.update( json ).then( ( result: any ) => {
-			eventBus.dispatch( 'snackbarShow', result?.status );
-			setSavingTcaSettings( false );
+			eventBus.dispatch( 'snackbarShow', result?.status )
+			setSavingTcaSettings( false )
 		} ).catch( ( error: any ) => {
-			console.log( error );
-		} );
+			console.log( error )
+		} )
 	}
 
 	function onTcaSettingsChange( newSettings: any ) {
-		setTcaSettings( newSettings );
+		setTcaSettings( newSettings )
 	}
 
 	function onOauthSettingsSave() {
-		setSavingOauthSettings( true );
-		const json = oauthSettings.toJson();
+		setSavingOauthSettings( true )
+		const json = oauthSettings.toJson()
 		oauthSettingsRepository.update( json ).then( ( result: any ) => {
-			eventBus.dispatch( 'snackbarShow', result?.status );
-			setSavingOauthSettings( false );
+			eventBus.dispatch( 'snackbarShow', result?.status )
+			setSavingOauthSettings( false )
 		} ).catch( ( error: any ) => {
-			console.log( error );
-		} );
+			console.log( error )
+		} )
 	}
 
 	function onOauthSettingsChange( newSettings: any ) {
-		setOauthSettings( newSettings );
+		setOauthSettings( newSettings )
 	}
 
 	return (
-		<Page title={ `${brand} Settings` }>
+		<Page title={ dictionary.get( 'settingsTitle' ) }>
 			<Panel>
-				<PanelBody title="Integration">
+				<PanelBody 
+					title={ dictionary.get( 'settingsIntegrationTitle' ) }
+				>
 					<PanelRow>
 						<IntegrationSettingsHelp
-							appHomepageUrl={ props.integration_data?.app_homepage_url }
-							clientAuthUrl={ props.integration_data?.client_auth_url }
+							appHomepageUrl={
+								props.integration_data?.app_homepage_url
+							}
+							clientAuthUrl={
+								props.integration_data?.client_auth_url
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
@@ -129,7 +142,9 @@ export default function SettingsPage( props: SettingsPageProps ) {
 					</PanelRow>
 					<PanelRow>
 						<SavePanel
-							label="Save Integration Settings"
+							label={
+								dictionary.get( 'settingsIntegrationSave' )
+							}
 							saving={ savingIntegrationSettings }
 							onClick={ onIntegrationSettingsSave }
 						/>
@@ -137,7 +152,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 				</PanelBody>
 			</Panel>
 			<Panel>
-				<PanelBody title="Token Controlled Access (TCA)">
+				<PanelBody title={ dictionary.get( 'settingsTcaTitle' ) }>
 					<PanelRow>
 						<TcaSettingsForm
 							settings={ tcaSettings }
@@ -147,7 +162,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 					</PanelRow>
 					<PanelRow>
 						<SavePanel
-							label="Save TCA Settings"
+							label={ dictionary.get( 'settingsTcaSave' ) }
 							saving={ savingTcaSettings }
 							onClick={ onTcaSettingsSave }
 						/>
@@ -155,7 +170,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 				</PanelBody>
 			</Panel>
 			<Panel>
-				<PanelBody title="Authorization (OAuth)">
+				<PanelBody title={ dictionary.get( 'settingsOauthTitle' ) }>
 					<PanelRow>
 						<OauthSettingsForm
 							settings={ oauthSettings }
@@ -164,7 +179,7 @@ export default function SettingsPage( props: SettingsPageProps ) {
 					</PanelRow>
 					<PanelRow>
 						<SavePanel
-							label="Save OAuth Settings"
+							label={ dictionary.get( 'settingsOauthSave' ) }
 							saving={ savingOauthSettings }
 							onClick={ onOauthSettingsSave }
 						/>
@@ -172,5 +187,5 @@ export default function SettingsPage( props: SettingsPageProps ) {
 				</PanelBody>
 			</Panel>
 		</Page>
-	);
+	)
 }

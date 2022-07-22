@@ -1,12 +1,12 @@
-import * as React from 'react';
+import * as React from 'react'
 
 interface Row {
-	label: string;
-	component: JSX.Element;
+	label: string
+	component: JSX.Element
 }
 
 interface FormTableProps {
-	rows: Array<Row>;
+	rows: Array<Row>
 }
 
 export default function FormTable( props: FormTableProps ) {
@@ -16,13 +16,13 @@ export default function FormTable( props: FormTableProps ) {
 				<th>{ row.label }</th>
 				<td>{ row.component }</td>
 			</tr>
-		);
-	} );
+		)
+	} )
 	return (
 		<table className="form-table" style={ { maxWidth: '800px' } }>
 			<tbody>
 				{ rows }
 			</tbody>
 		</table>
-	);
+	)
 }

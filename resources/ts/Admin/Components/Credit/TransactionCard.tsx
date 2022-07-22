@@ -1,16 +1,16 @@
-import * as React from 'react';
-import * as dayjs from 'dayjs';
-import TransactionInfo from './TransactionInfo';
-import TransactionLink from './TransactionLink';
+import * as React from 'react'
+import * as dayjs from 'dayjs'
+import TransactionInfo from './TransactionInfo'
+import TransactionLink from './TransactionLink'
 
 import { 
 	Card,
 	CardHeader,
 	CardBody,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface TransactionCardProps {
-	transaction: any;
+	transaction: any
 }
 
 export default function TransactionCard( props: TransactionCardProps ) {
@@ -23,7 +23,7 @@ export default function TransactionCard( props: TransactionCardProps ) {
 				<TransactionInfo transaction={ props.transaction } />
 			</CardBody>
 		</Card>
-	);
+	)
 }
  
 

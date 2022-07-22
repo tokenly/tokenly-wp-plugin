@@ -13,7 +13,9 @@ use Tokenly\Wp\Interfaces\Models\TermInterface;
 /**
  * Registers taxonomies
  */
-class TaxonomyServiceProvider extends ServiceProvider implements TaxonomyServiceProviderInterface {
+class TaxonomyServiceProvider extends ServiceProvider
+	implements TaxonomyServiceProviderInterface
+{
 	protected string $root_dir;
 	protected string $namespace;
 	protected string $text_domain;

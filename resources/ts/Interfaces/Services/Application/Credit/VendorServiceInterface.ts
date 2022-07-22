@@ -1,9 +1,9 @@
 import {
 	CreditVendorDebitParamsInterface,
 	CreditVendorCreditParamsInterface,
-} from '../../../Services/ApiServiceInterface';
+} from '../../../Services/ApiServiceInterface'
 
 export default interface VendorServiceInterface {
-	credit( params?: CreditVendorCreditParamsInterface ): Promise<any>;
-	debit( params?: CreditVendorDebitParamsInterface ): Promise<any>;
+	credit( params?: CreditVendorCreditParamsInterface ): Promise<any>
+	debit( params?: CreditVendorDebitParamsInterface ): Promise<any>
 }

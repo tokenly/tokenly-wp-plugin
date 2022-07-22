@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
-import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import Page from '../Page';
-import Preloader from '../../Components/Preloader';
-import SourceInfo from '../../Components/Token/SourceInfo';
-import eventBus from "../../../EventBus";
+import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
+import Page from '../Page'
+import Preloader from '../../Components/Preloader'
+import SourceInfo from '../../Components/Token/SourceInfo'
+import eventBus from "../../../EventBus"
 
 import {
 	Button,
@@ -16,34 +16,34 @@ import {
 	PanelRow,
 	Flex,
 	PanelHeader,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
-declare const window: any;
+declare const window: any
 
 interface SourceShowPageProps {
 	//
 }
 
 export default function SourceShowPage( props: SourceShowPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
+	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
 
-	const urlParams = new URLSearchParams( window.location.search );
+	const urlParams = new URLSearchParams( window.location.search )
 
-	const [ id, setId ] = useState<string>( urlParams.get( 'source' ) );
-	const [ source, setSource ] = useState<any>( null );
-	const [ loadingSource, setLoadingSource ] = useState<boolean>( false );
-	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false );
-	const [ deleting, setDeleting ] = useState<boolean>( false );
+	const [ id, setId ] = useState<string>( urlParams.get( 'source' ) )
+	const [ source, setSource ] = useState<any>( null )
+	const [ loadingSource, setLoadingSource ] = useState<boolean>( false )
+	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false )
+	const [ deleting, setDeleting ] = useState<boolean>( false )
 
 	function isDisabled(): boolean {
-		return ( !source?.address );
+		return ( !source?.address )
 	}
 
 	function isSourceValid(): boolean {
-		return ( source && typeof source === 'object' );
+		return ( source && typeof source === 'object' )
 	}
 
 	function onDelete(): void {
@@ -51,47 +51,47 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 			key: 'sourceDelete',
 			title: 'Deleting Source',
 			subtitle: 'Are you sure you want to delete the source?',
-		} );
+		} )
 	}
 
 	function onConfirmModalChoice( payload: any ): void {
 		switch( payload.key ) {
 			case 'sourceDelete':
 				if ( payload.choice == 'accept' ){
-					deleteSource();
+					deleteSource()
 				}
-				break;
+				break
 		}
 	}
 
 	function deleteSource(): void {
-		setDeleting( true );
+		setDeleting( true )
 		sourceRepository.destroy( id ).then( ( result: any ) => {
-			setDeleting( false );
-			history.back();
-		} );
+			setDeleting( false )
+			history.back()
+		} )
 	}
 
 	useEffect( () => {
-		eventBus.on( 'confirmModalChoice', onConfirmModalChoice );
-		setLoadingSource( true );
-		setLoadingAddress( true );
+		eventBus.on( 'confirmModalChoice', onConfirmModalChoice )
+		setLoadingSource( true )
+		setLoadingAddress( true )
 		sourceRepository.show( id ).then( ( sourceFound: any ) => {
-			setLoadingSource( false );
-			setSource( sourceFound );
-			return sourceFound;
+			setLoadingSource( false )
+			setSource( sourceFound )
+			return sourceFound
 		} )
 		.then( ( sourceFound: any ) => {
 			addressRepository.show( id ).then( ( addressFound: any ) => {
-				sourceFound.address = addressFound;
-				setSource( sourceFound );
-				setLoadingAddress( false );
+				sourceFound.address = addressFound
+				setSource( sourceFound )
+				setLoadingAddress( false )
 			} )
-		} );
+		} )
 		return () => {
-			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice );
+			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice )
 		}
-	}, [] );
+	}, [] )
 	
 	return (
 		<Page title="Source Display">
@@ -144,5 +144,5 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 				</PanelBody>
 			</Panel>
 		</Page>
-	);
+	)
 }

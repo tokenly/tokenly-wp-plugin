@@ -1,12 +1,12 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface CardActionsProps {
-	actions: Array<any>;
+	actions: Array<any>
 }
 
 export default function CardActions( props: CardActionsProps ) {
@@ -20,8 +20,8 @@ export default function CardActions( props: CardActionsProps ) {
 				{ action.title }
 			</Button>
 		)
-	} );
+	} )
 	return (
 		<Flex justify="flex-start">{ listItems }</Flex>
-	);
+	)
 }

@@ -1,59 +1,91 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../Page';
-import { TYPES } from '../../Types';
-import GridMenu from '../../Components/GridMenu';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../Page'
+import { TYPES } from '../../Types'
+import GridMenu from '../../Components/GridMenu'
+import { GridMenuItemInterface } from '../../Components/GridMenu'
 
 interface VendorPageProps {
 	//
 }
 
 export default function VendorPage( props: VendorPageProps ) {
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const routes: any = useInjection( TYPES.Variables.routes );
-	const menuItems = {
-		promises: {
-			title: 'Promises',
-			description: `View and manage token promises.`,
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const routes: any = useInjection( TYPES.Variables.routes )
+	const dictionary: any = useInjection( TYPES.Variables.dictionary )
+	const menuItems: Array<GridMenuItemInterface> = [
+		{
+			key: 'promises',
+			title: dictionary.get(
+				'tokenVendorPromisesMenuItemTitle'
+			),
+			description: dictionary.get(
+				'tokenVendorPromisesMenuItemDescription'
+			),
 			icon: 'database',
-			route: routes.admin[`${namespace}_token_promise_index`],
+			route: routes.admin.get( `${namespace}_token_promise_index` ),
 		},
-		whitelist: {
-			title: 'Whitelist',
-			description: 'View and manage the list of assets allowed for viewing and transactions.',
+		{
+			key: 'whitelist',
+			title: dictionary.get(
+				'tokenVendorWhitelistMenuItemTitle'
+			),
+			description: dictionary.get(
+				'tokenVendorWhitelistMenuItemDescription'
+			),
 			icon: 'list-view',
-			route: routes.admin[`${namespace}_token_whitelist_edit`],
+			route: routes.admin.get( `${namespace}_token_whitelist_edit` ),
 		},
-		source: {
-			title: 'Sources',
-			description: `View and manage sources for promise transactions.`,
+		{
+			key: 'source',
+			title: dictionary.get(
+				'tokenVendorSourcesMenuItemTitle'
+			),
+			description: dictionary.get(
+				'tokenVendorSourcesMenuItemDescription'
+			),
 			icon: 'portfolio',
-			route: routes.admin[`${namespace}_token_source_index`],
+			route: routes.admin.get( `${namespace}_token_source_index` ),
 		},
-		address: {
-			title: 'Addresses',
-			description: 'View and manage addresses for promise transactions.',
+		{
+			key: 'address',
+			title: dictionary.get(
+				'tokenVendorAddressesMenuItemTitle'
+			),
+			description: dictionary.get(
+				'tokenVendorAddressesMenuItemDescription'
+			),
 			icon: 'portfolio',
-			route: routes.admin[`${namespace}_token_address_index`],
+			route: routes.admin.get( `${namespace}_token_address_index` ),
 		},
-		meta: {
-			title: 'Meta',
-			description: 'View and manage additional information about the token assets.',
+		{
+			key: 'meta',
+			title: dictionary.get(
+				'tokenVendorMetaMenuItemTitle'
+			),
+			description: dictionary.get(
+				'tokenVendorMetaMenuItemDescription'
+			),
 			icon: 'media-document',
-			route: routes.post[`token_meta_${namespace}_token_meta`],
+			route: routes.post.get( `token_meta_${namespace}_token_meta` ),
 		},
-		categories: {
-			title: 'Categories',
-			description: 'View and manage token categories.',
+		{
+			key: 'categories',
+			title: dictionary.get(
+				'tokenVendorCategoriesMenuItemTitle'
+			),
+			description: dictionary.get(
+				'tokenVendorCategoriesMenuItemDescription'
+			),
 			icon: 'category',
-			route: routes.term[`token_meta_${namespace}_token_category`],
+			route: routes.term.get( `token_meta_${namespace}_token_category` ),
 			append: `&post_type=${namespace}_token_meta`,
 		},
-	} as any;
+	]
 
 	return (
-		<Page title="Token Vendor">
+		<Page title={ dictionary.get( 'tokenVendorTitle' ) } >
 			<GridMenu items={ menuItems } />
 		</Page>
-	);
+	)
 }

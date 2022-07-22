@@ -1,26 +1,26 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	TextControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AssetFieldProps {
-	label?: string;
-	asset: any;
-	onChange: any;
+	label?: string
+	asset: any
+	onChange: any
 }
 
 export default function AssetField( props: AssetFieldProps ) {
 	function onAddressFieldChange( value: string ) {
-		const state = Object.assign( {}, props.asset );
-		state.address = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.asset )
+		state.address = value
+		props.onChange( state )
 	}
 
 	function onIndexFieldChange( value: string ) {
-		const state = Object.assign( {}, props.asset );
-		state.index = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.asset )
+		state.index = value
+		props.onChange( state )
 	}
 
 	return (
@@ -39,7 +39,7 @@ export default function AssetField( props: AssetFieldProps ) {
 				/>
 			</div>
 		</fieldset>
-	);
+	)
 }
  
 

@@ -1,22 +1,22 @@
-import * as React from 'react';
-import UserLink from '../UserLink';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import UserLink from '../UserLink'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	 Flex,
 	 Dashicon,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface PromiseParticipantsProps {
-	promise: any;
+	promise: any
 }
 
 export default function PromiseParticipants( props: PromiseParticipantsProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
-	const balanceLink = `${adminPageUrl}${namespace}-user-token-balance-index`;
+	const balanceLink = `${adminPageUrl}${namespace}-user-token-balance-index`
 	return (
 		<Flex>
 			<span>Participants: </span>
@@ -36,7 +36,7 @@ export default function PromiseParticipants( props: PromiseParticipantsProps ) {
 				</Flex>
 			}
 		</Flex>
-	);
+	)
 }
  
 

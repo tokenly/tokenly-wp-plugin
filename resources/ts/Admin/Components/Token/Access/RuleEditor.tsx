@@ -1,66 +1,70 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import {
 	Button,
 	Flex,
 	SelectControl,
 	TextControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 
 interface TcaRuleEditorProps {
-	editData?: any;
-	onChange: any;
+	editData?: any
+	onChange: any
 }
 
 import Rule from '../../../../Models/Token/Rule'
 
 export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 	function onAdd() {
-		const newRules = props.editData.tcaRules.clone();
+		const newRules = props.editData.tcaRules.clone()
 		newRules.set( newRules.size, ( new Rule() ).fromJson( {
 			asset: null,
 			quantity: 0,
 			op: '=',
 			stackOp: 'AND',
 		} ) )
-		props.onChange( newRules )
+		const sequential = newRules.toSequential()
+		props.onChange( sequential )
 	}
 
 	function removeEmpty( newRules: any ) {
 		return newRules.filter( function ( rule: any ) {
-			return rule != null;
-		} );
+			return rule != null
+		} )
 	}
 	
 	function onRemove( index: number ) {
-		const newRules = props.editData.tcaRules.clone();
-		newRules.delete(index);
-		props.onChange( newRules );
+		const newRules = props.editData.tcaRules.clone()
+		console.log(newRules)
+		newRules.delete( index )
+		const sequential = newRules.toSequential()
+		props.onChange( sequential )
+		console.log(sequential)
 	}
 	
 	function onAssetFieldChange( key: any, value: any ) {
 		const newRules = props.editData.tcaRules.clone()
-		newRules.get(key).asset = value;
-		props.onChange( newRules );
+		newRules.get( key ).asset = value
+		props.onChange( newRules )
 	}
 
 	function onLogicFieldChange( key: any, value: any ) {
 		const newRules = props.editData.tcaRules.clone()
-		newRules.get(key).op = value;
-		props.onChange( newRules );
+		newRules.get(key).op = value
+		props.onChange( newRules )
 	}
 
 	function onQuantityFieldChange( key: any, value: any ) {
 		const newRules = props.editData.tcaRules.clone()
-		newRules.get(key).quantity = value;
-		props.onChange( newRules );
+		newRules.get(key).quantity = value
+		props.onChange( newRules )
 	}
 
 	function onGroupingFieldChange( key: any, value: any ) {
 		const newRules = props.editData.tcaRules.clone()
-		newRules.get(key).stackOp = value;
-		props.onChange( newRules );
+		newRules.get(key).stackOp = value
+		props.onChange( newRules )
 	}
 
 	const listItems = Array.from(
@@ -90,7 +94,7 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 						{ label: '<=' , value: '<=' },
 					] }
 					onChange={ ( value: any ) => {
-						onLogicFieldChange( i, value );
+						onLogicFieldChange( i, value )
 					} }
 				/>
 				<TextControl
@@ -100,7 +104,7 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 					type="number"
 					min={ 0 }
 					onChange={ ( value: any ) => {
-						onQuantityFieldChange( i, value );
+						onQuantityFieldChange( i, value )
 					} }
 				/>
 				{ i > 0 &&
@@ -113,7 +117,7 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 							{ label: 'OR'  , value: 'OR'  },
 						] }
 						onChange={ ( value: any ) => {
-							onGroupingFieldChange( i, value );
+							onGroupingFieldChange( i, value )
 						} }
 					/>
 				}
@@ -122,13 +126,13 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 					isSmall
 					style={ { marginBottom: '8px' } }
 					onClick={ () => {
-						onRemove( i );
+						onRemove( i )
 					} }
 					icon="no"
 				/>
 			</Flex>
-		);
-	} );
+		)
+	} )
 	return ( 
 		<fieldset style={ { border: '1px solid #dcdcde', padding: '12px' } }>
 		<legend>Rule Editor</legend>
@@ -145,5 +149,5 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 					Add Rule
 				</Button>
 		</fieldset>
-	);
+	)
 }

@@ -1,11 +1,11 @@
-import AddressEditInterface from '../../Interfaces/Models/Token/AddressEditInterface';
+import AddressEditInterface from '../../Interfaces/Models/Token/AddressEditInterface'
 
 export default class AddressEdit implements AddressEditInterface {
-	public address?: string;
-	public label?: string;
-	public public?: boolean;
-	public active?: boolean;
-	public type?: string;
+	public address?: string
+	public label?: string
+	public public?: boolean
+	public active?: boolean
+	public type?: string
 
 	// public fromAddress( AddressInterface: address ): this {
 	// 	address: addressFound?.address,
@@ -24,6 +24,6 @@ export default class AddressEdit implements AddressEditInterface {
 	// 		'active',
 	// 		'verified',
 	// 		'verifyCode',
-	// 	] );
+	// 	] )
 	// }
 }

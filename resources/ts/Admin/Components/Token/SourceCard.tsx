@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { SourceItem } from '../../../Interfaces';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import CardActions from '../CardActions';
+import * as React from 'react'
+import { SourceItem } from '../../../Interfaces'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import CardActions from '../CardActions'
 
 import { 
 	Button,
@@ -11,27 +11,27 @@ import {
 	CardBody,
 	Flex,
 	CardFooter
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SourceCardProps {
-	source: SourceItem;
+	source: SourceItem
 }
 
 export default function SourceCard( props: SourceCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 	
 	function getAssets(): string {
-		let listing = 'all';
-		const assets = props.source?.assets?.filter(Boolean);
+		let listing = 'all'
+		const assets = props.source?.assets?.filter(Boolean)
 		if ( assets.length > 0 ) {
-			listing = assets.join( ', ' );
+			listing = assets.join( ', ' )
 		}
-		return listing;
+		return listing
 	}
 
 	function isDisabled(): boolean {
-		return ( !props.source?.address );
+		return ( !props.source?.address )
 	}
 
 	return (
@@ -74,7 +74,7 @@ export default function SourceCard( props: SourceCardProps ) {
 				/>
 			</CardFooter>
 		</Card>
-	);
+	)
 }
  
 

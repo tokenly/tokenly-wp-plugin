@@ -1,46 +1,46 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import FormTable from '../FormTable';
-import OauthSettings from '../../../Models/Settings/OauthSettings';
-import OauthSettingsInterface from '../../../Interfaces/Models/Settings/OauthSettingsInterface';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import FormTable from '../FormTable'
+import OauthSettings from '../../../Models/Settings/OauthSettings'
+import OauthSettingsInterface from '../../../Interfaces/Models/Settings/OauthSettingsInterface'
 
 import { 
 	TextControl,
 	ToggleControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface OauthSettingsFormProps {
-	settings: OauthSettingsInterface;
-	onChange: any;
+	settings: OauthSettingsInterface
+	onChange: any
 }
 
 export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
-	const brand = useInjection( TYPES.Variables.brand );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const brand = useInjection( TYPES.Variables.brand )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	function onRedirectUrlFieldChange( value: any ) {
-		const newState = Object.assign( new OauthSettings(), props.settings );
-		newState.successUrl = value;
-		props.onChange( newState );
+		const newState = Object.assign( new OauthSettings(), props.settings )
+		newState.successUrl = value
+		props.onChange( newState )
 	}
 
 	function onSsoFieldChange( value: any ) {
-		const newState = Object.assign( new OauthSettings(), props.settings );
-		newState.useSingleSignOn = value;
-		props.onChange( newState );
+		const newState = Object.assign( new OauthSettings(), props.settings )
+		newState.useSingleSignOn = value
+		props.onChange( newState )
 	}
 
 	function onAllowNoEmailFieldChange( value: any ) {
-		const newState = Object.assign( new OauthSettings(), props.settings );
-		newState.allowNoEmail = value;
-		props.onChange( newState );
+		const newState = Object.assign( new OauthSettings(), props.settings )
+		newState.allowNoEmail = value
+		props.onChange( newState )
 	}
 
 	function onAllowUnconfirmedEmailFieldChange( value: any ) {
-		const newState = Object.assign( new OauthSettings(), props.settings );
-		newState.allowUnconfirmedEmail = value;
-		props.onChange( newState );
+		const newState = Object.assign( new OauthSettings(), props.settings )
+		newState.allowUnconfirmedEmail = value
+		props.onChange( newState )
 	}
 
 	return (
@@ -90,7 +90,7 @@ export default function OauthSettingsForm( props: OauthSettingsFormProps ) {
 			]
 		}
 	/>
-	);
+	)
 }
  
 

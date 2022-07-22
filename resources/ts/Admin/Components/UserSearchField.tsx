@@ -1,21 +1,22 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useInjection } from 'inversify-react';
-import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface';
-import { TYPES } from '../../Types';
-import Autocomplete from './Autocomplete';
+import * as React from 'react'
+import { useState } from 'react'
+import { useInjection } from 'inversify-react'
+import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface'
+import { TYPES } from '../../Types'
+import Autocomplete from './Autocomplete'
 
 import { 
 	// @ts-ignore
 	TextControl
-} from '@wordpress/components';
+} from '@wordpress/components'
+import UserCollectionInterface from '../../Interfaces/Collections/UserCollectionInterface'
 
 interface UserSearchFieldProps {
-	onChange: any;
-	user: any;
-	label?: string;
-	help?: string;
-	inputProps?: any;
+	onChange: any
+	user: any
+	label?: string
+	help?: string
+	inputProps?: any
 }
 
 interface ComboboxOption {
@@ -24,39 +25,41 @@ interface ComboboxOption {
 }
 
 export default function UserSearchField( props: UserSearchFieldProps ) {
-	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
+	const userRepository: UserRepositoryInterface = useInjection(
+		TYPES.Repositories.UserRepositoryInterface
+	)
 
-	const [ focused, setFocused ] = useState<boolean>( false );
-	const [ keywords, setKeywords ] = useState( '' );
-	const [ options, setOptions ] = useState( [] );
-	const [ searchTimeout, setSearchTimeout ] = useState<any>( 0 );
+	const [ focused, setFocused ] = useState<boolean>( false )
+	const [ keywords, setKeywords ] = useState( '' )
+	const [ options, setOptions ] = useState( [] )
+	const [ searchTimeout, setSearchTimeout ] = useState<any>( 0 )
 	
 	function getUserOptions( keywords: string ) {
 		return new Promise( ( resolve, reject ) => {
-			let newOptions = [] as any;
+			let newOptions = [] as any
 			if ( keywords == '' ) {
-				resolve( newOptions );
+				resolve( newOptions )
 			}
 			searchDebounce( keywords ).then( ( optionsFound ) => {
 				if ( optionsFound && Array.isArray( optionsFound ) ) {
-					newOptions = optionsFound;
+					newOptions = optionsFound
 				}
-				setOptions( newOptions );
-				resolve( newOptions );
+				setOptions( newOptions )
+				resolve( newOptions )
 			} ).catch( ( error ) => {
-				reject( error );
-			} );
-		});
+				reject( error )
+			} )
+		})
 	}
 
 	function searchDebounce( keywords: string ) {
-		clearTimeout( searchTimeout );
+		clearTimeout( searchTimeout )
 		return new Promise( ( resolve, reject ) => {
 			setSearchTimeout( setTimeout( () => {
-				const results = search( keywords );
-				resolve( results );
-			}, 500) );
-		} );
+				const results = search( keywords )
+				resolve( results )
+			}, 500) )
+		} )
 	}
 
 	function search( keywords: string ) {
@@ -64,46 +67,49 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 			userRepository.index( {
 				suggestions: true,
 				name: keywords,
-			} ).then( ( results: Array<any> ) => {
-				if ( results.length <= 0 ) {
-					resolve( [] );
+			} ).then( ( results: UserCollectionInterface ) => {
+				console.log(results)
+				if ( results.size <= 0 ) {
+					resolve( [] )
 				} 
-				const options = results.map( ( user: any ) => {
+				const options = Array.from(results.values() ).map( (
+					user: any
+				) => {
 					return {
 						value: user.name,
 						label: user.name,
-					} as ComboboxOption;
-				} );
+					} as ComboboxOption
+				} )
 				if ( options.length > 3 ) {
-					options.length = 3;
+					options.length = 3
 				}
-				resolve( options );
+				resolve( options )
 			} ).catch( ( error: string ) => {
-				reject( error );
-			} );
-		} );
+				reject( error )
+			} )
+		} )
 	}
 
 	function getKeywordsFromOptions() {
-		let keywords = '';
+		let keywords = ''
 		const optionsFiltered = options.filter( ( option: any ) => {
-			return option.value == props.user;
-		} );
+			return option.value == props.user
+		} )
 		if ( optionsFiltered.length > 0 ) {
-			keywords = optionsFiltered[0].label;
+			keywords = optionsFiltered[0].label
 		}
-		return keywords;
+		return keywords
 	}
 
 	function onKeywordsChange( keywords: string ) {
-		props.onChange( keywords );
+		props.onChange( keywords )
 		if ( keywords == '' && props.user ) {
-			keywords = getKeywordsFromOptions();
+			keywords = getKeywordsFromOptions()
 		}
 		getUserOptions( keywords ).then( ( options: any ) => {
-			setOptions( options );
-			setKeywords( keywords );
-		} );
+			setOptions( options )
+			setKeywords( keywords )
+		} )
 	}
 
 	return (
@@ -114,15 +120,15 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 				value={ props.user }
 				onChange={ onKeywordsChange }
 				onFocus={ () => {
-					setFocused( true );
+					setFocused( true )
 				} }
 				onBlur={ ( event: any ) => {
-					setFocused( false );
+					setFocused( false )
 				} }
 			/>
 		{ ( focused && options.length > 0 ) &&
 			<Autocomplete onChange={ onKeywordsChange } options={ options } />
 		}
 		</div>
-	);
+	)
 }

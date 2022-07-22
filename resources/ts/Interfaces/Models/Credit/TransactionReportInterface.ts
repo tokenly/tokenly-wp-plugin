@@ -1,6 +1,6 @@
-import ModelInterface from '../ModelInterface';
+import ModelInterface from '../ModelInterface'
 
 export default interface TransactionReportInterface extends ModelInterface {
-	credit?: object;
-	debit?: object;
+	credit?: object
+	debit?: object
 }

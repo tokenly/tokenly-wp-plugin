@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from 'react'
 
 interface AutocompleteProps {
-	onChange: any;
-	options: any;
+	onChange: any
+	options: any
 }
 
 export default function Autocomplete( props: AutocompleteProps ) {
@@ -10,16 +10,16 @@ export default function Autocomplete( props: AutocompleteProps ) {
 		return (
 			<div 
 				onMouseDown={ () => {
-					props.onChange( option.value );
+					props.onChange( option.value )
 				} }
 				className="autocomplete-item"
 			>
 				{ option.label }
 			</div>
-		);
-	} );
+		)
+	} )
 
 	return (
 		<div className="tokenly-autocomplete">{ optionElements }</div>
-	);
+	)
 }

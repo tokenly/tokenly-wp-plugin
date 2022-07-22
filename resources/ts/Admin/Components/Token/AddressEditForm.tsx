@@ -1,40 +1,40 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	TextControl,
 	CheckboxControl,
 	SelectControl,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface AddressEditFormProps {
-	onChange: any;
-	editData: any;
+	onChange: any
+	editData: any
 }
 
 export default function AddressEditForm( props: AddressEditFormProps ) {
 	function onAddressFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.address = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.address = value
+		props.onChange( state )
 	}
 
 	function onLabelFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.label = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.label = value
+		props.onChange( state )
 	}
 
 	function onPublicFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.public = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.public = value
+		props.onChange( state )
 	}
 
 	function onTypeFieldChange( value: any ) {
-		const state = Object.assign( {}, props.editData );
-		state.type = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.editData )
+		state.type = value
+		props.onChange( state )
 	}
 
 	return (
@@ -77,5 +77,5 @@ export default function AddressEditForm( props: AddressEditFormProps ) {
 				onChange={ onTypeFieldChange }
 			/>
 		</Flex>
-	);
+	)
 }

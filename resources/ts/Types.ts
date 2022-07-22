@@ -22,6 +22,7 @@ const TYPES = {
 			'isUserConnected' ),
 		isIntegrationConnected : Symbol.for(
 			'isIntegrationConnected' ),
+		dictionary : Symbol.for( 'dictionary' ),
 	},
 	Services: {
 		AuthServiceInterface  : Symbol.for(
@@ -78,6 +79,6 @@ const TYPES = {
 	Routes: {
 		AdminRouterInterface : Symbol.for( 'AdminRouterInterface' ),
 	},
-};
+}
 
-export { TYPES };
+export { TYPES }

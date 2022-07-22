@@ -1,19 +1,19 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Spinner,
 	SelectControl,
-} from '@wordpress/components';
-import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface';
+} from '@wordpress/components'
+import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
 
 interface SourceSelectFieldProps {
-	source: any;
-	sources: SourceCollectionInterface;
-	loading: boolean;
-	onChange: any;
-	label?: string;
-	inputProps?: any;
+	source: any
+	sources: SourceCollectionInterface
+	loading: boolean
+	onChange: any
+	label?: string
+	inputProps?: any
 }
 
 export default function SourceSelectField( props: SourceSelectFieldProps ) {
@@ -23,19 +23,19 @@ export default function SourceSelectField( props: SourceSelectFieldProps ) {
 				label: 'Not selected',
 				value: '',
 			}
-		];
+		]
 		if ( props.sources && typeof props.sources === 'object' ) {
 			props.sources.forEach( ( value, key ) => {
 				options.push( {
 					label: value?.address.label ?? key,
 					value: key,
-				} );
-			} );
+				} )
+			} )
 		}
-		return options;
+		return options
 	}
 
-	const sourceOptions = getSourceOptions();
+	const sourceOptions = getSourceOptions()
 	return (
 			<Flex
 				//@ts-ignore
@@ -61,7 +61,7 @@ export default function SourceSelectField( props: SourceSelectFieldProps ) {
 					}
 				</Flex>
 			</Flex>
-	);
+	)
 }
  
 

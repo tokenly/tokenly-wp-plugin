@@ -1,14 +1,14 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	Spinner,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface PreloaderProps {
-	loading: boolean;
-	href?: string;
-	children?: any;
+	loading: boolean
+	href?: string
+	children?: any
 }
 
 export default function Preloader( props: PreloaderProps ) {
@@ -19,5 +19,5 @@ export default function Preloader( props: PreloaderProps ) {
 			<Spinner />
 		}
 		</Flex>
-	);
+	)
 }

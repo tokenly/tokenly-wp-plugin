@@ -1,37 +1,37 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { useState } from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	Flex,
 	Button,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface ConnectionActionsProps {
-	status: boolean;
-	disabled: boolean;
+	status: boolean
+	disabled: boolean
 }
 
 export default function ConnectionActions( props: ConnectionActionsProps ) {
-	const brand = useInjection( TYPES.Variables.brand );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const brand = useInjection( TYPES.Variables.brand )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
-	const [ connecting, setConnecting ] = useState( false );
-	const [ disconnecting, setDisconnecting ] = useState( false );
+	const [ connecting, setConnecting ] = useState( false )
+	const [ disconnecting, setDisconnecting ] = useState( false )
 
 	function resetStorage(): void {
-		localStorage.removeItem( `${namespace}-user-not-connected-notice-dismissed` );
+		localStorage.removeItem( `${namespace}-user-not-connected-notice-dismissed` )
 	}
 
 	function onConnectButtonClick() {
-		resetStorage();
-		setConnecting( true );
+		resetStorage()
+		setConnecting( true )
 	}
 
 	function onDisconnectButtonClick() {
-		resetStorage();
-		setDisconnecting( true );
+		resetStorage()
+		setDisconnecting( true )
 	}
 
 	return (
@@ -55,7 +55,7 @@ export default function ConnectionActions( props: ConnectionActionsProps ) {
 				{ `Disconnect from ${brand}` }
 			</Button>
 		</Flex>
-	);
+	)
 }
  
 

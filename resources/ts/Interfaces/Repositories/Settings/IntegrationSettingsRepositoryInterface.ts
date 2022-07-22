@@ -1,4 +1,4 @@
-import SettingsRepositoryInterface from "../SettingsRepositoryInterface";
+import SettingsRepositoryInterface from "../SettingsRepositoryInterface"
 
 export default interface IntegrationSettingsRepositoryInterface extends SettingsRepositoryInterface {
 	//

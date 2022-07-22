@@ -1,86 +1,86 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import Page from '../Page';
-import { TYPES } from '../../Types';
-import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface';
-import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface';
-import SourceStoreForm from '../../Components/Token/SourceStoreForm';
-import ResourceStoreActions from '../../Components/ResourceStoreActions';
-import Preloader from '../../Components/Preloader';
+import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useInjection } from 'inversify-react'
+import Page from '../Page'
+import { TYPES } from '../../Types'
+import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
+import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface'
+import SourceStoreForm from '../../Components/Token/SourceStoreForm'
+import ResourceStoreActions from '../../Components/ResourceStoreActions'
+import Preloader from '../../Components/Preloader'
 
-declare const window: any;
+declare const window: any
 
 import { 
 	Panel,
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SourceStorePageProps {
 	//
 }
 
 export default function SourceStorePage ( props: SourceStorePageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface );
-	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
+	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface )
 	
-	const [ storing, setStoring ] = useState<boolean>( false );
-	const [ loadingAddresses, setLoadingAddresses ] = useState<boolean>( false );
-	const [ addresses, setAddresses ] = useState<any>( null );
-	const [ storeData, setStoreData ] = useState<any>( {} );
+	const [ storing, setStoring ] = useState<boolean>( false )
+	const [ loadingAddresses, setLoadingAddresses ] = useState<boolean>( false )
+	const [ addresses, setAddresses ] = useState<any>( null )
+	const [ storeData, setStoreData ] = useState<any>( {} )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-source-index`;
+		window.location = `${adminPageUrl}${namespace}-token-source-index`
 	}
 
 	function onStoreSubmit( event: any ) {
-		event.preventDefault();
-		const selectedAddress = addresses[ storeData?.address ];
+		event.preventDefault()
+		const selectedAddress = addresses[ storeData?.address ]
 		if ( !selectedAddress ) {
-			return;
+			return
 		}
-		const newStoreData = Object.assign( {}, storeData );
-		newStoreData.type = addresses[ newStoreData.address ].type;	
-		setStoring( true );
+		const newStoreData = Object.assign( {}, storeData )
+		newStoreData.type = addresses[ newStoreData.address ].type	
+		setStoring( true )
 		sourceRepository.store( newStoreData ).then( ( result: any ) => {
-			setStoring( false );
-			window.location = `${adminPageUrl}${namespace}-token-source-show&source=${newStoreData.address}`;
-		} );
+			setStoring( false )
+			window.location = `${adminPageUrl}${namespace}-token-source-show&source=${newStoreData.address}`
+		} )
 	}
 	
 	function onStoreDataChange( newData: any ) {
-		setStoreData( newData );
+		setStoreData( newData )
 	}
 
 	function onCancel() {
-		goBack();
+		goBack()
 	}
 
 	useEffect( () => {
-		setLoadingAddresses( true );
+		setLoadingAddresses( true )
 		const params = {
 			registered: true,
 		}
 		userRepository.tokenAddressIndex( 'me', params ).then( ( addressesFound: any ) => {
-			const addressesKeyed = {} as any;
+			const addressesKeyed = {} as any
 			addressesFound.forEach( ( addressFound: any ) => {
-				addressesKeyed[ addressFound.address ] = addressFound;
-			} );
-			setLoadingAddresses( false );
-			setAddresses( addressesKeyed );
-			const urlParams = new URLSearchParams( window.location.search );
-			const address = urlParams.get( 'address' );
+				addressesKeyed[ addressFound.address ] = addressFound
+			} )
+			setLoadingAddresses( false )
+			setAddresses( addressesKeyed )
+			const urlParams = new URLSearchParams( window.location.search )
+			const address = urlParams.get( 'address' )
 			if ( address ) {
-				const newStoreData = Object.assign( {}, storeData );
-				newStoreData.address = address;
-				setStoreData( newStoreData );
+				const newStoreData = Object.assign( {}, storeData )
+				newStoreData.address = address
+				setStoreData( newStoreData )
 			}
-		} );
-	}, [] );
+		} )
+	}, [] )
 	
 	return (
 		<Page title="Source Creator">
@@ -115,5 +115,5 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 				</Panel>
 			</form>
 		</Page>
-	);
+	)
 }

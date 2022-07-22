@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import Page from '../Page';
-import AddressVerifyForm from '../../Components/Token/AddressVerifyForm';
-import Preloader from '../../Components/Preloader';
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface';
-import { ethers } from "ethers";
+import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import Page from '../Page'
+import AddressVerifyForm from '../../Components/Token/AddressVerifyForm'
+import Preloader from '../../Components/Preloader'
+import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import { ethers } from "ethers"
 
 import { 
 	Panel,
@@ -16,80 +16,80 @@ import {
 	Button,
 	Flex,
 	TextControl
-} from '@wordpress/components';
-import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface';
+} from '@wordpress/components'
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
 
-declare const window: any;
+declare const window: any
 
 interface AddressVerifyPageProps {
 	//
 }
 
 export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace: string = useInjection( TYPES.Variables.namespace );
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface );
+	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace: string = useInjection( TYPES.Variables.namespace )
+	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
 	
-	const urlParams = new URLSearchParams( window.location.search );
+	const urlParams = new URLSearchParams( window.location.search )
 
-	const [ verifying, setVerifying ] = useState<boolean>( false );
-	const [ loading, setLoading ] = useState<boolean>( false );
-	const [ address, setAddress ] = useState<AddressInterface>( null );
-	const [ id, setId ] = useState<string>( urlParams.get( 'address' ) );
-	const [ verifyData, setVerifyData ] = useState<any>( {} );
+	const [ verifying, setVerifying ] = useState<boolean>( false )
+	const [ loading, setLoading ] = useState<boolean>( false )
+	const [ address, setAddress ] = useState<AddressInterface>( null )
+	const [ id, setId ] = useState<string>( urlParams.get( 'address' ) )
+	const [ verifyData, setVerifyData ] = useState<any>( {} )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-address-index`;
+		window.location = `${adminPageUrl}${namespace}-token-address-index`
 	}
 
 	function onVerifySubmit( event: any ) {
-		event.preventDefault();
-		setVerifying( true );
+		event.preventDefault()
+		setVerifying( true )
 		addressRepository.verify( id, verifyData ).then( ( result: any ) => {
-			setVerifying( false );
-			goBack();
-		} );
+			setVerifying( false )
+			goBack()
+		} )
 	}
 
 	function onCancel() {
-		goBack();
+		goBack()
 	}
 	
 	function onVerifyDataChange( newData: any ) {
-		setVerifyData( newData );
+		setVerifyData( newData )
 	}
 
 	function initSigner(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			const provider = new ethers.providers.Web3Provider( window.ethereum );
+			const provider = new ethers.providers.Web3Provider( window.ethereum )
 			provider.send( 'eth_requestAccounts', [] )
 			.then( () => {
-				const signer = provider.getSigner();
-				return signer;
+				const signer = provider.getSigner()
+				return signer
 			} )
 			.then( ( signer ) => {
 				signer.signMessage( verifyData.verifyCode ).then( ( signature: string ) => {
-					const state = Object.assign( {}, verifyData );
-					state.signature = signature;
-					setVerifyData( state );
-					resolve( true );
-				} ).catch();
+					const state = Object.assign( {}, verifyData )
+					state.signature = signature
+					setVerifyData( state )
+					resolve( true )
+				} ).catch()
 			} )
-		} );
+		} )
 	}
 
 	useEffect( () => {
-		setLoading( true );
+		setLoading( true )
 		addressRepository.show( id ).then( ( addressFound: any ) => {
 			const newVerifyData = {
 				signature: null,
-			} as any;
-			setLoading( false );
-			setAddress( addressFound );
-			setVerifyData( newVerifyData );
-		} );
+			} as any
+			setLoading( false )
+			setAddress( addressFound )
+			setVerifyData( newVerifyData )
+		} )
 
-	}, [] );
+	}, [] )
 	
 	return (
 		<Page title="Address Verifier">
@@ -112,7 +112,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 									label="Verification Code"
 									value={ address.verifyCode }
 									onClick={ ( event: any ) => {
-										event.target.select();
+										event.target.select()
 									} }
 									onChange={ () => true }
 								/>
@@ -121,7 +121,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 									label="Pocket Address"
 									value={ address.address }
 									onClick={ ( event: any ) => {
-										event.target.select();
+										event.target.select()
 									} }
 									onChange={ () => true }
 								/>
@@ -165,5 +165,5 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 				</Panel>
 			</form>
 		</Page>
-	);
+	)
 }

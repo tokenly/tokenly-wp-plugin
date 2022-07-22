@@ -1,17 +1,17 @@
-import * as React from 'react';
-import GroupCardActions from './GroupCardActions';
-import GroupInfo from './GroupInfo';
-import GroupLink from './GroupLink';
+import * as React from 'react'
+import GroupCardActions from './GroupCardActions'
+import GroupInfo from './GroupInfo'
+import GroupLink from './GroupLink'
 
 import { 
 	Card,
 	CardHeader,
 	CardBody,
 	CardFooter
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface GroupCardProps {
-	group: any;
+	group: any
 }
 
 export default function GroupCard( props: GroupCardProps ) {
@@ -27,7 +27,7 @@ export default function GroupCard( props: GroupCardProps ) {
 				<GroupCardActions group={ props.group?.uuid } />
 			</CardFooter>
 		</Card>
-	);
+	)
 }
  
 

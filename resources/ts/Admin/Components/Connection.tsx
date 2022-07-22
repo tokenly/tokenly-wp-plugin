@@ -1,14 +1,14 @@
-import * as React from 'react';
-import ConnectionInfo from './ConnectionInfo';
-import ConnectionActions from './ConnectionActions';
-import UserInterface from '../../Interfaces/Models/UserInterface';
+import * as React from 'react'
+import ConnectionInfo from './ConnectionInfo'
+import ConnectionActions from './ConnectionActions'
+import UserInterface from '../../Interfaces/Models/UserInterface'
 
 import { 
 	Flex
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface ConnectionProps {
-	user: UserInterface;
+	user: UserInterface
 }
 
 export default function Connection( props: ConnectionProps ) {
@@ -21,7 +21,7 @@ export default function Connection( props: ConnectionProps ) {
 			<ConnectionInfo status={ props?.user?.canConnect } user={ props?.user } />
 			<ConnectionActions disabled={ !props?.user } status={ props?.user?.canConnect } />
 		</Flex>
-	);
+	)
 }
  
 

@@ -1,4 +1,4 @@
-import { TYPES as CommonTypes } from '../Types';
+import { TYPES as CommonTypes } from '../Types'
 
 const TYPES = Object.assign( {
 	Components: {
@@ -32,6 +32,6 @@ const TYPES = Object.assign( {
 			BalanceComponentFactoryInterface      : Symbol.for( 'CreditBalanceComponentFactoryInterface' ),
 		},
 	},
-}, CommonTypes );
+}, CommonTypes )
 
-export { TYPES };
+export { TYPES }

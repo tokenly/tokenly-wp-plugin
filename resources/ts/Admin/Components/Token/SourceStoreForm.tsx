@@ -1,39 +1,39 @@
-import * as React from 'react';
-import AddressInfo from './AddressInfo';
-import AddressSelectField from './AddressSelectField';
+import * as React from 'react'
+import AddressInfo from './AddressInfo'
+import AddressSelectField from './AddressSelectField'
 
 import { 
 	Flex,
 	TextareaControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface SourceStoreFormProps {
-	loadingAddresses: boolean;
-	onChange: any;
-	addresses: any;
-	storeData: any;
+	loadingAddresses: boolean
+	onChange: any
+	addresses: any
+	storeData: any
 }
 
 export default function SourceStoreForm( props: SourceStoreFormProps ) {
 	function getCurrentAddress() {
 		if ( props.addresses && typeof props.addresses === 'object' && props.storeData?.address ) {
-			return props.addresses[ props.storeData.address ];
+			return props.addresses[ props.storeData.address ]
 		}
 	}
 
 	function onAddressFieldChange( address: string ) {
-		const state = Object.assign( {}, props.storeData );
-		state.address = address;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.address = address
+		props.onChange( state )
 	}
 
 	function onAssetsFieldChange( value: any ) {
-		const state = Object.assign( {}, props.storeData );
-		state.assets = value;
-		props.onChange( state );
+		const state = Object.assign( {}, props.storeData )
+		state.assets = value
+		props.onChange( state )
 	}  
 
-	const address = getCurrentAddress();
+	const address = getCurrentAddress()
 	return (
 		<div style={ { width: '100%', maxWidth: "400px" } }>
 			<Flex
@@ -61,5 +61,5 @@ export default function SourceStoreForm( props: SourceStoreFormProps ) {
 				/>
 			</Flex>
 		</div>
-	);
+	)
 }

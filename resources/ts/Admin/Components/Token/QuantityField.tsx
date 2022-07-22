@@ -1,15 +1,15 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
 	TextControl,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface QuantityFieldProps {
-	quantity: number;
-	onChange: any;
-	max?: number;
-	inputProps?: any;
+	quantity: number
+	onChange: any
+	max?: number
+	inputProps?: any
 }
 
 export default function QuantityField( props: QuantityFieldProps ) {
@@ -24,7 +24,7 @@ export default function QuantityField( props: QuantityFieldProps ) {
 						min={ 0 }
 						style={ { maxWidth: '100px' } }
 						onChange={ (value: any) => {
-							props.onChange( value );
+							props.onChange( value )
 						} }
 						{ ...props?.inputProps }
 					/>
@@ -39,7 +39,7 @@ export default function QuantityField( props: QuantityFieldProps ) {
 				</Flex>
 			</label>
 		</Flex>
-	);
+	)
 }
  
 

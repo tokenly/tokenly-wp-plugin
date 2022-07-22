@@ -9,20 +9,30 @@ use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LoginButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\LogoutButtonShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\InventoryShortcodeInterface;
 use Tokenly\Wp\Interfaces\Presentation\Shortcodes\UserInfoShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Credit\BalanceShortcodeInterface as CreditBalanceShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Credit\InventoryShortcodeInterface as CreditInventoryShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\BalanceShortcodeInterface as TokenBalanceShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\InventoryShortcodeInterface as TokenInventoryShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaShortcodeInterface as TokenMetaShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaInfoShortcodeInterface as TokenMetaInfoShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaAttributesShortcodeInterface as TokenMetaAttributesShortcodeInterface;
-use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaMediaShortcodeInterface as TokenMetaMediaShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Credit\BalanceShortcodeInterface
+	as CreditBalanceShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Credit\InventoryShortcodeInterface
+	as CreditInventoryShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\BalanceShortcodeInterface
+	as TokenBalanceShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\InventoryShortcodeInterface
+	as TokenInventoryShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaShortcodeInterface
+	as TokenMetaShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaInfoShortcodeInterface
+	as TokenMetaInfoShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaAttributesShortcodeInterface
+	as TokenMetaAttributesShortcodeInterface;
+use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaMediaShortcodeInterface
+	as TokenMetaMediaShortcodeInterface;
 use Twig\Environment;
 
 /**
  * Registers shortcodes
  */
-class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServiceProviderInterface {
+class ShortcodeServiceProvider extends ServiceProvider
+	implements ShortcodeServiceProviderInterface
+{
 	protected string $namespace;
 	protected Environment $twig;
 
@@ -71,7 +81,9 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 				if ( !is_array( $atts ) ) {
 					$atts = array();
 				}
-				$response = $service->shortcode_callback( $atts, $content, $tag );
+				$response = $service->shortcode_callback(
+					$atts, $content, $tag
+				);
 				return $this->render_shortcode( $response );
 			};
 			add_shortcode( $name, $callback );
@@ -84,10 +96,15 @@ class ShortcodeServiceProvider extends ServiceProvider implements ShortcodeServi
 	 * @param array $parameters Shortcode parameters
 	 * @return string
 	 */
-	protected function render_shortcode( array $parameters = array() ): string {
+	protected function render_shortcode(
+		array $parameters = array()
+	): string {
 		$template = $parameters['template'];
 		$data = array();
-		if ( isset( $parameters['data'] ) && is_array( $parameters['data'] ) ) {
+		if (
+			isset( $parameters['data'] ) &&
+			is_array( $parameters['data'] )
+		) {
 			$data = $parameters['data'];
 		}
 		$html = $this->twig->render( $template, $data );

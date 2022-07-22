@@ -14,7 +14,9 @@ use Invoker\InvokerInterface;
 /**
  * Registers columns
  */
-class ListingServiceProvider extends ServiceProvider implements ListingServiceProviderInterface {
+class ListingServiceProvider extends ServiceProvider
+	implements ListingServiceProviderInterface
+{
 	protected InvokerInterface $invoker;
 	protected string $root_dir;
 	protected string $namespace;

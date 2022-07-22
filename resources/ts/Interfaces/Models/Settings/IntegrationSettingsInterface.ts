@@ -1,8 +1,8 @@
-import SettingsInterface from '../SettingsInterface';
+import SettingsInterface from '../SettingsInterface'
 
 export default interface IntegrationSettingsInterface extends SettingsInterface {
-	clientId?: string;
-	clientSecret?: string;
-	settingsUpdated?: boolean;
-	canConnect?: boolean;
+	clientId?: string
+	clientSecret?: string
+	settingsUpdated?: boolean
+	canConnect?: boolean
 }

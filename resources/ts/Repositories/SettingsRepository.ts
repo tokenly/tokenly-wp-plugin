@@ -1,36 +1,43 @@
-import SettingsRepositoryInterface from '../Interfaces/Repositories/SettingsRepositoryInterface';
+import SettingsRepositoryInterface
+	from '../Interfaces/Repositories/SettingsRepositoryInterface'
 
-import { injectable, inject } from 'inversify';
-import { TYPES } from '../Types';
+import { injectable, inject } from 'inversify'
+import { TYPES } from '../Types'
 
 import {
 	ApiServiceInterface,
 	SettingsUpdateParamsInterface,
-} from '../Interfaces/Services/ApiServiceInterface';
+} from '../Interfaces/Services/ApiServiceInterface'
 
 @injectable()
-export default class SettingsRepository implements SettingsRepositoryInterface {
-	protected ApiService: ApiServiceInterface;
-	protected settingsType: string;
+export default class SettingsRepository
+	implements SettingsRepositoryInterface
+{
+	protected ApiService: ApiServiceInterface
+	protected settingsType: string
 	
 	constructor(
-		@inject( TYPES.Services.ApiServiceInterface ) ApiService: ApiServiceInterface
+		@inject(
+			TYPES.Services.ApiServiceInterface
+		) ApiService: ApiServiceInterface
 	) {
-		this.ApiService = ApiService;
+		this.ApiService = ApiService
 	}
 
 	protected formatResponse( response: any ): any {
-		return response;
+		return response
 	}
 	
 	public update( params: SettingsUpdateParamsInterface ): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			this.ApiService.settingsUpdate( this.settingsType, params ).then( ( result: any ) => {
-				result = this.formatResponse( result );
-				resolve( result );
+			this.ApiService.settingsUpdate(
+				this.settingsType, params
+			).then( ( result: any ) => {
+				result = this.formatResponse( result )
+				resolve( result )
 			} ).catch( error => {
-				reject( error );
-			} );
-		} );
+				reject( error )
+			} )
+		} )
 	}
 }

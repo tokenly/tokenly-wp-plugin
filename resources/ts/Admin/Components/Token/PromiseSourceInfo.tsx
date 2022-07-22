@@ -1,37 +1,37 @@
-import * as React from 'react';
-import { PromiseData } from '../../../Interfaces';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
+import * as React from 'react'
+import { PromiseData } from '../../../Interfaces'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface PromiseSourceInfoProps {
-	promise: PromiseData;
-	sources: any; 
-	loadingSources: boolean;
+	promise: PromiseData
+	sources: any 
+	loadingSources: boolean
 }
 
 export default function PromiseSourceInfo( props: PromiseSourceInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 	
 	function getPromiseSource( promiseItem: any ) {
-		let address = promiseItem.source_id;
-		const source = props.sources[ promiseItem.source_id ] ?? null;
+		let address = promiseItem.source_id
+		const source = props.sources[ promiseItem.source_id ] ?? null
 		if ( source ) {
-			address = source?.address?.label;
+			address = source?.address?.label
 		}
-		return address;
+		return address
 	}
 	
 	function sourceExists( promiseItem: any ) {
-		const source = props.sources[ promiseItem.source_id ] ?? null;
+		const source = props.sources[ promiseItem.source_id ] ?? null
 		if ( source ) {
-			return true;
+			return true
 		} else {
-			return false;
+			return false
 		}
 	}
 
@@ -49,7 +49,7 @@ export default function PromiseSourceInfo( props: PromiseSourceInfoProps ) {
 				</span>
 			</div>
 		</Flex>
-	);
+	)
 }
  
 

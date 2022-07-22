@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { useInjection } from 'inversify-react';
-import { TYPES } from '../../Types';
-import { PromiseData } from '../../../Interfaces';
-import PromiseLink from './PromiseLink';
-import PromiseInfo from './PromiseInfo';
-import CardActions from '../CardActions';
+import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
+import { PromiseData } from '../../../Interfaces'
+import PromiseLink from './PromiseLink'
+import PromiseInfo from './PromiseInfo'
+import CardActions from '../CardActions'
 
 import { 
 	Card,
@@ -12,15 +12,15 @@ import {
 	CardBody,
 	CardFooter,
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface PromiseCardProps {
-	promise: PromiseData;
+	promise: PromiseData
 }
 
 export default function PromiseCard( props: PromiseCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl );
-	const namespace = useInjection( TYPES.Variables.namespace );
+	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
+	const namespace = useInjection( TYPES.Variables.namespace )
 
 	return (
 		<Card size="extraSmall">
@@ -56,7 +56,7 @@ export default function PromiseCard( props: PromiseCardProps ) {
 				/>
 			</CardFooter>
 		</Card>
-	);
+	)
 }
  
 

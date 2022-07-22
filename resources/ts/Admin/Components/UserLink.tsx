@@ -1,14 +1,14 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Button,
 	Dashicon,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface UserLinkProps {
-	url: string;
-	alt: string;
-	name: string;
+	url: string
+	alt: string
+	name: string
 }
 
 export default function UserLink( props: UserLinkProps ) {
@@ -24,7 +24,7 @@ export default function UserLink( props: UserLinkProps ) {
 				</Button>
 			</b>
 		</div>
-	);
+	)
 }
  
 

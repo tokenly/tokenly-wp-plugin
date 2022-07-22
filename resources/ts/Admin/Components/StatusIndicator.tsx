@@ -1,11 +1,11 @@
-import * as React from 'react';
+import * as React from 'react'
 
 import { 
 	Flex,
-} from '@wordpress/components';
+} from '@wordpress/components'
 
 interface StatusIndicatorlProps {
-	status: boolean;
+	status: boolean
 }
 
 export default function StatusIndicator( props: StatusIndicatorlProps ) {
@@ -23,7 +23,7 @@ export default function StatusIndicator( props: StatusIndicatorlProps ) {
 				} }>
 			</span>
 		</Flex>
-	);
+	)
 }
  
 

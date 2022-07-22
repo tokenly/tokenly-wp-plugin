@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { Container } from 'inversify'
+import { Container, interfaces } from 'inversify'
 import { TYPES } from './Types'
 import AuthService from './Services/AuthService'
 import ApiService from './Services/ApiService'
@@ -52,6 +52,9 @@ import OauthSettingsRepositoryInterface from
 	'./Interfaces/Repositories/Settings/OauthSettingsRepositoryInterface'
 import CreditWhitelistSettingsRepositoryInterface from
 	'./Interfaces/Repositories/Settings/CreditWhitelistSettingsRepositoryInterface'
+import RouteManager from './Models/RouteManager'
+import RouteManagerInterface from './Interfaces/Models/RouteManagerInterface'
+import Dictionary from './dictionary'
 
 declare const window: any
 
@@ -116,7 +119,6 @@ export default function bind( container: Container ) {
 		TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
 		.to( TcaSettingsRepository )
 		.inSingletonScope()
-
 	container.bind<string>( TYPES.Variables.adminUrl )
 		.toConstantValue( '/wp-admin/' )
 	container.bind<string>( TYPES.Variables.adminPageUrl )
@@ -133,14 +135,18 @@ export default function bind( container: Container ) {
 	const shared = window?.tokenpassData?.shared
 	container.bind<string>( TYPES.Variables.nonce )
 		.toConstantValue( shared?.nonce ?? null )
-	container.bind<string>( TYPES.Variables.routes )
-		.toConstantValue( shared?.routes ?? null )
+	container.bind<RouteManagerInterface>( TYPES.Variables.routes )
+		.toConstantValue( ( new RouteManager() ).fromJson( shared?.routes ) )
 	container.bind<string>( TYPES.Variables.fallbackImage )
 		.toConstantValue( shared?.fallback_image ?? null )
 	container.bind<string>( TYPES.Variables.isUserConnected )
 		.toConstantValue( shared?.user_can_connect ?? false )
 	container.bind<string>( TYPES.Variables.isIntegrationConnected )
 		.toConstantValue( shared?.integration_can_connect ?? false )
+	container.bind<any>( TYPES.Variables.dictionary )
+		.toDynamicValue((context: interfaces.Context) => {
+			return new Dictionary( context.container.get(TYPES.Variables.brand) ) 
+		})
 	return container
 }
 
