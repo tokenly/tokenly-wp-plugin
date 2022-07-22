@@ -20,9 +20,10 @@ class ItemCardComponentModel extends ComponentModel implements ItemCardComponent
 		if ( isset( $data['account'] ) ) {
 			$balance = $account->balance;
 		}
-		return array(
+		$card = array(
 			'name'   => $name,
 			'balance' => $balance,
 		);
+		return $card;
 	}
 }

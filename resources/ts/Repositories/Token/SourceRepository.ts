@@ -37,8 +37,9 @@ export default class SourceRepository implements SourceRepositoryInterface {
 			this.ApiService.tokenSourceIndex(
 				params
 			).then( ( result: any ) => {
-				result = ( new SourceCollection() ).fromJson( result )
-				resolve( result )
+				const collection =
+					( new SourceCollection() ).fromJson( result )
+				resolve( collection )
 			} ).catch( error => {
 				reject( error )
 			} )
@@ -52,8 +53,11 @@ export default class SourceRepository implements SourceRepositoryInterface {
 			this.ApiService.tokenSourceShow(
 				id, params
 			).then( ( result: any ) => {
-				result = ( new Source() ).fromJson( result )
-				resolve( result )
+				let source = null
+				if ( result ) {
+					source = ( new Source() ).fromJson( result )
+				}
+				resolve( source )
 			} ).catch( error => {
 				reject( error )
 			} )

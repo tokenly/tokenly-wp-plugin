@@ -27,12 +27,6 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 		const sequential = newRules.toSequential()
 		props.onChange( sequential )
 	}
-
-	function removeEmpty( newRules: any ) {
-		return newRules.filter( function ( rule: any ) {
-			return rule != null
-		} )
-	}
 	
 	function onRemove( index: number ) {
 		const newRules = props.editData.tcaRules.clone()

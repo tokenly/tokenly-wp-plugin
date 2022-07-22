@@ -1,9 +1,12 @@
 import { injectable } from 'inversify'
 import Component from '../Component'
-import ItemCardComponentInterface from '../../Interfaces/Components/Token/ItemCardComponentInterface'
+import ItemCardComponentInterface
+	from '../../Interfaces/Components/Token/ItemCardComponentInterface'
 
 @injectable()
-export default class ItemCardComponent extends Component implements ItemCardComponentInterface {
+export default class ItemCardComponent extends Component
+	implements ItemCardComponentInterface
+{
 	element: HTMLElement
 	
 	constructor() {

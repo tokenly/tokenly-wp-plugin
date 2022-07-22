@@ -16,12 +16,10 @@ export default class Rule extends Model implements RuleInterface {
 	}
 
 	public toJson(): any {
-		return {
-			...( this.asset ) && { asset: this.asset },
-			...( this.quantity ) && { quantity: this.quantity },
-			...( this.op ) && { op: this.op },
-			...( this.stackOp ) && { stack_op: this.stackOp },
-		}
+		const json: any = Object.assign( {} , this )
+		delete json.stackOp
+		json.stack_op = this.stackOp
+		return json
 	}
 
 	protected get fillable(): Array<string> {

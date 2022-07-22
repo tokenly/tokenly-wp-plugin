@@ -5,7 +5,9 @@ namespace Tokenly\Wp\Presentation\Components;
 use Tokenly\Wp\Presentation\Components\ComponentModel;
 use Tokenly\Wp\Interfaces\Presentation\Components\LogoutButtonComponentModelInterface;
 
-class LogoutButtonComponentModel extends ComponentModel implements LogoutButtonComponentModelInterface {
+class LogoutButtonComponentModel extends ComponentModel
+	implements LogoutButtonComponentModelInterface
+{
 	protected string $root_dir;
 	protected string $namespace;
 	

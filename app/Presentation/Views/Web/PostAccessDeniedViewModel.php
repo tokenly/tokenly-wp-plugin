@@ -5,7 +5,9 @@ namespace Tokenly\Wp\Presentation\Views\Web;
 use Tokenly\Wp\Presentation\Views\ViewModel;
 use Tokenly\Wp\Interfaces\Presentation\Views\Web\PostAccessDeniedViewModelInterface;
 
-class PostAccessDeniedViewModel extends ViewModel implements PostAccessDeniedViewModelInterface {
+class PostAccessDeniedViewModel extends ViewModel
+	implements PostAccessDeniedViewModelInterface
+{
 	/**
 	 * @inheritDoc
 	 */
@@ -23,7 +25,8 @@ class PostAccessDeniedViewModel extends ViewModel implements PostAccessDeniedVie
 			$verdict = $data['verdict'];
 			$verdict = $verdict->to_array();
 			if ( isset( $verdict['reports'] ) ) {
-				$verdict['note'] = "Please, make sure you can pass the following requirements:";
+				$verdict['note'] = 
+					"Please, make sure you can pass the following requirements:";
 				$reports = $verdict['reports'];
 				$reports_formatted = array();
 				foreach ( $reports as $report ) {

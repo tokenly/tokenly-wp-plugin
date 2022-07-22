@@ -1,12 +1,15 @@
 import Model from '../Model'
 import BalanceInterface from '../../Interfaces/Models/Token/BalanceInterface'
+import AssetInterface from '../../Interfaces/Models/Token/AssetInterface'
+import QuantityInterface from '../../Interfaces/Models/Token/QuantityInterface'
+import MetaInterface from '../../Interfaces/Models/Token/MetaInterface'
 
 export default class Balance extends Model implements BalanceInterface {
 	public name?: string = null
 	public precision?: number = null
-	public asset?: object = null
-	public quantity?: number = null
-	public meta?: object = null
+	public asset?: AssetInterface = null
+	public quantity?: QuantityInterface = null
+	public meta?: MetaInterface = null
 
 	protected get fillable(): Array<string> {
 		return super.fillable.concat( [

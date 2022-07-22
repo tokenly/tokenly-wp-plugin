@@ -18,7 +18,8 @@ export default class App {
 	
 	protected registerProviders() {
 		this.providers.forEach( provider => {
-			const providerInstance = this.container.get( provider ) as ServiceProviderInterface
+			const providerInstance = 
+				this.container.get( provider ) as ServiceProviderInterface
 			providerInstance.register()
 		} )
 	}

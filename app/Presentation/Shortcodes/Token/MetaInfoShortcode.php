@@ -9,7 +9,9 @@ use Tokenly\Wp\Interfaces\Repositories\UserRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\CategoryTermRepositoryInterface;
 
-class MetaInfoShortcode extends Shortcode implements MetaInfoShortcodeInterface {
+class MetaInfoShortcode extends Shortcode
+	implements MetaInfoShortcodeInterface
+{
 	protected string $fallback_image;
 	protected MetaRepositoryInterface $meta_repository;
 	protected CategoryTermRepositoryInterface $category_term_repository;
@@ -30,12 +32,17 @@ class MetaInfoShortcode extends Shortcode implements MetaInfoShortcodeInterface 
 	/**
 	 * @inheritDoc
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		if ( isset( $atts['id'] ) ) {
 			$post = $this->meta_repository->show( array(
 				'id' => $atts['id'],
 			) );
-			$post = $this->category_term_repository->apply_meta_fallback_single( $post );
+			$post = 
+				$this->category_term_repository->apply_meta_fallback_single(
+					$post
+				);
 			if ( $post ) {
 				$post = $post->to_array();
 				if ( !$post['image'] || $post['image'] == false ) {

@@ -10,7 +10,9 @@ use Tokenly\Wp\Interfaces\Repositories\Settings\OauthSettingsRepositoryInterface
 use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\Settings\IntegrationSettingsRepositoryInterface;
 
-class LoginButtonComponentModel extends ComponentModel implements LoginButtonComponentModelInterface {
+class LoginButtonComponentModel extends ComponentModel
+	implements LoginButtonComponentModelInterface
+{
 	protected string $root_dir;
 	protected string $namespace;
 	protected IntegrationSettingsRepositoryInterface $integration_setttings_repository;
@@ -28,8 +30,10 @@ class LoginButtonComponentModel extends ComponentModel implements LoginButtonCom
 		$this->namespace = $namespace;
 		$this->oauth_setttings_repository = $oauth_setttings_repository;
 		$this->oauth_settings = $this->oauth_setttings_repository->show();
-		$this->integration_setttings_repository = $integration_setttings_repository;
-		$this->integration_settings = $this->integration_setttings_repository->show();
+		$this->integration_setttings_repository = 
+			$integration_setttings_repository;
+		$this->integration_settings = 
+			$this->integration_setttings_repository->show();
 	}
 
 	/**

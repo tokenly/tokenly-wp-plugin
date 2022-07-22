@@ -8,6 +8,8 @@ import {
 	Button,
 	Flex,
 } from '@wordpress/components'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface AddressInfoProps {
 	promise: any
@@ -15,8 +17,10 @@ interface AddressInfoProps {
 }
 
 export default function AddressInfo( props: AddressInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
+	const routes: RouteManagerInterface = useInjection(
+		TYPES.Variables.routes
+	)
+	const sourceId = props.promise?.sourceId
 
 	function getListItems() {
 		const properties = getProperties()
@@ -40,7 +44,7 @@ export default function AddressInfo( props: AddressInfoProps ) {
 	function getAssetName(): string {
 		let name: string
 		if ( props.promise.token_meta ) {
-			name = props.promise.token_meta.name
+			name = props.promise.tokenMeta.name
 		} else {
 			name = props.promise.asset.address
 			if ( props.promise.asset.index ) {
@@ -58,14 +62,15 @@ export default function AddressInfo( props: AddressInfoProps ) {
 			},
 			{
 				label: 'Quantity',
-				value: props.promise?.quantity?.value ?? props.promise?.quantity?.value_sat,
+				value: props.promise?.quantity?.value ?? 
+					props.promise?.quantity?.valueSat,
 			},
 		]
 		if ( props.verbose ) {
 			properties.push(
 				{
 					label: 'ID',
-					value: props.promise?.promise_id,
+					value: props.promise?.promiseId,
 				},
 				{
 					label: 'Ref',
@@ -77,19 +82,15 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				},
 				{
 					label: 'Created at',
-					value: dateFormatted( props.promise?.created_at ),
+					value: dateFormatted( props.promise?.createdAt ),
 				},
 				{
 					label: 'Updated at',
-					value: dateFormatted( props.promise?.updated_at ),
+					value: dateFormatted( props.promise?.updatedAt ),
 				},
 			)
 		}
 		return properties
-	}
-
-	function isPromiseValid() {
-		return ( props.promise && typeof props.promise === 'object' )
 	}
 
 	function dateFormatted( date: Date ) {
@@ -107,9 +108,18 @@ export default function AddressInfo( props: AddressInfoProps ) {
 						<span>Source: </span>
 						<Button
 							isLink
-							href={ `${adminPageUrl}${namespace}-token-source-show&source=${props.promise?.source_id}` }
+							href = {
+								routes.get(
+									'admin',
+									'token_source_show',
+									{
+										source: sourceId
+									}
+								)
+							}
 						>
-							<span>{props.promise?.source?.address.label ?? props.promise.source_id}</span>
+							<span>{props.promise?.source?.address.label ??
+								sourceId}</span>
 						</Button>
 					</div>
 					<PromiseParticipants promise={ props.promise } />

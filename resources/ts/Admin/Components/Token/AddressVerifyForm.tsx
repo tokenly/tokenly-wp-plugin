@@ -6,7 +6,7 @@ import {
 } from '@wordpress/components'
 
 interface AddressVerifyFormProps {
-	onChange: any
+	onChange: ( data: any ) => void
 	verifyData: any
 }
 

@@ -52,13 +52,13 @@ class ItemCardComponentModel extends ComponentModel
 				$asset = $asset->name;
 			}
 		}
-		$data = array(
+		$card = array(
 			'asset'       => $asset,
 			'name'        => $name,
 			'description' => $description,
 			'image'       => $image,
 			'balance'     => $amount,
 		);
-		return $data;
+		return $card;
 	}
 }

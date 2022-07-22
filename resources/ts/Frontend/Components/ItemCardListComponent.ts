@@ -1,18 +1,26 @@
-import { injectable, inject, interfaces } from 'inversify'
+import { injectable, inject } from 'inversify'
 import Component from './Component'
 import { TYPES } from '../Types'
-import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface'
-import ItemCardListComponentInterface from '../Interfaces/Components/Token/ItemCardListComponentInterface'
+import UserRepositoryInterface
+	from '../../Interfaces/Repositories/UserRepositoryInterface'
+import ItemCardListComponentInterface
+	from '../Interfaces/Components/Token/ItemCardListComponentInterface'
+import BalanceCollectionInterface
+	from '../../Interfaces/Collections/Token/BalanceCollectionInterface'
+import BalanceInterface from '../../Interfaces/Models/Token/BalanceInterface'
+import CollectionInterface from '../../Interfaces/Collections/CollectionInterface'
 
 const Twig = require( '/node_modules/twig/twig.min.js' )
 
 @injectable()
-export default class ItemCardListComponent extends Component implements ItemCardListComponentInterface {
+export default class ItemCardListComponent extends Component
+	implements ItemCardListComponentInterface
+{
 	public element: HTMLElement
 	protected pluginUrl: string
 	protected userRepository: any
 	protected cardFactory: any
-	protected _balances: any
+	protected _balances: CollectionInterface
 	protected cardTemplate: any
 	protected itemContainer: any
 	protected serviceMethod: string = ''
@@ -26,7 +34,9 @@ export default class ItemCardListComponent extends Component implements ItemCard
 	
 	public constructor(
 		@inject( TYPES.Variables.pluginUrl ) pluginUrl: string,
-		@inject( TYPES.Repositories.UserRepositoryInterface ) userRepository: UserRepositoryInterface,
+		@inject(
+			TYPES.Repositories.UserRepositoryInterface
+		) userRepository: UserRepositoryInterface,
 	) {
 		super()
 		this.pluginUrl = pluginUrl
@@ -43,7 +53,9 @@ export default class ItemCardListComponent extends Component implements ItemCard
 
 	protected initStyleSwitches(): void {
 		this._style = this.element.dataset.style
-		this.styleSwitches = this.element.querySelectorAll( '.action-container .style-select' )
+		this.styleSwitches = this.element.querySelectorAll(
+			'.action-container .style-select'
+		)
 		if ( !this.styleSwitches ) {
 			return
 		}
@@ -71,11 +83,11 @@ export default class ItemCardListComponent extends Component implements ItemCard
 		} )
 	}
 
-	public get balances(): Array<object> {
+	public get balances(): CollectionInterface {
 		return this._balances
 	}
 
-	public set balances( balances: Array<object> ) {
+	public set balances( balances: CollectionInterface ) {
 		this._balances = balances
 		this.refreshCards()
 	}
@@ -90,7 +102,9 @@ export default class ItemCardListComponent extends Component implements ItemCard
 			this.userRepository.show( userId ).then( ( user: any ) => {
 				this.user = user
 			} ).then( () => {
-				this.userRepository[ this.serviceMethod ]( userId ).then( ( balances: any ) => {
+				this.userRepository[ this.serviceMethod ]( userId ).then( (
+					balances: CollectionInterface
+				) => {
 					this.balances = balances
 					resolve( true )
 				} )
@@ -127,29 +141,39 @@ export default class ItemCardListComponent extends Component implements ItemCard
 	 */
 	protected renderCards(): Promise<string> {
 		return new Promise( ( resolve, reject ) => {
-			let balances = Object.assign( [], this.balances )
+			if (!this.balances) {
+				return
+			}
+			let balances: BalanceCollectionInterface = this.balances.clone()
 			balances = this.filterBalances( balances )
 			this.loadCardMacroTemplate().then( ( template: any ) => {
-				balances = balances.map( ( balance: any ) => {
+				const balancesArray = Array.from( balances.values() ).map( (
+					balance: any
+				) => {
 					balance = this.formatBalance( balance )
 					const html = template.render( balance )
 					return html
 				} )
-				if ( balances.length == 0 ) {
+				if ( balancesArray.length == 0 ) {
 					this.element.classList.add( 'is-empty' )
+				} else {
+					this.element.classList.remove( 'is-empty' )
 				}
-				const html = balances.join( '' )
+				const html = balancesArray.join( '' )
 				resolve( html )
 			} )
 		} )
 	}
 
-	protected filterBalances( balances: any ) {
+	protected filterBalances( balances: BalanceCollectionInterface ) {
 		if ( this.filter && this.filter != '' ) {
-			const balance = balances.filter( ( balance: any ) => {
-				return balance.name == this.filter
+			balances.forEach( ( balance: BalanceInterface, key: any ) => {
+				if ( balance.name != this.filter ) {
+					balances.delete( key )
+				}
 			} )
-			return balance
+			const sequential = balances.toSequential()
+			return sequential
 		}
 		return balances
 	}

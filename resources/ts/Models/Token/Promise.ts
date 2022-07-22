@@ -6,6 +6,9 @@ import PromiseMetaInterface from '../../Interfaces/Models/Token/PromiseMetaInter
 import SourceInterface from '../../Interfaces/Models/Token/SourceInterface'
 import QuantityInterface from '../../Interfaces/Models/Token/QuantityInterface'
 import AssetInterface from '../../Interfaces/Models/Token/AssetInterface'
+import PromiseMeta from './PromiseMeta'
+import Meta from './Meta'
+import Quantity from './Quantity'
 
 export default class Promise extends Model implements PromiseInterface {
 	public sourceId?: string = null
@@ -44,12 +47,16 @@ export default class Promise extends Model implements PromiseInterface {
 			data.promiseId = data.promise_id
 			delete data.promise_id
 		}
+		if ( data.quantity ) {
+			data.quantity = ( new Quantity() ).fromJson( data.quantity )
+		}
 		if ( data.promise_meta ) {
-			data.promiseMeta = data.promise_meta
+			data.promiseMeta = 
+				( new PromiseMeta() ).fromJson( data.promise_meta )
 			delete data.promise_meta
 		}
 		if ( data.token_meta ) {
-			data.tokenMeta = data.token_meta
+			data.tokenMeta = ( new Meta() ).fromJson( data.token_meta )
 			delete data.token_meta
 		}
 		return super.fromJson( data )

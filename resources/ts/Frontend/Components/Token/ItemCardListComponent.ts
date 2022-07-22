@@ -1,24 +1,35 @@
 import ItemCardListComponent from '../ItemCardListComponent'
-import ItemCardListComponentInterface from '../../Interfaces/Components/Token/ItemCardListComponentInterface'
+import ItemCardListComponentInterface from
+	'../../Interfaces/Components/Token/ItemCardListComponentInterface'
 
 import { injectable, inject, interfaces } from 'inversify'
 import { TYPES } from '../../Types'
-import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface'
-import ItemCardComponentInterface from '../../Interfaces/Components/Token/ItemCardComponentInterface'
+import UserRepositoryInterface from
+	'../../../Interfaces/Repositories/UserRepositoryInterface'
+import ItemCardComponentInterface from
+	'../../Interfaces/Components/Token/ItemCardComponentInterface'
 import MasonryGrid from '../MasonryGrid'
+import BalanceInterface from '../../../Interfaces/Models/Token/BalanceInterface'
 
 @injectable()
-export default class TokenItemCardListComponent extends ItemCardListComponent implements ItemCardListComponentInterface {
+export default class TokenItemCardListComponent extends ItemCardListComponent
+	implements ItemCardListComponentInterface
+{
 	protected serviceMethod: string = 'tokenBalanceIndex'
-	protected templateDir: string = '/resources/views/js/Token/ItemCardComponent.twig'
+	protected templateDir: string =
+		'/resources/views/js/Token/ItemCardComponent.twig'
 	protected masonryGrid: any
 	protected fallbackImage: string
 	
 	public constructor(
 		@inject( TYPES.Variables.pluginUrl ) pluginUrl: string,
 		@inject( TYPES.Variables.fallbackImage ) fallbackImage: string,
-		@inject( TYPES.Repositories.UserRepositoryInterface ) userRepository: UserRepositoryInterface,
-		@inject( TYPES.Factories.Token.ItemCardComponentFactoryInterface ) itemCardComponentFactory: interfaces.AutoFactory<ItemCardComponentInterface>
+		@inject(
+			TYPES.Repositories.UserRepositoryInterface
+		) userRepository: UserRepositoryInterface,
+		@inject(
+			TYPES.Factories.Token.ItemCardComponentFactoryInterface
+		) itemCardComponentFactory: interfaces.AutoFactory<ItemCardComponentInterface>
 	) {
 		super( pluginUrl, userRepository )
 		this.fallbackImage = fallbackImage
@@ -35,7 +46,9 @@ export default class TokenItemCardListComponent extends ItemCardListComponent im
 			this.masonryGrid.destroy()
 		}
 		if ( this.style == 'masonry' ) {
-			this.masonryGrid = new MasonryGrid( this.itemContainer, cards, this?.user?.name )
+			this.masonryGrid = new MasonryGrid(
+				this.itemContainer, cards, this?.user?.name
+			)
 		}
 	}
 
@@ -44,7 +57,7 @@ export default class TokenItemCardListComponent extends ItemCardListComponent im
 	 * @param {object} balance Initial balance
 	 * @returns {object} Formatted balance
 	 */
-	protected formatBalance( balance: any ): object {
+	protected formatBalance( balance: BalanceInterface ): object {
 		let balanceFormatted: object = super.formatBalance( balance )
 		const quantity = balance?.quantity?.value.toLocaleString( 'en-US', {
 			maximumFractionDigits: 4,
@@ -59,7 +72,7 @@ export default class TokenItemCardListComponent extends ItemCardListComponent im
 			description: balance.meta?.description ?? null,
 			balance: quantity,
 			asset: balance.asset,
-			extra: balance.meta?.extra,
+			extra: balance.meta?.media,
 			style: this.style,
 			meta_slug: balance?.meta?.slug,
 		} )

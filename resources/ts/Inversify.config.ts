@@ -55,6 +55,8 @@ import CreditWhitelistSettingsRepositoryInterface from
 import RouteManager from './Models/RouteManager'
 import RouteManagerInterface from './Interfaces/Models/RouteManagerInterface'
 import Dictionary from './dictionary'
+import DictionaryInterface from './Interfaces/DictionaryInterface'
+import { ethers } from "ethers"
 
 declare const window: any
 
@@ -135,18 +137,31 @@ export default function bind( container: Container ) {
 	const shared = window?.tokenpassData?.shared
 	container.bind<string>( TYPES.Variables.nonce )
 		.toConstantValue( shared?.nonce ?? null )
-	container.bind<RouteManagerInterface>( TYPES.Variables.routes )
-		.toConstantValue( ( new RouteManager() ).fromJson( shared?.routes ) )
 	container.bind<string>( TYPES.Variables.fallbackImage )
 		.toConstantValue( shared?.fallback_image ?? null )
 	container.bind<string>( TYPES.Variables.isUserConnected )
 		.toConstantValue( shared?.user_can_connect ?? false )
 	container.bind<string>( TYPES.Variables.isIntegrationConnected )
 		.toConstantValue( shared?.integration_can_connect ?? false )
-	container.bind<any>( TYPES.Variables.dictionary )
+	container.bind<DictionaryInterface>( TYPES.Variables.dictionary )
 		.toDynamicValue((context: interfaces.Context) => {
-			return new Dictionary( context.container.get(TYPES.Variables.brand) ) 
-		})
+			return new Dictionary( context.container.get( TYPES.Variables.brand ) ) 
+		} )
+		.inSingletonScope()
+	container.bind<RouteManagerInterface>( TYPES.Variables.routes )
+		.toDynamicValue( ( context: interfaces.Context ) => {
+			return ( new RouteManager(
+				context.container.get( TYPES.Variables.namespace )
+			) ).fromJson( shared?.routes ) 
+		} )
+		.inSingletonScope()
+	container.bind<ethers.providers.Web3Provider>(
+			TYPES.Variables.web3Provider
+		)
+		.toDynamicValue( ( context: interfaces.Context ) => {
+			return new ethers.providers.Web3Provider( window.ethereum )
+		} )
+		.inSingletonScope()
 	return container
 }
 

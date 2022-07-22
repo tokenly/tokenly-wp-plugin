@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useInjection } from 'inversify-react'
 import { TYPES } from '../../Types'
-import { PromiseData } from '../../../Interfaces'
 import PromiseLink from './PromiseLink'
 import PromiseInfo from './PromiseInfo'
 import CardActions from '../CardActions'
@@ -13,15 +12,19 @@ import {
 	CardFooter,
 	Flex,
 } from '@wordpress/components'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
+import PromiseInterface from '../../../Interfaces/Models/Token/PromiseInterface'
 
 interface PromiseCardProps {
-	promise: PromiseData
+	promise: PromiseInterface
 }
 
 export default function PromiseCard( props: PromiseCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
-
+	const routes: RouteManagerInterface = useInjection(
+		TYPES.Variables.routes
+	)
+	const promiseId = props.promise?.promiseId
 	return (
 		<Card size="extraSmall">
 			<CardHeader>
@@ -29,7 +32,7 @@ export default function PromiseCard( props: PromiseCardProps ) {
 					align="center"
 					justify="flex-start"
 				>
-					<PromiseLink id={ props.promise.promise_id } />
+					<PromiseLink id={ props.promise.promiseId } />
 					{ props?.promise?.pseudo == true &&
 						<span>
 							<span className="tokenly-component-chip">pseudo</span>
@@ -45,11 +48,23 @@ export default function PromiseCard( props: PromiseCardProps ) {
 					[
 						{
 							title: 'View Details',
-							href: `${ adminPageUrl }${ namespace }-token-promise-show&promise=${props.promise.promise_id}`,
+							href: routes.get(
+								'admin',
+								'token_promise_show',
+								{
+									promise: promiseId
+								}
+							)
 						},
 						{
 							title: 'Edit Promise',
-							href: `${ adminPageUrl }${ namespace }-token-promise-edit&promise=${ props.promise.promise_id }`,
+							href: routes.get(
+								'admin',
+								'token_promise_edit',
+								{
+									promise: promiseId
+								}
+							)
 						}
 					]
 				}

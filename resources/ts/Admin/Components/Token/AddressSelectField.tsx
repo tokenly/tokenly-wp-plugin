@@ -5,12 +5,16 @@ import {
 	Spinner,
 	SelectControl,
 } from '@wordpress/components'
+import AddressCollectionInterface
+	from '../../../Interfaces/Collections/Token/AddressCollectionInterface'
+import AddressInterface
+	from '../../../Interfaces/Models/Token/AddressInterface'
 
 interface AddressSelectFieldProps {
-	address: any
-	addresses: any
+	address: string
+	addresses: AddressCollectionInterface
 	loading: boolean
-	onChange: any
+	onChange: ( address: string ) => void
 	label?: string
 	inputProps?: any
 }
@@ -23,12 +27,16 @@ export default function AddressSelectField( props: AddressSelectFieldProps ) {
 				value: '',
 			}
 		]
+		console.log(props.addresses)
+		props.addresses.forEach( ( address: AddressInterface, key: any ) => {
+			options.push( {
+				label: address.label,
+				value: key,
+			} )
+		} )
 		if ( props.addresses && typeof props.addresses === 'object' ) {
 			Object.keys( props.addresses ).forEach( ( key ) => {
-				options.push( {
-					label: props.addresses[ key ].label,
-					value: key,
-				} )
+				options.push(  )
 			} )
 		}
 		return options

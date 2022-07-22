@@ -308,7 +308,7 @@ class AddressRepository extends Repository implements AddressRepositoryInterface
 		AddressInterface $address,
 		array $relations = array()
 	): BalanceCollectionInterface {
-		$balance = $address->get_balance();
+		$balance = $address->balance;
 		if ( !$balance ) {
 			$balance = new BalanceCollection( array() );
 		}

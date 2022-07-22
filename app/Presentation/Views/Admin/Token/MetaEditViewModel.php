@@ -8,7 +8,9 @@ use Tokenly\Wp\Interfaces\Presentation\Views\Admin\Token\MetaEditViewModelInterf
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Settings\TcaSettingsRepositoryInterface;
 
-class MetaEditViewModel extends PostEditViewModel implements MetaEditViewModelInterface {
+class MetaEditViewModel extends PostEditViewModel
+	implements MetaEditViewModelInterface
+{
 	public function __construct(
 		MetaRepositoryInterface $meta_repository,
 		TcaSettingsRepositoryInterface $tca_settings_repository

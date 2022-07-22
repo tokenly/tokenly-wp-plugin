@@ -2,8 +2,10 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { useInjection } from 'inversify-react'
 import Page from '../Page'
-import PromiseRepositoryInterface from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface'
-import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
+import PromiseRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/PromiseRepositoryInterface'
+import SourceRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
 import PromiseList from '../../Components/Token/PromiseList'
 import Preloader from '../../Components/Preloader'
 import VendorActions from '../../Components/Token/VendorActions'
@@ -15,17 +17,26 @@ import {
 	PanelHeader,
 	PanelRow,
 } from '@wordpress/components'
-import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
+import SourceCollectionInterface
+	from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
+import PromiseCollectionInterface
+	from '../../../Interfaces/Collections/Token/PromiseCollectionInterface'
+import PromiseInterface from '../../../Interfaces/Models/Token/PromiseInterface'
 
 interface PromiseIndexPageProps {
 	//
 }
 
 export default function PromiseIndexPage( props: PromiseIndexPageProps ) {
-	const promiseRepository: PromiseRepositoryInterface = useInjection( TYPES.Repositories.Token.PromiseRepositoryInterface )
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
+	const promiseRepository: PromiseRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.PromiseRepositoryInterface
+	)
+	const sourceRepository: SourceRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.SourceRepositoryInterface
+	)
 	
-	const [ promises, setPromises ] = useState<any>( null )
+	const [ promises, setPromises ] =
+		useState<PromiseCollectionInterface>( null )
 	const [ sources, setSources ] = useState<SourceCollectionInterface>( null )
 	const [ loadingPromises, setLoadingPromises ] = useState<boolean>( false )
 	const [ loadingSources, setLoadingSources ] = useState<boolean>( false )
@@ -39,24 +50,18 @@ export default function PromiseIndexPage( props: PromiseIndexPageProps ) {
 				'promise_meta.destination_user',
 				'token_meta',
 			],
-		} ).then( ( result: any ) => {
-			let promisesFound = result.promises
-			if ( !Array.isArray( promisesFound ) ) {
-				promisesFound = []
-			}
+		} ).then( ( promisesFound: PromiseCollectionInterface ) => {
 			setLoadingPromises( false )
 			setPromises( promisesFound )
-			if ( Array.isArray( promisesFound ) && promisesFound.length === 0 ) {
-				setLoadingSources( false )
-				return
-			}
 			sourceRepository.index( {
 				with: [ 'address' ],
 			} ).then( ( sourcesFound: SourceCollectionInterface ) => {
-				promisesFound = promisesFound.map( ( promiseFound: any ) => {
-					promiseFound.source = sourcesFound.get( promiseFound.sourceId )
-					return promiseFound
+				promisesFound.forEach( (item: PromiseInterface, key: any ) => {
+					promisesFound.get( key ).source = sourcesFound.get(
+						item.sourceId
+					)
 				} )
+				console.log(promisesFound)
 				setLoadingSources( false )
 				setPromises( promisesFound )
 				setSources( sourcesFound )
@@ -75,7 +80,11 @@ export default function PromiseIndexPage( props: PromiseIndexPageProps ) {
 			</Panel>
 			<Panel>
 				<PanelHeader>
-					<Preloader loading={ ( loadingPromises || loadingSources ) }>Registered Promises</Preloader>
+					<Preloader 
+						loading={ ( loadingPromises || loadingSources ) }
+					>
+						Registered Promises
+					</Preloader>
 				</PanelHeader>
 			{ ( !loadingPromises && promises ) &&
 				<PanelBody>

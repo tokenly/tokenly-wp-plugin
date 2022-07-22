@@ -9,7 +9,9 @@ class MetaShortcode extends Shortcode implements MetaShortcodeInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		return array(
 			'template' => 'shortcodes/Token/MetaShortcode.twig',
 			'data'     => $atts,

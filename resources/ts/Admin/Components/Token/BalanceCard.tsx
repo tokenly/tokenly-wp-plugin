@@ -9,15 +9,18 @@ import {
 	CardBody,
 	CardFooter,
 } from '@wordpress/components'
+import RouteManagerInterface from '../../../Interfaces/Models/RouteManagerInterface'
+import BalanceInterface from '../../../Interfaces/Models/Token/BalanceInterface'
 
 interface BalanceCardProps {
-	balance: any
+	balance: BalanceInterface
 	username?: string
 }
 
 export default function BalanceCard( props: BalanceCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
+	const routes: RouteManagerInterface = useInjection(
+		TYPES.Variables.routes
+	)
 
 	function getNameFormatted(): string {
 		let assetName: string = ''
@@ -40,14 +43,6 @@ export default function BalanceCard( props: BalanceCardProps ) {
 		return name
 	}
 
-	function getPromiseLink(): string {
-		let link = `${ adminPageUrl }${ namespace }-token-promise-store&asset=${ getName() }`
-		if ( props.username ) {
-			link = `${link}&destination=${props.username}`
-		}
-		return link
-	}
-
 	return (
 		<Card size="extraSmall" style={ { width: '100%' } }>
 			<CardHeader>
@@ -62,7 +57,16 @@ export default function BalanceCard( props: BalanceCardProps ) {
 						[
 							{
 								title: 'Make Promise',
-								href: getPromiseLink(),
+								href: routes.get(
+									'admin',
+									'token_promise_store',
+									{
+										asset: getName(),
+										... ( props.username ) && {
+											destination: props.username
+										}
+									}
+								)
 							},
 							{
 								title: 'Add to Whitelist',

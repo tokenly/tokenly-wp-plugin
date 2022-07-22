@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import FormTable from '../Components/FormTable'
 import RuleEditor from '../Components/Token/Access/RuleEditor'
+import RuleCollection from '../../Collections/Token/RuleCollection'
 
 import { 
 	Flex,
@@ -16,12 +17,15 @@ export interface TermEditPageProps {
 
 export default function TermEditPage( props: TermEditPageProps ) {
 	const [ editData, setEditData ] = useState<any>( {
-		tcaRules: props.tca_rules,
+		tcaRules: ( new RuleCollection() ).fromJson( props.tca_rules )
 	} )
 
 	function onEditDataChange( newData: any ) {
 		setEditData( newData )
-		props.onPostDataChange( newData )
+		const rules = newData.tcaRules.toJson()
+		props.onPostDataChange( {
+			tca_rules: rules
+		} )
 	}
 
 	function onRulesFieldChange( newRules: any ) {

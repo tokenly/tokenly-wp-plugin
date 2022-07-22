@@ -9,7 +9,7 @@ import {
 
 interface CategoryTermEditFormProps {
 	editData: any
-	onChange: any
+	onChange: ( data: any ) => void
 }
 
 export default function CategoryTermEditForm( props: CategoryTermEditFormProps ) {

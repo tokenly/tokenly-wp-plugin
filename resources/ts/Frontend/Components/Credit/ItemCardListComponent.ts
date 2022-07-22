@@ -1,21 +1,45 @@
 import { injectable, inject, interfaces } from 'inversify'
 import { TYPES } from '../../Types'
 import ItemCardListComponent from '../ItemCardListComponent'
-import UserRepositoryInterface from '../../../Interfaces/Repositories/UserRepositoryInterface'
-import ItemCardListComponentInterface from '../../Interfaces/Components/Credit/ItemCardListComponentInterface'
-import ItemCardComponentInterface from '../../Interfaces/Components/Credit/ItemCardComponentInterface'
+import UserRepositoryInterface
+	from '../../../Interfaces/Repositories/UserRepositoryInterface'
+import GroupRepositoryInterface
+	from '../../../Interfaces/Repositories/Credit/GroupRepositoryInterface'
+import ItemCardListComponentInterface
+	from '../../Interfaces/Components/Credit/ItemCardListComponentInterface'
+import ItemCardComponentInterface
+	from '../../Interfaces/Components/Credit/ItemCardComponentInterface'
+import AccountInterface from '../../../Interfaces/Models/Credit/AccountInterface'
+import GroupCollectionInterface from '../../../Interfaces/Collections/Credit/GroupCollectionInterface'
 
 @injectable()
-export default class CreditItemCardListComponent extends ItemCardListComponent implements ItemCardListComponentInterface {
+export default class CreditItemCardListComponent extends ItemCardListComponent
+	implements ItemCardListComponentInterface
+{	
 	protected serviceMethod: string = 'creditBalanceIndex'
 	protected templateDir: string = '/resources/views/js/Credit/ItemCardComponent.twig'
-	
+	protected groupRepository: GroupRepositoryInterface
+	protected groups: GroupCollectionInterface
+
 	constructor(
 		@inject( TYPES.Variables.pluginUrl ) pluginUrl: string,
-		@inject( TYPES.Repositories.UserRepositoryInterface ) userRepository: UserRepositoryInterface,
-		@inject( TYPES.Factories.Credit.ItemCardComponentFactoryInterface ) itemCardComponentFactory: interfaces.AutoFactory<ItemCardComponentInterface>,
+		@inject(
+			TYPES.Repositories.UserRepositoryInterface
+		) userRepository: UserRepositoryInterface,
+		@inject(
+			TYPES.Repositories.Credit.GroupRepositoryInterface
+		) groupRepository: GroupRepositoryInterface,
+		@inject(
+			TYPES.Factories.Credit.ItemCardComponentFactoryInterface
+		) itemCardComponentFactory: 
+			interfaces.AutoFactory<ItemCardComponentInterface>,
 	) {
 		super( pluginUrl, userRepository )
+		this.groupRepository = groupRepository
+		this.groupRepository.index().then( (result) => {
+			this.groups = result.keyByField( 'uuid' )
+			this.refreshCards()
+		} )
 		this.cardFactory = itemCardComponentFactory
 	}
 	
@@ -25,14 +49,15 @@ export default class CreditItemCardListComponent extends ItemCardListComponent i
 	 * @returns {object} Formatted balance
 	 */
 	formatBalance( balance: any ): object {
-		let balanceFormatted: object = super.formatBalance( balance )
+		const account = balance as AccountInterface
+		let accountFormatted: object = super.formatBalance( account )
 		const quantity = balance?.balance.toLocaleString( 'en-US', {
 			maximumFractionDigits: 4,
 		} )
-		balanceFormatted = Object.assign( balanceFormatted, {
-			name: balance.group?.name,
+		accountFormatted = Object.assign( accountFormatted, {
+			name: this.groups.get( account.groupId ).name,
 			balance: quantity,
 		} )
-		return balanceFormatted
+		return accountFormatted
 	}
 }

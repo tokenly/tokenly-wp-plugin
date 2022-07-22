@@ -1,4 +1,6 @@
-export default class Dictionary {
+import DictionaryInterface from "./Interfaces/DictionaryInterface"
+
+export default class Dictionary implements DictionaryInterface {
     protected brand?: string
 
     constructor(brand: string) {
@@ -72,6 +74,8 @@ export default class Dictionary {
                 'Categories',
             tokenVendorCategoriesMenuItemDescription:
                 'View and manage token categories.',
+            tokenSourceCardWhitelistLabel:
+                'Whitelisted Assets:',
             settingsTitle:
                 `${this.brand} Settings`,
             settingsIntegrationTitle:
@@ -95,7 +99,7 @@ export default class Dictionary {
         }
     }
 
-    get( key: string ) {
+    get( key: string ): string {
         return this.items[ key ] ?? ''
     }
 }

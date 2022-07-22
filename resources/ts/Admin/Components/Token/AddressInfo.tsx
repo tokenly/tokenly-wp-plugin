@@ -7,6 +7,7 @@ import {
 	Button,
 	Flex,
 } from '@wordpress/components'
+import RouteManagerInterface from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface AddressInfoProps {
 	address?: AddressInterface
@@ -14,8 +15,9 @@ interface AddressInfoProps {
 }
 
 export default function AddressInfo( props: AddressInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
+	const routes: RouteManagerInterface =
+		useInjection( TYPES.Variables.routes )
+	const address = props.address?.address
 	return (
 		<Flex
 			//@ts-ignore
@@ -33,14 +35,22 @@ export default function AddressInfo( props: AddressInfoProps ) {
 				</div>
 				<div>
 					<b>Address: </b>
-					<span>{ props.address?.address ?? '-' }</span>
+					<span>{ address ?? '-' }</span>
 				</div>
 				{ props.verbose &&
 				<div>
 					<b>Assets: </b>
 					{ props.address
 						?	<Button
-								href={ `${ adminPageUrl }${ namespace }-token-address-balance-index&id=${ props.address.address }` }
+								href={
+									routes.get(
+										'admin',
+										'token_address_balance_index',
+										{
+											id: address
+										}
+									)
+								}
 								isLink
 							>
 								View Balance

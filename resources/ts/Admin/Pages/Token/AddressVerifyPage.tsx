@@ -5,7 +5,8 @@ import { TYPES } from '../../Types'
 import Page from '../Page'
 import AddressVerifyForm from '../../Components/Token/AddressVerifyForm'
 import Preloader from '../../Components/Preloader'
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import AddressRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
 import { ethers } from "ethers"
 
 import { 
@@ -17,7 +18,9 @@ import {
 	Flex,
 	TextControl
 } from '@wordpress/components'
-import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
+import AddressInterface
+	from '../../../Interfaces/Models/Token/AddressInterface'
+import RouteManagerInterface from '../../../Interfaces/Models/RouteManagerInterface'
 
 declare const window: any
 
@@ -26,12 +29,14 @@ interface AddressVerifyPageProps {
 }
 
 export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
-	
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const provider: ethers.providers.Web3Provider = useInjection(
+		TYPES.Variables.web3Provider
+	)
+	const addressRepository: AddressRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.AddressRepositoryInterface
+	)
 	const urlParams = new URLSearchParams( window.location.search )
-
 	const [ verifying, setVerifying ] = useState<boolean>( false )
 	const [ loading, setLoading ] = useState<boolean>( false )
 	const [ address, setAddress ] = useState<AddressInterface>( null )
@@ -39,7 +44,7 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 	const [ verifyData, setVerifyData ] = useState<any>( {} )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-address-index`
+		window.location = routes.get( 'admin', 'token_address_index' )
 	}
 
 	function onVerifySubmit( event: any ) {
@@ -61,14 +66,15 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 
 	function initSigner(): Promise<any> {
 		return new Promise( ( resolve, reject ) => {
-			const provider = new ethers.providers.Web3Provider( window.ethereum )
 			provider.send( 'eth_requestAccounts', [] )
 			.then( () => {
 				const signer = provider.getSigner()
 				return signer
 			} )
 			.then( ( signer ) => {
-				signer.signMessage( verifyData.verifyCode ).then( ( signature: string ) => {
+				signer.signMessage( verifyData.verifyCode ).then( (
+					signature: string
+				) => {
 					const state = Object.assign( {}, verifyData )
 					state.signature = signature
 					setVerifyData( state )
@@ -80,7 +86,9 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 
 	useEffect( () => {
 		setLoading( true )
-		addressRepository.show( id ).then( ( addressFound: any ) => {
+		addressRepository.show( id ).then( (
+			addressFound: AddressInterface
+		) => {
 			const newVerifyData = {
 				signature: null,
 			} as any
@@ -145,7 +153,8 @@ export default function AddressVerifyPage( props: AddressVerifyPageProps ) {
 								>
 									Submit
 								</Button>
-							{ ( window.ethereum && address?.type == 'ethereum' ) &&
+							{ ( window.ethereum &&
+								address?.type == 'ethereum' ) &&
 								<Button
 									isSecondary
 									onClick={ initSigner }

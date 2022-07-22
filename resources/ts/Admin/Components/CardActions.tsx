@@ -6,7 +6,13 @@ import {
 } from '@wordpress/components'
 
 interface CardActionsProps {
-	actions: Array<any>
+	actions: Array<CardAction>
+}
+
+interface CardAction {
+	title?: string,
+	href?: string,
+	disabled?: boolean
 }
 
 export default function CardActions( props: CardActionsProps ) {

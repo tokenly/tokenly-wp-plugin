@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { SourceItem } from '../../../Interfaces'
 import { useInjection } from 'inversify-react'
 import { TYPES } from '../../Types'
 import CardActions from '../CardActions'
@@ -12,38 +11,47 @@ import {
 	Flex,
 	CardFooter
 } from '@wordpress/components'
+import SourceInterface from '../../../Interfaces/Models/Token/SourceInterface'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
+import DictionaryInterface from '../../../Interfaces/DictionaryInterface'
 
 interface SourceCardProps {
-	source: SourceItem
+	source: SourceInterface
 }
 
 export default function SourceCard( props: SourceCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
+	const dictionary: DictionaryInterface = useInjection(
+		TYPES.Variables.dictionary
+	)
+	const routes: RouteManagerInterface = useInjection(
+		TYPES.Variables.routes
+	)
 	
 	function getAssets(): string {
 		let listing = 'all'
-		const assets = props.source?.assets?.filter(Boolean)
+		const assets = props.source?.assets
 		if ( assets.length > 0 ) {
 			listing = assets.join( ', ' )
 		}
 		return listing
 	}
 
-	function isDisabled(): boolean {
-		return ( !props.source?.address )
-	}
-
+	const addressId = props?.source?.addressId
+	const sourceHref = routes.get(
+		'admin', 'token_source_show', { source: addressId }
+	)
+	const sourceText = 
+		props.source.address?.label
+			? props.source.address.label
+			: `${addressId}`
 	return (
 		<Card size="extraSmall" style={ { width: '100%' } }>
 			<CardHeader>
-				<div title={ props.source.address_id }>
+				<div title={ addressId }>
 					<b>
-						<Button
-							isLink 
-							href={ `${adminPageUrl}${namespace}-token-source-show&source=${ props.source.address_id }` }
-						>
-							{ props.source.address?.label ? props.source.address.label : `${props.source.address_id}` }
+						<Button isLink href={ sourceHref }>
+							{ sourceText }
 						</Button>
 						{ !props.source?.address &&
 							<span> [!]</span>
@@ -54,7 +62,14 @@ export default function SourceCard( props: SourceCardProps ) {
 			<CardBody style={ { width: '100%' } }>
 				<Flex style={ { width: '100%', alignItems: 'center' } }>
 					<div style={ { flex: 1 } }>
-						<div><span>Whitelisted Assets: </span><b>{ getAssets() }</b></div>
+						<div>
+							<span style={{marginRight: 4}}>
+								{ dictionary.get(
+									'tokenSourceCardWhitelistLabel'
+								) }
+							</span>
+							<b>{ getAssets() }</b>
+						</div>
 					</div>
 				</Flex>
 			</CardBody>
@@ -63,11 +78,17 @@ export default function SourceCard( props: SourceCardProps ) {
 					[
 						{
 							title: 'View Details',
-							href: `${ adminPageUrl }${ namespace }-token-source-show&source=${ props.source.address_id }`,
+							href: sourceHref
 						},
 						{
 							title: 'Edit Source',
-							href: `${ adminPageUrl }${ namespace }-token-source-edit&source=${ props.source.address_id }`,
+							href: routes.get(
+								'admin',
+								'token_source_edit',
+								{
+									source: addressId
+								}
+							)
 						}
 					]
 				}
@@ -76,5 +97,4 @@ export default function SourceCard( props: SourceCardProps ) {
 		</Card>
 	)
 }
- 
 

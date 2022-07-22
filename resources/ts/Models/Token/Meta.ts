@@ -1,5 +1,6 @@
 import Post from '../Post'
 import MetaInterface from '../../Interfaces/Models/Token/MetaInterface'
+import AssetInterface from '../../Interfaces/Models/Token/AssetInterface'
 
 export default class Meta extends Post implements MetaInterface {
 	public assetName?: string = null
@@ -8,7 +9,7 @@ export default class Meta extends Post implements MetaInterface {
 	public blockchain?: string = null
 	public protocol?: string = null
 	public slug?: string = null
-	public asset?: object = null
+	public asset?: AssetInterface = null
 
 	public fromJson( data: any = {} ): this {
 		if ( data.asset_name ) {

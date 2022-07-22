@@ -1,12 +1,16 @@
 import { injectable, inject } from 'inversify'
 import { TYPES } from '../../Types'
 import Component from './Component'
-import UserRepositoryInterface from '../../Interfaces/Repositories/UserRepositoryInterface'
-import BalanceComponentInterface from '../Interfaces/Components/BalanceComponentInterface'
+import UserRepositoryInterface
+	from '../../Interfaces/Repositories/UserRepositoryInterface'
+import BalanceComponentInterface
+	from '../Interfaces/Components/BalanceComponentInterface'
 
 
 @injectable()
-export default class BalanceComponent extends Component implements BalanceComponentInterface {
+export default class BalanceComponent extends Component
+	implements BalanceComponentInterface
+{
 	protected userRepository: any
 	protected _balance: number
 	protected serviceMethod: string
@@ -15,7 +19,9 @@ export default class BalanceComponent extends Component implements BalanceCompon
 	protected loaderElement: HTMLElement
 
 	constructor(
-		@inject( TYPES.Repositories.UserRepositoryInterface ) userRepository: UserRepositoryInterface,
+		@inject(
+			TYPES.Repositories.UserRepositoryInterface
+		) userRepository: UserRepositoryInterface,
 	) {
 		super()
 		this.userRepository = userRepository
@@ -26,7 +32,9 @@ export default class BalanceComponent extends Component implements BalanceCompon
 		this.loaderElement = this.element.querySelector( '.tokenly-loader' )
 		const user = this.element.dataset.user
 		const identifier = this.element.dataset[ this.identifier ]
-		this.userRepository[ this.serviceMethod ]( user, identifier ).then( ( balance: any ) => {
+		this.userRepository[ this.serviceMethod ](
+			user, identifier
+		).then( ( balance: any ) => {
 			this.balance = this.formatBalance( balance )
 			this.loaderElement.style.display = 'none'
 		} )

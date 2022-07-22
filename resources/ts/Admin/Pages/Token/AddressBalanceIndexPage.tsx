@@ -4,7 +4,8 @@ import { useInjection } from 'inversify-react'
 import Page from '../Page'
 import Preloader from '../../Components/Preloader'
 import BalanceList from '../../Components/Token/BalanceList'
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import AddressRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
 import { TYPES } from '../../../Types'
 
 import {
@@ -14,18 +15,22 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components'
-import BalanceCollectionInterface from '../../../Interfaces/Collections/Token/BalanceCollectionInterface'
-import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
+import BalanceCollectionInterface
+	from '../../../Interfaces/Collections/Token/BalanceCollectionInterface'
+import AddressInterface
+	from '../../../Interfaces/Models/Token/AddressInterface'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface BalanceIndexPageProps {
 	//
 }
 
 export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
-
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const addressRepository: AddressRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.AddressRepositoryInterface
+	)
 	const urlParams = new URLSearchParams( window.location.search )
 	const [ loadingAddress, setLoadingAddress ] = useState<boolean>( false )
 	const [ loadingBalance, setLoadingBalance ] = useState<boolean>( false )
@@ -44,7 +49,9 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 			return balanceFound
 		} )
 		.then( ( balanceFound: BalanceCollectionInterface ) => {
-			addressRepository.show( id ).then( ( addressFound: AddressInterface ) => {
+			addressRepository.show( id ).then( (
+				addressFound: AddressInterface
+			) => {
 				setLoadingBalance( false )
 				setLoadingAddress( false )
 				setAddress( addressFound )
@@ -64,7 +71,15 @@ export default function BalanceIndexPage( props: BalanceIndexPageProps ) {
 							<span>Address: </span>
 							<Button
 								isLink
-								href={ `${adminPageUrl}${namespace}-token-address-show&address=${id}` }
+								href={
+									routes.get(
+										'admin',
+										'token_address_show',
+										{
+											address: id
+										}
+									)
+								}
 							>
 								{ address?.label ?? id }
 							</Button>

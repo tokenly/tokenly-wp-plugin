@@ -1,6 +1,7 @@
 import Model from './Model'
 import UserInterface from '../Interfaces/Models/UserInterface'
 import OauthUserInterface from '../Interfaces/Models/OauthUserInterface'
+import OauthUser from './OauthUser'
 
 export default class User extends Model implements UserInterface {
 	public id?: number
@@ -21,7 +22,7 @@ export default class User extends Model implements UserInterface {
 			delete data.can_connect
 		}
 		if ( data.oauth_user ) {
-			data.oauthUser = data.oauth_user
+			data.oauthUser = ( new OauthUser() ).fromJson( data.oauth_user )
 			delete data.oauth_user
 		}
 		return super.fromJson( data )

@@ -7,7 +7,9 @@ use Tokenly\Wp\Interfaces\Presentation\Shortcodes\UserInfoShortcodeInterface;
 
 use Tokenly\Wp\Interfaces\Presentation\Blocks\UserInfoBlockModelInterface;
 
-class UserInfoShortcode extends Shortcode implements UserInfoShortcodeInterface {
+class UserInfoShortcode extends Shortcode
+	implements UserInfoShortcodeInterface
+{
 	protected UserInfoBlockModelInterface $user_info_block_model;
 
 	public function __construct(
@@ -19,7 +21,9 @@ class UserInfoShortcode extends Shortcode implements UserInfoShortcodeInterface 
 	/**
 	 * @inheritDoc
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		$data = $this->user_info_block_model->prepare( $atts );
 		return array(
 			'template' => 'shortcodes/UserInfoShortcode.twig',

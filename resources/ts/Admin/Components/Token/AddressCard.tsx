@@ -13,24 +13,41 @@ import {
 	CardFooter,
 	Flex,
 } from '@wordpress/components'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
+import AddressInterface
+	from '../../../Interfaces/Models/Token/AddressInterface'
 
 interface AddressCardProps {
-	address: any
+	address: AddressInterface
 }
 
 export default function AddressCard( props: AddressCardProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
-
+	const routes: RouteManagerInterface = useInjection(
+		TYPES.Variables.routes
+	)
+	const address = props?.address?.address
 	function getCardActions(): Array<object> {
 		const cardActions: Array<object> = [
 			{
 				title: 'View Details',
-				href: `${ adminPageUrl }${ namespace }-token-address-show&address=${props.address.address}`,
+				href: routes.get(
+					'admin',
+					'token_address_show',
+					{
+						address: address
+					}
+				)
 			},
 			{
 				title: 'Edit Address',
-				href: `${ adminPageUrl }${ namespace }-token-address-edit&address=${ props.address.address }`,
+				href: routes.get(
+					'admin',
+					'token_address_edit',
+					{
+						address: address
+					}
+				)
 			}
 		]
 		return cardActions
@@ -43,7 +60,10 @@ export default function AddressCard( props: AddressCardProps ) {
 					align="flex-end"
 					justify="flex-start"
 				>
-				<AddressLink id={ props.address.address } label={ props.address.label } />
+				<AddressLink
+					id={ props.address.address }
+					label={ props.address.label }
+				/>
 				<AddressStatus address={ props.address } />
 				</Flex>
 			</CardHeader>

@@ -4,11 +4,17 @@ import RouteCollectionInterface from '../Interfaces/Collections/RouteCollectionI
 import RouteCollection from '../Collections/RouteCollection'
 
 export default class RouteManager extends Model implements RouteManagerInterface {
+	protected namespace: string
 	public admin?: RouteCollectionInterface = null
 	public api?: RouteCollectionInterface = null
 	public post?: RouteCollectionInterface = null
     public term?: RouteCollectionInterface = null
     public web?: RouteCollectionInterface = null
+
+	constructor( namespace: string ) {
+		super()
+		this.namespace = namespace
+	}
 
 	public fromJson( data: any = {} ): this {
 		if ( data.admin ) {
@@ -27,6 +33,16 @@ export default class RouteManager extends Model implements RouteManagerInterface
 			data.web = ( new RouteCollection() ).fromJson( data.web )
 		}
 		return super.fromJson( data )
+	}
+
+	public get( type: string, route: string, params: any = {} ): string {
+		let key = route
+		if ( type == 'admin' ) {
+			key = `${this.namespace}_${route}`
+		}
+		const searchParams = new URLSearchParams(params).toString()
+		const path = `${this[ type ].get( key ).url}&${searchParams}`
+		return path
 	}
 
 	protected get fillable(): Array<string> {

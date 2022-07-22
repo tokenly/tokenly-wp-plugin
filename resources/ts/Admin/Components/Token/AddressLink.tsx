@@ -5,6 +5,8 @@ import { TYPES } from '../../Types'
 import {
 	Button,
 } from '@wordpress/components'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface AddressLinkProps {
 	id: string,
@@ -13,11 +15,9 @@ interface AddressLinkProps {
 }
 
 export default function AddressLink( props: AddressLinkProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
-
-	const title = props?.label ?? props.id
-	const url = `${adminPageUrl}${namespace}-token-address-show&address=${ props.id }`
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const id = props.id
+	const title = props?.label ?? id
 	if ( props.text ) {
 		return (
 			<b><span>{ title }</span></b>
@@ -26,7 +26,15 @@ export default function AddressLink( props: AddressLinkProps ) {
 	return (
 		<Button
 			isLink	
-			href={ url }
+			href={ 
+				routes.get(
+					'admin',
+					'token_address_show',
+					{
+						address: id
+					}
+				)
+			 }
 			style={ { flexShrink: 0 } }
 		>
 				{ title }

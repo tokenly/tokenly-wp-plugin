@@ -2,8 +2,10 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { useInjection } from 'inversify-react'
 import { TYPES } from '../../Types'
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
-import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
+import AddressRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import SourceRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
 import Page from '../Page'
 import Preloader from '../../Components/Preloader'
 import SourceInfo from '../../Components/Token/SourceInfo'
@@ -17,6 +19,8 @@ import {
 	Flex,
 	PanelHeader,
 } from '@wordpress/components'
+import SourceInterface from '../../../Interfaces/Models/Token/SourceInterface'
+import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
 
 declare const window: any
 
@@ -27,11 +31,13 @@ interface SourceShowPageProps {
 export default function SourceShowPage( props: SourceShowPageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
 	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
-
+	const addressRepository: AddressRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.AddressRepositoryInterface
+	)
+	const sourceRepository: SourceRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.SourceRepositoryInterface
+	)
 	const urlParams = new URLSearchParams( window.location.search )
-
 	const [ id, setId ] = useState<string>( urlParams.get( 'source' ) )
 	const [ source, setSource ] = useState<any>( null )
 	const [ loadingSource, setLoadingSource ] = useState<boolean>( false )
@@ -76,13 +82,15 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 		eventBus.on( 'confirmModalChoice', onConfirmModalChoice )
 		setLoadingSource( true )
 		setLoadingAddress( true )
-		sourceRepository.show( id ).then( ( sourceFound: any ) => {
+		sourceRepository.show( id ).then( ( sourceFound: SourceInterface ) => {
 			setLoadingSource( false )
 			setSource( sourceFound )
 			return sourceFound
 		} )
-		.then( ( sourceFound: any ) => {
-			addressRepository.show( id ).then( ( addressFound: any ) => {
+		.then( ( sourceFound: SourceInterface ) => {
+			addressRepository.show( id ).then( (
+				addressFound: AddressInterface
+			) => {
 				sourceFound.address = addressFound
 				setSource( sourceFound )
 				setLoadingAddress( false )
@@ -92,12 +100,20 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 			eventBus.remove( 'confirmModalChoice', onConfirmModalChoice )
 		}
 	}, [] )
-	
+
+	const editSourceUrl =
+		`${adminPageUrl}${namespace}-token-source-edit&source=${id}`
+	const viewBalanceUrl =
+		`${adminPageUrl}${namespace}-token-address-balance-index&id=${id}`
 	return (
 		<Page title="Source Display">
 			<Panel>
 				<PanelHeader>
-					<Preloader loading={ ( loadingSource || loadingAddress ) }>Source Info</Preloader>
+					<Preloader
+						loading={ ( loadingSource || loadingAddress ) }
+					>
+						Source Info
+					</Preloader>
 				</PanelHeader>
 			{ ( !loadingSource && source ) &&
 				<PanelBody>
@@ -116,10 +132,11 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 				<PanelBody>
 					<PanelRow>
 						<Flex justify="flex-start">
+							
 							<Button
 								isSecondary
 								isLarge
-								href={ `${adminPageUrl}${namespace}-token-source-edit&source=${id}` }
+								href={ editSourceUrl }
 							>
 								Edit Source
 							</Button>
@@ -127,7 +144,7 @@ export default function SourceShowPage( props: SourceShowPageProps ) {
 								disabled={ isDisabled() }
 								isSecondary
 								isLarge
-								href={ `${adminPageUrl}${namespace}-token-address-balance-index&id=${id}` }
+								href={ viewBalanceUrl }
 							>
 								View Balance
 							</Button>

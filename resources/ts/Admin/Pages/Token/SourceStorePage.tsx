@@ -17,6 +17,7 @@ import {
 	PanelBody,
 	PanelRow,
 } from '@wordpress/components'
+import AddressCollectionInterface from '../../../Interfaces/Collections/Token/AddressCollectionInterface'
 
 interface SourceStorePageProps {
 	//
@@ -25,8 +26,10 @@ interface SourceStorePageProps {
 export default function SourceStorePage ( props: SourceStorePageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
 	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
-	const userRepository: UserRepositoryInterface = useInjection( TYPES.Repositories.UserRepositoryInterface )
+	const sourceRepository: SourceRepositoryInterface =
+		useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
+	const userRepository: UserRepositoryInterface =
+		useInjection( TYPES.Repositories.UserRepositoryInterface )
 	
 	const [ storing, setStoring ] = useState<boolean>( false )
 	const [ loadingAddresses, setLoadingAddresses ] = useState<boolean>( false )
@@ -65,11 +68,10 @@ export default function SourceStorePage ( props: SourceStorePageProps ) {
 		const params = {
 			registered: true,
 		}
-		userRepository.tokenAddressIndex( 'me', params ).then( ( addressesFound: any ) => {
-			const addressesKeyed = {} as any
-			addressesFound.forEach( ( addressFound: any ) => {
-				addressesKeyed[ addressFound.address ] = addressFound
-			} )
+		userRepository.tokenAddressIndex( 'me', params ).then( (
+			addressesFound: AddressCollectionInterface
+		) => {
+			const addressesKeyed = addressesFound.keyByField( 'address' )
 			setLoadingAddresses( false )
 			setAddresses( addressesKeyed )
 			const urlParams = new URLSearchParams( window.location.search )

@@ -6,15 +6,18 @@ import {
 	Button,
 	Flex,
 } from '@wordpress/components'
+import SourceInterface from '../../../Interfaces/Models/Token/SourceInterface'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface SourceInfoProps {
-	source: any
+	source: SourceInterface
 }
 
 export default function SourceInfo( props: SourceInfoProps ) {
-	const adminPageUrl = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace = useInjection( TYPES.Variables.namespace )
-
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const addressId = props.source?.addressId
+	const addressText = props.source?.address?.label ?? props.source?.addressId
 	return (
 		<Flex style={ { width: '100%', alignItems: 'center' } }>
 			<div style={ { flex: 1 } }>
@@ -28,14 +31,22 @@ export default function SourceInfo( props: SourceInfoProps ) {
 						<Button 
 							isLink
 							disabled={ ( !props.source.address ) }
-							href={ `${adminPageUrl}${namespace}-token-address-show&address=${props.source?.address_id}` }>
-								{ props.source?.address?.label ?? props.source?.address_id }
+							href = { routes.get(
+								'admin',
+								'token_address_show',
+								{ address: addressId }
+							) }
+						>
+							{ addressText }
 						</Button>
 					</b>
 				</div>
 				<div>
 					<span>Assets (whitelisted): </span>
-					<b>{ props.source?.assets.length > 0 ? props.source?.assets : 'all' }</b>
+					<b>{ props.source?.assets.length > 0
+						? props.source?.assets
+						: 'all'
+					}</b>
 				</div>
 			</div>
 		</Flex>

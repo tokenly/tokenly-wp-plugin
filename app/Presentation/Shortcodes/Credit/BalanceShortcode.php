@@ -17,7 +17,9 @@ class BalanceShortcode extends Shortcode implements BalanceShortcodeInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		$atts[ 'namespace' ] = $this->namespace;
 		return array(
 			'template' => 'shortcodes/Credit/BalanceShortcode.twig',

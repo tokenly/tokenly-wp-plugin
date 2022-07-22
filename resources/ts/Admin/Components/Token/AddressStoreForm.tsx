@@ -7,12 +7,11 @@ import {
 	SelectControl,
 	Flex,
 	CheckboxControl,
-	Button,
 } from '@wordpress/components'
 
 interface AddressStoreFormProps {
 	storeData: any
-	onChange: any
+	onChange: ( data: any ) => void
 }
 
 declare const window: any

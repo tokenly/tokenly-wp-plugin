@@ -13,6 +13,9 @@ import {
 import TokenPromiseInterface
 	from '../../Interfaces/Models/Token/PromiseInterface'
 import TokenPromise from '../../Models/Token/Promise'
+import PromiseCollection from '../../Collections/Token/PromiseCollection'
+import PromiseCollectionInterface
+	from '../../Interfaces/Collections/Token/PromiseCollectionInterface'
 
 @injectable()
 export default class PromiseRepository implements PromiseRepositoryInterface {
@@ -28,15 +31,16 @@ export default class PromiseRepository implements PromiseRepositoryInterface {
 
 	public index(
 		params?: TokenPromiseIndexParamsInterface
-	): Promise<Array<TokenPromiseInterface>> {
+	): Promise<PromiseCollectionInterface> {
 		return new Promise( ( resolve, reject ) => {
 			this.ApiService.tokenPromiseIndex(
 				params
 			).then( ( result: any ) => {
-				result = result.map( ( promise: any ) => {
-					return ( new TokenPromise() ).fromJson( promise )
-				} )
-				resolve( result )
+				const collection =
+					( new PromiseCollection() ).fromJson(
+						result?.promises ?? []
+					)
+				resolve( collection )
 			} ).catch( error => {
 				reject( error )
 			} )

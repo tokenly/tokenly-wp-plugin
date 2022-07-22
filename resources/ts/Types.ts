@@ -23,6 +23,7 @@ const TYPES = {
 		isIntegrationConnected : Symbol.for(
 			'isIntegrationConnected' ),
 		dictionary : Symbol.for( 'dictionary' ),
+		web3Provider : Symbol.for( 'web3Provider' ),
 	},
 	Services: {
 		AuthServiceInterface  : Symbol.for(

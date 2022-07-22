@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useInjection } from 'inversify-react'
 import Page from '../Page'
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import AddressRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
 import AddressStoreForm from '../../Components/Token/AddressStoreForm'
-import Preloader from '../../Components/Preloader'
 import ResourceStoreActions from '../../Components/ResourceStoreActions'
 import { TYPES } from '../../../Types'
 
@@ -15,8 +15,8 @@ import {
 	PanelHeader,
 	PanelBody,
 	PanelRow,
-	Button
 } from '@wordpress/components'
+import RouteManagerInterface from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface AddressStorePageProps {
 	//
@@ -25,7 +25,10 @@ interface AddressStorePageProps {
 export default function AddressStorePage( props: AddressStorePageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
 	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const addressRepository: AddressRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.AddressRepositoryInterface
+	)
 	
 	const [ storeData, setStoreData ] = useState<any>( {
 		address: null,
@@ -36,7 +39,7 @@ export default function AddressStorePage( props: AddressStorePageProps ) {
 	const [ storing, setStoring ] = useState<boolean>( false )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-address-index`
+		window.location = routes.get( 'admin', 'token_address_index' )
 	}
 
 	function onStoreSubmit( event: any ) {
@@ -44,7 +47,13 @@ export default function AddressStorePage( props: AddressStorePageProps ) {
 		setStoring( true )
 		addressRepository.store( storeData ).then( ( result: any ) => {
 			setStoring( false )
-			window.location = `${adminPageUrl}${namespace}-token-address-show&address=${storeData.address}`
+			window.location = routes.get(
+				'admin',
+				'token_address_show',
+				{
+					address : storeData.address
+				}
+			)
 		} )
 	}
 

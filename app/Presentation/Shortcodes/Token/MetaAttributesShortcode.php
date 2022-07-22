@@ -7,7 +7,9 @@ use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\MetaAttributesShortcodeI
 
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 
-class MetaAttributesShortcode extends Shortcode implements MetaAttributesShortcodeInterface {
+class MetaAttributesShortcode extends Shortcode
+	implements MetaAttributesShortcodeInterface
+{
 	protected MetaRepositoryInterface $meta_repository;
 
 	public function __construct(
@@ -19,7 +21,9 @@ class MetaAttributesShortcode extends Shortcode implements MetaAttributesShortco
 	/**
 	 * @inheritDoc
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		if ( isset( $atts['id'] ) ) {
 			$post = $this->meta_repository->show( array(
 				'id' => $atts['id'],

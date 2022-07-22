@@ -14,7 +14,9 @@ class Shortcode extends Service implements ShortcodeInterface {
 	 * @param string $tag
 	 * @return array
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		return array();
 	}
 

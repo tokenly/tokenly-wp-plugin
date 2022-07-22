@@ -95,7 +95,7 @@ class SourceRepository extends Repository implements SourceRepositoryInterface {
 		}
 		$params['address'] = $source->address_id;
 		$params['type'] = $source->type;
-		$this->store( $params );
+		return $this->store( $params );
 	}
 
 	/**

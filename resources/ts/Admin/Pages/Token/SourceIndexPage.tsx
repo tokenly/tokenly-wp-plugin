@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useInjection } from 'inversify-react'
 import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
 import { TYPES } from '../../Types'
-import { SourceItem } from '../../../Interfaces'
 import Page from '../Page'
 import SourceList from '../../Components/Token/SourceList'
 import Preloader from '../../Components/Preloader'
@@ -15,6 +14,8 @@ import {
 	PanelRow,
 	Flex,
 } from '@wordpress/components'
+import SourceCollectionInterface
+	from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
 
 interface SourceIndexPageProps {
 	//
@@ -23,17 +24,17 @@ interface SourceIndexPageProps {
 export default function SourceIndexPage( props: SourceIndexPageProps ) {
 	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
 	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
-
-	const [ sources, setSources ] = useState<any>( null )
+	const sourceRepository: SourceRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.SourceRepositoryInterface
+	)
+	const [ sources, setSources ] = useState<SourceCollectionInterface>( null )
 	const [ loadingSources, setLoadingSources ] = useState<boolean>( false )
 
 	useEffect( () => {
 		setLoadingSources( true )
 		sourceRepository.index( {
 			with: [ 'address' ],
-		} ).then( ( sourcesFound: any ) => {
-			sourcesFound = Object.values( sourcesFound )
+		} ).then( ( sourcesFound: SourceCollectionInterface ) => {
 			setLoadingSources( false )
 			setSources( sourcesFound )
 		} )
@@ -62,8 +63,7 @@ export default function SourceIndexPage( props: SourceIndexPageProps ) {
 			{
 			(
 				!loadingSources &&
-				sources &&
-				typeof sources === 'object'
+				sources
 			) &&
 				<PanelBody>
 					<PanelRow>

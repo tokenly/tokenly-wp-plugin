@@ -1,9 +1,10 @@
 import PostInterface from '../PostInterface'
+import UserInterface from '../UserInterface';
 
 export default interface PromiseMetaInterface extends PostInterface {
 	promiseId?: number
 	sourceUserId?: string
-	sourceUser?: object
+	sourceUser?: UserInterface
 	destinationUserId?: string
-	destinationUser?: object
+	destinationUser?: UserInterface
 }

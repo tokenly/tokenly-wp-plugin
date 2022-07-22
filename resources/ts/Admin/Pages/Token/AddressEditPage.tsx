@@ -6,7 +6,8 @@ import Page from '../Page'
 import AddressEditForm from '../../Components/Token/AddressEditForm'
 import Preloader from '../../Components/Preloader'
 import ResourceEditActions from '../../Components/ResourceEditActions'
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import AddressRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
 
 import { 
 	Panel,
@@ -14,7 +15,10 @@ import {
 	PanelRow,
 	PanelHeader,
 } from '@wordpress/components'
-import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
+import AddressInterface
+	from '../../../Interfaces/Models/Token/AddressInterface'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
 
 declare const window: any
 
@@ -23,9 +27,10 @@ interface AddressEditPageProps {
 }
 
 export default function AddressEditPage( props: AddressEditPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const addressRepository: AddressRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.AddressRepositoryInterface
+	)
 	const urlParams = new URLSearchParams( window.location.search )
 	const [ saving, setSaving ] = useState<boolean>( false )
 	const [ loading, setLoading ] = useState<boolean>( false )
@@ -34,7 +39,7 @@ export default function AddressEditPage( props: AddressEditPageProps ) {
 	const [ editData, setEditData ] = useState<any>( {} )
 
 	function goBack() {
-		window.location = `${adminPageUrl}${namespace}-token-address-index`
+		window.location = routes.get( 'admin', 'token_address_index' )
 	}
 
 	function onSaveSubmit( event: any ) {
@@ -56,7 +61,9 @@ export default function AddressEditPage( props: AddressEditPageProps ) {
 
 	useEffect( () => {
 		setLoading( true )
-		addressRepository.show( id ).then( ( addressFound: AddressInterface ) => {
+		addressRepository.show( id ).then( (
+			addressFound: AddressInterface
+		) => {
 			const newEditData = {
 				address: addressFound?.address,
 				label: addressFound?.label,

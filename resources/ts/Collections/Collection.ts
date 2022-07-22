@@ -40,6 +40,14 @@ export default class Collection extends Map implements CollectionInterface {
         return clone
     }
 
+    public keyByField( field: string ): CollectionInterface {
+        const keyed = new ( <typeof Collection>this.constructor )
+        this.forEach( ( item: any, key: any ) => {
+            keyed.set( item[ field ], item )
+        } )
+        return keyed
+    }
+
     public toSequential(): CollectionInterface {
         const sequential: CollectionInterface =
             new ( <typeof Collection>this.constructor )

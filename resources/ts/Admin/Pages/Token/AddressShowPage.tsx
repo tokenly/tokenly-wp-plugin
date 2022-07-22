@@ -2,8 +2,10 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { useInjection } from 'inversify-react'
 import { TYPES } from '../../../Types'
-import AddressRepositoryInterface from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
-import SourceRepositoryInterface from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
+import AddressRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/AddressRepositoryInterface'
+import SourceRepositoryInterface
+	from '../../../Interfaces/Repositories/Token/SourceRepositoryInterface'
 import Page from '../Page'
 import Preloader from '../../Components/Preloader'
 import AddressInfo from '../../Components/Token/AddressInfo'
@@ -20,18 +22,25 @@ import {
 	Button,
 	Flex,
 } from '@wordpress/components'
-import AddressInterface from '../../../Interfaces/Models/Token/AddressInterface'
-import SourceCollectionInterface from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
+import AddressInterface
+	from '../../../Interfaces/Models/Token/AddressInterface'
+import SourceCollectionInterface
+	from '../../../Interfaces/Collections/Token/SourceCollectionInterface'
+import RouteManagerInterface
+	from '../../../Interfaces/Models/RouteManagerInterface'
 
 interface AddressShowPageProps {
 	//
 }
 
 export default function AddressShowPage( props: AddressShowPageProps ) {
-	const adminPageUrl: string = useInjection( TYPES.Variables.adminPageUrl )
-	const namespace: string = useInjection( TYPES.Variables.namespace )
-	const addressRepository: AddressRepositoryInterface = useInjection( TYPES.Repositories.Token.AddressRepositoryInterface )
-	const sourceRepository: SourceRepositoryInterface = useInjection( TYPES.Repositories.Token.SourceRepositoryInterface )
+	const routes: RouteManagerInterface = useInjection( TYPES.Variables.routes )
+	const addressRepository: AddressRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.AddressRepositoryInterface
+	)
+	const sourceRepository: SourceRepositoryInterface = useInjection(
+		TYPES.Repositories.Token.SourceRepositoryInterface
+	)
 	const urlParams = new URLSearchParams( window.location.search )
 	const [ id, setId ] = useState<string>( urlParams.get( 'address' ) )
 	const [ address, setAddress ] = useState<any>( null )
@@ -44,12 +53,16 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 		eventBus.on( 'confirmModalChoice', onConfirmModalChoice )
 		setLoading( true )
 		setLoadingSources( true )
-		addressRepository.show( id ).then( ( addressFound: AddressInterface ) => {
+		addressRepository.show( id ).then( (
+			addressFound: AddressInterface
+		) => {
 			setLoading( false )
 			setAddress( addressFound )
 			return addressFound
 		} ).then( ( addressFound: AddressInterface ) => {
-			sourceRepository.index().then( ( result: SourceCollectionInterface ) => {
+			sourceRepository.index().then( (
+				result: SourceCollectionInterface
+			) => {
 				setLoadingSources( false )
 				setSources( result )
 				addressFound = addressFound.clone()
@@ -78,10 +91,6 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 		} )
 	}
 
-	function goBack(): void {
-		window.location = `${adminPageUrl}${namespace}-token-address-index`
-	}
-
 	function onConfirmModalChoice( payload: any ): void {
 		switch( payload.key ) {
 			case 'addressDelete':
@@ -105,8 +114,14 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 					>
 						<Preloader loading={ ( loading || loadingSources ) }>
 							<Flex justify="flex-start">
-								<span style={ { flexShrink: 0 } }>Address Info</span>
-								{ ( !loading && !loadingSources ) && <AddressStatus address={ address } /> }
+								<span
+									style={ { flexShrink: 0 } }
+								>
+									Address Info
+								</span>
+								{ ( !loading && !loadingSources ) &&
+									<AddressStatus address={ address } />
+								}
 							</Flex>
 						</Preloader>
 					</Flex>
@@ -126,14 +141,30 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 							<Button
 								isSecondary
 								isLarge
-								href={ `${adminPageUrl}${namespace}-token-address-edit&address=${id}` }
+								href={
+									routes.get(
+										'admin',
+										'token_address_edit',
+										{
+											address: id
+										}
+									)
+								}
 							>
 								Edit Address
 							</Button>
 							<Button
 								isSecondary
 								isLarge
-								href={ `${adminPageUrl}${namespace}-token-address-balance-index&id=${id}` }
+								href={
+									routes.get(
+										'admin',
+										'token_address_balance_index',
+										{
+											address: id
+										}
+									)
+								}
 							>
 								View Balance
 							</Button>
@@ -141,7 +172,15 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 								isSecondary
 								isLarge
 								disabled={ ( !sources || !isSource() ) }
-								href={ `${adminPageUrl}${namespace}-token-source-show&source=${id}` }
+								href={
+									routes.get(
+										'admin',
+										'token_source_show',
+										{
+											source: id
+										}
+									)
+								}
 							>
 								View Source
 							</Button>
@@ -149,7 +188,15 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 								isSecondary
 								isLarge
 								disabled={ ( !sources || isSource() ) }
-								href={ `${adminPageUrl}${namespace}-token-source-store&address=${id}` }
+								href={
+									routes.get(
+										'admin',
+										'token_source_store',
+										{
+											address: id
+										}
+									)
+								}
 							>
 								Make Source
 							</Button>
@@ -157,7 +204,15 @@ export default function AddressShowPage( props: AddressShowPageProps ) {
 								isSecondary
 								isLarge
 								disabled={ address?.verified ?? true }
-								href={ `${adminPageUrl}${namespace}-token-address-verify&address=${id}` }
+								href={
+									routes.get(
+										'admin',
+										'token_address_verify',
+										{
+											address: id
+										}
+									)
+								}
 							>
 								Verify Address
 							</Button>

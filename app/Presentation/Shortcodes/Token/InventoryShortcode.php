@@ -7,7 +7,9 @@ use Tokenly\Wp\Interfaces\Presentation\Shortcodes\Token\InventoryShortcodeInterf
 
 use Tokenly\Wp\Interfaces\Presentation\Blocks\Token\ItemCardListBlockModelInterface;
 
-class InventoryShortcode extends Shortcode implements InventoryShortcodeInterface {
+class InventoryShortcode extends Shortcode
+	implements InventoryShortcodeInterface
+{
 	protected ItemCardListBlockModelInterface $item_card_list_block_model;
 
 	public function __construct(
@@ -19,7 +21,9 @@ class InventoryShortcode extends Shortcode implements InventoryShortcodeInterfac
 	/**
 	 * @inheritDoc
 	 */
-	public function shortcode_callback( $atts = array(), $content = null, $tag = '' ): array {
+	public function shortcode_callback(
+		$atts = array(), $content = null, $tag = ''
+	): array {
 		$data = $this->item_card_list_block_model->prepare( $atts );
 		return array(
 			'template' => 'shortcodes/Token/InventoryShortcode.twig',

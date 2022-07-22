@@ -4,16 +4,13 @@ import AttributeRepeater from '../AttributeRepeater'
 import MediaRepeater from '../MediaRepeater'
 
 import { 
-	TextControl,
 	Flex,
 	SelectControl,
-	//@ts-ignore
-	Grid,
 } from '@wordpress/components'
 
 interface MetaEditFormProps {
 	editData: any
-	onChange: any
+	onChange: ( data: any ) => void
 }
 
 export default function MetaEditForm( props: MetaEditFormProps ) {
