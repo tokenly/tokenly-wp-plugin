@@ -24,6 +24,8 @@ import BalanceInterface from '../Interfaces/Models/Token/BalanceInterface'
 import BalanceCollectionInterface
 	from '../Interfaces/Collections/Token/BalanceCollectionInterface'
 import AccountCollection from '../Collections/Credit/AccountCollection'
+import AddressCollectionInterface from '../Interfaces/Collections/Token/AddressCollectionInterface'
+import AddressCollection from '../Collections/Token/AddressCollection'
 
 @injectable()
 export default class UserRepository implements UserRepositoryInterface {
@@ -129,12 +131,14 @@ export default class UserRepository implements UserRepositoryInterface {
 
 	public tokenAddressIndex(
 		id: string, params?: UserTokenAddressIndexParamsInterface
-	): Promise<any> {
+	): Promise<AddressCollectionInterface> {
 		return new Promise( ( resolve, reject ) => {
 			this.ApiService.userTokenAddressIndex(
 				id, params
 			).then( result => {
-				resolve( result )
+				const collection =
+					( new AddressCollection() ).fromJson( result )
+				resolve( collection )
 			} ).catch( error => {
 				reject( error )
 			} )
