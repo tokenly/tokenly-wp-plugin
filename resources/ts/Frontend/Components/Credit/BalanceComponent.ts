@@ -12,6 +12,6 @@ export default class CreditBalanceComponent
 	protected identifier: string = 'group'
 
 	protected formatBalance( balance: any ) {
-		return balance?.balance
+		return balance?.balance ?? 0
 	}
 }

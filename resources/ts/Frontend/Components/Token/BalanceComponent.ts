@@ -9,6 +9,6 @@ export default class TokenBalanceComponent extends BalanceComponent implements B
 	protected identifier: string = 'asset'
 
 	protected formatBalance( balance: any ) {
-		return balance?.quantity?.value
+		return balance?.quantity?.value ?? 0
 	}
 }

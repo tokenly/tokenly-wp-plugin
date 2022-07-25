@@ -122,7 +122,10 @@ export default class UserRepository implements UserRepositoryInterface {
 			this.ApiService.userTokenBalanceShow(
 				id, asset
 			).then( result => {
-				const balance = ( new Balance() ).fromJson( result )
+				let balance = null
+				if ( result ) {
+					balance = ( new Balance() ).fromJson( result )
+				}
 				resolve( balance )
 			} ).catch( error => {
 				reject( error )
