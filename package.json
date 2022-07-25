@@ -9,8 +9,15 @@
     "test:unit": "wp-scripts test-unit-js"
   },
   "devDependencies": {
+    "@types/masonry-layout": "^4.2.4",
     "@types/node": "^17.0.9",
+    "@types/react": "^17.0.31",
+    "@types/twig": "^1.12.8",
     "@types/wordpress__block-editor": "^6.0.5",
+    "@types/wordpress__components": "^14.0.4",
+    "@wordpress/block-editor": "^8.1.0",
+    "@wordpress/components": "^19.2.0",
+    "@wordpress/data": "^6.1.2",
     "@wordpress/scripts": "^19.2.3",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "ts-loader": "^9.2.6",
@@ -30,22 +37,14 @@
   },
   "homepage": "https://github.com/encore-by-dev/tokenly-wp-plugin#readme",
   "dependencies": {
-    "@types/masonry-layout": "^4.2.4",
-    "@types/react": "^17.0.31",
-    "@types/twig": "^1.12.8",
-    "@types/wordpress__components": "^14.0.4",
-    "@wordpress/block-editor": "^8.1.0",
-    "@wordpress/components": "^19.2.0",
-    "@wordpress/data": "^6.1.2",
     "dayjs": "^1.10.7",
     "ethers": "^5.5.4",
     "inversify": "^6.0.1",
     "inversify-react": "^1.0.0",
-    "masonry-layout": "^4.2.2",
-    "muuri": "^0.9.5",
     "react-hook-form": "^7.24.0",
     "reflect-metadata": "^0.1.13",
     "swiper": "^8.0.5",
-    "twig": "^1.15.4"
+    "twig": "^1.15.4",
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }

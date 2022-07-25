@@ -1,5 +1,6 @@
 import { injectable } from 'inversify'
-import ServiceProviderInterface from '../Interfaces/Providers/ServiceProviderInterface'
+import ServiceProviderInterface
+	from '../Interfaces/Providers/ServiceProviderInterface'
 
 @injectable()
 export default class ServiceProvider implements ServiceProviderInterface {

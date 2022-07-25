@@ -15,7 +15,9 @@ interface ResourceEditActionsProps {
 	noDelete?: boolean
 }
 
-export default function ResourceEditActions( props: ResourceEditActionsProps ) {
+export default function ResourceEditActions(
+	props: ResourceEditActionsProps
+) {
 	return (
 		<Flex justify="flex-start" align="center" >
 			<Button

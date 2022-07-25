@@ -1,7 +1,10 @@
 import Settings from '../Settings'
-import OauthSettingsInterface from '../../Interfaces/Models/Settings/OauthSettingsInterface'
+import OauthSettingsInterface
+	from '../../Interfaces/Models/Settings/OauthSettingsInterface'
 
-export default class OauthSettings extends Settings implements OauthSettingsInterface {
+export default class OauthSettings extends Settings
+	implements OauthSettingsInterface
+{
 	public useSingleSignOn?: boolean = null
 	public successUrl?: string = null
 	public allowNoEmail?: boolean = null
@@ -9,10 +12,14 @@ export default class OauthSettings extends Settings implements OauthSettingsInte
 
 	public toJson(): any {
 		return {
-			...( this.useSingleSignOn ) && { use_single_sign_on: this.useSingleSignOn },
+			...( this.useSingleSignOn ) && {
+					use_single_sign_on: this.useSingleSignOn
+			},
 			...( this.successUrl ) && { success_url: this.successUrl },
 			...( this.allowNoEmail ) && { allow_no_email: this.allowNoEmail },
-			...( this.allowUnconfirmedEmail ) && { allow_unconfirmed_email: this.allowUnconfirmedEmail },
+			...( this.allowUnconfirmedEmail ) && {
+					allow_unconfirmed_email: this.allowUnconfirmedEmail
+			},
 		}
 	}
 

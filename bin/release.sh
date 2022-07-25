@@ -7,6 +7,9 @@ rsync \
 	--exclude=release \
 	--exclude=bin \
 	--exclude=tests \
+	--exclude=resources/ts \
+	--exclude=resources/scss \
+	--exclude=resources/fonts \
 	-a "$PWD" ./release/
 cd ./release
 rsync --recursive \

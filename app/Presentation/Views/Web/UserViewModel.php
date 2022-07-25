@@ -27,7 +27,8 @@ class UserViewModel extends ViewModel implements UserViewModelInterface {
 		$user = $this->user_repository->show( array(
 			'id' => $user_id,
 		) );
-		if ( $user ) {
+		$can_connect = false;
+		if ( $user != null ) {
 			$can_connect = $user->can_connect;
 		}
 		return array(

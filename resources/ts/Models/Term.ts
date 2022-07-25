@@ -2,7 +2,9 @@ import Model from './Model'
 import TermInterface from '../Interfaces/Models/TermInterface'
 import ProtectableInterface from '../Interfaces/Mixins/ProtectableInterface'
 
-export default class Term extends Model implements TermInterface, ProtectableInterface {
+export default class Term extends Model
+	implements TermInterface, ProtectableInterface
+{
 	public id?: number = null
 	public name?: string = null
 	public description?: string = null

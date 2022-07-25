@@ -24,7 +24,8 @@ import BalanceInterface from '../Interfaces/Models/Token/BalanceInterface'
 import BalanceCollectionInterface
 	from '../Interfaces/Collections/Token/BalanceCollectionInterface'
 import AccountCollection from '../Collections/Credit/AccountCollection'
-import AddressCollectionInterface from '../Interfaces/Collections/Token/AddressCollectionInterface'
+import AddressCollectionInterface
+	from '../Interfaces/Collections/Token/AddressCollectionInterface'
 import AddressCollection from '../Collections/Token/AddressCollection'
 
 @injectable()

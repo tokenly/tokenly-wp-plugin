@@ -115,7 +115,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( !$success_url ) {
 			$success_url = $this->oauth_settings->success_url;
 		}
-		$this->success_url = $success_url;
+		$this->set_success_url( $success_url );
 		$url = $this->get_tokenpass_login_url( $state );
 		wp_redirect( $url );
 		exit;
@@ -323,10 +323,19 @@ class AuthService extends Service implements AuthServiceInterface {
 		if ( !$this->integration_settings->client_id ) {
 			return;
 		}
+		$extra_scopes = $this->integration_settings->extra_scopes;
+		$extra_scopes_string = '';
+		if ( is_array( $extra_scopes ) ) {
+			$extra_scopes_string = join( ',', $extra_scopes );
+		}
+		$scopes = 'user,tca,manage-address';
+		if ( $extra_scopes_string != '' ) {
+			$scopes = "{$scopes},{$extra_scopes_string}";
+		}
 		$args = array(
 			'client_id'     => $this->integration_settings->client_id,
 			'redirect_uri'  => $this->oauth_callback_route,
-			'scope'         => 'user,tca,manage-address',
+			'scope'         => $scopes,
 			'response_type' => 'code',
 			'state'         => $state,
 		);

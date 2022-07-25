@@ -8,9 +8,12 @@ use Tokenly\Wp\Interfaces\Models\OauthUserInterface;
 use Tokenly\Wp\Collections\Credit\AccountCollection as CreditAccountCollection;
 use Tokenly\Wp\Collections\Token\AddressCollection as TokenAddressCollection;
 use Tokenly\Wp\Collections\Token\BalanceCollection as TokenBalanceCollection;
-use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface as CreditAccountCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface as TokenAddressCollectionInterface;
-use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface as TokenBalanceCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Credit\AccountCollectionInterface
+	as CreditAccountCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\AddressCollectionInterface
+	as TokenAddressCollectionInterface;
+use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface
+	as TokenBalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Settings\OauthSettingsInterface;
 
 class OauthUser extends Model implements OauthUserInterface {
@@ -32,13 +35,18 @@ class OauthUser extends Model implements OauthUserInterface {
 	 * Check if the user is allowed to proceed with login
 	 * @return bool
 	 */
-	public function can_social_login( OauthSettingsInterface $oauth_settings ): bool {
+	public function can_social_login(
+		OauthSettingsInterface $oauth_settings
+	): bool {
 		$email = $this->email;
 		$email_is_confirmed = $this->email_is_confirmed ?? false;
 		if ( !$email && $oauth_settings->allow_no_email == false ) {
 			return false;
 		}
-		if ( $email_is_confirmed == false && $oauth_settings->allow_unconfirmed_email == false ) {
+		if (
+			$email_is_confirmed == false &&
+			$oauth_settings->allow_unconfirmed_email == false
+		) {
 			return false;	
 		}
 		return true;

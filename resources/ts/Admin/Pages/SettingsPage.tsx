@@ -33,33 +33,64 @@ import {
 } from '@wordpress/components'
 
 interface SettingsPageProps {
-	integration_settings: any
-	integration_data: any
-	tca_settings: any
-	oauth_settings: any
-	tca_data: any
+	integration_settings: {
+		can_connect: true
+		client_id: string
+		client_secret: string
+		extra_scopes: Array<string>
+		settings_updated: boolean
+	}
+	integration_data: {
+		app_homepage_url: string
+		client_auth_url: string
+		status: boolean
+	}
+	tca_settings: {
+		filter_menu_items: boolean
+		filter_post_results: boolean
+	}
+	oauth_settings: {
+		allow_no_email: boolean
+		allow_unconfirmed_email: boolean
+		success_url: string,
+		use_single_sign_on: boolean
+	}
+	tca_data: {
+		post_types: object
+		taxonomies: object
+	}
 }
 
 export default function SettingsPage( props: SettingsPageProps ) {
 	const namespace: string = useInjection( TYPES.Variables.namespace )
 	const integrationSettingsRepository: IntegrationSettingsRepositoryInterface =
-		useInjection( TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface )
+		useInjection(
+			TYPES.Repositories.Settings.IntegrationSettingsRepositoryInterface
+		)
 	const tcaSettingsRepository: TcaSettingsRepositoryInterface =
-		useInjection( TYPES.Repositories.Settings.TcaSettingsRepositoryInterface )
+		useInjection(
+			TYPES.Repositories.Settings.TcaSettingsRepositoryInterface
+		)
 	const oauthSettingsRepository: OauthSettingsRepositoryInterface =
-		useInjection( TYPES.Repositories.Settings.OauthSettingsRepositoryInterface )
+		useInjection(
+			TYPES.Repositories.Settings.OauthSettingsRepositoryInterface
+		)
 	const dictionary: any = useInjection( TYPES.Variables.dictionary )
-	
 	const [ integrationSettings, setIntegrationSettings ] = 
 		useState<IntegrationSettingsInterface>(
-			( new IntegrationSettings ).fromJson( props.integration_settings )
+			( new IntegrationSettings ).fromJson(
+				Object.assign( {}, props.integration_settings ) )
 		)
 	const [ oauthSettings, setOauthSettings ] =
 		useState<OauthSettingsInterface>(
-			( new OauthSettings ).fromJson( props.oauth_settings )
+			( new OauthSettings ).fromJson(
+				Object.assign( {}, props.oauth_settings )
+			)
 		)
 	const [ tcaSettings, setTcaSettings ] = useState<TcaSettingsInterface>(
-		( new TcaSettings ).fromJson( props.tca_settings )
+		( new TcaSettings ).fromJson(
+			Object.assign( {}, props.tca_settings )
+		)
 	)
 	const [ savingIntegrationSettings, setSavingIntegrationSettings ] =
 		useState<boolean>( false )

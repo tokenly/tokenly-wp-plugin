@@ -82,4 +82,12 @@ const TYPES = {
 	},
 }
 
-export { TYPES }
+enum ApiScope {
+	User = 'user',
+	Tca = 'tca',
+	PrivateBalances = 'private-balances',
+	PrivateAddress = 'private-address',
+	ManageAddress = 'manage-address'
+  }
+
+export { TYPES, ApiScope }

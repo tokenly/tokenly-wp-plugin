@@ -17,7 +17,9 @@ class Whitelist extends Settings implements WhitelistInterface {
 	 */
 	public function from_array( array $data = array() ): self {
 		if ( isset( $data['items'] ) && is_array( $data['items'] ) ) {
-			$data['items'] = ( new WhitelistItemCollection() )->from_array( $data['items'] );
+			$data['items'] = ( new WhitelistItemCollection() )->from_array(
+				$data['items']
+			);
 		}
 		return parent::from_array( $data );
 	}

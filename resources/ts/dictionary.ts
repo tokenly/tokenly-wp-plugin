@@ -80,6 +80,29 @@ export default class Dictionary implements DictionaryInterface {
                 `${this.brand} Settings`,
             settingsIntegrationTitle:
                 'Integration Settings',
+            settingsIntegrationClientIdLabel:
+                'Client ID',
+            settingsIntegrationClientSecretLabel:
+                'Client Secret',
+            settingsIntegrationScopesTitle:
+                'Extra Permissions.',
+            settingsIntegrationScopesDescription:
+                `Note: Enabling these features will request additional 
+                permissions from the users upon login.`,
+            settingsIntegrationScopesPrivateBalancesTitle:
+                'Private Balances',
+            settingsIntegrationScopesPrivateBalancesLabel:
+                'Enable Private Balances',
+            settingsIntegrationScopesPrivateBalancesDescription:
+                `Allows to see and manage the balances from the pockets which
+                 are not marked as public.`,
+            settingsIntegrationScopesPrivateAddressesTitle:
+                'Private Addresses',
+            settingsIntegrationScopesPrivateAddressesLabel:
+                'Enable Private Addresses',
+            settingsIntegrationScopesPrivateAddressesDescription:
+                `Allows to see and manage the addresses which are not marked 
+                as public.`,
             settingsIntegrationSave:
                 'Save Integration Settings',
             settingsTcaTitle:

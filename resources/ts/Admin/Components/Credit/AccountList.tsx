@@ -1,7 +1,8 @@
 import * as React from 'react'
 import TransactionCard from './TransactionCard'
 import ResourceList from '../../Components/ResourceList'
-import AccountCollectionInterface from '../../../Interfaces/Collections/Credit/AccountCollectionInterface'
+import AccountCollectionInterface
+	from '../../../Interfaces/Collections/Credit/AccountCollectionInterface'
 
 interface AccountList {
 	accounts: AccountCollectionInterface

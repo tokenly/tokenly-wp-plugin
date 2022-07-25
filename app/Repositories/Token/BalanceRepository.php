@@ -11,10 +11,13 @@ use Tokenly\Wp\Interfaces\Collections\Token\BalanceCollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Token\BalanceInterface;
 use Tokenly\Wp\Interfaces\Models\Token\MetaInterface;
 use Tokenly\Wp\Interfaces\Models\Token\WhitelistInterface;
+use Tokenly\Wp\Interfaces\Models\Settings\IntegrationSettingsInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 use Tokenly\Wp\Interfaces\Repositories\Token\WhitelistRepositoryInterface;
+use Tokenly\Wp\Interfaces\Repositories\Settings\IntegrationSettingsRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Domain\Token\AssetNameFormatterServiceInterface;
 use Tokenly\Wp\Interfaces\Collections\Token\CategoryTermCollectionInterface;
+
 use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 /**
@@ -28,18 +31,21 @@ class BalanceRepository extends Repository
 	protected WhitelistInterface $whitelist;
 	protected TokenpassAPIInterface $client;
 	protected AssetNameFormatterServiceInterface $asset_name_formatter_service;
+	protected IntegrationSettingsInterface $integration_settings;
 	
 	public function __construct(
 		MetaRepositoryInterface $meta_repository,
 		WhitelistRepositoryInterface $whitelist_repository,
 		TokenpassAPIInterface $client,
-		AssetNameFormatterServiceInterface $asset_name_formatter_service
+		AssetNameFormatterServiceInterface $asset_name_formatter_service,
+		IntegrationSettingsRepositoryInterface $integration_settings_repository
 	) {
 		$this->client = $client;
 		$this->meta_repository = $meta_repository;
 		$this->whitelist_repository = $whitelist_repository;
 		$this->whitelist = $this->whitelist_repository->show();
 		$this->asset_name_formatter_service = $asset_name_formatter_service;
+		$this->integration_settings = $integration_settings_repository->show();
 	}
 
 	/**
@@ -65,14 +71,16 @@ class BalanceRepository extends Repository
 		$balance = array();
 		if ( isset( $params['oauth_token'] ) ) {
 			$oauth_token = $params['oauth_token'];
-			$balance = 
-				$this->client->getCombinedPublicBalances( $oauth_token );
+			$balance = array();
+			if ( in_array( "private-balances", $this->integration_settings->extra_scopes ) ) {
+				$balance = $this->client->getCombinedProtectedBalances( $oauth_token );
+			} else {
+				$balance = $this->client->getCombinedPublicBalances( $oauth_token );
+			}
 			if ( $balance && is_array( $balance ) ) {
 				foreach ( $balance as &$balance_item ) {
 					$balance_item = $this->format_item( $balance_item );
 				}
-			} else {
-				$balance = array();
 			}
 		}
 		$balance = ( new BalanceCollection() )->from_array( $balance );

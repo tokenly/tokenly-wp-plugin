@@ -1,9 +1,13 @@
 import Settings from '../Settings'
-import IntegrationSettingsInterface from '../../Interfaces/Models/Settings/IntegrationSettingsInterface'
+import IntegrationSettingsInterface
+	from '../../Interfaces/Models/Settings/IntegrationSettingsInterface'
 
-export default class IntegrationSettings extends Settings implements IntegrationSettingsInterface {
+export default class IntegrationSettings extends Settings
+	implements IntegrationSettingsInterface
+{
 	public clientId?: string = null
 	public clientSecret?: string = null
+	public extraScopes?: Array<string> = null
 	public settingsUpdated?: boolean = null
 	public canConnect?: boolean = null
 
@@ -24,6 +28,10 @@ export default class IntegrationSettings extends Settings implements Integration
 			data.settingsUpdated = data.can_connect
 			delete data.can_connect
 		}
+		if ( data.extra_scopes ) {
+			data.extraScopes = data.extra_scopes
+			delete data.extra_scopes
+		}
 		return super.fromJson( data )
 	}
 
@@ -31,8 +39,11 @@ export default class IntegrationSettings extends Settings implements Integration
 		return {
 			...( this.clientId ) && { client_id: this.clientId },
 			...( this.clientSecret ) && { client_secret: this.clientSecret },
-			...( this.settingsUpdated ) && { settings_updated: this.settingsUpdated },
+			...( this.settingsUpdated ) && {
+				settings_updated: this.settingsUpdated
+			},
 			...( this.canConnect ) && { can_connect: this.canConnect },
+			...( this.extraScopes ) && { extra_scopes: this.extraScopes },
 		}
 	}
 
@@ -42,6 +53,7 @@ export default class IntegrationSettings extends Settings implements Integration
 			'clientSecret',
 			'settingsUpdated',
 			'canConnect',
+			'extraScopes',
 		] )
 	}
 }

@@ -5,4 +5,5 @@ export default interface IntegrationSettingsInterface extends SettingsInterface 
 	clientSecret?: string
 	settingsUpdated?: boolean
 	canConnect?: boolean
+	extraScopes?: Array<string>
 }

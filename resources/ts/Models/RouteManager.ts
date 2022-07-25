@@ -1,9 +1,12 @@
 import Model from './Model'
 import RouteManagerInterface from '../Interfaces/Models/RouteManagerInterface'
-import RouteCollectionInterface from '../Interfaces/Collections/RouteCollectionInterface'
+import RouteCollectionInterface
+	from '../Interfaces/Collections/RouteCollectionInterface'
 import RouteCollection from '../Collections/RouteCollection'
 
-export default class RouteManager extends Model implements RouteManagerInterface {
+export default class RouteManager extends Model
+	implements RouteManagerInterface
+{
 	protected namespace: string
 	public admin?: RouteCollectionInterface = null
 	public api?: RouteCollectionInterface = null
@@ -40,7 +43,7 @@ export default class RouteManager extends Model implements RouteManagerInterface
 		if ( type == 'admin' ) {
 			key = `${this.namespace}_${route}`
 		}
-		const searchParams = new URLSearchParams(params).toString()
+		const searchParams = new URLSearchParams( params ).toString()
 		const path = `${this[ type ].get( key ).url}&${searchParams}`
 		return path
 	}

@@ -64,6 +64,7 @@ class Meta extends Post implements MetaInterface {
 		if ( $this->asset ) {
 			$array['asset'] = $this->asset->to_array();
 		}
+		
 		$array = array_merge( $array, $array_parent );
 		return $array;
 	}

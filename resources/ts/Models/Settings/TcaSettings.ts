@@ -1,7 +1,10 @@
 import Settings from '../Settings'
-import TcaSettingsInterface from '../../Interfaces/Models/Settings/TcaSettingsInterface'
+import TcaSettingsInterface
+	from '../../Interfaces/Models/Settings/TcaSettingsInterface'
 
-export default class TcaSettings extends Settings implements TcaSettingsInterface {
+export default class TcaSettings extends Settings
+	implements TcaSettingsInterface
+{
 	public taxonomies?: object = null
 	public postTypes?: object = null
 	public filterMenuItems?: boolean = null
@@ -11,9 +14,13 @@ export default class TcaSettings extends Settings implements TcaSettingsInterfac
 		return {
 			...( this.taxonomies ) && { taxonomies: this.taxonomies },
 			...( this.postTypes ) && { post_types: this.postTypes },
-			...( this.filterMenuItems ) && { filter_menu_items: this.filterMenuItems },
+			...( this.filterMenuItems ) && {
+				filter_menu_items: this.filterMenuItems
+			},
 			...( this.allowNoEmail ) && { allow_no_email: this.allowNoEmail },
-			...( this.filterPostResults ) && { filter_post_results: this.filterPostResults },
+			...( this.filterPostResults ) && {
+				filter_post_results: this.filterPostResults
+			},
 		}
 	}
 

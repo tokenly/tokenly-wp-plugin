@@ -16,7 +16,7 @@ class User extends Model implements UserInterface {
 	public ?OauthUserInterface $oauth_user = null;
 	public ?string $oauth_token = null;
 	public ?string $uuid = null;
-	public ?bool $can_connect = null;
+	public ?bool $can_connect = false;
 
 	/**
 	 * @inheritDoc

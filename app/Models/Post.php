@@ -46,7 +46,10 @@ class Post extends Model implements PostInterface, ProtectableInterface {
 			'id'          => $this->post->ID,
 			'name'        => $this->post->post_title,
 			'description' => $this->post->post_excerpt,
-			'image'       => $this->image,
+			'image'       =>
+				wp_get_attachment_url(
+					get_post_thumbnail_id( $this->ID ), 'full'
+				),
 		);
 		if ( $this->term ) {
 			$array['term'] = $this->term->to_array();

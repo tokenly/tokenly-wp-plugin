@@ -28,6 +28,7 @@ class CheckerService extends Service implements CheckerServiceInterface {
 	protected TcaSettingsInterface $tca_settings;
 	protected UserRepositoryInterface $user_repository;
 	protected TokenpassAPIInterface $client;
+	protected array $check_results = array();
 
 	public function __construct(
 		TcaSettingsRepositoryInterface $tca_settings_repository,
@@ -253,18 +254,25 @@ class CheckerService extends Service implements CheckerServiceInterface {
 		OauthUserInterface $oauth_user,
 		RuleCollectionInterface $rules
 	): RuleCheckResultInterface {
+		$report;
 		$username = $oauth_user->username;
 		$oauth_token = $oauth_user->oauth_token;
 		$rules_formatted = $rules->format_rules();
-		$status = boolval( $this->client->checkTokenAccess(
-			$username,
-			$rules_formatted,
-			$oauth_token
-		) ) ?? false;
-		$report = new RuleCheckResult ( array(
-			'hash'   => $rules->to_hash(),
-			'status' => $status,
-		) );
+		$rules_hash = md5(serialize( $rules_formatted ) );
+		if ( array_key_exists( $rules_hash, $this->check_results ) ) {
+			$report = $this->check_results[ $rules_hash ];
+		} else {
+			$status = boolval( $this->client->checkTokenAccess(
+				$username,
+				$rules_formatted,
+				$oauth_token
+			) ) ?? false;
+			$report = new RuleCheckResult ( array(
+				'hash'   => $rules->to_hash(),
+				'status' => $status,
+			) );
+			$this->check_results[ $rules_hash ] = $report;
+		}
 		return $report;
 	}
 

@@ -2,7 +2,8 @@ import Model from '../Model'
 import PromiseInterface from '../../Interfaces/Models/Token/PromiseInterface'
 
 import MetaInterface from '../../Interfaces/Models/Token/MetaInterface'
-import PromiseMetaInterface from '../../Interfaces/Models/Token/PromiseMetaInterface'
+import PromiseMetaInterface
+	from '../../Interfaces/Models/Token/PromiseMetaInterface'
 import SourceInterface from '../../Interfaces/Models/Token/SourceInterface'
 import QuantityInterface from '../../Interfaces/Models/Token/QuantityInterface'
 import AssetInterface from '../../Interfaces/Models/Token/AssetInterface'

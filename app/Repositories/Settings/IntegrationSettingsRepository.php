@@ -14,6 +14,7 @@ class IntegrationSettingsRepository extends SettingsRepository implements Integr
 		'client_secret',
 		'settings_updated',
 		'can_connect',
+		'extra_scopes',
 	);
 	protected string $class = IntegrationSettings::class;
 }

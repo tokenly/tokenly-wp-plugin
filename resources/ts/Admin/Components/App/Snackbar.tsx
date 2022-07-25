@@ -19,7 +19,11 @@ export default function AppSnackbar( props: SnackbarProps ) {
 			transform: 'translateX(-50%)',
 			zIndex: 999
 		} }>
-			<div style={{ opacity: props.show ? 1 : 0, transform: `translateY( ${ props.show ? '-24px' : 0 } )`, transition: 'all 0.2s' }}>
+			<div style={{
+				opacity: props.show ? 1 : 0,
+				transform: `translateY( ${ props.show ? '-24px' : 0 } )`,
+				transition: 'all 0.2s'
+			}}>
 			<Snackbar>{ props?.children }</Snackbar>
 			</div>
 		</div>

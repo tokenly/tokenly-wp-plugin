@@ -7,7 +7,9 @@ use Tokenly\Wp\Interfaces\Presentation\Blocks\Token\ItemCardListBlockModelInterf
 
 use Tokenly\Wp\Interfaces\Repositories\Token\MetaRepositoryInterface;
 
-class ItemCardListBlockModel extends BlockModel implements ItemCardListBlockModelInterface {
+class ItemCardListBlockModel extends BlockModel
+	implements ItemCardListBlockModelInterface
+{
 	protected string $admin_page_url;
 	protected string $namespace;
 	protected MetaRepositoryInterface $meta_repository;
@@ -35,7 +37,8 @@ class ItemCardListBlockModel extends BlockModel implements ItemCardListBlockMode
 		return array(
 			'user'       => $user_id,
 			'items'      => $meta_tokens,
-			'vendor_url' => "{$this->admin_page_url}{$this->namespace}-user-token-balance-index&id={$user_id}",
+			'vendor_url' => 
+				"{$this->admin_page_url}{$this->namespace}-user-token-balance-index&id={$user_id}",
 			'is_admin'   => current_user_can( 'administrator' ),
 			'namespace'  => $this->namespace,
 		);

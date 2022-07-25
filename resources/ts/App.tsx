@@ -1,7 +1,8 @@
 import '/resources/scss/Main.scss'
 import { Container } from 'inversify'
 
-import ServiceProviderInterface from './Interfaces/Providers/ServiceProviderInterface'
+import ServiceProviderInterface
+	from './Interfaces/Providers/ServiceProviderInterface'
 
 export default class App {
 	container: Container

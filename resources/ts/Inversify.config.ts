@@ -56,7 +56,6 @@ import RouteManager from './Models/RouteManager'
 import RouteManagerInterface from './Interfaces/Models/RouteManagerInterface'
 import Dictionary from './dictionary'
 import DictionaryInterface from './Interfaces/DictionaryInterface'
-import { ethers } from "ethers"
 
 declare const window: any
 
@@ -153,13 +152,6 @@ export default function bind( container: Container ) {
 			return ( new RouteManager(
 				context.container.get( TYPES.Variables.namespace )
 			) ).fromJson( shared?.routes ) 
-		} )
-		.inSingletonScope()
-	container.bind<ethers.providers.Web3Provider>(
-			TYPES.Variables.web3Provider
-		)
-		.toDynamicValue( ( context: interfaces.Context ) => {
-			return new ethers.providers.Web3Provider( window.ethereum )
 		} )
 		.inSingletonScope()
 	return container
