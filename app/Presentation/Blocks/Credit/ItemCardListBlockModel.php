@@ -5,7 +5,8 @@ namespace Tokenly\Wp\Presentation\Blocks\Credit;
 use Tokenly\Wp\Presentation\Blocks\BlockModel;
 use Tokenly\Wp\Interfaces\Presentation\Blocks\Credit\ItemCardListBlockModelInterface;
 
-class ItemCardListBlockModel extends BlockModel implements ItemCardListBlockModelInterface {
+class ItemCardListBlockModel extends BlockModel
+implements ItemCardListBlockModelInterface {
 	protected string $admin_page_url;
 	protected string $namespace;
 
