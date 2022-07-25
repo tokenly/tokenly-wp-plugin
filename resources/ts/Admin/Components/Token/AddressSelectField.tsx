@@ -27,7 +27,6 @@ export default function AddressSelectField( props: AddressSelectFieldProps ) {
 				value: '',
 			}
 		]
-		console.log(props.addresses)
 		props.addresses.forEach( ( address: AddressInterface, key: any ) => {
 			options.push( {
 				label: address.label,

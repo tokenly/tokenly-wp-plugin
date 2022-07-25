@@ -37,8 +37,12 @@ export default class IntegrationSettings extends Settings
 
 	public toJson(): any {
 		return {
-			...( this.clientId ) && { client_id: this.clientId },
-			...( this.clientSecret ) && { client_secret: this.clientSecret },
+			...( this.clientId || this.clientId == '' ) && {
+				client_id: this.clientId
+			},
+			...( this.clientSecret || this.clientSecret == '' ) && {
+				client_secret: this.clientSecret
+			},
 			...( this.settingsUpdated ) && {
 				settings_updated: this.settingsUpdated
 			},

@@ -87,7 +87,6 @@ export default function IntegrationSettingsForm(
 					),
 					component:
 						<TextControl
-							placeholder="Client ID"
 							value={ props.settings.clientId ?? '' }
 							onChange={ onClientIdFieldChange }
 						/>

@@ -93,6 +93,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		$redirect_url = $success ? $on_success_url : $on_failure_url;
 		$this->reset_state();
 		$this->reset_success_url();
+		nocache_headers();
 		wp_redirect( $redirect_url );
 		exit;
 	}
@@ -117,6 +118,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		}
 		$this->set_success_url( $success_url );
 		$url = $this->get_tokenpass_login_url( $state );
+		nocache_headers();
 		wp_redirect( $url );
 		exit;
 	}
@@ -223,7 +225,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		return setcookie(
 			$this->success_url_cookie_name,
 			$url,
-			time() + 3600,
+			time() + 604800,
 			COOKIEPATH,
 			COOKIE_DOMAIN
 		);
@@ -237,7 +239,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		return setcookie(
 			$this->success_url_cookie_name,
 			'',
-			time() - 3600,
+			time() - 604800,
 			COOKIEPATH,
 			COOKIE_DOMAIN
 		);
@@ -252,7 +254,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		return setcookie(
 			$this->state_cookie_name,
 			$state,
-			time() + 3600,
+			time() + 604800,
 			COOKIEPATH,
 			COOKIE_DOMAIN
 		);
@@ -266,7 +268,7 @@ class AuthService extends Service implements AuthServiceInterface {
 		return setcookie(
 			$this->state_cookie_name,
 			'',
-			time() - 3600,
+			time() - 604800,
 			COOKIEPATH,
 			COOKIE_DOMAIN
 		);
@@ -312,6 +314,7 @@ class AuthService extends Service implements AuthServiceInterface {
 				return $user;
 			}
 		}
+		return null;
 	}
 
 	/**

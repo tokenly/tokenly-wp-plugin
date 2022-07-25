@@ -30,11 +30,9 @@ export default function TcaRuleEditor( props: TcaRuleEditorProps ) {
 	
 	function onRemove( index: number ) {
 		const newRules = props.editData.tcaRules.clone()
-		console.log(newRules)
 		newRules.delete( index )
 		const sequential = newRules.toSequential()
 		props.onChange( sequential )
-		console.log(sequential)
 	}
 	
 	function onAssetFieldChange( key: any, value: any ) {

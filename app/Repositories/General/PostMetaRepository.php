@@ -34,7 +34,7 @@ class PostMetaRepository implements PostMetaRepositoryInterface {
 	 * @param string $key Key of the meta item to retrieve
 	 * @return mixed
 	 */
-	public function show( int $post_id, string $key ): mixed {
+	public function show( int $post_id, string $key ) {
 		$key = "{$this->namespace}_{$key}";
 		$option = get_post_meta( $post_id, $key , true );
 		if ( empty( $option ) ) {

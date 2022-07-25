@@ -33,7 +33,6 @@ class VendorPolicy extends Policy implements VendorPolicyInterface {
 	}
 
 	public function before() {
-		return true;
 		if (
 			$this->integration_settings->can_connect &&
 			$this->user &&

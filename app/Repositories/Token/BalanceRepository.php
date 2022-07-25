@@ -81,6 +81,8 @@ class BalanceRepository extends Repository
 				foreach ( $balance as &$balance_item ) {
 					$balance_item = $this->format_item( $balance_item );
 				}
+			} else {
+				$balance = array();
 			}
 		}
 		$balance = ( new BalanceCollection() )->from_array( $balance );

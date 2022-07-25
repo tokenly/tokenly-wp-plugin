@@ -27,6 +27,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 		IntegrationSettingsRepositoryInterface $integration_settings_repository,
 		string $root_filepath,
 		string $root_dir,
+		string $version,
 		TokenpassAPIInterface $client
 	) {
 		$this->root_filepath = $root_filepath;
@@ -35,7 +36,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 		$this->integration_settings_repository = $integration_settings_repository;
 		$this->integration_settings = 
 			$this->integration_settings_repository->show();
-		$this->version = $this->get_current_git_commit();
+		$this->version = $version;
 		$this->client = $client;
 	}
 
@@ -60,7 +61,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @return void
 	 */
 	public static function on_activation(): void {
-		$this->check_version();
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -68,7 +69,7 @@ class LifecycleService extends Service implements LifecycleServiceInterface {
 	 * @return void
 	 */
 	public static function on_uninstall(): void {
-		$this->check_version();
+		flush_rewrite_rules();
 	}
 
 	/**

@@ -63,6 +63,7 @@ class AuthController implements AuthControllerInterface {
 			return;
 		}
 		$this->auth_service->disconnect_user( $this->current_user );
+		nocache_headers();
 		wp_redirect( $success_url );
 		exit;
 	}
@@ -73,6 +74,7 @@ class AuthController implements AuthControllerInterface {
 	 */
 	public function callback() {
 		if ( !isset( $_GET['code'] ) || !isset( $_GET['state'] ) ) {
+			nocache_headers();
 			wp_redirect( home_url() );
 			exit;
 		}

@@ -138,12 +138,14 @@ export default function bind( container: Container ) {
 		.toConstantValue( shared?.nonce ?? null )
 	container.bind<string>( TYPES.Variables.fallbackImage )
 		.toConstantValue( shared?.fallback_image ?? null )
+	container.bind<string>( TYPES.Variables.userRoles )
+		.toConstantValue( shared?.user_roles ?? null )
 	container.bind<string>( TYPES.Variables.isUserConnected )
 		.toConstantValue( shared?.user_can_connect ?? false )
 	container.bind<string>( TYPES.Variables.isIntegrationConnected )
 		.toConstantValue( shared?.integration_can_connect ?? false )
 	container.bind<DictionaryInterface>( TYPES.Variables.dictionary )
-		.toDynamicValue((context: interfaces.Context) => {
+		.toDynamicValue( ( context: interfaces.Context ) => {
 			return new Dictionary( context.container.get( TYPES.Variables.brand ) ) 
 		} )
 		.inSingletonScope()

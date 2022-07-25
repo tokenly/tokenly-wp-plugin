@@ -41,8 +41,8 @@ class TcaSettings extends Settings implements TcaSettingsInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'taxonomies'          => $this->taxonomies,
-			'post_types'          => $this->post_types,
+			'taxonomies'          => $this->taxonomies ?? array(),
+			'post_types'          => $this->post_types ?? array(),
 			'filter_menu_items'   => $this->filter_menu_items,
 			'filter_post_results' => $this->filter_post_results,
 		);

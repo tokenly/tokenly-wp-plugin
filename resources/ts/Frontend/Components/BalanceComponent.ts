@@ -30,7 +30,10 @@ export default class BalanceComponent extends Component
 	register( selector: string ) {
 		this.valueElement = this.element.querySelector( '.value' )
 		this.loaderElement = this.element.querySelector( '.tokenly-loader' )
-		const user = this.element.dataset.user
+		let user = this.element.dataset.user
+		if ( !user || user == '' ) {
+			user = 'me'
+		}
 		const identifier = this.element.dataset[ this.identifier ]
 		this.userRepository[ this.serviceMethod ](
 			user, identifier

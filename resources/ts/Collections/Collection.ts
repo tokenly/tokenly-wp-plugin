@@ -51,7 +51,6 @@ export default class Collection extends Map implements CollectionInterface {
     public toSequential(): CollectionInterface {
         const sequential: CollectionInterface =
             new ( <typeof Collection>this.constructor )
-        console.log(sequential)
         let i: number = 0
         this.forEach( ( item, key: string ) => {
             sequential.set( i, item.clone() )

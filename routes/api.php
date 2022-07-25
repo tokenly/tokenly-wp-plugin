@@ -86,7 +86,7 @@ return function(
 					$credit_group_controller, 'index'
 				),
 				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
+					return true;
 				},
 			),
 			'credit_group_store' => array(

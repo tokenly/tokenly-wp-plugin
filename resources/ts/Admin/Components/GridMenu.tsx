@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { useInjection } from 'inversify-react'
+import { TYPES } from '../../Types'
 
 import { 
 	Card,
@@ -25,6 +27,8 @@ export interface GridMenuItemInterface {
 }
 
 export default function GridMenu( props: GridMenuProps ) {
+	const userRoles: string = useInjection( TYPES.Variables.userRoles )
+
 	function canView( key: string ): boolean {
 		return (
 			props.items[ key as any ].href ||
@@ -47,10 +51,14 @@ export default function GridMenu( props: GridMenuProps ) {
 
 	let cards = [] as any
 	cards = Object.keys( props.items ).map( ( key: string ) => {
+		const canViewResult = canView( key );
+		if ( !canViewResult && !userRoles.includes( 'administrator' ) ) {
+			return null;
+		}
 		const item = props.items[ key as any ]
 		const url = getUrl( item )
 			return (
-				<Card style={ { opacity: canView( key ) ? 1 : 0.5 } }>
+				<Card style={ { opacity: canViewResult ? 1 : 0.5 } }>
 					<CardHeader>
 						<Flex justify="flex-start">
 							<Dashicon icon={ item.icon as any } />
@@ -62,7 +70,7 @@ export default function GridMenu( props: GridMenuProps ) {
 						<Button 
 							isPrimary
 							href={ url }
-							disabled={ !canView( key ) }
+							disabled={ !canViewResult }
 						>
 							Visit Page
 						</Button>

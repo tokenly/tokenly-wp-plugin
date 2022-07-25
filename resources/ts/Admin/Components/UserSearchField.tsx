@@ -68,7 +68,6 @@ export default function UserSearchField( props: UserSearchFieldProps ) {
 				suggestions: true,
 				name: keywords,
 			} ).then( ( results: UserCollectionInterface ) => {
-				console.log(results)
 				if ( results.size <= 0 ) {
 					resolve( [] )
 				} 

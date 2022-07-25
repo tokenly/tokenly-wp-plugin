@@ -141,9 +141,11 @@ class GroupRepository extends Repository implements GroupRepositoryInterface {
 			$groups = array();
 		}
 		$groups = ( new GroupCollection() )->from_array( $groups );
-		$groups->exclude_not_valid_clients(
-			$this->integration_settings->client_id
-		);
+		if ( $this->integration_settings->client_id ) {
+			$groups->exclude_not_valid_clients(
+				$this->integration_settings->client_id
+			);
+		}
 		if (
 			!isset( $params['filtered'] ) ||
 			$params['filtered'] === true

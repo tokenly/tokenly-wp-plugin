@@ -22,6 +22,7 @@ const TYPES = {
 			'isUserConnected' ),
 		isIntegrationConnected : Symbol.for(
 			'isIntegrationConnected' ),
+		userRoles : Symbol.for( 'userRoles' ),
 		dictionary : Symbol.for( 'dictionary' ),
 		web3Provider : Symbol.for( 'web3Provider' ),
 	},

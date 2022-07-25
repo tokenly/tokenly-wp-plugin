@@ -1,7 +1,8 @@
 import * as React from 'react'
 import FormTable from '../FormTable'
 import TcaSettings from '../../../Models/Settings/TcaSettings'
-import TcaSettingsInterface from '../../../Interfaces/Models/Settings/TcaSettingsInterface'
+import TcaSettingsInterface
+	from '../../../Interfaces/Models/Settings/TcaSettingsInterface'
 
 import { 
 	Flex,
@@ -11,8 +12,15 @@ import {
 
 interface TcaSettingsFormProps {
 	settings: TcaSettingsInterface
-	data: any
-	onChange: any
+	data: {
+		post_types: {
+			[index: string]: string;
+		}
+		taxonomies: {
+			[index: string]: string;
+		}
+	}
+	onChange: ( data: any ) => void
 }
 
 export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
@@ -37,14 +45,26 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 	}
 
 	function onFilterMenuItemsFieldChange( value: any ) {
-		let settings = Object.assign( new TcaSettings(), props.settings )
+		const settings = Object.assign( new TcaSettings(), props.settings )
 		settings.filterMenuItems = value
 		onChange( settings )
 	}
  
 	function onFilterPostResultsFieldChange( value: any ) {
-		let settings = Object.assign( new TcaSettings(), props.settings )
+		const settings = Object.assign( new TcaSettings(), props.settings )
 		settings.filterPostResults = value
+		onChange( settings )
+	}
+
+	function onPostTypeCheck( key: string, value: boolean ) {
+		const settings = Object.assign( new TcaSettings(), props.settings )
+		settings.postTypes[ key ] = value
+		onChange( settings )
+	}
+
+	function onTaxonomyCheck( key: string, value: boolean ) {
+		const settings = Object.assign( new TcaSettings(), props.settings )
+		settings.taxonomies[ key ] = value
 		onChange( settings )
 	}
 
@@ -56,10 +76,8 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 				<CheckboxControl
 					label={ label }
 					checked={ isPostTypeChecked( key ) }
-					onChange={ ( value: any ) => {
-						let settings = Object.assign( new TcaSettings(), props.settings )
-						settings.postTypes[ key ] = value
-						onChange( settings )
+					onChange={ ( value: boolean ) => {
+						onPostTypeCheck( key, value )
 					} }
 				/>
 			)
@@ -74,10 +92,8 @@ export default function TcaSettingsForm( props: TcaSettingsFormProps ) {
 				<CheckboxControl
 					label={ label }
 					checked={ isTaxonomyChecked( key ) }
-					onChange={ ( value: any ) => {
-						let settings = Object.assign( new TcaSettings(), props.settings )
-						settings.taxonomies[ key ] = value
-						onChange( settings )
+					onChange={ ( value: boolean ) => {
+						onTaxonomyCheck( key, value )
 					} }
 				/>
 			)

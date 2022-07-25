@@ -9,7 +9,7 @@ class Column extends Model implements ColumnInterface {
 	public ?string $id = null;
 	public ?string $title = null;
 	public ?array $data = null;
-	public mixed $callback = null;
+	public $callback = null;
 
 	/**
 	 * @inheritDoc

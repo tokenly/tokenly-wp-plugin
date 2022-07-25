@@ -158,6 +158,7 @@ class PostTypeServiceProvider extends ServiceProvider
 			$posts = apply_filters(
 				"{$this->namespace}_posts_results", $posts, $query
 			);
+			$posts = $posts->extract( 'post' );
 			return $posts;
 		}, 10, 2 );
 	}

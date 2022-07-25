@@ -34,7 +34,7 @@ class UserMetaRepository implements UserMetaRepositoryInterface {
 	 * @param string $key User meta key
 	 * @return mixed
 	 */
-	public function show( int $user_id, string $key ): mixed {
+	public function show( int $user_id, string $key ) {
 		$key = "{$this->namespace}_{$key}";
 		$option = get_user_meta( $user_id, $key, true );
 		if ( empty( $option ) ) {

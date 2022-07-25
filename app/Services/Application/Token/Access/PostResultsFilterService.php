@@ -60,7 +60,9 @@ class PostResultsFilterService extends Service implements PostResultsFilterServi
 	 * @param array $query Query data
 	 * @return array
 	 */
-	public function filter( PostCollectionInterface $posts, $query ): array {
+	public function filter(
+		PostCollectionInterface $posts, $query
+	): PostCollectionInterface {
 		$current_post_id = 0;
 		$is_singular = $query->is_singular;
 		if ( $is_singular == true && isset( $query->posts[0] )) {
@@ -79,7 +81,6 @@ class PostResultsFilterService extends Service implements PostResultsFilterServi
 				unset( $posts[ $key ] );
 			}
 		}
-		$posts = $posts->extract( 'post' );
 		return $posts;
 	}
 }

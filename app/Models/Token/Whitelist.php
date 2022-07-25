@@ -28,9 +28,15 @@ class Whitelist extends Settings implements WhitelistInterface {
 	 * @inheritDoc
 	 */
 	public function to_array(): array {
+		$items;
+		if ( $this->items ) {
+			$items = $this->items->to_array();
+		} else {
+			$items = array();
+		}
 		$array = array(
-			'enabled' => $this->enabled,
-			'items'   => $this->items->to_array(),
+			'enabled' => $this->enabled ?? false,
+			'items'   => $items,
 		);
 		return $array;
 	}

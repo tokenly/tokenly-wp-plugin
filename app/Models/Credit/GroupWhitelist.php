@@ -8,7 +8,7 @@ use Tokenly\Wp\Interfaces\Models\Credit\GroupWhitelistInterface;
 use Tokenly\Wp\Interfaces\Collections\Credit\GroupWhitelistItemCollectionInterface;
 
 class GroupWhitelist extends Settings implements GroupWhitelistInterface {
-	public array $items = array();
+	public ?array $items = array();
 
 	/**
 	 * @inheritDoc

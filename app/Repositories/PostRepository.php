@@ -16,6 +16,7 @@ use Tokenly\Wp\Interfaces\Repositories\General\PostMetaRepositoryInterface;
 /**
  * Manages post data
  */
+class PostRepository extends Repository implements PostRepositoryInterface {
 	protected string $class = Post::class;
 	protected string $class_collection = PostCollection::class;
 	protected PostMetaRepositoryInterface $meta_repository;

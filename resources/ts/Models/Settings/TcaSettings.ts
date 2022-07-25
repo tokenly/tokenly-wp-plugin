@@ -5,8 +5,8 @@ import TcaSettingsInterface
 export default class TcaSettings extends Settings
 	implements TcaSettingsInterface
 {
-	public taxonomies?: object = null
-	public postTypes?: object = null
+	public taxonomies?: object = {}
+	public postTypes?: object = {}
 	public filterMenuItems?: boolean = null
 	public filterPostResults?: boolean = null
 
@@ -26,8 +26,11 @@ export default class TcaSettings extends Settings
 
 	public fromJson( data: any = {} ): this {
 		if ( data.post_types ) {
-			data.postTypes = data.post_types
+			data.postTypes = Object.assign( {}, data.post_types )
 			delete data.post_types
+		}
+		if ( data.taxonomies ) {
+			data.taxonomies = Object.assign( {}, data.taxonomies )
 		}
 		if ( data.filter_menu_items ) {
 			data.filterMenuItems = data.filter_menu_items

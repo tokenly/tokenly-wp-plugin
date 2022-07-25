@@ -32,7 +32,7 @@ class OptionRepository implements OptionRepositoryInterface {
 	 * @param string $key Key to retrieve
 	 * @return mixed
 	 */
-	public function show( string $key ): mixed {
+	public function show( string $key ) {
 		$key = "{$this->namespace}_{$key}";
 		$option = get_option( $key, null );
 		return $option;

@@ -56,8 +56,12 @@ interface SettingsPageProps {
 		use_single_sign_on: boolean
 	}
 	tca_data: {
-		post_types: object
-		taxonomies: object
+		post_types: {
+			[index: string]: string;
+		}
+		taxonomies: {
+			[index: string]: string;
+		}
 	}
 }
 

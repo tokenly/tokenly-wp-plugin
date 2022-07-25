@@ -8,7 +8,7 @@ use Tokenly\Wp\Interfaces\Models\Routes\WebRouteInterface;
 class WebRoute extends Route implements WebRouteInterface {
 	public ?string $id = null;
 	public ?string $path = null;
-	public mixed $callback = null;
+	public $callback = null;
 	public ?array $rules = null;
 	public ?array $vars = null;
 

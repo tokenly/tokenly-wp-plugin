@@ -34,7 +34,7 @@ class TermMetaRepository implements TermMetaRepositoryInterface {
 	 * @param string $key Key of the meta item to retrieve
 	 * @return mixed
 	 */
-	public function show( int $term_id, string $key ): mixed {
+	public function show( int $term_id, string $key ) {
 		$key = "{$this->namespace}_{$key}";
 		$option = get_term_meta( $term_id, $key , true );
 		if ( empty( $option ) ) {

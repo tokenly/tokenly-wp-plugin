@@ -9,8 +9,8 @@ class ApiRoute extends Route implements ApiRouteInterface {
 	public ?string $path = null;
 	public ?string $path_regex = null;
 	public ?string $methods = null;
-	public mixed $callback = null;
-	public mixed $permission_callback = null;
+	public $callback = null;
+	public $permission_callback = null;
 
 	public function get_register_arguments(): array {
 		return array(

@@ -463,6 +463,7 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
 	'general.name'      => 'tokenly-wp-plugin',
+	'general.version'   => '0.7',
 	'general.namespace' => 'tokenly',
 	'general.brand'     => 'Tokenly',
 	'general.logo'      => \DI\factory(
@@ -646,7 +647,8 @@ return array(
 			'root_filepath',
 			\DI\get( 'general.root_filepath' )
 		)
-		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) ),
+		->constructorParameter( 'root_dir', \DI\get( 'general.root_dir' ) )
+		->constructorParameter( 'version', \DI\get( 'general.version' ) ),
 	ResourceServiceInterface::class =>
 		\DI\autowire( ResourceService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) )
