@@ -42,6 +42,7 @@ class Router extends Service implements RouterInterface {
 		callable $render_function,
 		array $arguments = array()
 	): void {
+		nocache_headers();
 		$response = call_user_func( $render_function, ...$arguments );
 		if ( !$response ) {
 			return;

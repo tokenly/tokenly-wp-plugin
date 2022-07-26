@@ -463,7 +463,7 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
 	'general.name'      => 'tokenly-wp-plugin',
-	'general.version'   => '0.7',
+	'general.version'   => '0.7.1',
 	'general.namespace' => 'tokenly',
 	'general.brand'     => 'Tokenly',
 	'general.logo'      => \DI\factory(
