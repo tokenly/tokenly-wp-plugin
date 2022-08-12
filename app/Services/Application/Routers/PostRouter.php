@@ -6,11 +6,11 @@ use Tokenly\Wp\Services\Application\Routers\Router;
 use Tokenly\Wp\Interfaces\Services\Application\Routers\PostRouterInterface;
 
 use Tokenly\Wp\Interfaces\Factories\Collections\PostCollectionFactoryInterface;
-use Twig\Environment;
 use Tokenly\Wp\Interfaces\Models\PostInterface;
 use Tokenly\Wp\Interfaces\Repositories\Routes\PostRouteRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Routes\RouteInterface;
 use Tokenly\Wp\Interfaces\Collections\Routes\RouteCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ViewRendererInterface;
 
 /**
  * Manages routing for the post type views
@@ -25,14 +25,13 @@ class PostRouter extends Router implements PostRouterInterface {
 	 */
 	protected array $registered = array();
 	public function __construct(
-		Environment $twig,
 		string $namespace,
 		string $brand,
-		PostRouteRepositoryInterface $post_route_repository
+		PostRouteRepositoryInterface $post_route_repository,
+		ViewRendererInterface $view_renderer
 	) {
-		parent::__construct( $namespace );
+		parent::__construct( $namespace, $view_renderer );
 		$this->brand = $brand;
-		$this->twig = $twig;
 		$this->post_route_repository = $post_route_repository;
 	}
 
@@ -95,7 +94,7 @@ class PostRouter extends Router implements PostRouterInterface {
 		if ( $route->show_callback ) {
 			$callback = $route->show_callback;
 			$callback = function( PostInterface $post ) use ( $callback ) {
-				$this->render_route( $callback, array( $post ) );
+				$this->render( $callback, array( $post ) );
 			};
 			$route->show_callback = $callback;
 			$action = "{$this->namespace}_template_redirect_post_{$post_type}";
@@ -127,7 +126,7 @@ class PostRouter extends Router implements PostRouterInterface {
 				$this->brand,
 				function() use ( $route, $post ) {
 					$edit_callback = $route->edit_callback;
-					$this->render_route( $edit_callback, array( $post ) );
+					$this->render( $edit_callback, array( $post ) );
 				}, $post->post_type, 'advanced', 'high'
 			);
 		};

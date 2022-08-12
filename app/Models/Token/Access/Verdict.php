@@ -18,6 +18,11 @@ class Verdict extends Model implements VerdictInterface {
 	 * @var bool
 	 */
 	public ?bool $status = false;
+		/**
+	 * Access status code.
+	 * @var int
+	 */
+	public ?int $status_code = 0;
 	/**
 	 * Comment for the status.
 	 * @var string
@@ -47,8 +52,9 @@ class Verdict extends Model implements VerdictInterface {
 	 */
 	public function to_array(): array {
 		$array = array(
-			'status' => $this->status,
-			'note'   => $this->note,
+			'status'      => $this->status,
+			'status_code' => $this->status_code,
+			'note'        => $this->note,
 		);
 		if ( $this->reports ) {
 			$array['reports'] = $this->reports->to_array();
@@ -62,6 +68,7 @@ class Verdict extends Model implements VerdictInterface {
 	protected function get_fillable(): array {
 		return array_merge( parent::get_fillable(), array(
 			'status',
+			'status_code',
 			'note',
 			'reports',
 		) );

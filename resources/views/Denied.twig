@@ -2,10 +2,10 @@
 {% block content %}
 	<div class="tokenly-access-denied">
 		<h1>Access Denied</h1>
-		<div class="note">{{ verdict.note }}</div>
-		{% if verdict.reports %}
+		<div class="note">{{ props.verdict.note }}</div>
+		{% if props.verdict.reports %}
 			<div class="rule-groups">
-				{% for key, rule_group in rule_groups %}
+				{% for key, rule_group in props.rule_groups %}
 					<div class="rule-group">
 						<div class="rules">
 							{% for key, rule in rule_group %}
@@ -23,12 +23,16 @@
 								</div>
 							{% endfor %}
 						</div>
-						<div class="status {{verdict.reports[key] | lower}}">{{ verdict.reports[key] }}</div>
+						<div class="status {{verdict.reports[key] | lower}}">{{ props.verdict.reports[key] }}</div>
 					</div>
 				{% endfor %}
 			</div>
 		{% endif %}
-		<a href="{{back_url}}" class="tokenly-component-button back-button">Return</a>
+		{% if props.verdict.status_code == -1 %}
+			<a href="{{props.login_url}}" class="tokenly-component-button back-button tokenly-denied-login-button">Login</a>
+		{% else %}
+			<a href="{{props.back_url}}" class="tokenly-component-button back-button">Return</a>
+		{% endif %}
 
 	</div>
 {% endblock %}

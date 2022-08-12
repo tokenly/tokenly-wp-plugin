@@ -66,6 +66,7 @@ class CheckerService extends Service implements CheckerServiceInterface {
 	): VerdictInterface {
 		$verdict = null;
 		$status = false;
+		$status_code = 0;
 		$note = '';
 		$is_protected = $this->is_protected( $target );
 		if ( $is_protected === true ) {
@@ -87,6 +88,7 @@ class CheckerService extends Service implements CheckerServiceInterface {
 				}
 			} else {
 				$status = false;
+				$status_code = -1;
 				$need_test = false;
 				$note = 'The user is not logged in.';
 			}
@@ -95,9 +97,10 @@ class CheckerService extends Service implements CheckerServiceInterface {
 		}
 		$verdict = new Verdict(
 			array(
-				'status'  => $status,
-				'reports' => null,
-				'note'    => $note,
+				'status'      => $status,
+				'status_code' => $status_code,
+				'reports'     => null,
+				'note'        => $note,
 			)
 		);
 		return $verdict;

@@ -14,11 +14,10 @@ export default class TcaSettings extends Settings
 		return {
 			...( this.taxonomies ) && { taxonomies: this.taxonomies },
 			...( this.postTypes ) && { post_types: this.postTypes },
-			...( this.filterMenuItems ) && {
+			...( this.filterMenuItems != null ) && {
 				filter_menu_items: this.filterMenuItems
 			},
-			...( this.allowNoEmail ) && { allow_no_email: this.allowNoEmail },
-			...( this.filterPostResults ) && {
+			...( this.filterPostResults != null ) && {
 				filter_post_results: this.filterPostResults
 			},
 		}

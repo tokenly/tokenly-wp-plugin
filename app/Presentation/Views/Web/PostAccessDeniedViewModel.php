@@ -12,8 +12,12 @@ class PostAccessDeniedViewModel extends ViewModel
 	 * @inheritDoc
 	 */
 	public function prepare( array $data = array() ): array {
+		global $post;
+		$post_slug = $post->post_name;
 		$view_data = array(
-			'back_url' => $_SERVER['HTTP_REFERER'] ?? '/',
+			'back_url'  => $_SERVER['HTTP_REFERER'] ?? '/',
+			'login_url' => 
+				"/tokenly/oauth/connect?tokenly_success_url=/{$post_slug}",
 		);
 		if ( isset( $data['rules'] ) ) {
 			foreach ( $data['rules'] as &$rule_group ) {
@@ -23,19 +27,19 @@ class PostAccessDeniedViewModel extends ViewModel
 		}
 		if ( isset( $data['verdict'] ) ) {
 			$verdict = $data['verdict'];
-			$verdict = $verdict->to_array();
-			if ( isset( $verdict['reports'] ) ) {
-				$verdict['note'] = 
+			$verdict_array = $verdict->to_array();
+			if ( isset( $verdict_array['reports'] ) ) {
+				$verdict_array['note'] = 
 					"Please, make sure you can pass the following requirements:";
-				$reports = $verdict['reports'];
+				$reports = $verdict_array['reports'];
 				$reports_formatted = array();
 				foreach ( $reports as $report ) {
 					$status = $report['status'] ? 'Passed' : 'Failed';
 					$reports_formatted[ $report['hash'] ] = $status;
 				}
-				$verdict['reports'] = $reports_formatted;
+				$verdict_array['reports'] = $reports_formatted;
 			}
-			$view_data['verdict'] = $verdict;
+			$view_data['verdict'] = $verdict_array;
 		}
 		return $view_data;
 	}

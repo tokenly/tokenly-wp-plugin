@@ -15,7 +15,6 @@ class LoginButtonComponentModel extends ComponentModel
 {
 	protected string $root_dir;
 	protected string $namespace;
-	protected IntegrationSettingsRepositoryInterface $integration_setttings_repository;
 	protected IntegrationSettingsInterface $integration_settings;
 	protected OauthSettingsRepositoryInterface $oauth_setttings_repository;
 	protected OauthSettingsInterface $oauth_setttings;
@@ -30,10 +29,8 @@ class LoginButtonComponentModel extends ComponentModel
 		$this->namespace = $namespace;
 		$this->oauth_setttings_repository = $oauth_setttings_repository;
 		$this->oauth_settings = $this->oauth_setttings_repository->show();
-		$this->integration_setttings_repository = 
-			$integration_setttings_repository;
 		$this->integration_settings = 
-			$this->integration_setttings_repository->show();
+			$integration_setttings_repository->show();
 	}
 
 	/**

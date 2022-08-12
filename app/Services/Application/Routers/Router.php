@@ -8,6 +8,7 @@ use Tokenly\Wp\Interfaces\Services\Application\Routers\RouterInterface;
 use Tokenly\Wp\Interfaces\Collections\CollectionInterface;
 use Tokenly\Wp\Interfaces\Models\Routes\RouteInterface;
 use Tokenly\Wp\Interfaces\Collections\Routes\RouteCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ViewRendererInterface;
 
 /**
  * Base router
@@ -16,10 +17,14 @@ class Router extends Service implements RouterInterface {
 	protected RouteCollectionInterface $routes;
 	protected string $default_template;
 	protected string $namespace;
-	protected array $Service = array();
+	protected ?ViewRendererInterface $view_renderer;
 
-	public function __construct( string $namespace ) {
+	public function __construct(
+		string $namespace,
+		?ViewRendererInterface $view_renderer = null
+	) {
 		$this->namespace = $namespace;
+		$this->view_renderer = $view_renderer;
 	}
 
 	/**
@@ -33,43 +38,13 @@ class Router extends Service implements RouterInterface {
 		return $routes;
 	}
 
-	/**
-	 * Executes the specified render callback
-	 * @param callable $render_function Controller's render function
-	 * @return void
-	 */
-	public function render_route(
+	protected function render(
 		callable $render_function,
 		array $arguments = array()
-	): void {
-		nocache_headers();
-		$response = call_user_func( $render_function, ...$arguments );
-		if ( !$response ) {
-			return;
-		}
-		$view_data = array();
-		$template = $this->default_template;
-		if ( isset( $response['view'] ) ) {
-			$view_data['view'] = $response['view'];
-		}
-		if ( isset( $response['template'] ) ) {
-			$template = $response['template'];
-		}
-		$props = array();
-		if ( isset( $response['data'] ) ) {
-			$props = $response['data'];
-		}
-		if ( $template == 'Dynamic.twig' ) {
-			$props = htmlspecialchars(
-				json_encode( $props ),
-				ENT_QUOTES,
-				'UTF-8'
-			);
-		}
-		$view_data['props'] = $props;
-		$view_data['namespace'] = $this->namespace;
-		$html = $this->twig->render( $template, $view_data );	
-		echo $html;
+	) {
+		$this->view_renderer->render(
+			$render_function, $arguments, $this->default_template
+		);
 	}
 	
 	/**

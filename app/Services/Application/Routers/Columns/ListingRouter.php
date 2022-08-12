@@ -5,7 +5,6 @@ namespace Tokenly\Wp\Services\Application\Routers\Columns;
 use Tokenly\Wp\Services\Application\Routers\Router;
 use Tokenly\Wp\Interfaces\Services\Application\Routers\Listings\ListingRouterInterface;
 
-use Twig\Environment;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Collections\Routes\Listings\ColumnCollection;
 use Tokenly\Wp\Collections\Routes\Listings\ActionCollection;
@@ -15,20 +14,11 @@ use Tokenly\Wp\Interfaces\Models\Routes\Listings\ColumnInterface;
  * Manages routing for the post type views
  */
 class ListingRouter extends Router implements ListingRouterInterface {
-	protected Environment $twig;
 	protected string $default_template = 'Dynamic.twig';
 	protected string $column_type;
 	protected string $action_type;
 	protected string $action_class_collection = ActionCollection::class;
 	protected string $column_class_collection = ColumnCollection::class; 
-	
-	public function __construct(
-		string $namespace,
-		Environment $twig
-	) {
-		$this->twig = $twig;
-		parent::__construct( $namespace );
-	}
 
 	public function register_actions( callable $new_actions ): void {
 		add_action( 'admin_init', function() use ( $new_actions ) {

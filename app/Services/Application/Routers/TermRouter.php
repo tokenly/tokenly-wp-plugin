@@ -5,19 +5,17 @@ namespace Tokenly\Wp\Services\Application\Routers;
 use Tokenly\Wp\Services\Application\Routers\Router;
 use Tokenly\Wp\Interfaces\Services\Application\Routers\TermRouterInterface;
 
-use Twig\Environment;
 use Tokenly\Wp\Interfaces\Models\TermInterface;
 use Tokenly\Wp\Interfaces\Repositories\Routes\TermRouteRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Routes\RouteInterface;
 use Tokenly\Wp\Interfaces\Collections\Routes\RouteCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ViewRendererInterface;
 
 /**
  * Manages routing for the post type views
  */
 class TermRouter extends Router implements TermRouterInterface {
-	protected string $namespace;
 	protected string $brand;
-	protected Environment $twig;
 	/**
 	 * @var array $registered Is used to prevent registration of multiple
 	 * routes for the same post type
@@ -29,13 +27,12 @@ class TermRouter extends Router implements TermRouterInterface {
 	public function __construct(
 		string $namespace,
 		string $brand,
-		Environment $twig,
-		TermRouteRepositoryInterface $term_route_repository
+		TermRouteRepositoryInterface $term_route_repository,
+		ViewRendererInterface $view_renderer
 	) {
-		$this->namespace = $namespace;
 		$this->brand = $brand;
-		$this->twig = $twig;
 		$this->term_route_repository = $term_route_repository;
+		parent::__construct( $namespace, $view_renderer );
 	}
 
 	/**
@@ -116,7 +113,7 @@ class TermRouter extends Router implements TermRouterInterface {
 		if ( $route->show_callback ) {
 			$callback = $route->show_callback;
 			$route->show_callback = function( TermInterface $term ) use ( $callback ) {
-				$this->render_route( $callback, array( $term ) );
+				$this->render( $callback, array( $term ) );
 			};
 			$action = "{$this->namespace}_template_redirect_term_{$taxonomy}";
 			$callback = function(
@@ -143,7 +140,7 @@ class TermRouter extends Router implements TermRouterInterface {
 		$action = "{$this->namespace}_{$taxonomy}_edit_form";
 		$callback = function( TermInterface $term ) use ( $route ) {
 			$callback = $route->edit_callback;
-			$this->render_route( $callback, array( $term ) );
+			$this->render( $callback, array( $term ) );
 		};
 		add_action( $action, $callback, 10, 1 );
 	}

@@ -11,9 +11,9 @@ use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
 use Tokenly\Wp\Interfaces\Models\UserInterface;
 use Tokenly\Wp\Interfaces\Controllers\Admin\UserControllerInterface;
 use Tokenly\Wp\Interfaces\Repositories\Routes\AdminRouteRepositoryInterface;
-use Twig\Environment;
 use Tokenly\Wp\Interfaces\Models\Routes\RouteInterface;
 use Tokenly\Wp\Interfaces\Collections\Routes\RouteCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ViewRendererInterface;
 
 /**
  * Manages routing for the WordPress admin pages
@@ -28,8 +28,6 @@ class AdminRouter extends Router implements AdminRouterInterface {
 	protected UserRepositoryInterface $user_repository;
 	protected UserControllerInterface $user_controller;
 	protected AdminRouteRepositoryInterface $admin_route_repository;
-	protected string $namespace;
-	protected Environment $twig;
 	protected string $default_template = 'Dynamic.twig';
 
 	public function __construct(
@@ -37,17 +35,16 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		AuthServiceInterface $auth_service,
 		UserRepositoryInterface $user_repository,
 		UserControllerInterface $user_controller,
-		Environment $twig,
+		ViewRendererInterface $view_renderer,
 		AdminRouteRepositoryInterface $admin_route_repository
 	) {
-		$this->namespace = $namespace;
 		$this->integration = null;
 		$this->user_repository = $user_repository;
 		$this->current_user = $this->user_repository->show_current();
 		$this->auth_service = $auth_service;
 		$this->user_controller = $user_controller;
-		$this->twig = $twig;
 		$this->admin_route_repository = $admin_route_repository;
+		parent::__construct( $namespace, $view_renderer );
 	}
 
 	/**
@@ -60,7 +57,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		add_action(
 			"{$this->namespace}_show_user_profile",
 			function( UserInterface $user ) {
-				$this->render_route(
+				$this->render(
 					array( $this->user_controller, 'show' ),
 					array( $user )
 				);
@@ -143,7 +140,7 @@ class AdminRouter extends Router implements AdminRouterInterface {
 		if ( $route->callable ) {
 			$callable = $route->callable;
 			$route->callable = function() use ( $callable ) {
-				$this->render_route( $callable );
+				$this->render( $callable );
 			};
 		}
 		return $route;

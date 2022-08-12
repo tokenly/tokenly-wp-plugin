@@ -6,10 +6,10 @@ use Tokenly\Wp\Services\Application\Routers\Router;
 use Tokenly\Wp\Interfaces\Services\Application\Routers\WebRouterInterface;
 
 use Tokenly\Wp\Interfaces\Models\IntegrationInterface;
-use Twig\Environment;
 use Tokenly\Wp\Interfaces\Repositories\Routes\WebRouteRepositoryInterface;
 use Tokenly\Wp\Interfaces\Models\Routes\RouteInterface;
 use Tokenly\Wp\Interfaces\Collections\Routes\RouteCollectionInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ViewRendererInterface;
 
 /**
  * Manages routing for the public views
@@ -19,19 +19,16 @@ class WebRouter extends Router implements WebRouterInterface {
 	protected array $vars = array();
 	protected array $callbacks = array();
 	protected array $controllers = array();
-	protected string $namespace;
-	protected Environment $twig;
 	protected string $default_template = 'Index.twig';
 	protected WebRouteRepositoryInterface $web_route_repository;
 
 	public function __construct(
-		Environment $twig,
 		string $namespace,
-		WebRouteRepositoryInterface $web_route_repository
+		WebRouteRepositoryInterface $web_route_repository,
+		ViewRendererInterface $view_renderer
 	) {
-		$this->namespace = $namespace;
-		$this->twig = $twig;
 		$this->web_route_repository = $web_route_repository;
+		parent::__construct( $namespace, $view_renderer );
 	}
 
 	/**
@@ -65,7 +62,7 @@ class WebRouter extends Router implements WebRouterInterface {
 			if ( $route->callback ) {
 				$callback = $route->callback;
 				$route->callback = function() use ( $callback ) {
-					$this->render_route( $callback );
+					$this->render( $callback );
 				};
 			}
 			$routes[ $key ] = $route;

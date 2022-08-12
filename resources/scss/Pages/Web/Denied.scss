@@ -5,6 +5,10 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	.note {
+		white-space: pre-line;
+		text-align: center;
+	}
 	.back-button {
 		margin-top: 24px;
 	}

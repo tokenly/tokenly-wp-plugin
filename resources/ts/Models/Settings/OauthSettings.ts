@@ -12,12 +12,12 @@ export default class OauthSettings extends Settings
 
 	public toJson(): any {
 		return {
-			...( this.useSingleSignOn ) && {
+			...( this.useSingleSignOn != null ) && {
 					use_single_sign_on: this.useSingleSignOn
 			},
-			...( this.successUrl ) && { success_url: this.successUrl },
-			...( this.allowNoEmail ) && { allow_no_email: this.allowNoEmail },
-			...( this.allowUnconfirmedEmail ) && {
+			...( this.successUrl != null ) && { success_url: this.successUrl },
+			...( this.allowNoEmail != null ) && { allow_no_email: this.allowNoEmail },
+			...( this.allowUnconfirmedEmail != null ) && {
 					allow_unconfirmed_email: this.allowUnconfirmedEmail
 			},
 		}

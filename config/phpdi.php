@@ -187,6 +187,7 @@ use Tokenly\Wp\Repositories\Routes\WebRouteRepository;
 use Tokenly\Wp\Services\Application\AuthService;
 use Tokenly\Wp\Services\Application\LifecycleService;
 use Tokenly\Wp\Services\Application\ResourceService;
+use Tokenly\Wp\Services\Application\ViewRenderer;
 use Tokenly\Wp\Services\Application\QueryService;
 use Tokenly\Wp\Services\Application\Credit\VendorService
 	as CreditVendorService;
@@ -425,6 +426,7 @@ use Tokenly\Wp\Interfaces\Repositories\Routes\WebRouteRepositoryInterface;
 use Tokenly\Wp\Interfaces\Services\Application\AuthServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Application\LifecycleServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Application\ResourceServiceInterface;
+use Tokenly\Wp\Interfaces\Services\Application\ViewRendererInterface;
 use Tokenly\Wp\Interfaces\Services\Application\QueryServiceInterface;
 use Tokenly\Wp\Interfaces\Services\Application\Credit\VendorServiceInterface
 	as CreditVendorServiceInterface;
@@ -463,7 +465,7 @@ use Tokenly\TokenpassClient\TokenpassAPIInterface;
 
 return array(
 	'general.name'      => 'tokenly-wp-plugin',
-	'general.version'   => '0.7.1',
+	'general.version'   => '0.7.2',
 	'general.namespace' => 'tokenly',
 	'general.brand'     => 'Tokenly',
 	'general.logo'      => \DI\factory(
@@ -658,6 +660,9 @@ return array(
 			'fallback_image',
 			\DI\get( 'general.fallback_image' )
 		),
+	ViewRendererInterface::class =>
+		\DI\autowire( ViewRenderer::class )
+		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
 	QueryServiceInterface::class =>
 		\DI\autowire( QueryService::class )
 		->constructorParameter( 'namespace', \DI\get( 'general.namespace' ) ),
